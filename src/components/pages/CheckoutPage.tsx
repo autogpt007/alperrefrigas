@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -274,10 +273,10 @@ const CheckoutPage = () => {
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="sameAsbilling"
-                      checked={formData.sameAsBinding}
-                      onCheckedChange={(checked) => handleInputChange('sameAsBinding', checked as boolean)}
+                      checked={formData.sameAsbilling}
+                      onCheckedChange={(checked) => handleInputChange('sameAsbilling', checked as boolean)}
                     />
-                    <Label htmlFor="sameAsBinding">Same as billing address</Label>
+                    <Label htmlFor="sameAsbilling">Same as billing address</Label>
                   </div>
                   
                   <div>
