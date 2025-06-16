@@ -1,214 +1,198 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Badge } from '../ui/badge';
-import { Search, Filter, ShoppingCart, FileText } from 'lucide-react';
-import { useCart } from '../../contexts/CartContext';
-
-interface RefrigerantProduct {
-  id: string;
-  name: string;
-  type: string;
-  price: number;
-  sku: string;
-  epaApproved: boolean;
-  description: string;
-  specifications: {
-    purity: string;
-    packaging: string;
-    weight: string;
-  };
-  sdsLink: string;
-  image: string;
-  inStock: boolean;
-}
-
-const mockProducts: RefrigerantProduct[] = [
-  {
-    id: '1',
-    name: 'R-410A Refrigerant',
-    type: 'HFC',
-    price: 125.99,
-    sku: 'REF-410A-25',
-    epaApproved: true,
-    description: 'High-efficiency refrigerant for residential and commercial air conditioning systems.',
-    specifications: {
-      purity: '99.9%',
-      packaging: '25 lb cylinder',
-      weight: '25 lbs'
-    },
-    sdsLink: '/sds/r410a.pdf',
-    image: '/placeholder.svg',
-    inStock: true
-  },
-  {
-    id: '2',
-    name: 'R-134A Refrigerant',
-    type: 'HFC',
-    price: 89.99,
-    sku: 'REF-134A-30',
-    epaApproved: true,
-    description: 'Automotive and commercial refrigeration refrigerant.',
-    specifications: {
-      purity: '99.8%',
-      packaging: '30 lb cylinder',
-      weight: '30 lbs'
-    },
-    sdsLink: '/sds/r134a.pdf',
-    image: '/placeholder.svg',
-    inStock: true
-  },
-  {
-    id: '3',
-    name: 'R-22 Refrigerant',
-    type: 'HCFC',
-    price: 299.99,
-    sku: 'REF-22-30',
-    epaApproved: true,
-    description: 'Legacy refrigerant for older HVAC systems (phase-out scheduled).',
-    specifications: {
-      purity: '99.9%',
-      packaging: '30 lb cylinder',
-      weight: '30 lbs'
-    },
-    sdsLink: '/sds/r22.pdf',
-    image: '/placeholder.svg',
-    inStock: false
-  }
-];
+import { Search, Filter, ChevronDown } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import ProductCard from '../ProductCard';
 
 const ProductCatalog = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
-  const { addItem } = useCart();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
 
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    const filtered = mockProducts.filter(product =>
-      product.name.toLowerCase().includes(term.toLowerCase()) ||
-      product.type.toLowerCase().includes(term.toLowerCase()) ||
-      product.sku.toLowerCase().includes(term.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-  };
+  const products = [
+    {
+      id: '1',
+      name: 'R-134a Quantum Grade',
+      price: 89.99,
+      image: '/placeholder.svg',
+      sku: 'R134A-QG-30LB',
+      epaApproved: true,
+      category: 'HFC'
+    },
+    {
+      id: '2',
+      name: 'R-410A Ultra Pure',
+      price: 125.50,
+      image: '/placeholder.svg',
+      sku: 'R410A-UP-25LB',
+      epaApproved: true,
+      category: 'HFC'
+    },
+    {
+      id: '3',
+      name: 'R-32 Next Gen',
+      price: 95.75,
+      image: '/placeholder.svg',
+      sku: 'R32-NG-20LB',
+      epaApproved: true,
+      category: 'HFO'
+    },
+    {
+      id: '4',
+      name: 'R-290 Natural Pro',
+      price: 68.25,
+      image: '/placeholder.svg',
+      sku: 'R290-NP-15LB',
+      epaApproved: true,
+      category: 'Natural'
+    },
+    {
+      id: '5',
+      name: 'R-404A Commercial',
+      price: 115.00,
+      image: '/placeholder.svg',
+      sku: 'R404A-CM-30LB',
+      epaApproved: true,
+      category: 'HFC'
+    },
+    {
+      id: '6',
+      name: 'R-1234yf Hybrid',
+      price: 185.99,
+      image: '/placeholder.svg',
+      sku: 'R1234YF-HY-10LB',
+      epaApproved: true,
+      category: 'HFO'
+    }
+  ];
 
-  const handleAddToCart = (product: RefrigerantProduct) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      sku: product.sku,
-      epaApproved: product.epaApproved
-    });
-  };
+  const categories = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'HFC', label: 'HFC Refrigerants' },
+    { value: 'HFO', label: 'HFO Refrigerants' },
+    { value: 'Natural', label: 'Natural Refrigerants' }
+  ];
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'name':
+      default:
+        return a.name.localeCompare(b.name);
+    }
+  });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Refrigerant Catalog</h1>
-        <p className="text-gray-600 mb-6">
-          Browse our comprehensive selection of EPA-approved refrigerants for commercial and residential use.
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900/50 to-slate-900 py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(6,182,212,0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(147,51,234,0.1),transparent_50%)]"></div>
         
-        {/* Search and Filter Bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search by name, type, or SKU..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Quantum Refrigerants
+              </span>
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Advanced molecular refrigerant solutions for the future of cooling technology. 
+              EPA certified and quantum-grade purity.
+            </p>
+            
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto relative">
+              <div className="relative">
+                <Search className="absolute left-4 top-4 h-6 w-6 text-cyan-400" />
+                <Input
+                  type="text"
+                  placeholder="Search quantum refrigerants by name or SKU..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 text-lg bg-slate-800/50 border-2 border-cyan-500/30 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                />
+              </div>
+            </div>
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            Filter
-          </Button>
         </div>
       </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
-            <CardHeader>
-              <div className="flex justify-between items-start mb-2">
-                <CardTitle className="text-lg">{product.name}</CardTitle>
-                {product.epaApproved && (
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    EPA Approved
-                  </Badge>
-                )}
-              </div>
-              <CardDescription>{product.description}</CardDescription>
-            </CardHeader>
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex items-center gap-2">
+              <Filter className="h-5 w-5 text-cyan-400" />
+              <span className="text-gray-300 font-medium">Filters:</span>
+            </div>
             
-            <CardContent>
-              <div className="space-y-4">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-32 object-cover rounded-lg bg-gray-100"
-                />
-                
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <span className="font-medium">Type:</span> {product.type}
-                  </div>
-                  <div>
-                    <span className="font-medium">SKU:</span> {product.sku}
-                  </div>
-                  <div>
-                    <span className="font-medium">Purity:</span> {product.specifications.purity}
-                  </div>
-                  <div>
-                    <span className="font-medium">Weight:</span> {product.specifications.weight}
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <div>
-                    <span className="text-2xl font-bold text-green-600">
-                      ${product.price}
-                    </span>
-                    <div className="text-sm text-gray-500">
-                      {product.inStock ? 'In Stock' : 'Out of Stock'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open(product.sdsLink, '_blank')}
-                    >
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleAddToCart(product)}
-                      disabled={!product.inStock}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      
-      {filteredProducts.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No products found matching your search criteria.</p>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-48 bg-slate-800/50 border-cyan-500/30 text-white">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-48 bg-slate-800/50 border-cyan-500/30 text-white">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Name A-Z</SelectItem>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="text-gray-400">
+            {sortedProducts.length} products found
+          </div>
         </div>
-      )}
+
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {sortedProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
+        {sortedProducts.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-lg">
+              No products found matching your criteria.
+            </div>
+            <Button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('all');
+              }}
+              className="mt-4 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
