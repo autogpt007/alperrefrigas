@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface Product {
@@ -13,6 +12,7 @@ export interface Product {
   stock: number;
   packaging?: string[];
   applications?: string[];
+  sdsUrl?: string;
 }
 
 interface ProductsContextType {
@@ -37,7 +37,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       description: 'High-efficiency, non-ozone-depleting HFC refrigerant for modern air-conditioning systems.',
       stock: 50,
       packaging: ['Pallet (48 cylinders)', 'Container (900 cylinders)', 'Bulk Tank (1000 lbs)'],
-      applications: ['Residential AC', 'Commercial HVAC', 'Heat Pumps']
+      applications: ['Residential AC', 'Commercial HVAC', 'Heat Pumps'],
+      sdsUrl: '/placeholder.svg' // Placeholder SDS URL
     },
     {
       id: 'r134a',
@@ -50,7 +51,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       description: 'Widely used HFC for automotive air-conditioning and medium-temperature refrigeration.',
       stock: 35,
       packaging: ['Pallet (40 cylinders)', 'Container (800 cylinders)', 'Bulk Tank (2000 lbs)'],
-      applications: ['Automotive AC', 'Medium Temp Refrigeration', 'Commercial Cooling']
+      applications: ['Automotive AC', 'Medium Temp Refrigeration', 'Commercial Cooling'],
+      sdsUrl: '/placeholder.svg' // Placeholder SDS URL
     },
     {
       id: 'r404a',
@@ -63,7 +65,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       description: 'HFC blend for low and medium-temperature commercial refrigeration applications.',
       stock: 42,
       packaging: ['Pallet (45 cylinders)', 'Container (850 cylinders)', 'Bulk Tank (1500 lbs)'],
-      applications: ['Low Temp Refrigeration', 'Supermarket Systems', 'Cold Storage']
+      applications: ['Low Temp Refrigeration', 'Supermarket Systems', 'Cold Storage'],
+      sdsUrl: '/placeholder.svg' // Placeholder SDS URL
     }
   ]);
 

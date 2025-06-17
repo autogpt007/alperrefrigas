@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Upload, X, ImageIcon } from 'lucide-react';
+import { Plus, Upload, X, ImageIcon, FileText } from 'lucide-react';
 import { useProducts } from '../../contexts/ProductsContext';
 import { useToast } from '../../hooks/use-toast';
 
@@ -25,10 +24,12 @@ const ProductForm = () => {
     description: '',
     stock: 0,
     packaging: [] as string[],
-    applications: [] as string[]
+    applications: [] as string[],
+    sdsUrl: ''
   });
 
   const [imagePreview, setImagePreview] = useState('');
+  const [sdsFileName, setSdsFileName] = useState('');
   const [packagingInput, setPackagingInput] = useState('');
   const [applicationInput, setApplicationInput] = useState('');
 
@@ -40,6 +41,28 @@ const ProductForm = () => {
         const result = e.target?.result as string;
         setImagePreview(result);
         setNewProduct({...newProduct, image: result});
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSdsUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        toast({
+          title: "Invalid File Type",
+          description: "Please upload a PDF file for the SDS document",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setNewProduct({...newProduct, sdsUrl: result});
+        setSdsFileName(file.name);
       };
       reader.readAsDataURL(file);
     }
@@ -107,9 +130,11 @@ const ProductForm = () => {
       description: '',
       stock: 0,
       packaging: [],
-      applications: []
+      applications: [],
+      sdsUrl: ''
     });
     setImagePreview('');
+    setSdsFileName('');
   };
 
   return (
@@ -147,6 +172,39 @@ const ProductForm = () => {
                 </Button>
               </Label>
               <p className="text-gray-400 text-sm mt-2">Upload a product image (JPG, PNG)</p>
+            </div>
+          </div>
+        </div>
+
+        {/* SDS Document Upload */}
+        <div>
+          <Label className="text-gray-300 block mb-2">Safety Data Sheet (SDS)</Label>
+          <div className="flex items-center gap-4">
+            <div className="w-32 h-32 border-2 border-dashed border-gray-600 rounded-lg flex items-center justify-center bg-slate-700/50">
+              {sdsFileName ? (
+                <div className="text-center">
+                  <FileText className="h-8 w-8 text-green-400 mx-auto mb-2" />
+                  <p className="text-xs text-gray-300 break-words">{sdsFileName}</p>
+                </div>
+              ) : (
+                <FileText className="h-8 w-8 text-gray-500" />
+              )}
+            </div>
+            <div>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handleSdsUpload}
+                className="hidden"
+                id="sds-upload"
+              />
+              <Label htmlFor="sds-upload" className="cursor-pointer">
+                <Button type="button" className="bg-green-600 hover:bg-green-700">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload SDS
+                </Button>
+              </Label>
+              <p className="text-gray-400 text-sm mt-2">Upload SDS document (PDF only)</p>
             </div>
           </div>
         </div>
