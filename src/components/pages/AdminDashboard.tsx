@@ -4,34 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, LogOut, Package, FileText, Globe, Settings } from 'lucide-react';
+import { Edit, Trash2, LogOut, Package, FileText, Globe, Settings, ShoppingCart } from 'lucide-react';
 import { useProducts } from '../../contexts/ProductsContext';
+import { useOrders } from '../../contexts/OrdersContext';
 import ProductForm from '../admin/ProductForm';
+import OrderManagement from '../admin/OrderManagement';
 import ProtectedRoute from '../ProtectedRoute';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  author: string;
-  publishDate: string;
-  published: boolean;
-}
 
 const AdminDashboard = () => {
   const { products, deleteProduct } = useProducts();
-  const [activeTab, setActiveTab] = useState('products');
-
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([
-    {
-      id: '1',
-      title: 'New EPA Regulations 2024',
-      content: 'Latest updates on EPA refrigerant regulations...',
-      author: 'Admin',
-      publishDate: '2024-01-15',
-      published: true
-    }
-  ]);
+  const { orders } = useOrders();
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const handleDeleteProduct = (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
@@ -43,6 +26,9 @@ const AdminDashboard = () => {
     window.location.reload();
   };
 
+  const pendingOrders = orders.filter(order => order.status === 'pending').length;
+  const processingOrders = orders.filter(order => order.status === 'processing').length;
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -51,7 +37,7 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-              <p className="text-gray-300">North American Refrigerants</p>
+              <p className="text-gray-300">Frigid Flow Management System</p>
             </div>
             <Button onClick={handleLogout} variant="ghost" className="text-white hover:text-red-400">
               <LogOut className="h-4 w-4 mr-2" />
@@ -61,72 +47,112 @@ const AdminDashboard = () => {
         </div>
 
         <div className="p-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-cyan-400 text-sm font-medium">Total Products</p>
-                    <p className="text-3xl font-bold text-white">{products.length}</p>
-                  </div>
-                  <Package className="h-8 w-8 text-cyan-400" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-500/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-400 text-sm font-medium">In Stock</p>
-                    <p className="text-3xl font-bold text-white">{products.filter(p => p.stock > 0).length}</p>
-                  </div>
-                  <Settings className="h-8 w-8 text-green-400" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-400 text-sm font-medium">Blog Posts</p>
-                    <p className="text-3xl font-bold text-white">{blogPosts.length}</p>
-                  </div>
-                  <FileText className="h-8 w-8 text-purple-400" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-orange-400 text-sm font-medium">Website Status</p>
-                    <p className="text-lg font-bold text-white">Active</p>
-                  </div>
-                  <Globe className="h-8 w-8 text-orange-400" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="bg-slate-800/50 border border-cyan-500/20">
+              <TabsTrigger value="dashboard" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+                <Settings className="h-4 w-4 mr-2" />
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="orders" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Orders ({orders.length})
+              </TabsTrigger>
               <TabsTrigger value="products" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
                 <Package className="h-4 w-4 mr-2" />
                 Products
               </TabsTrigger>
-              <TabsTrigger value="blog" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-                <FileText className="h-4 w-4 mr-2" />
-                Blog Posts
-              </TabsTrigger>
               <TabsTrigger value="content" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
                 <Globe className="h-4 w-4 mr-2" />
-                Website Content
+                Website
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="dashboard" className="space-y-6">
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-cyan-400 text-sm font-medium">Total Products</p>
+                        <p className="text-3xl font-bold text-white">{products.length}</p>
+                      </div>
+                      <Package className="h-8 w-8 text-cyan-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-500/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-green-400 text-sm font-medium">Total Orders</p>
+                        <p className="text-3xl font-bold text-white">{orders.length}</p>
+                      </div>
+                      <ShoppingCart className="h-8 w-8 text-green-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-yellow-400 text-sm font-medium">Pending Orders</p>
+                        <p className="text-3xl font-bold text-white">{pendingOrders}</p>
+                      </div>
+                      <FileText className="h-8 w-8 text-yellow-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-400 text-sm font-medium">Processing</p>
+                        <p className="text-3xl font-bold text-white">{processingOrders}</p>
+                      </div>
+                      <Settings className="h-8 w-8 text-purple-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Recent Orders */}
+              <Card className="bg-slate-800/50 border-cyan-500/20">
+                <CardHeader>
+                  <CardTitle className="text-cyan-400">Recent Orders</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {orders.slice(0, 5).map((order) => (
+                      <div key={order.id} className="flex justify-between items-center p-3 bg-slate-700/50 rounded">
+                        <div>
+                          <p className="text-white font-medium">#{order.id} - {order.customerName}</p>
+                          <p className="text-gray-400 text-sm">{order.companyName}</p>
+                        </div>
+                        <div className="text-right">
+                          <Badge className={
+                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'shipped' ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-800'
+                          }>
+                            {order.status}
+                          </Badge>
+                          <p className="text-cyan-400 font-semibold mt-1">${order.totalAmount.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="orders" className="space-y-6">
+              <OrderManagement />
+            </TabsContent>
 
             <TabsContent value="products" className="space-y-6">
               <ProductForm />
@@ -172,17 +198,6 @@ const AdminDashboard = () => {
                       </Card>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="blog" className="space-y-6">
-              <Card className="bg-slate-800/50 border-cyan-500/20">
-                <CardHeader>
-                  <CardTitle className="text-cyan-400">Blog Management</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300">Blog management features coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
