@@ -2,246 +2,220 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Search, Truck, Shield, Users, Award, Clock } from 'lucide-react';
-import AIRecommendationWidget from '../widgets/AIRecommendationWidget';
+import { Card, CardContent } from '@/components/ui/card';
+import { CheckCircle, Truck, Shield, Award } from 'lucide-react';
 
 const HomePage = () => {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: 'R-134a Refrigerant',
-      description: 'Automotive & Commercial AC Systems',
-      price: '$89.99',
-      image: '/api/placeholder/300/200',
-      epaApproved: true,
-      inStock: true,
-    },
-    {
-      id: 2,
-      name: 'R-410A Refrigerant',
-      description: 'Residential & Commercial HVAC',
-      price: '$124.99',
-      image: '/api/placeholder/300/200',
-      epaApproved: true,
-      inStock: true,
-    },
-    {
-      id: 3,
-      name: 'R-454B Refrigerant',
-      description: 'Next-Gen Low-GWP Alternative',
-      price: '$189.99',
-      image: '/api/placeholder/300/200',
-      epaApproved: true,
-      inStock: false,
-    },
-  ];
-
-  const certifications = [
-    'EPA Section 608 Certified',
-    'AHRI Certified',
-    'DOT Hazmat Certified',
-    'ISO 9001:2015',
-  ];
-
   return (
-    <div className="min-h-screen">
+    <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                North America's
-                <span className="block text-blue-300">Refrigerant</span>
-                <span className="block">Specialists</span>
-              </h1>
-              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                EPA-certified distribution of high-quality refrigerants across all 50 states and Canada. 
-                Fast shipping, competitive pricing, and expert support for HVAC professionals.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/products">
-                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3">
-                    Browse Products
-                  </Button>
-                </Link>
-                <Link to="/shipping">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3">
-                    Calculate Shipping
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="hidden lg:block">
-              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8">
-                <AIRecommendationWidget />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Features */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Frigid Flow?</h2>
-            <p className="text-xl text-gray-600">Professional-grade refrigerants with unmatched service</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Shield className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>EPA Certified</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Fully licensed and compliant with all federal and state regulations
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Truck className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Fast Shipping</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Next-day delivery available to most locations across North America
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Expert Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Technical assistance from certified HVAC professionals
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Award className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Quality Assured</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Premium refrigerants from trusted manufacturers worldwide
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
-            <p className="text-xl text-gray-600">Popular refrigerants for every application</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="hover:shadow-lg transition-shadow">
-                <div className="relative">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {product.epaApproved && (
-                      <Badge className="bg-green-500 text-white">EPA Approved</Badge>
-                    )}
-                    {product.inStock ? (
-                      <Badge className="bg-blue-500 text-white">In Stock</Badge>
-                    ) : (
-                      <Badge variant="secondary">Out of Stock</Badge>
-                    )}
-                  </div>
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-xl">{product.name}</CardTitle>
-                  <p className="text-gray-600">{product.description}</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-blue-600">{product.price}</span>
-                    <Button disabled={!product.inStock}>
-                      {product.inStock ? 'Add to Cart' : 'Notify When Available'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
+      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+        <div className="container mx-auto px-6 py-24 md:py-32 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4">
+            Reliable Bulk Refrigerant Distribution
+          </h1>
+          <p className="text-lg md:text-xl text-blue-200 max-w-3xl mx-auto mb-8">
+            Your trusted source for Freon™ and other leading refrigerant brands, 
+            delivered by the pallet or container across the USA and Canada.
+          </p>
+          <div className="flex justify-center space-x-4">
             <Link to="/products">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                View All Products
+              <Button size="lg" className="bg-white text-blue-700 font-bold hover:bg-gray-100">
+                View Our Products
+              </Button>
+            </Link>
+            <Link to="/rfq">
+              <Button size="lg" className="bg-blue-600 text-white font-bold hover:bg-blue-700">
+                Request a Quote
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Certifications */}
-      <section className="py-16 bg-blue-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Certifications & Compliance</h2>
-            <p className="text-xl text-blue-100">Trusted by professionals nationwide</p>
+      {/* Trusted Brands Section */}
+      <section className="bg-white py-12">
+        <div className="container mx-auto px-6 text-center">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">
+            Trusted by professionals, stocking leading brands
+          </h3>
+          <div className="flex justify-center items-center space-x-8 md:space-x-12">
+            <div className="text-2xl font-bold text-blue-600">Chemours</div>
+            <div className="text-3xl font-bold text-gray-600">Freon™</div>
+            <div className="text-2xl font-bold text-orange-600">Honeywell</div>
+            <div className="text-2xl font-bold text-green-600">Arkema</div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {certifications.map((cert, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-white bg-opacity-10 rounded-lg p-6">
-                  <Award className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-                  <h3 className="font-semibold">{cert}</h3>
+      {/* Featured Products Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Our Core Products</h2>
+            <p className="text-gray-600 mt-2">
+              We supply the most in-demand refrigerants for commercial and industrial use.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Product Card 1 */}
+            <Card className="group transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+              <CardContent className="p-0">
+                <div className="h-56 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                  <div className="text-4xl font-bold text-blue-600">R-410A</div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Refrigerant R-410A</h3>
+                  <p className="text-gray-600 mb-4">
+                    A high-efficiency, non-ozone-depleting HFC refrigerant for modern air-conditioning systems.
+                  </p>
+                  <Link to="/products/r410a">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      View Details & Quote
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Product Card 2 */}
+            <Card className="group transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+              <CardContent className="p-0">
+                <div className="h-56 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                  <div className="text-4xl font-bold text-green-600">R-134a</div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Refrigerant R-134a</h3>
+                  <p className="text-gray-600 mb-4">
+                    A widely used HFC for automotive air-conditioning and medium-temperature refrigeration.
+                  </p>
+                  <Link to="/products/r134a">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      View Details & Quote
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Product Card 3 */}
+            <Card className="group transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+              <CardContent className="p-0">
+                <div className="h-56 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                  <div className="text-4xl font-bold text-purple-600">R-404A</div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Refrigerant R-404A</h3>
+                  <p className="text-gray-600 mb-4">
+                    An HFC blend for low and medium-temperature commercial refrigeration applications.
+                  </p>
+                  <Link to="/products/r404a">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      View Details & Quote
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Your Partner in Bulk Refrigerant Supply
+              </h2>
+              <p className="text-gray-600 mb-6">
+                North American Refrigerants was founded to solve one major problem: providing a reliable, 
+                straightforward supply chain for HVAC and refrigeration professionals who buy in bulk.
+              </p>
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <CheckCircle className="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <span className="font-semibold">USA & Canada Distribution:</span> We have a logistics 
+                    network covering the entire continent.
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <Truck className="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <span className="font-semibold">Bulk Quantities Only:</span> Specializing in pallets 
+                    and containers for maximum value.
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <Shield className="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <span className="font-semibold">Unwavering Quality:</span> Sourcing authentic, 
+                    lab-tested refrigerant gases.
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="p-4 bg-gray-100 rounded-lg">
+              <div className="h-96 bg-gradient-to-br from-blue-900 to-slate-800 rounded-lg flex items-center justify-center text-white">
+                <div className="text-center">
+                  <Award className="w-16 h-16 mx-auto mb-4" />
+                  <div className="text-2xl font-bold">Our Warehouse</div>
+                  <div className="text-blue-200">Professional Distribution</div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Mobile AI Widget */}
-      <section className="lg:hidden py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AIRecommendationWidget />
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-orange-500 to-red-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8">Join thousands of HVAC professionals who trust Frigid Flow</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/account">
-              <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-3">
-                Create Account
-              </Button>
-            </Link>
-            <Link to="/support">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-3">
-                Contact Sales
-              </Button>
-            </Link>
+      {/* Contact / Quote Form Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Request a Quote</h2>
+            <p className="text-gray-600 mt-2">
+              Fill out the form below and our sales team will contact you within one business day.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <Card>
+              <CardContent className="p-8">
+                <form className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Company Name"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <textarea
+                    placeholder="Please list the products and quantities you are interested in (e.g., 2 pallets of R-410A, 1 container of R-134a)"
+                    rows={6}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <Button type="submit" size="lg" className="w-full bg-blue-600 hover:bg-blue-700">
+                    Submit Request
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

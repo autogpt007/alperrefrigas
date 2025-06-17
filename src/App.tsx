@@ -5,17 +5,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
-import { CartProvider } from './contexts/CartContext';
+import { RFQProvider } from './contexts/RFQContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
 import ProductCatalog from './components/pages/ProductCatalog';
-import ShippingCalculator from './components/pages/ShippingCalculator';
-import AccountDashboard from './components/pages/AccountDashboard';
-import CustomerSupport from './components/pages/CustomerSupport';
-import CartPage from './components/pages/CartPage';
-import CheckoutPage from './components/pages/CheckoutPage';
-import OrderConfirmation from './components/pages/OrderConfirmation';
+import ProductDetails from './components/pages/ProductDetails';
+import RFQPage from './components/pages/RFQPage';
+import CustomerPortal from './components/pages/CustomerPortal';
 import AdminDashboard from './components/pages/AdminDashboard';
 import NotFound from "./pages/NotFound";
 
@@ -28,26 +25,23 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <CartProvider>
+          <RFQProvider>
             <div className="min-h-screen bg-gray-50">
               <Header />
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/products" element={<ProductCatalog />} />
-                  <Route path="/shipping" element={<ShippingCalculator />} />
-                  <Route path="/account" element={<AccountDashboard />} />
-                  <Route path="/support" element={<CustomerSupport />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                  <Route path="/products/:id" element={<ProductDetails />} />
+                  <Route path="/rfq" element={<RFQPage />} />
+                  <Route path="/portal" element={<CustomerPortal />} />
                   <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
               <Footer />
             </div>
-          </CartProvider>
+          </RFQProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { Search, Filter, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import ProductCard from '../ProductCard';
 
 const ProductCatalog = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,58 +14,52 @@ const ProductCatalog = () => {
 
   const products = [
     {
-      id: '1',
-      name: 'R-134a Quantum Grade',
-      price: 89.99,
-      image: '/placeholder.svg',
-      sku: 'R134A-QG-30LB',
-      epaApproved: true,
-      category: 'HFC'
+      id: 'r410a',
+      name: 'Refrigerant R-410A',
+      description: 'High-efficiency, non-ozone-depleting HFC refrigerant for modern air-conditioning systems.',
+      imageUrl: '/placeholder.svg',
+      category: 'HFC',
+      applications: ['Residential AC', 'Commercial HVAC', 'Heat Pumps']
     },
     {
-      id: '2',
-      name: 'R-410A Ultra Pure',
-      price: 125.50,
-      image: '/placeholder.svg',
-      sku: 'R410A-UP-25LB',
-      epaApproved: true,
-      category: 'HFC'
+      id: 'r134a',
+      name: 'Refrigerant R-134a',
+      description: 'Widely used HFC for automotive air-conditioning and medium-temperature refrigeration.',
+      imageUrl: '/placeholder.svg',
+      category: 'HFC',
+      applications: ['Automotive AC', 'Medium Temp Refrigeration', 'Commercial Cooling']
     },
     {
-      id: '3',
-      name: 'R-32 Next Gen',
-      price: 95.75,
-      image: '/placeholder.svg',
-      sku: 'R32-NG-20LB',
-      epaApproved: true,
-      category: 'HFO'
+      id: 'r404a',
+      name: 'Refrigerant R-404A',
+      description: 'HFC blend for low and medium-temperature commercial refrigeration applications.',
+      imageUrl: '/placeholder.svg',
+      category: 'HFC',
+      applications: ['Low Temp Refrigeration', 'Supermarket Systems', 'Cold Storage']
     },
     {
-      id: '4',
-      name: 'R-290 Natural Pro',
-      price: 68.25,
-      image: '/placeholder.svg',
-      sku: 'R290-NP-15LB',
-      epaApproved: true,
-      category: 'Natural'
+      id: 'r32',
+      name: 'Refrigerant R-32',
+      description: 'Next-generation HFC refrigerant with lower global warming potential.',
+      imageUrl: '/placeholder.svg',
+      category: 'HFC',
+      applications: ['Residential AC', 'Commercial HVAC', 'VRF Systems']
     },
     {
-      id: '5',
-      name: 'R-404A Commercial',
-      price: 115.00,
-      image: '/placeholder.svg',
-      sku: 'R404A-CM-30LB',
-      epaApproved: true,
-      category: 'HFC'
+      id: 'r290',
+      name: 'Refrigerant R-290 (Propane)',
+      description: 'Natural hydrocarbon refrigerant with excellent environmental properties.',
+      imageUrl: '/placeholder.svg',
+      category: 'Natural',
+      applications: ['Commercial Refrigeration', 'Heat Pumps', 'Industrial Cooling']
     },
     {
-      id: '6',
-      name: 'R-1234yf Hybrid',
-      price: 185.99,
-      image: '/placeholder.svg',
-      sku: 'R1234YF-HY-10LB',
-      epaApproved: true,
-      category: 'HFO'
+      id: 'r1234yf',
+      name: 'Refrigerant R-1234yf',
+      description: 'Low GWP HFO refrigerant for automotive air conditioning applications.',
+      imageUrl: '/placeholder.svg',
+      category: 'HFO',
+      applications: ['Automotive AC', 'Mobile AC', 'Transport Refrigeration']
     }
   ];
 
@@ -77,17 +72,13 @@ const ProductCatalog = () => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
+                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
       case 'name':
       default:
         return a.name.localeCompare(b.name);
@@ -95,52 +86,47 @@ const ProductCatalog = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+    <div className="bg-white">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900/50 to-slate-900 py-16">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(6,182,212,0.1),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(147,51,234,0.1),transparent_50%)]"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-16">
+        <div className="container mx-auto px-6">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Quantum Refrigerants
-              </span>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Professional Refrigerant Catalog
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Advanced molecular refrigerant solutions for the future of cooling technology. 
-              EPA certified and quantum-grade purity.
+            <p className="text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
+              Browse our comprehensive selection of refrigerants available for bulk distribution. 
+              All products available by pallet or container.
             </p>
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
               <div className="relative">
-                <Search className="absolute left-4 top-4 h-6 w-6 text-cyan-400" />
+                <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder="Search quantum refrigerants by name or SKU..."
+                  placeholder="Search refrigerants by name or application..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 text-lg bg-slate-800/50 border-2 border-cyan-500/30 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                  className="w-full pl-12 pr-4 py-4 text-lg bg-white border-0 rounded-lg text-gray-900 placeholder-gray-500"
                 />
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-cyan-400" />
-              <span className="text-gray-300 font-medium">Filters:</span>
+              <Filter className="h-5 w-5 text-gray-600" />
+              <span className="text-gray-700 font-medium">Filters:</span>
             </div>
             
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-48 bg-slate-800/50 border-cyan-500/30 text-white">
+              <SelectTrigger className="w-48">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -153,32 +139,62 @@ const ProductCatalog = () => {
             </Select>
 
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48 bg-slate-800/50 border-cyan-500/30 text-white">
+              <SelectTrigger className="w-48">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="name">Name A-Z</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="text-gray-400">
+          <div className="text-gray-600">
             {sortedProducts.length} products found
           </div>
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <Card key={product.id} className="group transform hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
+              <CardContent className="p-0">
+                <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                  <div className="text-3xl font-bold text-blue-600">
+                    {product.name.split(' ')[1]}
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">{product.name}</h3>
+                  <p className="text-gray-600 mb-4">{product.description}</p>
+                  
+                  <div className="mb-4">
+                    <h4 className="font-medium text-gray-700 mb-2">Applications:</h4>
+                    <div className="flex flex-wrap gap-1">
+                      {product.applications.map((app, index) => (
+                        <span
+                          key={index}
+                          className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
+                        >
+                          {app}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <Link to={`/products/${product.id}`}>
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      View Details & Request Quote
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {sortedProducts.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-lg">
+            <div className="text-gray-600 text-lg">
               No products found matching your criteria.
             </div>
             <Button
@@ -186,7 +202,7 @@ const ProductCatalog = () => {
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="mt-4 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
+              className="mt-4 bg-blue-600 hover:bg-blue-700"
             >
               Clear Filters
             </Button>

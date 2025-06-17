@@ -1,223 +1,162 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Search, User, ShoppingCart, Menu, X, Shield, Zap } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Menu, X, FileText, User, LogIn } from 'lucide-react';
+import { useRFQ } from '../../contexts/RFQContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../contexts/CartContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
+  const { itemCount } = useRFQ();
   const { user, logout } = useAuth();
-  const { items } = useCart();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navigation = [
-    { name: 'Home', href: '/', icon: '🏠' },
-    { name: 'Products', href: '/products', icon: '🧪' },
-    { name: 'Shipping', href: '/shipping', icon: '🚚' },
-    { name: 'Support', href: '/support', icon: '💬' },
-  ];
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
-    }
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
-    <>
-      {/* Top Status Bar */}
-      <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-purple-900 text-white text-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex justify-between items-center py-3">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <Shield className="h-4 w-4 text-cyan-400" />
-                <span className="text-cyan-400 font-medium">EPA Certified</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Zap className="h-4 w-4 text-yellow-400" />
-                <span>24/7 Support: 1-800-REFRIGERANT</span>
-              </div>
-            </div>
-            <div className="hidden md:flex items-center space-x-4">
-              <span className="text-cyan-400">🌍 North America Wide</span>
-              <span>📧 sales@frigidflow.com</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <nav className="container mx-auto px-6 py-4">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold text-gray-900">
+            North American <span className="text-blue-600">Refrigerants</span>
+          </Link>
 
-      {/* Main Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-slate-900/95 backdrop-blur-md shadow-lg shadow-cyan-500/20' 
-          : 'bg-gradient-to-r from-slate-900 via-purple-900/50 to-slate-900'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-white font-bold text-xl">FF</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-lg opacity-50 blur-md group-hover:opacity-75 transition-opacity duration-300"></div>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  Frigid Flow
-                </h1>
-                <p className="text-sm text-gray-400">Quantum Refrigerant Tech</p>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link to="/products" className="text-gray-600 hover:text-blue-600 font-medium">
+              Products
+            </Link>
+            <Link to="/rfq" className="text-gray-600 hover:text-blue-600 font-medium relative">
+              <div className="flex items-center space-x-1">
+                <FileText className="h-4 w-4" />
+                <span>Quote Request</span>
+                {itemCount > 0 && (
+                  <Badge className="bg-blue-600 text-white text-xs ml-1">
+                    {itemCount}
+                  </Badge>
+                )}
               </div>
             </Link>
+            
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <Link to="/portal" className="text-gray-600 hover:text-blue-600 font-medium">
+                  <div className="flex items-center space-x-1">
+                    <User className="h-4 w-4" />
+                    <span>Portal</span>
+                  </div>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-red-600"
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-blue-600"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Customer Login
+              </Button>
+            )}
+            
+            <Link to="/rfq">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                Request Quote
+              </Button>
+            </Link>
+          </div>
 
-            {/* Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-lg mx-8">
-              <form onSubmit={handleSearch} className="w-full relative group">
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Search quantum refrigerants..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border-2 border-cyan-500/20 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                  />
-                  <Search className="absolute left-4 top-3.5 h-5 w-5 text-cyan-400" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-                </div>
-              </form>
-            </div>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+        </div>
 
-            {/* User Actions */}
-            <div className="flex items-center space-x-4">
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+            <div className="flex flex-col space-y-3 pt-4">
+              <Link
+                to="/products"
+                className="text-gray-600 hover:text-blue-600 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Products
+              </Link>
+              <Link
+                to="/rfq"
+                className="text-gray-600 hover:text-blue-600 font-medium flex items-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Quote Request
+                {itemCount > 0 && (
+                  <Badge className="bg-blue-600 text-white text-xs ml-2">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Link>
               {user ? (
-                <div className="flex items-center space-x-4">
-                  <Link to="/account">
-                    <Button variant="ghost" className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10">
-                      <User className="h-5 w-5 mr-2" />
-                      <span className="hidden sm:inline">{user.name}</span>
-                    </Button>
+                <>
+                  <Link
+                    to="/portal"
+                    className="text-gray-600 hover:text-blue-600 font-medium flex items-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Portal
                   </Link>
-                  <Button 
-                    variant="ghost" 
-                    onClick={logout}
-                    className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-gray-600 hover:text-red-600 justify-start"
                   >
                     Logout
                   </Button>
-                </div>
+                </>
               ) : (
-                <Link to="/account">
-                  <Button className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0">
-                    <User className="h-4 w-4 mr-2" />
-                    <span>Access Portal</span>
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-600 hover:text-blue-600 justify-start"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Customer Login
+                </Button>
               )}
-
-              {/* Cart */}
-              <Link to="/cart">
-                <Button variant="ghost" className="relative group text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10">
-                  <ShoppingCart className="h-6 w-6" />
-                  {totalItems > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-cyan-500 to-purple-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold animate-pulse">
-                      {totalItems}
-                    </span>
-                  )}
+              <Link to="/rfq" onClick={() => setIsMenuOpen(false)}>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                  Request Quote
                 </Button>
               </Link>
-
-              {/* Mobile Menu Toggle */}
-              <Button
-                variant="ghost"
-                className="md:hidden text-cyan-400 hover:text-cyan-300"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
-            </div>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-2 pb-4">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  location.pathname === item.href
-                    ? 'text-cyan-400 bg-cyan-500/20 shadow-lg shadow-cyan-500/20'
-                    : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
-                }`}
-              >
-                <span className="mr-2">{item.icon}</span>
-                {item.name}
-                {location.pathname === item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"></div>
-                )}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-slate-900/95 backdrop-blur-md border-t border-cyan-500/20">
-            <div className="px-4 py-6 space-y-4">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch}>
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Search quantum refrigerants..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 bg-slate-800/50 border-cyan-500/20 text-white placeholder-gray-400"
-                  />
-                  <Search className="absolute left-4 top-3.5 h-5 w-5 text-cyan-400" />
-                </div>
-              </form>
-
-              {/* Mobile Navigation */}
-              <div className="space-y-2">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                      location.pathname === item.href
-                        ? 'text-cyan-400 bg-cyan-500/20'
-                        : 'text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <span className="mr-3 text-lg">{item.icon}</span>
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
             </div>
           </div>
         )}
-      </header>
-    </>
+      </nav>
+    </header>
   );
 };
 
