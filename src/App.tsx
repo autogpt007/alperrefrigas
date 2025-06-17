@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { RFQProvider } from './contexts/RFQContext';
+import { ProductsProvider } from './contexts/ProductsContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
@@ -25,23 +26,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <RFQProvider>
-            <div className="min-h-screen bg-gray-50 flex flex-col">
-              <Header />
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/products" element={<ProductCatalog />} />
-                  <Route path="/products/:id" element={<ProductDetails />} />
-                  <Route path="/rfq" element={<RFQPage />} />
-                  <Route path="/portal" element={<CustomerPortal />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
-          </RFQProvider>
+          <ProductsProvider>
+            <RFQProvider>
+              <div className="min-h-screen bg-gray-50 flex flex-col">
+                <Header />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/products" element={<ProductCatalog />} />
+                    <Route path="/products/:id" element={<ProductDetails />} />
+                    <Route path="/rfq" element={<RFQPage />} />
+                    <Route path="/portal" element={<CustomerPortal />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </RFQProvider>
+          </ProductsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

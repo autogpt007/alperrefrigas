@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { useProducts } from '../../contexts/ProductsContext';
 
 const ProductCatalog = () => {
+  const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -22,69 +24,6 @@ const ProductCatalog = () => {
     }
   }, [searchParams]);
 
-  const products = [
-    {
-      id: 'r410a',
-      name: 'Refrigerant R-410A',
-      description: 'High-efficiency, non-ozone-depleting HFC refrigerant for modern air-conditioning systems.',
-      imageUrl: '/placeholder.svg',
-      category: 'HFC',
-      applications: ['Residential AC', 'Commercial HVAC', 'Heat Pumps'],
-      price: 'Quote Required',
-      inStock: true
-    },
-    {
-      id: 'r134a',
-      name: 'Refrigerant R-134a',
-      description: 'Widely used HFC for automotive air-conditioning and medium-temperature refrigeration.',
-      imageUrl: '/placeholder.svg',
-      category: 'HFC',
-      applications: ['Automotive AC', 'Medium Temp Refrigeration', 'Commercial Cooling'],
-      price: 'Quote Required',
-      inStock: true
-    },
-    {
-      id: 'r404a',
-      name: 'Refrigerant R-404A',
-      description: 'HFC blend for low and medium-temperature commercial refrigeration applications.',
-      imageUrl: '/placeholder.svg',
-      category: 'HFC',
-      applications: ['Low Temp Refrigeration', 'Supermarket Systems', 'Cold Storage'],
-      price: 'Quote Required',
-      inStock: true
-    },
-    {
-      id: 'r32',
-      name: 'Refrigerant R-32',
-      description: 'Next-generation HFC refrigerant with lower global warming potential.',
-      imageUrl: '/placeholder.svg',
-      category: 'HFC',
-      applications: ['Residential AC', 'Commercial HVAC', 'VRF Systems'],
-      price: 'Quote Required',
-      inStock: true
-    },
-    {
-      id: 'r290',
-      name: 'Refrigerant R-290 (Propane)',
-      description: 'Natural hydrocarbon refrigerant with excellent environmental properties.',
-      imageUrl: '/placeholder.svg',
-      category: 'Natural',
-      applications: ['Commercial Refrigeration', 'Heat Pumps', 'Industrial Cooling'],
-      price: 'Quote Required',
-      inStock: false
-    },
-    {
-      id: 'r1234yf',
-      name: 'Refrigerant R-1234yf',
-      description: 'Low GWP HFO refrigerant for automotive air conditioning applications.',
-      imageUrl: '/placeholder.svg',
-      category: 'HFO',
-      applications: ['Automotive AC', 'Mobile AC', 'Transport Refrigeration'],
-      price: 'Quote Required',
-      inStock: true
-    }
-  ];
-
   const categories = [
     { value: 'all', label: 'All Categories' },
     { value: 'HFC', label: 'HFC Refrigerants' },
@@ -95,7 +34,7 @@ const ProductCatalog = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase()));
+                         (product.applications && product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase())));
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -112,13 +51,17 @@ const ProductCatalog = () => {
     <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden">
       <CardContent className="p-0">
         <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
-          <div className="text-3xl font-bold text-blue-600 group-hover:scale-110 transition-transform duration-300">
-            {product.name.split(' ')[1]}
-          </div>
-          {!product.inStock && (
+          {product.image && product.image !== '/placeholder.svg' ? (
+            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-3xl font-bold text-blue-600 group-hover:scale-110 transition-transform duration-300">
+              {product.name.split(' ')[1] || product.name.charAt(0)}
+            </div>
+          )}
+          {product.stock === 0 && (
             <Badge className="absolute top-2 right-2 bg-red-500">Out of Stock</Badge>
           )}
-          {product.inStock && (
+          {product.stock > 0 && (
             <Badge className="absolute top-2 right-2 bg-green-500">In Stock</Badge>
           )}
         </div>
@@ -126,35 +69,39 @@ const ProductCatalog = () => {
           <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
           <p className="text-gray-600 mb-4 text-sm leading-relaxed">{product.description}</p>
           
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-700 mb-2 text-sm">Applications:</h4>
-            <div className="flex flex-wrap gap-1">
-              {product.applications.slice(0, 2).map((app: string, index: number) => (
-                <span
-                  key={index}
-                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-                >
-                  {app}
-                </span>
-              ))}
-              {product.applications.length > 2 && (
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                  +{product.applications.length - 2} more
-                </span>
-              )}
+          {product.applications && product.applications.length > 0 && (
+            <div className="mb-4">
+              <h4 className="font-medium text-gray-700 mb-2 text-sm">Applications:</h4>
+              <div className="flex flex-wrap gap-1">
+                {product.applications.slice(0, 2).map((app: string, index: number) => (
+                  <span
+                    key={index}
+                    className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
+                  >
+                    {app}
+                  </span>
+                ))}
+                {product.applications.length > 2 && (
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    +{product.applications.length - 2} more
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
+          )}
           
           <div className="flex items-center justify-between mb-4">
-            <span className="text-lg font-bold text-blue-600">{product.price}</span>
+            <span className="text-lg font-bold text-blue-600">
+              {product.price > 0 ? `$${product.price.toFixed(2)}` : 'Quote Required'}
+            </span>
           </div>
           
           <Link to={`/products/${product.id}`}>
             <Button 
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={!product.inStock}
+              disabled={product.stock === 0}
             >
-              {product.inStock ? 'View Details & Request Quote' : 'Out of Stock'}
+              {product.stock > 0 ? 'View Details & Request Quote' : 'Out of Stock'}
             </Button>
           </Link>
         </div>
