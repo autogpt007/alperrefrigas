@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Filter, Grid, List } from 'lucide-react';
+import { Search, Filter, Grid, List, Shield, Truck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useProducts } from '../../contexts/ProductsContext';
+import SEOComponent from '../seo/SEOComponent';
 
 const ProductCatalog = () => {
   const { products } = useProducts();
@@ -34,7 +35,8 @@ const ProductCatalog = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (product.applications && product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase())));
+                         (product.applications && product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -42,6 +44,11 @@ const ProductCatalog = () => {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'name':
+        return a.name.localeCompare(b.name);
+      case 'price':
+        return a.price - b.price;
+      case 'category':
+        return a.category.localeCompare(b.category);
       default:
         return a.name.localeCompare(b.name);
     }
@@ -58,16 +65,43 @@ const ProductCatalog = () => {
               {product.name.split(' ')[1] || product.name.charAt(0)}
             </div>
           )}
-          {product.stock === 0 && (
-            <Badge className="absolute top-2 right-2 bg-red-500">Out of Stock</Badge>
-          )}
-          {product.stock > 0 && (
-            <Badge className="absolute top-2 right-2 bg-green-500">In Stock</Badge>
-          )}
+          
+          {/* Status Badges */}
+          <div className="absolute top-2 right-2 flex flex-col gap-1">
+            {product.epaApproved && (
+              <Badge className="bg-green-600 text-white text-xs">
+                <Shield className="h-3 w-3 mr-1" />
+                EPA
+              </Badge>
+            )}
+            <Badge className={`text-xs ${product.availability === 'in_stock' ? 'bg-green-600' : 'bg-red-600'} text-white`}>
+              {product.availability === 'in_stock' ? 'In Stock' : 'Out of Stock'}
+            </Badge>
+          </div>
+
+          {/* Fast Shipping Badge */}
+          <div className="absolute top-2 left-2">
+            <Badge className="bg-blue-600 text-white text-xs">
+              <Truck className="h-3 w-3 mr-1" />
+              Fast Ship
+            </Badge>
+          </div>
         </div>
+        
         <div className="p-6">
-          <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
-          <p className="text-gray-600 mb-4 text-sm leading-relaxed">{product.description}</p>
+          <div className="mb-2">
+            <h3 className="text-xl font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+            <p className="text-sm text-gray-500">SKU: {product.sku}</p>
+          </div>
+          
+          <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">{product.description}</p>
+          
+          {/* Category Badge */}
+          <div className="mb-3">
+            <Badge variant="outline" className="text-xs">
+              {product.category} Refrigerant
+            </Badge>
+          </div>
           
           {product.applications && product.applications.length > 0 && (
             <div className="mb-4">
@@ -92,16 +126,17 @@ const ProductCatalog = () => {
           
           <div className="flex items-center justify-between mb-4">
             <span className="text-lg font-bold text-blue-600">
-              {product.price > 0 ? `$${product.price.toFixed(2)}` : 'Quote Required'}
+              ${product.price.toFixed(2)}
             </span>
+            <span className="text-xs text-gray-500">per cylinder</span>
           </div>
           
           <Link to={`/products/${product.id}`}>
             <Button 
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={product.stock === 0}
+              disabled={product.availability !== 'in_stock'}
             >
-              {product.stock > 0 ? 'View Details & Request Quote' : 'Out of Stock'}
+              {product.availability === 'in_stock' ? 'View Details & Quote' : 'Out of Stock'}
             </Button>
           </Link>
         </div>
@@ -111,6 +146,13 @@ const ProductCatalog = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <SEOComponent
+        title="Professional Refrigerant Catalog - HFC, HFO & Natural Refrigerants"
+        description="Browse our comprehensive selection of professional-grade refrigerants including R-410A, R-134a, R-404A, R-1234yf, and more. EPA approved, bulk quantities, fast shipping."
+        keywords="refrigerant, HFC, HFO, natural refrigerants, R-410A, R-134a, R-404A, R-407C, R-507A, R-32, R-1234yf, R-290, R-600a, HVAC, automotive, commercial"
+        canonicalUrl="/products"
+      />
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
@@ -119,8 +161,8 @@ const ProductCatalog = () => {
               Professional Refrigerant Catalog
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              Browse our comprehensive selection of refrigerants available for bulk distribution. 
-              All products available by pallet or container.
+              Browse our comprehensive selection of EPA-approved refrigerants. Available in bulk quantities 
+              for professional HVAC, automotive, and industrial applications.
             </p>
             
             {/* Search Bar */}
@@ -129,7 +171,7 @@ const ProductCatalog = () => {
                 <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder="Search refrigerants by name or application..."
+                  placeholder="Search by refrigerant name, SKU, or application..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 text-lg bg-white border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400"
@@ -169,6 +211,8 @@ const ProductCatalog = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="name">Name A-Z</SelectItem>
+                  <SelectItem value="price">Price Low to High</SelectItem>
+                  <SelectItem value="category">Category</SelectItem>
                 </SelectContent>
               </Select>
             </div>
