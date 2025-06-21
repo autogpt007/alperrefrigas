@@ -25,7 +25,21 @@ const ProductForm = () => {
     stock: 0,
     packaging: [] as string[],
     applications: [] as string[],
-    sdsUrl: ''
+    sdsUrl: '',
+    brand: 'FrigidFlow',
+    condition: 'new' as const,
+    availability: 'in_stock' as const,
+    gtin: '',
+    shippingWeight: '',
+    dimensions: {
+      length: '',
+      width: '',
+      height: ''
+    },
+    chemicalFormula: '',
+    casNumber: '',
+    unNumber: '',
+    hazardClass: ''
   });
 
   const [imagePreview, setImagePreview] = useState('');
@@ -131,7 +145,21 @@ const ProductForm = () => {
       stock: 0,
       packaging: [],
       applications: [],
-      sdsUrl: ''
+      sdsUrl: '',
+      brand: 'FrigidFlow',
+      condition: 'new' as const,
+      availability: 'in_stock' as const,
+      gtin: '',
+      shippingWeight: '',
+      dimensions: {
+        length: '',
+        width: '',
+        height: ''
+      },
+      chemicalFormula: '',
+      casNumber: '',
+      unNumber: '',
+      hazardClass: ''
     });
     setImagePreview('');
     setSdsFileName('');
@@ -250,7 +278,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        {/* Category and EPA */}
+        {/* Category, Brand, Condition, and Availability */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label className="text-gray-300">Category *</Label>
@@ -265,13 +293,51 @@ const ProductForm = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center space-x-2 mt-6">
-            <Checkbox
-              checked={newProduct.epaApproved}
-              onCheckedChange={(checked) => setNewProduct({...newProduct, epaApproved: checked as boolean})}
+          <div>
+            <Label className="text-gray-300">Brand</Label>
+            <Input
+              value={newProduct.brand}
+              onChange={(e) => setNewProduct({...newProduct, brand: e.target.value})}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="e.g., FrigidFlow"
             />
-            <Label className="text-gray-300">EPA Approved</Label>
           </div>
+          <div>
+            <Label className="text-gray-300">Condition</Label>
+            <Select value={newProduct.condition} onValueChange={(value: 'new' | 'used' | 'refurbished') => setNewProduct({...newProduct, condition: value})}>
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="used">Used</SelectItem>
+                <SelectItem value="refurbished">Refurbished</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-gray-300">Availability</Label>
+            <Select value={newProduct.availability} onValueChange={(value: 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder') => setNewProduct({...newProduct, availability: value})}>
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="in_stock">In Stock</SelectItem>
+                <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                <SelectItem value="preorder">Preorder</SelectItem>
+                <SelectItem value="backorder">Backorder</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* EPA Approved Checkbox */}
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={newProduct.epaApproved}
+            onCheckedChange={(checked) => setNewProduct({...newProduct, epaApproved: checked as boolean})}
+          />
+          <Label className="text-gray-300">EPA Approved</Label>
         </div>
 
         {/* Description */}
@@ -284,6 +350,46 @@ const ProductForm = () => {
             rows={3}
             placeholder="Detailed product description..."
           />
+        </div>
+
+        {/* Additional SEO/GMC Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-gray-300">GTIN</Label>
+            <Input
+              value={newProduct.gtin}
+              onChange={(e) => setNewProduct({...newProduct, gtin: e.target.value})}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="Global Trade Item Number"
+            />
+          </div>
+          <div>
+            <Label className="text-gray-300">Shipping Weight</Label>
+            <Input
+              value={newProduct.shippingWeight}
+              onChange={(e) => setNewProduct({...newProduct, shippingWeight: e.target.value})}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="e.g., 30 lbs"
+            />
+          </div>
+          <div>
+            <Label className="text-gray-300">Chemical Formula</Label>
+            <Input
+              value={newProduct.chemicalFormula}
+              onChange={(e) => setNewProduct({...newProduct, chemicalFormula: e.target.value})}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="e.g., R-32/R-125 (50/50)"
+            />
+          </div>
+          <div>
+            <Label className="text-gray-300">CAS Number</Label>
+            <Input
+              value={newProduct.casNumber}
+              onChange={(e) => setNewProduct({...newProduct, casNumber: e.target.value})}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="e.g., 354-33-6"
+            />
+          </div>
         </div>
 
         {/* Packaging Options */}
