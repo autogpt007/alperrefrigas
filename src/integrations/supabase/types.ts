@@ -9,6 +9,146 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          banner_image_url: string | null
+          body: string | null
+          created_at: string | null
+          id: string
+          published: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          banner_image_url?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          banner_image_url?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          id: string
+          items: Json | null
+          status: string | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          id?: string
+          items?: Json | null
+          status?: string | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          items?: Json | null
+          status?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          images: string[] | null
+          name: string
+          price: number
+          stock_quantity: number | null
+          thumbnail_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          name: string
+          price: number
+          stock_quantity?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          name?: string
+          price?: number
+          stock_quantity?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       table: {
         Row: {
           created_at: string

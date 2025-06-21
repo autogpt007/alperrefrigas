@@ -9,6 +9,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { RFQProvider } from './contexts/RFQContext';
 import { ProductsProvider } from './contexts/ProductsContext';
 import { OrdersProvider } from './contexts/OrdersContext';
+import AdminLayout from './components/admin/AdminLayout';
+import Dashboard from './components/admin/Dashboard';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
@@ -16,7 +18,6 @@ import ProductCatalog from './components/pages/ProductCatalog';
 import ProductDetails from './components/pages/ProductDetails';
 import RFQPage from './components/pages/RFQPage';
 import CustomerPortal from './components/pages/CustomerPortal';
-import AdminDashboard from './components/pages/AdminDashboard';
 import ShippingCalculator from './components/pages/ShippingCalculator';
 import CustomerSupport from './components/pages/CustomerSupport';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
@@ -40,30 +41,43 @@ const App = () => (
             <ProductsProvider>
               <OrdersProvider>
                 <RFQProvider>
-                  <div className="min-h-screen bg-gray-50 flex flex-col">
-                    <Header />
-                    <main className="flex-1">
-                      <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/products" element={<ProductCatalog />} />
-                        <Route path="/products/:id" element={<ProductDetails />} />
-                        <Route path="/rfq" element={<RFQPage />} />
-                        <Route path="/portal" element={<CustomerPortal />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/shipping" element={<ShippingCalculator />} />
-                        <Route path="/support" element={<CustomerSupport />} />
-                        <Route path="/account" element={<CustomerPortal />} />
-                        <Route path="/privacy" element={<PrivacyPolicy />} />
-                        <Route path="/terms" element={<TermsOfService />} />
-                        <Route path="/cookies" element={<CookiePolicy />} />
-                        <Route path="/compliance" element={<EPACompliance />} />
-                        <Route path="/certifications" element={<Certifications />} />
-                        <Route path="/sitemap" element={<Sitemap />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </main>
-                    <Footer />
-                  </div>
+                  <Routes>
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<Dashboard />} />
+                      <Route path="products" element={<div className="p-6 text-white">Products page coming next...</div>} />
+                      <Route path="posts" element={<div className="p-6 text-white">Blog posts page coming next...</div>} />
+                      <Route path="orders" element={<div className="p-6 text-white">Orders page coming next...</div>} />
+                      <Route path="settings" element={<div className="p-6 text-white">Settings page coming next...</div>} />
+                    </Route>
+
+                    {/* Public Routes */}
+                    <Route path="/*" element={
+                      <div className="min-h-screen bg-gray-50 flex flex-col">
+                        <Header />
+                        <main className="flex-1">
+                          <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/products" element={<ProductCatalog />} />
+                            <Route path="/products/:id" element={<ProductDetails />} />
+                            <Route path="/rfq" element={<RFQPage />} />
+                            <Route path="/portal" element={<CustomerPortal />} />
+                            <Route path="/shipping" element={<ShippingCalculator />} />
+                            <Route path="/support" element={<CustomerSupport />} />
+                            <Route path="/account" element={<CustomerPortal />} />
+                            <Route path="/privacy" element={<PrivacyPolicy />} />
+                            <Route path="/terms" element={<TermsOfService />} />
+                            <Route path="/cookies" element={<CookiePolicy />} />
+                            <Route path="/compliance" element={<EPACompliance />} />
+                            <Route path="/certifications" element={<Certifications />} />
+                            <Route path="/sitemap" element={<Sitemap />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                        <Footer />
+                      </div>
+                    } />
+                  </Routes>
                 </RFQProvider>
               </OrdersProvider>
             </ProductsProvider>
