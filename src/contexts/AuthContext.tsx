@@ -43,7 +43,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .eq('id', session.user.id)
             .single();
           
-          setProfile(profileData);
+          if (profileData) {
+            setProfile({
+              id: profileData.id,
+              email: profileData.email,
+              full_name: profileData.full_name,
+              role: profileData.role as 'admin' | 'user'
+            });
+          }
         } else {
           setProfile(null);
         }
