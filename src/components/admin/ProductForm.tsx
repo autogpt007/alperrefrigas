@@ -304,7 +304,7 @@ const ProductForm = () => {
           </div>
           <div>
             <Label className="text-gray-300">Condition</Label>
-            <Select value={newProduct.condition} onValueChange={(value: 'new' | 'used' | 'refurbished') => setNewProduct({...newProduct, condition: value})}>
+            <Select value={newProduct.condition} onValueChange={(value) => setNewProduct({...newProduct, condition: value as 'new' | 'used' | 'refurbished'})}>
               <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                 <SelectValue />
               </SelectTrigger>
@@ -317,7 +317,7 @@ const ProductForm = () => {
           </div>
           <div>
             <Label className="text-gray-300">Availability</Label>
-            <Select value={newProduct.availability} onValueChange={(value: 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder') => setNewProduct({...newProduct, availability: value})}>
+            <Select value={newProduct.availability} onValueChange={(value) => setNewProduct({...newProduct, availability: value as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder'})}>
               <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                 <SelectValue />
               </SelectTrigger>
