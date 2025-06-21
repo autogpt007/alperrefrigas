@@ -27,8 +27,8 @@ const ProductForm = () => {
     applications: [] as string[],
     sdsUrl: '',
     brand: 'FrigidFlow',
-    condition: 'new' as const,
-    availability: 'in_stock' as const,
+    condition: 'new' as 'new' | 'used' | 'refurbished',
+    availability: 'in_stock' as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder',
     gtin: '',
     shippingWeight: '',
     dimensions: {
@@ -147,8 +147,8 @@ const ProductForm = () => {
       applications: [],
       sdsUrl: '',
       brand: 'FrigidFlow',
-      condition: 'new' as const,
-      availability: 'in_stock' as const,
+      condition: 'new' as 'new' | 'used' | 'refurbished',
+      availability: 'in_stock' as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder',
       gtin: '',
       shippingWeight: '',
       dimensions: {
