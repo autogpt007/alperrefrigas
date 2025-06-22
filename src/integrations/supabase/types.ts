@@ -53,6 +53,60 @@ export type Database = {
           },
         ]
       }
+      order_items: {
+        Row: {
+          created_at: string | null
+          epa_approved: boolean | null
+          id: string
+          order_id: string
+          packaging: string | null
+          price: number
+          product_id: string | null
+          product_name: string
+          quantity: number
+          sku: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          epa_approved?: boolean | null
+          id?: string
+          order_id: string
+          packaging?: string | null
+          price: number
+          product_id?: string | null
+          product_name: string
+          quantity?: number
+          sku?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          epa_approved?: boolean | null
+          id?: string
+          order_id?: string
+          packaging?: string | null
+          price?: number
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          sku?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_order_items_order_id"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string | null
@@ -60,9 +114,16 @@ export type Database = {
           customer_name: string
           id: string
           items: Json | null
+          notes: string | null
+          order_number: string | null
+          shipping_address: Json | null
+          shipping_cost: number | null
           status: string | null
+          tax_amount: number | null
           total_amount: number
+          tracking_number: string | null
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -70,9 +131,16 @@ export type Database = {
           customer_name: string
           id?: string
           items?: Json | null
+          notes?: string | null
+          order_number?: string | null
+          shipping_address?: Json | null
+          shipping_cost?: number | null
           status?: string | null
+          tax_amount?: number | null
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -80,9 +148,16 @@ export type Database = {
           customer_name?: string
           id?: string
           items?: Json | null
+          notes?: string | null
+          order_number?: string | null
+          shipping_address?: Json | null
+          shipping_cost?: number | null
           status?: string | null
+          tax_amount?: number | null
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -169,7 +244,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_order_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

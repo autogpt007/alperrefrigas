@@ -9,6 +9,7 @@ export interface CartItem {
   image: string;
   sku: string;
   epaApproved: boolean;
+  packaging?: string;
 }
 
 interface CartContextType {
@@ -28,11 +29,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
     setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === newItem.id);
+      const existingItem = currentItems.find(item => 
+        item.id === newItem.id && item.packaging === newItem.packaging
+      );
       
       if (existingItem) {
         return currentItems.map(item =>
-          item.id === newItem.id
+          item.id === newItem.id && item.packaging === newItem.packaging
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );

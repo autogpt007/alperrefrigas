@@ -1,19 +1,23 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CreditCard, Truck, Shield, Lock } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useOrders } from '../../contexts/OrdersContext';
+import { useToast } from '@/hooks/use-toast';
 
 const CheckoutPage = () => {
   const { items, total, clearCart } = useCart();
   const { user } = useAuth();
+  const { createOrder } = useOrders();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -46,58 +50,108 @@ const CheckoutPage = () => {
     
     // EPA Certification
     epaNumber: '',
-    epaCertificate: null as File | null,
     
     // Shipping Options
     shippingMethod: 'standard',
   });
 
-  const [shippingCost, setShippingCost] = useState(0);
+  const [shippingCost, setShippingCost] = useState(15);
+  const [taxAmount, setTaxAmount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleInputChange = (field: string, value: string | boolean | File | null) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const calculateShipping = () => {
-    // Simple shipping calculation - in real app this would call an API
     const baseRate = formData.shippingMethod === 'express' ? 25 : 15;
-    const weight = items.reduce((sum, item) => sum + (item.quantity * 25), 0); // Assume 25lbs per item
+    const weight = items.reduce((sum, item) => sum + (item.quantity * 25), 0);
     const calculated = baseRate + (weight * 0.5);
     setShippingCost(calculated);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to place an order",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (items.length === 0) {
+      toast({
+        title: "Cart is empty",
+        description: "Please add items to your cart before checkout",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      // Simulate offline credit card processing
+      // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Generate order number
-      const orderNumber = `FF-${Date.now().toString().slice(-6)}`;
-      
-      // Store order details for confirmation page
+      // Prepare order data
       const orderData = {
-        orderNumber,
-        items,
-        total: total + shippingCost,
-        shippingCost,
-        customerInfo: formData,
-        orderDate: new Date().toISOString(),
+        user_id: user.id,
+        customer_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.email,
+        status: 'pending' as const,
+        total_amount: total + shippingCost + taxAmount,
+        shipping_cost: shippingCost,
+        tax_amount: taxAmount,
+        shipping_address: {
+          firstName: formData.sameAsbilling ? formData.firstName : formData.shippingFirstName,
+          lastName: formData.sameAsbilling ? formData.lastName : formData.shippingLastName,
+          company: formData.sameAsbilling ? formData.company : formData.shippingCompany,
+          address: formData.sameAsbilling ? formData.address : formData.shippingAddress,
+          city: formData.sameAsbilling ? formData.city : formData.shippingCity,
+          state: formData.sameAsbilling ? formData.state : formData.shippingState,
+          zipCode: formData.sameAsbilling ? formData.zipCode : formData.shippingZipCode,
+          phone: formData.phone,
+          epaNumber: formData.epaNumber,
+          shippingMethod: formData.shippingMethod
+        },
+        items: items.map(item => ({
+          product_id: item.id,
+          product_name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          sku: item.sku,
+          packaging: item.packaging,
+          epa_approved: item.epaApproved
+        }))
       };
       
-      localStorage.setItem('lastOrder', JSON.stringify(orderData));
+      // Create order in database
+      const newOrder = await createOrder(orderData);
       
-      // Clear cart
-      clearCart();
-      
-      // Redirect to confirmation
-      navigate('/order-confirmation');
+      if (newOrder) {
+        // Store order details for confirmation page
+        localStorage.setItem('lastOrder', JSON.stringify({
+          orderNumber: newOrder.order_number,
+          items,
+          total: newOrder.total_amount,
+          shippingCost: newOrder.shipping_cost,
+          customerInfo: formData,
+          orderDate: newOrder.created_at,
+          orderId: newOrder.id
+        }));
+        
+        // Clear cart
+        clearCart();
+        
+        // Redirect to confirmation
+        navigate('/order-confirmation');
+      }
     } catch (error) {
       console.error('Order processing failed:', error);
-      alert('Payment processing failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -139,16 +193,6 @@ const CheckoutPage = () => {
                       value={formData.epaNumber}
                       onChange={(e) => handleInputChange('epaNumber', e.target.value)}
                       placeholder="Enter your EPA 608 certification number"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="epaCertificate">Upload EPA Certificate (PDF) *</Label>
-                    <Input
-                      id="epaCertificate"
-                      type="file"
-                      accept=".pdf"
-                      required
-                      onChange={(e) => handleInputChange('epaCertificate', e.target.files?.[0] || null)}
                     />
                   </div>
                 </CardContent>
@@ -233,7 +277,6 @@ const CheckoutPage = () => {
                           <SelectItem value="FL">Florida</SelectItem>
                           <SelectItem value="NY">New York</SelectItem>
                           <SelectItem value="TX">Texas</SelectItem>
-                          {/* Add more states as needed */}
                         </SelectContent>
                       </Select>
                     </div>
@@ -350,13 +393,6 @@ const CheckoutPage = () => {
                       onChange={(e) => handleInputChange('nameOnCard', e.target.value)}
                     />
                   </div>
-                  
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      <Lock className="h-4 w-4 inline mr-1" />
-                      Your payment information is processed securely through our offline system.
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -369,10 +405,11 @@ const CheckoutPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div key={`${item.id}-${item.packaging}`} className="flex justify-between text-sm">
                       <div>
                         <div className="font-medium">{item.name}</div>
                         <div className="text-gray-500">Qty: {item.quantity}</div>
+                        {item.packaging && <div className="text-gray-500">{item.packaging}</div>}
                       </div>
                       <div>${(item.price * item.quantity).toFixed(2)}</div>
                     </div>
@@ -389,11 +426,11 @@ const CheckoutPage = () => {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Tax</span>
-                      <span>Calculated at delivery</span>
+                      <span>${taxAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-bold border-t pt-2">
                       <span>Total</span>
-                      <span className="text-green-600">${(total + shippingCost).toFixed(2)}</span>
+                      <span className="text-green-600">${(total + shippingCost + taxAmount).toFixed(2)}</span>
                     </div>
                   </div>
                   

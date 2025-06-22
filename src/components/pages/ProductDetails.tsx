@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award } from 'lucide-react';
+import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
+import { useCart } from '../../contexts/CartContext';
 import { useToast } from '../../hooks/use-toast';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
@@ -14,7 +15,8 @@ import SEOComponent from '../seo/SEOComponent';
 const ProductDetails = () => {
   const { id } = useParams();
   const { products } = useProducts();
-  const { addItem } = useRFQ();
+  const { addItem: addToRFQ } = useRFQ();
+  const { addItem: addToCart } = useCart();
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [packaging, setPackaging] = useState('');
@@ -49,7 +51,7 @@ const ProductDetails = () => {
       return;
     }
 
-    addItem({
+    addToRFQ({
       productId: product.id,
       productName: product.name,
       quantity,
@@ -60,6 +62,35 @@ const ProductDetails = () => {
     toast({
       title: "Added to Quote Request",
       description: `${quantity} ${packaging} of ${product.name} added to your quote request.`
+    });
+
+    setQuantity(1);
+    setPackaging('');
+  };
+
+  const handleAddToCart = () => {
+    if (!packaging) {
+      toast({
+        title: "Please select packaging",
+        description: "You must select a packaging option before adding to cart.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    addToCart({
+      id: `${product.id}-${packaging}`,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      sku: product.sku,
+      epaApproved: product.epaApproved,
+      packaging
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${quantity} ${packaging} of ${product.name} added to your cart.`
     });
 
     setQuantity(1);
@@ -203,7 +234,7 @@ const ProductDetails = () => {
             </Card>
           </div>
 
-          {/* Product Details and Quote Form */}
+          {/* Product Details and Purchase Options */}
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
@@ -239,12 +270,12 @@ const ProductDetails = () => {
               </Card>
             )}
 
-            {/* Quote Request Form */}
+            {/* Purchase Options */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Request Quote
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Purchase Options
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -289,19 +320,31 @@ const ProductDetails = () => {
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleAddToRFQ} 
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  disabled={product.availability !== 'in_stock'}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  {product.availability === 'in_stock' ? 'Add to Quote Request' : 'Out of Stock'}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={handleAddToCart} 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    disabled={product.availability !== 'in_stock'}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {product.availability === 'in_stock' ? 'Add to Cart' : 'Out of Stock'}
+                  </Button>
+
+                  <Button 
+                    onClick={handleAddToRFQ} 
+                    variant="outline"
+                    className="w-full"
+                    disabled={product.availability !== 'in_stock'}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add to Quote Request
+                  </Button>
+                </div>
 
                 <div className="text-center">
-                  <Link to="/rfq">
+                  <Link to="/cart">
                     <Button variant="outline" className="w-full">
-                      View Quote Request
+                      View Cart
                     </Button>
                   </Link>
                 </div>
