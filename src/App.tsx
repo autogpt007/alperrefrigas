@@ -35,6 +35,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const PublicLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-screen bg-gray-50 flex flex-col">
+    <Header />
+    <main className="flex-1">
+      {children}
+    </main>
+    <Footer />
+  </div>
+);
+
 const App: React.FC = () => {
   return (
     <HelmetProvider>
@@ -58,31 +68,21 @@ const App: React.FC = () => {
                       </Route>
 
                       {/* Public Routes */}
-                      <Route path="/*" element={
-                        <div className="min-h-screen bg-gray-50 flex flex-col">
-                          <Header />
-                          <main className="flex-1">
-                            <Routes>
-                              <Route path="/" element={<HomePage />} />
-                              <Route path="/products" element={<ProductCatalog />} />
-                              <Route path="/products/:id" element={<ProductDetails />} />
-                              <Route path="/rfq" element={<RFQPage />} />
-                              <Route path="/portal" element={<CustomerPortal />} />
-                              <Route path="/shipping" element={<ShippingCalculator />} />
-                              <Route path="/support" element={<CustomerSupport />} />
-                              <Route path="/account" element={<CustomerPortal />} />
-                              <Route path="/privacy" element={<PrivacyPolicy />} />
-                              <Route path="/terms" element={<TermsOfService />} />
-                              <Route path="/cookies" element={<CookiePolicy />} />
-                              <Route path="/compliance" element={<EPACompliance />} />
-                              <Route path="/certifications" element={<Certifications />} />
-                              <Route path="/sitemap" element={<Sitemap />} />
-                              <Route path="*" element={<NotFound />} />
-                            </Routes>
-                          </main>
-                          <Footer />
-                        </div>
-                      } />
+                      <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+                      <Route path="/products" element={<PublicLayout><ProductCatalog /></PublicLayout>} />
+                      <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+                      <Route path="/rfq" element={<PublicLayout><RFQPage /></PublicLayout>} />
+                      <Route path="/portal" element={<PublicLayout><CustomerPortal /></PublicLayout>} />
+                      <Route path="/shipping" element={<PublicLayout><ShippingCalculator /></PublicLayout>} />
+                      <Route path="/support" element={<PublicLayout><CustomerSupport /></PublicLayout>} />
+                      <Route path="/account" element={<PublicLayout><CustomerPortal /></PublicLayout>} />
+                      <Route path="/privacy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
+                      <Route path="/terms" element={<PublicLayout><TermsOfService /></PublicLayout>} />
+                      <Route path="/cookies" element={<PublicLayout><CookiePolicy /></PublicLayout>} />
+                      <Route path="/compliance" element={<PublicLayout><EPACompliance /></PublicLayout>} />
+                      <Route path="/certifications" element={<PublicLayout><Certifications /></PublicLayout>} />
+                      <Route path="/sitemap" element={<PublicLayout><Sitemap /></PublicLayout>} />
+                      <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
                     </Routes>
                   </RFQProvider>
                 </OrdersProvider>
