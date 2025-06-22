@@ -9,10 +9,10 @@ import { useAuth } from '../../contexts/AuthContext';
 import { User, Package, MapPin, CreditCard, Settings, LogOut } from 'lucide-react';
 
 const AccountDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
-  if (!user) {
+  if (!user || !profile) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-md">
         <Card>
@@ -59,11 +59,25 @@ const AccountDashboard = () => {
     }
   ];
 
+  // Mock addresses for demo - in real app this would come from database
+  const mockAddresses = [
+    {
+      id: '1',
+      name: 'Home Address',
+      street: '123 Main St',
+      city: 'Anytown',
+      state: 'CA',
+      zipCode: '12345',
+      country: 'USA',
+      isDefault: true
+    }
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Account Dashboard</h1>
-        <p className="text-gray-600">Welcome back, {user.name}!</p>
+        <p className="text-gray-600">Welcome back, {profile.full_name || profile.email}!</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
@@ -106,19 +120,19 @@ const AccountDashboard = () => {
               <CardContent className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Full Name</label>
-                  <Input value={user.name} disabled={!isEditing} />
+                  <Input value={profile.full_name || ''} disabled={!isEditing} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Email</label>
-                  <Input value={user.email} disabled={!isEditing} />
+                  <Input value={profile.email || ''} disabled={!isEditing} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Company</label>
-                  <Input value={user.company || ''} disabled={!isEditing} />
+                  <Input value="" disabled={!isEditing} placeholder="Not set" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">EPA License</label>
-                  <Input value={user.epaLicense || ''} disabled={!isEditing} />
+                  <Input value="" disabled={!isEditing} placeholder="Not set" />
                 </div>
                 {isEditing && (
                   <div className="flex gap-2">
@@ -215,7 +229,7 @@ const AccountDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {user.addresses.map((address) => (
+                {mockAddresses.map((address) => (
                   <div key={address.id} className="border rounded-lg p-4">
                     <div className="flex justify-between items-start">
                       <div>

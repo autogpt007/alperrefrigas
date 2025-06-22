@@ -17,6 +17,9 @@ interface AuthContextType {
   isAdmin: boolean;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any }>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -71,7 +74,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { error };
+  };
+
+  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
+    const { error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          full_name: data.name,
+          company: data.company,
+          epa_license: data.epaLicense,
+        },
+        emailRedirectTo: `${window.location.origin}/`,
+      },
+    });
+    return { error };
+  };
+
   const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const logout = async () => {
     await supabase.auth.signOut();
   };
 
@@ -84,6 +115,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isAdmin,
     isLoading,
     signOut,
+    login,
+    register,
+    logout,
   };
 
   return (
