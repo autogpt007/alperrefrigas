@@ -11,6 +11,10 @@ import { ProductsProvider } from './contexts/ProductsContext';
 import { OrdersProvider } from './contexts/OrdersContext';
 import AdminLayout from './components/admin/AdminLayout';
 import Dashboard from './components/admin/Dashboard';
+import ProductManagement from './components/admin/ProductManagement';
+import BlogPostManagement from './components/admin/BlogPostManagement';
+import OrderManagement from './components/admin/OrderManagement';
+import AdminSettings from './components/admin/AdminSettings';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
@@ -45,10 +49,10 @@ const App = () => (
                     {/* Admin Routes */}
                     <Route path="/admin" element={<AdminLayout />}>
                       <Route index element={<Dashboard />} />
-                      <Route path="products" element={<div className="p-6 text-white">Products page coming next...</div>} />
-                      <Route path="posts" element={<div className="p-6 text-white">Blog posts page coming next...</div>} />
-                      <Route path="orders" element={<div className="p-6 text-white">Orders page coming next...</div>} />
-                      <Route path="settings" element={<div className="p-6 text-white">Settings page coming next...</div>} />
+                      <Route path="products" element={<ProductManagement />} />
+                      <Route path="posts" element={<BlogPostManagement />} />
+                      <Route path="orders" element={<OrderManagement />} />
+                      <Route path="settings" element={<AdminSettings />} />
                     </Route>
 
                     {/* Public Routes */}
