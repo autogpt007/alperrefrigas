@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,62 +35,64 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <ProductsProvider>
-              <OrdersProvider>
-                <RFQProvider>
-                  <Routes>
-                    {/* Admin Routes */}
-                    <Route path="/admin" element={<AdminLayout />}>
-                      <Route index element={<Dashboard />} />
-                      <Route path="products" element={<ProductManagement />} />
-                      <Route path="posts" element={<BlogPostManagement />} />
-                      <Route path="orders" element={<OrderManagement />} />
-                      <Route path="settings" element={<AdminSettings />} />
-                    </Route>
+const App: React.FC = () => {
+  return (
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AuthProvider>
+              <ProductsProvider>
+                <OrdersProvider>
+                  <RFQProvider>
+                    <Routes>
+                      {/* Admin Routes */}
+                      <Route path="/admin" element={<AdminLayout />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="products" element={<ProductManagement />} />
+                        <Route path="posts" element={<BlogPostManagement />} />
+                        <Route path="orders" element={<OrderManagement />} />
+                        <Route path="settings" element={<AdminSettings />} />
+                      </Route>
 
-                    {/* Public Routes */}
-                    <Route path="/*" element={
-                      <div className="min-h-screen bg-gray-50 flex flex-col">
-                        <Header />
-                        <main className="flex-1">
-                          <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/products" element={<ProductCatalog />} />
-                            <Route path="/products/:id" element={<ProductDetails />} />
-                            <Route path="/rfq" element={<RFQPage />} />
-                            <Route path="/portal" element={<CustomerPortal />} />
-                            <Route path="/shipping" element={<ShippingCalculator />} />
-                            <Route path="/support" element={<CustomerSupport />} />
-                            <Route path="/account" element={<CustomerPortal />} />
-                            <Route path="/privacy" element={<PrivacyPolicy />} />
-                            <Route path="/terms" element={<TermsOfService />} />
-                            <Route path="/cookies" element={<CookiePolicy />} />
-                            <Route path="/compliance" element={<EPACompliance />} />
-                            <Route path="/certifications" element={<Certifications />} />
-                            <Route path="/sitemap" element={<Sitemap />} />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </main>
-                        <Footer />
-                      </div>
-                    } />
-                  </Routes>
-                </RFQProvider>
-              </OrdersProvider>
-            </ProductsProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
-);
+                      {/* Public Routes */}
+                      <Route path="/*" element={
+                        <div className="min-h-screen bg-gray-50 flex flex-col">
+                          <Header />
+                          <main className="flex-1">
+                            <Routes>
+                              <Route path="/" element={<HomePage />} />
+                              <Route path="/products" element={<ProductCatalog />} />
+                              <Route path="/products/:id" element={<ProductDetails />} />
+                              <Route path="/rfq" element={<RFQPage />} />
+                              <Route path="/portal" element={<CustomerPortal />} />
+                              <Route path="/shipping" element={<ShippingCalculator />} />
+                              <Route path="/support" element={<CustomerSupport />} />
+                              <Route path="/account" element={<CustomerPortal />} />
+                              <Route path="/privacy" element={<PrivacyPolicy />} />
+                              <Route path="/terms" element={<TermsOfService />} />
+                              <Route path="/cookies" element={<CookiePolicy />} />
+                              <Route path="/compliance" element={<EPACompliance />} />
+                              <Route path="/certifications" element={<Certifications />} />
+                              <Route path="/sitemap" element={<Sitemap />} />
+                              <Route path="*" element={<NotFound />} />
+                            </Routes>
+                          </main>
+                          <Footer />
+                        </div>
+                      } />
+                    </Routes>
+                  </RFQProvider>
+                </OrdersProvider>
+              </ProductsProvider>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
+  );
+};
 
 export default App;
