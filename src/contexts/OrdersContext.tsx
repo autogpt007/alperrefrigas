@@ -80,6 +80,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
       const formattedOrders: Order[] = ordersData?.map(order => ({
         ...order,
+        status: order.status as Order['status'], // Type cast the status
         items: order.order_items || []
       })) || [];
 
@@ -173,6 +174,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
       const formattedOrder: Order = {
         ...completeOrder,
+        status: completeOrder.status as Order['status'], // Type cast the status
         items: completeOrder.order_items || []
       };
 
