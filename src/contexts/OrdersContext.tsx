@@ -21,7 +21,7 @@ export interface Order {
   user_id: string;
   customer_name: string;
   customer_email: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'processed' | 'waiting_review' | 'declined';
   total_amount: number;
   shipping_cost: number;
   tax_amount: number;
@@ -95,6 +95,29 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const sendOrderNotification = async (order: Order) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-order-notification', {
+        body: {
+          orderId: order.id,
+          orderNumber: order.order_number,
+          customerName: order.customer_name,
+          customerEmail: order.customer_email,
+          totalAmount: order.total_amount,
+          items: order.items
+        }
+      });
+
+      if (error) {
+        console.error('Error sending order notification:', error);
+      } else {
+        console.log('Order notification sent successfully:', data);
+      }
+    } catch (error) {
+      console.error('Failed to send order notification:', error);
     }
   };
 
@@ -179,6 +202,9 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       };
 
       setOrders(prev => [formattedOrder, ...prev]);
+
+      // Send notification to admin
+      await sendOrderNotification(formattedOrder);
 
       toast({
         title: "Order placed successfully!",

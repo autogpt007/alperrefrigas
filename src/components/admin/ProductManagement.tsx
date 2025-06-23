@@ -6,10 +6,12 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Checkbox } from '../ui/checkbox';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
@@ -308,18 +310,6 @@ const ProductManagement = () => {
                     placeholder="0"
                     className="bg-slate-700 border-slate-600 text-white"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Product Images
-                  </label>
-                  <div className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center">
-                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-400 text-sm">
-                      Image upload coming soon. Using placeholder for now.
-                    </p>
-                  </div>
                 </div>
 
                 <div className="flex space-x-4">

@@ -1,73 +1,47 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { CreditCard, Truck, Shield, Lock } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { useOrders } from '../../contexts/OrdersContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Separator } from '../ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Textarea } from '../ui/textarea';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const CheckoutPage = () => {
-  const { items, total, clearCart } = useCart();
-  const { user } = useAuth();
-  const { createOrder } = useOrders();
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { items, total, clearCart } = useCart();
+  const { createOrder } = useOrders();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    // Billing Information
-    email: user?.email || '',
-    firstName: '',
-    lastName: '',
-    company: '',
-    address: '',
+    customerName: user?.user_metadata?.full_name || '',
+    customerEmail: user?.email || '',
+    street: '',
     city: '',
     state: '',
     zipCode: '',
-    phone: '',
-    
-    // Shipping Information
-    sameAsbilling: true,
-    shippingFirstName: '',
-    shippingLastName: '',
-    shippingCompany: '',
-    shippingAddress: '',
-    shippingCity: '',
-    shippingState: '',
-    shippingZipCode: '',
-    
-    // Payment Information
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    nameOnCard: '',
-    
-    // EPA Certification
-    epaNumber: '',
-    
-    // Shipping Options
-    shippingMethod: 'standard',
+    country: 'United States',
+    paymentMethod: 'credit_card',
+    notes: ''
   });
 
-  const [shippingCost, setShippingCost] = useState(15);
-  const [taxAmount, setTaxAmount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const shippingCost = total > 500 ? 0 : 50;
+  const taxAmount = total * 0.08; // 8% tax
+  const finalTotal = total + shippingCost + taxAmount;
 
-  const calculateShipping = () => {
-    const baseRate = formData.shippingMethod === 'express' ? 25 : 15;
-    const weight = items.reduce((sum, item) => sum + (item.quantity * 25), 0);
-    const calculated = baseRate + (weight * 0.5);
-    setShippingCost(calculated);
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +59,7 @@ const CheckoutPage = () => {
     if (items.length === 0) {
       toast({
         title: "Cart is empty",
-        description: "Please add items to your cart before checkout",
+        description: "Add items to your cart before checking out",
         variant: "destructive"
       });
       return;
@@ -94,30 +68,22 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Prepare order data
       const orderData = {
         user_id: user.id,
-        customer_name: `${formData.firstName} ${formData.lastName}`,
-        customer_email: formData.email,
+        customer_name: formData.customerName,
+        customer_email: formData.customerEmail,
         status: 'pending' as const,
-        total_amount: total + shippingCost + taxAmount,
+        total_amount: finalTotal,
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
         shipping_address: {
-          firstName: formData.sameAsbilling ? formData.firstName : formData.shippingFirstName,
-          lastName: formData.sameAsbilling ? formData.lastName : formData.shippingLastName,
-          company: formData.sameAsbilling ? formData.company : formData.shippingCompany,
-          address: formData.sameAsbilling ? formData.address : formData.shippingAddress,
-          city: formData.sameAsbilling ? formData.city : formData.shippingCity,
-          state: formData.sameAsbilling ? formData.state : formData.shippingState,
-          zipCode: formData.sameAsbilling ? formData.zipCode : formData.shippingZipCode,
-          phone: formData.phone,
-          epaNumber: formData.epaNumber,
-          shippingMethod: formData.shippingMethod
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          country: formData.country
         },
+        notes: formData.notes,
         items: items.map(item => ({
           product_id: item.id,
           product_name: item.name,
@@ -128,329 +94,274 @@ const CheckoutPage = () => {
           epa_approved: item.epaApproved
         }))
       };
+
+      const order = await createOrder(orderData);
       
-      // Create order in database
-      const newOrder = await createOrder(orderData);
-      
-      if (newOrder) {
-        // Store order details for confirmation page
-        localStorage.setItem('lastOrder', JSON.stringify({
-          orderNumber: newOrder.order_number,
-          items,
-          total: newOrder.total_amount,
-          shippingCost: newOrder.shipping_cost,
-          customerInfo: formData,
-          orderDate: newOrder.created_at,
-          orderId: newOrder.id
-        }));
-        
-        // Clear cart
+      if (order) {
         clearCart();
-        
-        // Redirect to confirmation
-        navigate('/order-confirmation');
+        navigate(`/order-confirmation?orderNumber=${order.order_number}`);
       }
     } catch (error) {
-      console.error('Order processing failed:', error);
+      console.error('Error placing order:', error);
+      toast({
+        title: "Error placing order",
+        description: "Please try again or contact support",
+        variant: "destructive"
+      });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  React.useEffect(() => {
-    calculateShipping();
-  }, [formData.shippingMethod, items]);
-
   if (items.length === 0) {
-    navigate('/cart');
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
+        <div className="container mx-auto px-4 py-8">
+          <Card className="max-w-md mx-auto bg-slate-800/50 border-cyan-500/20">
+            <CardContent className="text-center py-8">
+              <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-white mb-2">Your cart is empty</h2>
+              <p className="text-gray-400 mb-4">Add some items to your cart before checking out.</p>
+              <Button onClick={() => navigate('/catalog')} className="bg-cyan-500 hover:bg-cyan-600">
+                Continue Shopping
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Checkout Form */}
-            <div className="lg:col-span-2 space-y-8">
-              
-              {/* EPA Certification */}
-              <Card>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+            <CreditCard className="h-8 w-8 text-cyan-400" />
+            Checkout
+          </h1>
+
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Form */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Customer Information */}
+              <Card className="bg-slate-800/50 border-cyan-500/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-green-600" />
-                    EPA 608 Certification
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-cyan-400" />
+                    Customer Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="epaNumber">EPA Certification Number *</Label>
-                    <Input
-                      id="epaNumber"
-                      required
-                      value={formData.epaNumber}
-                      onChange={(e) => handleInputChange('epaNumber', e.target.value)}
-                      placeholder="Enter your EPA 608 certification number"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-gray-300">Full Name</Label>
+                      <Input
+                        value={formData.customerName}
+                        onChange={(e) => handleInputChange('customerName', e.target.value)}
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-300">Email</Label>
+                      <Input
+                        type="email"
+                        value={formData.customerEmail}
+                        onChange={(e) => handleInputChange('customerEmail', e.target.value)}
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Billing Information */}
-              <Card>
+              {/* Shipping Address */}
+              <Card className="bg-slate-800/50 border-cyan-500/20">
                 <CardHeader>
-                  <CardTitle>Billing Information</CardTitle>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-cyan-400" />
+                    Shipping Address
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name *</Label>
-                      <Input
-                        id="firstName"
-                        required
-                        value={formData.firstName}
-                        onChange={(e) => handleInputChange('firstName', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
-                      <Input
-                        id="lastName"
-                        required
-                        value={formData.lastName}
-                        onChange={(e) => handleInputChange('lastName', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  
                   <div>
-                    <Label htmlFor="email">Email *</Label>
+                    <Label className="text-gray-300">Street Address</Label>
                     <Input
-                      id="email"
-                      type="email"
+                      value={formData.street}
+                      onChange={(e) => handleInputChange('street', e.target.value)}
                       required
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="bg-slate-700 border-slate-600 text-white"
                     />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="company">Company</Label>
-                    <Input
-                      id="company"
-                      value={formData.company}
-                      onChange={(e) => handleInputChange('company', e.target.value)}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="address">Address *</Label>
-                    <Input
-                      id="address"
-                      required
-                      value={formData.address}
-                      onChange={(e) => handleInputChange('address', e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="city">City *</Label>
+                      <Label className="text-gray-300">City</Label>
                       <Input
-                        id="city"
-                        required
                         value={formData.city}
                         onChange={(e) => handleInputChange('city', e.target.value)}
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="state">State *</Label>
-                      <Select onValueChange={(value) => handleInputChange('state', value)} required>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="AL">Alabama</SelectItem>
-                          <SelectItem value="CA">California</SelectItem>
-                          <SelectItem value="FL">Florida</SelectItem>
-                          <SelectItem value="NY">New York</SelectItem>
-                          <SelectItem value="TX">Texas</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label className="text-gray-300">State</Label>
+                      <Input
+                        value={formData.state}
+                        onChange={(e) => handleInputChange('state', e.target.value)}
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
                     </div>
                     <div>
-                      <Label htmlFor="zipCode">ZIP Code *</Label>
+                      <Label className="text-gray-300">ZIP Code</Label>
                       <Input
-                        id="zipCode"
-                        required
                         value={formData.zipCode}
                         onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
                       />
                     </div>
                   </div>
-                  
                   <div>
-                    <Label htmlFor="phone">Phone *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      required
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Shipping Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Truck className="h-5 w-5" />
-                    Shipping Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="sameAsbilling"
-                      checked={formData.sameAsbilling}
-                      onCheckedChange={(checked) => handleInputChange('sameAsbilling', checked as boolean)}
-                    />
-                    <Label htmlFor="sameAsbilling">Same as billing address</Label>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="shippingMethod">Shipping Method *</Label>
-                    <Select 
-                      onValueChange={(value) => handleInputChange('shippingMethod', value)}
-                      defaultValue="standard"
-                    >
-                      <SelectTrigger>
+                    <Label className="text-gray-300">Country</Label>
+                    <Select value={formData.country} onValueChange={(value) => handleInputChange('country', value)}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="standard">Standard (5-7 business days) - $15</SelectItem>
-                        <SelectItem value="express">Express (2-3 business days) - $25</SelectItem>
+                        <SelectItem value="United States">United States</SelectItem>
+                        <SelectItem value="Canada">Canada</SelectItem>
+                        <SelectItem value="Mexico">Mexico</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Payment Information */}
-              <Card>
+              {/* Payment Method */}
+              <Card className="bg-slate-800/50 border-cyan-500/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5" />
-                    Payment Information
-                    <Lock className="h-4 w-4 text-green-600 ml-auto" />
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <DollarSign className="h-5 w-5 text-cyan-400" />
+                    Payment Method
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="cardNumber">Card Number *</Label>
-                    <Input
-                      id="cardNumber"
-                      required
-                      placeholder="1234 5678 9012 3456"
-                      value={formData.cardNumber}
-                      onChange={(e) => handleInputChange('cardNumber', e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiryDate">Expiry Date *</Label>
-                      <Input
-                        id="expiryDate"
-                        required
-                        placeholder="MM/YY"
-                        value={formData.expiryDate}
-                        onChange={(e) => handleInputChange('expiryDate', e.target.value)}
-                      />
+                <CardContent>
+                  <RadioGroup value={formData.paymentMethod} onValueChange={(value) => handleInputChange('paymentMethod', value)}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="credit_card" id="credit_card" />
+                      <Label htmlFor="credit_card" className="text-gray-300">Credit Card</Label>
                     </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV *</Label>
-                      <Input
-                        id="cvv"
-                        required
-                        placeholder="123"
-                        value={formData.cvv}
-                        onChange={(e) => handleInputChange('cvv', e.target.value)}
-                      />
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="bank_wire" id="bank_wire" />
+                      <Label htmlFor="bank_wire" className="text-gray-300">Bank Wire Transfer</Label>
                     </div>
-                  </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="check" id="check" />
+                      <Label htmlFor="check" className="text-gray-300">Company Check</Label>
+                    </div>
+                  </RadioGroup>
                   
-                  <div>
-                    <Label htmlFor="nameOnCard">Name on Card *</Label>
-                    <Input
-                      id="nameOnCard"
-                      required
-                      value={formData.nameOnCard}
-                      onChange={(e) => handleInputChange('nameOnCard', e.target.value)}
-                    />
-                  </div>
+                  {formData.paymentMethod === 'bank_wire' && (
+                    <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                      <p className="text-gray-300 text-sm">
+                        Wire transfer instructions will be provided after order confirmation.
+                        Payment must be received within 7 business days.
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Order Notes */}
+              <Card className="bg-slate-800/50 border-cyan-500/20">
+                <CardHeader>
+                  <CardTitle className="text-white">Order Notes</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Any special instructions or requirements
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    value={formData.notes}
+                    onChange={(e) => handleInputChange('notes', e.target.value)}
+                    placeholder="Enter any special instructions..."
+                    className="bg-slate-700 border-slate-600 text-white"
+                    rows={3}
+                  />
                 </CardContent>
               </Card>
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <Card className="sticky top-4">
+              <Card className="bg-slate-800/50 border-cyan-500/20 sticky top-4">
                 <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
+                  <CardTitle className="text-white">Order Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {items.map((item) => (
-                    <div key={`${item.id}-${item.packaging}`} className="flex justify-between text-sm">
-                      <div>
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-gray-500">Qty: {item.quantity}</div>
-                        {item.packaging && <div className="text-gray-500">{item.packaging}</div>}
+                  {/* Items */}
+                  <div className="space-y-3">
+                    {items.map((item) => (
+                      <div key={`${item.id}-${item.packaging}`} className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <p className="text-white text-sm font-medium">{item.name}</p>
+                          <p className="text-gray-400 text-xs">
+                            {item.packaging} × {item.quantity}
+                          </p>
+                        </div>
+                        <p className="text-cyan-400 font-medium">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
                       </div>
-                      <div>${(item.price * item.quantity).toFixed(2)}</div>
-                    </div>
-                  ))}
-                  
-                  <div className="border-t pt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
+                    ))}
+                  </div>
+
+                  <Separator className="bg-slate-600" />
+
+                  {/* Totals */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-gray-300">
                       <span>Subtotal</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-gray-300">
                       <span>Shipping</span>
-                      <span>${shippingCost.toFixed(2)}</span>
+                      <span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-gray-300">
                       <span>Tax</span>
                       <span>${taxAmount.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-lg font-bold border-t pt-2">
+                    <Separator className="bg-slate-600" />
+                    <div className="flex justify-between text-white font-bold text-lg">
                       <span>Total</span>
-                      <span className="text-green-600">${(total + shippingCost + taxAmount).toFixed(2)}</span>
+                      <span>${finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
-                  
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full bg-orange-500 hover:bg-orange-600 mt-6"
+
+                  {shippingCost === 0 && (
+                    <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
+                      <p className="text-green-400 text-sm font-medium">
+                        🎉 Free shipping on orders over $500!
+                      </p>
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
                     disabled={isProcessing}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-3"
                   >
-                    {isProcessing ? 'Processing...' : 'Place Order'}
+                    {isProcessing ? 'Processing...' : `Place Order - $${finalTotal.toFixed(2)}`}
                   </Button>
-                  
-                  <div className="text-xs text-gray-500 text-center mt-4">
-                    By placing this order, you agree to our Terms of Service and EPA compliance requirements.
-                  </div>
                 </CardContent>
               </Card>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
