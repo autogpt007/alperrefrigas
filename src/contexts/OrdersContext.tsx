@@ -112,7 +112,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       // Create the order
-      const { data: orderData: newOrder, error: orderError } = await supabase
+      const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: user.id,
