@@ -6,11 +6,9 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Checkbox } from '../ui/checkbox';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Edit, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Product {
@@ -36,30 +34,42 @@ const ProductManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch products
-  const { data: products, isLoading } = useQuery({
+  // Fetch products with error handling
+  const { data: products = [], isLoading, error } = useQuery({
     queryKey: ['admin-products'],
     queryFn: async () => {
+      console.log('Fetching products...');
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+      }
+      
+      console.log('Products fetched:', data);
       return data as Product[];
-    }
+    },
+    retry: 3,
+    retryDelay: 1000,
   });
 
   // Create product mutation
   const createProductMutation = useMutation({
     mutationFn: async (productData: Omit<Product, 'id' | 'created_at'>) => {
+      console.log('Creating product:', productData);
       const { data, error } = await supabase
         .from('products')
         .insert([productData])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating product:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
@@ -68,7 +78,8 @@ const ProductManagement = () => {
       setActiveTab('list');
       resetForm();
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Create product error:', error);
       toast({ title: 'Error creating product', description: error.message, variant: 'destructive' });
     }
   });
@@ -76,6 +87,7 @@ const ProductManagement = () => {
   // Update product mutation
   const updateProductMutation = useMutation({
     mutationFn: async ({ id, ...productData }: Partial<Product> & { id: string }) => {
+      console.log('Updating product:', id, productData);
       const { data, error } = await supabase
         .from('products')
         .update(productData)
@@ -83,7 +95,10 @@ const ProductManagement = () => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating product:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
@@ -92,7 +107,8 @@ const ProductManagement = () => {
       setActiveTab('list');
       resetForm();
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Update product error:', error);
       toast({ title: 'Error updating product', description: error.message, variant: 'destructive' });
     }
   });
@@ -100,18 +116,23 @@ const ProductManagement = () => {
   // Delete product mutation
   const deleteProductMutation = useMutation({
     mutationFn: async (id: string) => {
+      console.log('Deleting product:', id);
       const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting product:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       toast({ title: 'Product deleted successfully!' });
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Delete product error:', error);
       toast({ title: 'Error deleting product', description: error.message, variant: 'destructive' });
     }
   });
@@ -124,6 +145,11 @@ const ProductManagement = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!formData.name.trim()) {
+      toast({ title: 'Error', description: 'Product name is required', variant: 'destructive' });
+      return;
+    }
+
     const productData = {
       ...formData,
       thumbnail_url: '/placeholder.svg',
@@ -148,10 +174,17 @@ const ProductManagement = () => {
     setActiveTab('form');
   };
 
-  if (isLoading) {
+  if (error) {
+    console.error('ProductManagement error:', error);
     return (
       <div className="p-6">
-        <div className="text-white">Loading products...</div>
+        <div className="text-red-400">Error loading products: {error.message}</div>
+        <Button 
+          onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
+          className="mt-4 bg-cyan-500 hover:bg-cyan-600"
+        >
+          Retry
+        </Button>
       </div>
     );
   }
@@ -192,54 +225,61 @@ const ProductManagement = () => {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {products?.map((product) => (
-                  <div key={product.id} className="border border-slate-600 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center">
-                          <ImageIcon className="h-6 w-6 text-gray-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-medium">{product.name}</h3>
-                          <p className="text-gray-400 text-sm">{product.description}</p>
-                          <div className="flex items-center space-x-4 mt-2">
-                            <span className="text-cyan-400 font-medium">${product.price}</span>
-                            <Badge variant="secondary">
-                              Stock: {product.stock_quantity || 0}
-                            </Badge>
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="text-white">Loading products...</div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <div key={product.id} className="border border-slate-600 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center">
+                              <ImageIcon className="h-6 w-6 text-gray-400" />
+                            </div>
+                            <div>
+                              <h3 className="text-white font-medium">{product.name}</h3>
+                              <p className="text-gray-400 text-sm">{product.description}</p>
+                              <div className="flex items-center space-x-4 mt-2">
+                                <span className="text-cyan-400 font-medium">${product.price}</span>
+                                <Badge variant="secondary">
+                                  Stock: {product.stock_quantity || 0}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(product)}
+                              className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteProductMutation.mutate(product.id)}
+                              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                              disabled={deleteProductMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(product)}
-                          className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deleteProductMutation.mutate(product.id)}
-                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-400">No products found. Add your first product!</p>
                     </div>
-                  </div>
-                ))}
-                
-                {!products?.length && (
-                  <div className="text-center py-8">
-                    <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">No products found. Add your first product!</p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -259,7 +299,7 @@ const ProductManagement = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Product Name
+                      Product Name *
                     </label>
                     <Input
                       value={formData.name}
@@ -272,11 +312,12 @@ const ProductManagement = () => {
                   
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Price ($)
+                      Price ($) *
                     </label>
                     <Input
                       type="number"
                       step="0.01"
+                      min="0"
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
                       placeholder="0.00"
@@ -305,6 +346,7 @@ const ProductManagement = () => {
                   </label>
                   <Input
                     type="number"
+                    min="0"
                     value={formData.stock_quantity}
                     onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) || 0 })}
                     placeholder="0"
@@ -318,7 +360,10 @@ const ProductManagement = () => {
                     className="bg-cyan-500 hover:bg-cyan-600"
                     disabled={createProductMutation.isPending || updateProductMutation.isPending}
                   >
-                    {editingProduct ? 'Update Product' : 'Create Product'}
+                    {createProductMutation.isPending || updateProductMutation.isPending 
+                      ? 'Saving...' 
+                      : editingProduct ? 'Update Product' : 'Create Product'
+                    }
                   </Button>
                   <Button 
                     type="button" 
