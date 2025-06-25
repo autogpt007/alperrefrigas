@@ -99,7 +99,25 @@ const ProductManagement = () => {
       }
       
       console.log('Products fetched:', data);
-      return data as Product[];
+      
+      // Transform the data to match our Product interface
+      return data?.map((product: any) => ({
+        ...product,
+        images: product.images || [],
+        packaging: Array.isArray(product.packaging) ? product.packaging : [],
+        applications: Array.isArray(product.applications) ? product.applications : [],
+        technical_specs: product.technical_specs || {},
+        certificate_urls: Array.isArray(product.certificate_urls) ? product.certificate_urls : [],
+        dimensions: product.dimensions || { length: '', width: '', height: '' },
+        thumbnail_url: product.thumbnail_url || '/placeholder.svg',
+        sds_url: product.sds_url || '',
+        gtin: product.gtin || '',
+        shipping_weight: product.shipping_weight || '',
+        chemical_formula: product.chemical_formula || '',
+        cas_number: product.cas_number || '',
+        un_number: product.un_number || '',
+        hazard_class: product.hazard_class || ''
+      })) as Product[] || [];
     },
     retry: 3,
     retryDelay: 1000,
