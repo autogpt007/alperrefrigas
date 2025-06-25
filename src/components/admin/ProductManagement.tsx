@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -35,7 +34,11 @@ interface Product {
   certificate_urls: string[];
   gtin: string;
   shipping_weight: string;
-  dimensions: Record<string, string>;
+  dimensions: {
+    length: string;
+    width: string;
+    height: string;
+  };
   chemical_formula: string;
   cas_number: string;
   un_number: string;
