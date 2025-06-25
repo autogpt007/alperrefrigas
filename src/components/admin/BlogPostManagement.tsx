@@ -7,20 +7,20 @@ import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Edit, Trash2, FileText, Eye } from 'lucide-react';
-import { useToast } from '../ui/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { Plus, Edit, Trash2, FileText, Eye, EyeOff } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface BlogPost {
   id: string;
   title: string;
-  slug: string;
   body: string;
+  slug: string;
   banner_image_url: string;
-  author_id: string;
   published: boolean;
+  author_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -31,36 +31,94 @@ const BlogPostManagement = () => {
   const [formData, setFormData] = useState({
     title: '',
     body: '',
+    slug: '',
+    banner_image_url: '',
     published: false
   });
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   // Fetch blog posts
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts = [], isLoading, error } = useQuery({
     queryKey: ['admin-blog-posts'],
     queryFn: async () => {
+      console.log('Fetching blog posts...');
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching blog posts:', error);
+        throw error;
+      }
+      
+      console.log('Blog posts fetched:', data);
       return data as BlogPost[];
-    }
+    },
+    retry: 3,
+    retryDelay: 1000,
   });
 
-  // Create post mutation
+  // Upload banner image
+  const uploadBannerImage = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `banners/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file);
+
+    if (error) throw error;
+
+    const { data: urlData } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+  };
+
+  // Generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .trim();
+  };
+
+  // Create blog post mutation
   const createPostMutation = useMutation({
-    mutationFn: async (postData: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>) => {
+    mutationFn: async (postData: any) => {
+      console.log('Creating blog post with data:', postData);
+      
+      let bannerUrl = postData.banner_image_url;
+      if (bannerFile) {
+        bannerUrl = await uploadBannerImage(bannerFile);
+      }
+
+      const finalPostData = {
+        ...postData,
+        banner_image_url: bannerUrl,
+        slug: postData.slug || generateSlug(postData.title),
+        author_id: null // You might want to get this from auth context
+      };
+
+      console.log('Final post data to insert:', finalPostData);
+
       const { data, error } = await supabase
         .from('blog_posts')
-        .insert([postData])
+        .insert([finalPostData])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating blog post:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
@@ -69,22 +127,40 @@ const BlogPostManagement = () => {
       setActiveTab('list');
       resetForm();
     },
-    onError: (error) => {
-      toast({ title: 'Error creating post', description: error.message, variant: 'destructive' });
+    onError: (error: any) => {
+      console.error('Create blog post error:', error);
+      toast({ title: 'Error creating blog post', description: error.message, variant: 'destructive' });
     }
   });
 
-  // Update post mutation
+  // Update blog post mutation
   const updatePostMutation = useMutation({
-    mutationFn: async ({ id, ...postData }: Partial<BlogPost> & { id: string }) => {
+    mutationFn: async ({ id, ...postData }: any) => {
+      console.log('Updating blog post:', id, postData);
+      
+      let bannerUrl = postData.banner_image_url;
+      if (bannerFile) {
+        bannerUrl = await uploadBannerImage(bannerFile);
+      }
+
+      const finalPostData = {
+        ...postData,
+        banner_image_url: bannerUrl,
+        slug: postData.slug || generateSlug(postData.title),
+        updated_at: new Date().toISOString()
+      };
+
       const { data, error } = await supabase
         .from('blog_posts')
-        .update(postData)
+        .update(finalPostData)
         .eq('id', id)
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating blog post:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
@@ -93,58 +169,59 @@ const BlogPostManagement = () => {
       setActiveTab('list');
       resetForm();
     },
-    onError: (error) => {
-      toast({ title: 'Error updating post', description: error.message, variant: 'destructive' });
+    onError: (error: any) => {
+      console.error('Update blog post error:', error);
+      toast({ title: 'Error updating blog post', description: error.message, variant: 'destructive' });
     }
   });
 
-  // Delete post mutation
+  // Delete blog post mutation
   const deletePostMutation = useMutation({
     mutationFn: async (id: string) => {
+      console.log('Deleting blog post:', id);
       const { error } = await supabase
         .from('blog_posts')
         .delete()
         .eq('id', id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting blog post:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-blog-posts'] });
       toast({ title: 'Blog post deleted successfully!' });
     },
-    onError: (error) => {
-      toast({ title: 'Error deleting post', description: error.message, variant: 'destructive' });
+    onError: (error: any) => {
+      console.error('Delete blog post error:', error);
+      toast({ title: 'Error deleting blog post', description: error.message, variant: 'destructive' });
     }
   });
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9 -]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
-
   const resetForm = () => {
-    setFormData({ title: '', body: '', published: false });
+    setFormData({
+      title: '',
+      body: '',
+      slug: '',
+      banner_image_url: '',
+      published: false
+    });
     setEditingPost(null);
+    setBannerFile(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user?.id) {
-      toast({ title: 'Error', description: 'User not authenticated', variant: 'destructive' });
+    if (!formData.title.trim()) {
+      toast({ title: 'Error', description: 'Title is required', variant: 'destructive' });
       return;
     }
 
-    const slug = generateSlug(formData.title);
     const postData = {
       ...formData,
-      slug,
-      banner_image_url: '/placeholder.svg',
-      author_id: user.id
+      slug: formData.slug || generateSlug(formData.title)
     };
 
     if (editingPost) {
@@ -159,22 +236,24 @@ const BlogPostManagement = () => {
     setFormData({
       title: post.title,
       body: post.body || '',
+      slug: post.slug,
+      banner_image_url: post.banner_image_url || '',
       published: post.published || false
     });
     setActiveTab('form');
   };
 
-  const togglePublished = async (post: BlogPost) => {
-    updatePostMutation.mutate({
-      id: post.id,
-      published: !post.published
-    });
-  };
-
-  if (isLoading) {
+  if (error) {
+    console.error('BlogPostManagement error:', error);
     return (
       <div className="p-6">
-        <div className="text-white">Loading blog posts...</div>
+        <div className="text-red-400">Error loading blog posts: {error.message}</div>
+        <Button 
+          onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-blog-posts'] })}
+          className="mt-4 bg-cyan-500 hover:bg-cyan-600"
+        >
+          Retry
+        </Button>
       </div>
     );
   }
@@ -188,9 +267,9 @@ const BlogPostManagement = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6">
-          <TabsTrigger value="list">Post List</TabsTrigger>
+          <TabsTrigger value="list">Blog Posts</TabsTrigger>
           <TabsTrigger value="form">
-            {editingPost ? 'Edit Post' : 'Add Post'}
+            {editingPost ? 'Edit Post' : 'Create Post'}
           </TabsTrigger>
         </TabsList>
 
@@ -211,67 +290,81 @@ const BlogPostManagement = () => {
                 className="bg-cyan-500 hover:bg-cyan-600"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Post
+                Create Post
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {posts?.map((post) => (
-                  <div key={post.id} className="border border-slate-600 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center">
-                          <FileText className="h-6 w-6 text-gray-400" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-white font-medium">{post.title}</h3>
-                          <p className="text-gray-400 text-sm">/{post.slug}</p>
-                          <div className="flex items-center space-x-4 mt-2">
-                            <Badge variant={post.published ? "default" : "secondary"}>
-                              {post.published ? 'Published' : 'Draft'}
-                            </Badge>
-                            <span className="text-gray-400 text-sm">
-                              {new Date(post.created_at).toLocaleDateString()}
-                            </span>
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <div className="text-white">Loading blog posts...</div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {posts.length > 0 ? (
+                    posts.map((post) => (
+                      <div key={post.id} className="border border-slate-600 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center">
+                              {post.banner_image_url ? (
+                                <img src={post.banner_image_url} alt={post.title} className="w-full h-full object-cover rounded-lg" />
+                              ) : (
+                                <FileText className="h-6 w-6 text-gray-400" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="text-white font-medium">{post.title}</h3>
+                              <p className="text-gray-400 text-sm">Slug: /{post.slug}</p>
+                              <div className="flex items-center space-x-4 mt-2">
+                                <Badge variant={post.published ? "default" : "secondary"}>
+                                  {post.published ? (
+                                    <>
+                                      <Eye className="h-3 w-3 mr-1" />
+                                      Published
+                                    </>
+                                  ) : (
+                                    <>
+                                      <EyeOff className="h-3 w-3 mr-1" />
+                                      Draft
+                                    </>
+                                  )}
+                                </Badge>
+                                <span className="text-gray-400 text-sm">
+                                  {new Date(post.created_at).toLocaleDateString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(post)}
+                              className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deletePostMutation.mutate(post.id)}
+                              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                              disabled={deletePostMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-2 mr-4">
-                          <label className="text-sm text-gray-300">Published</label>
-                          <Switch
-                            checked={post.published}
-                            onCheckedChange={() => togglePublished(post)}
-                          />
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(post)}
-                          className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deletePostMutation.mutate(post.id)}
-                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-400">No blog posts found. Create your first post!</p>
                     </div>
-                  </div>
-                ))}
-                
-                {!posts?.length && (
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-400">No blog posts found. Create your first post!</p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -283,38 +376,72 @@ const BlogPostManagement = () => {
                 {editingPost ? 'Edit Blog Post' : 'Create New Blog Post'}
               </CardTitle>
               <CardDescription className="text-gray-300">
-                {editingPost ? 'Update your blog post' : 'Write a new blog post'}
+                {editingPost ? 'Update blog post content' : 'Create a new blog post for your audience'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="block text-sm font-medium text-white mb-2">
+                      Post Title *
+                    </Label>
+                    <Input
+                      value={formData.title}
+                      onChange={(e) => {
+                        const title = e.target.value;
+                        setFormData({ 
+                          ...formData, 
+                          title,
+                          slug: formData.slug || generateSlug(title)
+                        });
+                      }}
+                      placeholder="Enter post title"
+                      required
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="block text-sm font-medium text-white mb-2">
+                      URL Slug
+                    </Label>
+                    <Input
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      placeholder="url-slug-for-post"
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Title
-                  </label>
-                  <Input
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="Enter post title"
-                    required
-                    className="bg-slate-700 border-slate-600 text-white"
+                  <Label className="block text-sm font-medium text-white mb-2">
+                    Banner Image
+                  </Label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setBannerFile(e.target.files?.[0] || null)}
+                    className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100"
                   />
-                  {formData.title && (
-                    <p className="text-sm text-gray-400 mt-1">
-                      Slug: /{generateSlug(formData.title)}
-                    </p>
+                  {bannerFile && (
+                    <div className="mt-2 text-green-400 text-sm">
+                      Banner image selected: {bannerFile.name}
+                    </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Content
-                  </label>
+                  <Label className="block text-sm font-medium text-white mb-2">
+                    Content *
+                  </Label>
                   <Textarea
                     value={formData.body}
                     onChange={(e) => setFormData({ ...formData, body: e.target.value })}
                     placeholder="Write your blog post content here..."
                     rows={12}
+                    required
                     className="bg-slate-700 border-slate-600 text-white"
                   />
                 </div>
@@ -324,9 +451,7 @@ const BlogPostManagement = () => {
                     checked={formData.published}
                     onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
                   />
-                  <label className="text-sm text-white">
-                    Publish immediately
-                  </label>
+                  <Label className="text-white">Publish immediately</Label>
                 </div>
 
                 <div className="flex space-x-4">
@@ -335,7 +460,10 @@ const BlogPostManagement = () => {
                     className="bg-cyan-500 hover:bg-cyan-600"
                     disabled={createPostMutation.isPending || updatePostMutation.isPending}
                   >
-                    {editingPost ? 'Update Post' : 'Create Post'}
+                    {createPostMutation.isPending || updatePostMutation.isPending 
+                      ? 'Saving...' 
+                      : editingPost ? 'Update Post' : 'Create Post'
+                    }
                   </Button>
                   <Button 
                     type="button" 

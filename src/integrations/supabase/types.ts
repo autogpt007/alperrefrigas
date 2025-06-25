@@ -163,36 +163,90 @@ export type Database = {
       }
       products: {
         Row: {
+          applications: Json | null
+          availability: string | null
+          brand: string | null
+          cas_number: string | null
+          category: string | null
+          certificate_urls: Json | null
+          chemical_formula: string | null
+          condition: string | null
           created_at: string | null
           description: string | null
+          dimensions: Json | null
+          epa_approved: boolean | null
+          gtin: string | null
+          hazard_class: string | null
           id: string
           images: string[] | null
           name: string
+          packaging: Json | null
           price: number
+          sds_url: string | null
+          shipping_weight: string | null
+          sku: string | null
           stock_quantity: number | null
+          technical_specs: Json | null
           thumbnail_url: string | null
+          un_number: string | null
           updated_at: string | null
         }
         Insert: {
+          applications?: Json | null
+          availability?: string | null
+          brand?: string | null
+          cas_number?: string | null
+          category?: string | null
+          certificate_urls?: Json | null
+          chemical_formula?: string | null
+          condition?: string | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
+          epa_approved?: boolean | null
+          gtin?: string | null
+          hazard_class?: string | null
           id?: string
           images?: string[] | null
           name: string
+          packaging?: Json | null
           price: number
+          sds_url?: string | null
+          shipping_weight?: string | null
+          sku?: string | null
           stock_quantity?: number | null
+          technical_specs?: Json | null
           thumbnail_url?: string | null
+          un_number?: string | null
           updated_at?: string | null
         }
         Update: {
+          applications?: Json | null
+          availability?: string | null
+          brand?: string | null
+          cas_number?: string | null
+          category?: string | null
+          certificate_urls?: Json | null
+          chemical_formula?: string | null
+          condition?: string | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
+          epa_approved?: boolean | null
+          gtin?: string | null
+          hazard_class?: string | null
           id?: string
           images?: string[] | null
           name?: string
+          packaging?: Json | null
           price?: number
+          sds_url?: string | null
+          shipping_weight?: string | null
+          sku?: string | null
           stock_quantity?: number | null
+          technical_specs?: Json | null
           thumbnail_url?: string | null
+          un_number?: string | null
           updated_at?: string | null
         }
         Relationships: []
