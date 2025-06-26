@@ -21,9 +21,11 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './components/pages/HomePage';
 import ProductCatalog from './components/pages/ProductCatalog';
+import ProductCategory from './components/pages/ProductCategory';
 import ProductDetails from './components/pages/ProductDetails';
 import RFQPage from './components/pages/RFQPage';
 import CustomerPortal from './components/pages/CustomerPortal';
+import AccountDashboard from './components/pages/AccountDashboard';
 import CartPage from './components/pages/CartPage';
 import CheckoutPage from './components/pages/CheckoutPage';
 import OrderConfirmation from './components/pages/OrderConfirmation';
@@ -75,15 +77,16 @@ const App: React.FC = () => {
                         {/* Public Routes */}
                         <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
                         <Route path="/products" element={<PublicLayout><ProductCatalog /></PublicLayout>} />
+                        <Route path="/products/category/:category" element={<PublicLayout><ProductCategory /></PublicLayout>} />
                         <Route path="/products/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
                         <Route path="/rfq" element={<PublicLayout><RFQPage /></PublicLayout>} />
                         <Route path="/portal" element={<PublicLayout><CustomerPortal /></PublicLayout>} />
+                        <Route path="/account" element={<PublicLayout><AccountDashboard /></PublicLayout>} />
                         <Route path="/cart" element={<PublicLayout><CartPage /></PublicLayout>} />
                         <Route path="/checkout" element={<PublicLayout><CheckoutPage /></PublicLayout>} />
                         <Route path="/order-confirmation" element={<PublicLayout><OrderConfirmation /></PublicLayout>} />
                         <Route path="/shipping" element={<PublicLayout><ShippingCalculator /></PublicLayout>} />
                         <Route path="/support" element={<PublicLayout><CustomerSupport /></PublicLayout>} />
-                        <Route path="/account" element={<PublicLayout><CustomerPortal /></PublicLayout>} />
                         <Route path="/privacy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
                         <Route path="/terms" element={<PublicLayout><TermsOfService /></PublicLayout>} />
                         <Route path="/cookies" element={<PublicLayout><CookiePolicy /></PublicLayout>} />

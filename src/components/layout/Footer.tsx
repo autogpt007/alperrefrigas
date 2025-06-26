@@ -55,12 +55,12 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-6">Product Categories</h4>
             <ul className="space-y-3">
-              <li><Link to="/products?category=hfc" className="text-gray-300 hover:text-white transition-colors">HFC Refrigerants</Link></li>
-              <li><Link to="/products?category=hfo" className="text-gray-300 hover:text-white transition-colors">HFO Refrigerants</Link></li>
-              <li><Link to="/products?category=natural" className="text-gray-300 hover:text-white transition-colors">Natural Refrigerants</Link></li>
-              <li><Link to="/products?category=automotive" className="text-gray-300 hover:text-white transition-colors">Automotive</Link></li>
-              <li><Link to="/products?category=commercial" className="text-gray-300 hover:text-white transition-colors">Commercial HVAC</Link></li>
-              <li><Link to="/products?category=industrial" className="text-gray-300 hover:text-white transition-colors">Industrial</Link></li>
+              <li><Link to="/products/category/hfc" className="text-gray-300 hover:text-white transition-colors">HFC Refrigerants</Link></li>
+              <li><Link to="/products/category/hfo" className="text-gray-300 hover:text-white transition-colors">HFO Refrigerants</Link></li>
+              <li><Link to="/products/category/natural" className="text-gray-300 hover:text-white transition-colors">Natural Refrigerants</Link></li>
+              <li><Link to="/products/category/automotive" className="text-gray-300 hover:text-white transition-colors">Automotive</Link></li>
+              <li><Link to="/products/category/commercial" className="text-gray-300 hover:text-white transition-colors">Commercial HVAC</Link></li>
+              <li><Link to="/products/category/industrial" className="text-gray-300 hover:text-white transition-colors">Industrial</Link></li>
             </ul>
           </div>
 

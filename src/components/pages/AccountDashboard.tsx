@@ -1,16 +1,146 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
+import { Textarea } from '../ui/textarea';
 import { useAuth } from '../../contexts/AuthContext';
-import { User, Package, MapPin, CreditCard, Settings, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { User, Package, MapPin, CreditCard, Settings, LogOut, Plus, Edit2, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface Address {
+  id: string;
+  name: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  isDefault: boolean;
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  created_at: string;
+  status: string;
+  total_amount: number;
+  items: any[];
+  tracking_number?: string;
+}
 
 const AccountDashboard = () => {
   const { user, profile, logout } = useAuth();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState({
+    full_name: profile?.full_name || '',
+    email: profile?.email || '',
+    company: '',
+    epa_license: ''
+  });
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+      fetchAddresses();
+    }
+  }, [user]);
+
+  const fetchOrders = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setOrders(data || []);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load orders",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAddresses = async () => {
+    // Mock addresses for now - in real app this would come from database
+    setAddresses([
+      {
+        id: '1',
+        name: 'Business Address',
+        street: '123 Industrial Blvd',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77001',
+        country: 'USA',
+        isDefault: true
+      }
+    ]);
+  };
+
+  const updateProfile = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: profileData.full_name,
+          // Note: email updates would need special handling in Supabase
+        })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Profile updated successfully"
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'in_transit':
+      case 'shipped':
+        return 'bg-blue-100 text-blue-800';
+      case 'processing':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   if (!user || !profile) {
     return (
@@ -34,44 +164,6 @@ const AccountDashboard = () => {
       </div>
     );
   }
-
-  const mockOrders = [
-    {
-      id: 'ORD-001',
-      date: '2024-01-15',
-      status: 'Delivered',
-      total: 125.99,
-      items: ['R-410A Refrigerant (25 lb)']
-    },
-    {
-      id: 'ORD-002',
-      date: '2024-01-10',
-      status: 'In Transit',
-      total: 89.99,
-      items: ['R-134A Refrigerant (30 lb)']
-    },
-    {
-      id: 'ORD-003',
-      date: '2024-01-05',
-      status: 'Processing',
-      total: 299.99,
-      items: ['R-22 Refrigerant (30 lb)', 'Shipping Insurance']
-    }
-  ];
-
-  // Mock addresses for demo - in real app this would come from database
-  const mockAddresses = [
-    {
-      id: '1',
-      name: 'Home Address',
-      street: '123 Main St',
-      city: 'Anytown',
-      state: 'CA',
-      zipCode: '12345',
-      country: 'USA',
-      isDefault: true
-    }
-  ];
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -120,23 +212,38 @@ const AccountDashboard = () => {
               <CardContent className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Full Name</label>
-                  <Input value={profile.full_name || ''} disabled={!isEditing} />
+                  <Input 
+                    value={profileData.full_name} 
+                    onChange={(e) => setProfileData({...profileData, full_name: e.target.value})}
+                    disabled={!isEditing} 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Email</label>
-                  <Input value={profile.email || ''} disabled={!isEditing} />
+                  <Input value={profileData.email} disabled />
+                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed here</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Company</label>
-                  <Input value="" disabled={!isEditing} placeholder="Not set" />
+                  <Input 
+                    value={profileData.company} 
+                    onChange={(e) => setProfileData({...profileData, company: e.target.value})}
+                    disabled={!isEditing} 
+                    placeholder="Enter company name" 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">EPA License</label>
-                  <Input value="" disabled={!isEditing} placeholder="Not set" />
+                  <Input 
+                    value={profileData.epa_license} 
+                    onChange={(e) => setProfileData({...profileData, epa_license: e.target.value})}
+                    disabled={!isEditing} 
+                    placeholder="Enter EPA license number" 
+                  />
                 </div>
                 {isEditing && (
                   <div className="flex gap-2">
-                    <Button>Save Changes</Button>
+                    <Button onClick={updateProfile}>Save Changes</Button>
                     <Button variant="outline" onClick={() => setIsEditing(false)}>
                       Cancel
                     </Button>
@@ -152,17 +259,17 @@ const AccountDashboard = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span>Account Type:</span>
-                  <Badge variant="secondary">Business</Badge>
+                  <Badge variant="secondary">{profile.role === 'admin' ? 'Administrator' : 'Business'}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>EPA Verified:</span>
-                  <Badge variant="default" className="bg-green-100 text-green-800">
+                  <Badge className="bg-green-100 text-green-800">
                     Verified
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Member Since:</span>
-                  <span>January 2024</span>
+                  <span>{formatDate(profile.created_at || '')}</span>
                 </div>
                 <Button
                   variant="destructive"
@@ -185,37 +292,53 @@ const AccountDashboard = () => {
               <CardDescription>Track your recent orders and download invoices.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {mockOrders.map((order) => (
-                  <div key={order.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <div className="font-medium">Order {order.id}</div>
-                        <div className="text-sm text-gray-500">Placed on {order.date}</div>
+              {loading ? (
+                <div className="text-center py-8">Loading orders...</div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">No orders found</p>
+                  <p className="text-sm text-gray-500">Your order history will appear here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orders.map((order) => (
+                    <div key={order.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="font-medium">Order {order.order_number}</div>
+                          <div className="text-sm text-gray-500">Placed on {formatDate(order.created_at)}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium">${Number(order.total_amount).toFixed(2)}</div>
+                          <Badge className={getStatusColor(order.status)}>
+                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-medium">${order.total}</div>
-                        <Badge
-                          variant={order.status === 'Delivered' ? 'default' : 'secondary'}
-                          className={order.status === 'Delivered' ? 'bg-green-100 text-green-800' : ''}
-                        >
-                          {order.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 mb-3">
-                      {order.items.join(', ')}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">View Details</Button>
-                      <Button variant="outline" size="sm">Track Order</Button>
-                      {order.status === 'Delivered' && (
-                        <Button variant="outline" size="sm">Download Invoice</Button>
+                      {order.items && order.items.length > 0 && (
+                        <div className="text-sm text-gray-600 mb-3">
+                          {order.items.map((item: any, index: number) => (
+                            <span key={index}>
+                              {item.product_name} (Qty: {item.quantity})
+                              {index < order.items.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
+                        </div>
                       )}
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">View Details</Button>
+                        {order.tracking_number && (
+                          <Button variant="outline" size="sm">Track Order</Button>
+                        )}
+                        {order.status === 'delivered' && (
+                          <Button variant="outline" size="sm">Download Invoice</Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -229,7 +352,7 @@ const AccountDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockAddresses.map((address) => (
+                {addresses.map((address) => (
                   <div key={address.id} className="border rounded-lg p-4">
                     <div className="flex justify-between items-start">
                       <div>
@@ -244,14 +367,19 @@ const AccountDashboard = () => {
                         )}
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">Delete</Button>
+                        <Button variant="outline" size="sm">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
                 ))}
                 <Button variant="outline" className="w-full">
-                  + Add New Address
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Address
                 </Button>
               </div>
             </CardContent>
@@ -276,12 +404,19 @@ const AccountDashboard = () => {
                         <div className="text-sm text-gray-500">Expires 12/26</div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">Remove</Button>
+                        <Button variant="outline" size="sm">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
-                  <Button variant="outline">+ Add Payment Method</Button>
+                  <Button variant="outline">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Payment Method
+                  </Button>
                 </div>
 
                 <div>

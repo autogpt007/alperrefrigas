@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams } from 'react-router-dom';
 import { Search, Filter, Grid, List, Shield, Truck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import SEOComponent from '../seo/SEOComponent';
 const ProductCatalog = () => {
   const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { category: urlCategory } = useParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
@@ -20,25 +21,64 @@ const ProductCatalog = () => {
 
   useEffect(() => {
     const search = searchParams.get('search');
+    const category = searchParams.get('category') || urlCategory;
+    
     if (search) {
       setSearchQuery(search);
     }
-  }, [searchParams]);
+    
+    if (category) {
+      setSelectedCategory(category.toLowerCase());
+    }
+  }, [searchParams, urlCategory]);
 
   const categories = [
     { value: 'all', label: 'All Categories' },
-    { value: 'HFC', label: 'HFC Refrigerants' },
-    { value: 'HFO', label: 'HFO Refrigerants' },
-    { value: 'Natural', label: 'Natural Refrigerants' }
+    { value: 'hfc', label: 'HFC Refrigerants' },
+    { value: 'hfo', label: 'HFO Refrigerants' },
+    { value: 'natural', label: 'Natural Refrigerants' },
+    { value: 'automotive', label: 'Automotive' },
+    { value: 'commercial', label: 'Commercial HVAC' },
+    { value: 'industrial', label: 'Industrial' }
   ];
 
+  // Enhanced filtering logic to handle application-based categories
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (product.applications && product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase()))) ||
                          product.sku.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+
+    if (selectedCategory === 'all') {
+      return matchesSearch;
+    }
+
+    // Direct category match
+    if (product.category && product.category.toLowerCase() === selectedCategory) {
+      return matchesSearch;
+    }
+
+    // Application-based category matching
+    if (product.applications && Array.isArray(product.applications)) {
+      const applicationMatch = product.applications.some(app => {
+        const appLower = app.toLowerCase();
+        switch (selectedCategory) {
+          case 'automotive':
+            return appLower.includes('automotive') || appLower.includes('mobile ac') || appLower.includes('vehicle');
+          case 'commercial':
+            return appLower.includes('commercial') || appLower.includes('hvac') || appLower.includes('ac');
+          case 'industrial':
+            return appLower.includes('industrial') || appLower.includes('process') || appLower.includes('chiller');
+          default:
+            return false;
+        }
+      });
+      if (applicationMatch) {
+        return matchesSearch;
+      }
+    }
+
+    return false;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -144,11 +184,18 @@ const ProductCatalog = () => {
     </Card>
   );
 
+  // Get category display name
+  const getCategoryDisplayName = () => {
+    if (selectedCategory === 'all') return 'All Categories';
+    const category = categories.find(cat => cat.value === selectedCategory);
+    return category ? category.label : selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title="Professional Refrigerant Catalog - HFC, HFO & Natural Refrigerants"
-        description="Browse our comprehensive selection of professional-grade refrigerants including R-410A, R-134a, R-404A, R-1234yf, and more. EPA approved, bulk quantities, fast shipping."
+        title={`${getCategoryDisplayName()} - Professional Refrigerant Catalog`}
+        description={`Browse our comprehensive selection of ${getCategoryDisplayName().toLowerCase()} including R-410A, R-134a, R-404A, R-1234yf, and more. EPA approved, bulk quantities, fast shipping.`}
         keywords="refrigerant, HFC, HFO, natural refrigerants, R-410A, R-134a, R-404A, R-407C, R-507A, R-32, R-1234yf, R-290, R-600a, HVAC, automotive, commercial"
         canonicalUrl="/products"
       />
@@ -158,7 +205,7 @@ const ProductCatalog = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              Professional Refrigerant Catalog
+              {getCategoryDisplayName()}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
               Browse our comprehensive selection of EPA-approved refrigerants. Available in bulk quantities 
