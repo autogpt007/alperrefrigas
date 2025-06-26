@@ -62,7 +62,19 @@ const AccountDashboard = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+      
+      // Transform the data to match our Order interface
+      const transformedOrders: Order[] = (data || []).map(order => ({
+        id: order.id,
+        order_number: order.order_number || '',
+        created_at: order.created_at || '',
+        status: order.status || 'pending',
+        total_amount: order.total_amount,
+        items: Array.isArray(order.items) ? order.items : [],
+        tracking_number: order.tracking_number || undefined
+      }));
+      
+      setOrders(transformedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -269,7 +281,11 @@ const AccountDashboard = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Member Since:</span>
-                  <span>{formatDate(profile.created_at || '')}</span>
+                  <span>{new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}</span>
                 </div>
                 <Button
                   variant="destructive"
@@ -307,11 +323,18 @@ const AccountDashboard = () => {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="font-medium">Order {order.order_number}</div>
-                          <div className="text-sm text-gray-500">Placed on {formatDate(order.created_at)}</div>
+                          <div className="text-sm text-gray-500">Placed on {new Date(order.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}</div>
                         </div>
                         <div className="text-right">
                           <div className="font-medium">${Number(order.total_amount).toFixed(2)}</div>
-                          <Badge className={getStatusColor(order.status)}>
+                          <Badge className={`${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
+                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'}`}>
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </Badge>
                         </div>
