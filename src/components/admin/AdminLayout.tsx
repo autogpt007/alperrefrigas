@@ -7,11 +7,12 @@ import AuthPage from '@/components/auth/AuthPage';
 import { Loader2 } from 'lucide-react';
 
 const AdminLayout = () => {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, isAdmin, isLoading, profile } = useAuth();
 
-  console.log('AdminLayout - user:', user, 'isAdmin:', isAdmin, 'isLoading:', isLoading);
+  console.log('AdminLayout - user:', !!user, 'isAdmin:', isAdmin, 'isLoading:', isLoading, 'profile:', !!profile);
 
   if (isLoading) {
+    console.log('AdminLayout - Still loading...');
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
