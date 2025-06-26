@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, FileText, ShoppingCart, TrendingUp } from 'lucide-react';
+import { Package, FileText, ShoppingCart, TrendingUp, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Stats {
   totalProducts: number;
@@ -22,9 +23,18 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchStats = async () => {
+      console.log('Dashboard - fetchStats called, user:', user, 'isAdmin:', isAdmin);
+      
+      if (!user || !isAdmin) {
+        console.log('Dashboard - No user or not admin, skipping stats fetch');
+        setLoading(false);
+        return;
+      }
+
       try {
         console.log('Fetching dashboard stats...');
         
@@ -62,7 +72,12 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [user, isAdmin]);
+
+  // If not admin, don't render anything (should be handled by layout)
+  if (!user || !isAdmin) {
+    return null;
+  }
 
   const statCards = [
     {
@@ -108,9 +123,11 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="bg-slate-800/50 border-slate-600 animate-pulse">
+            <Card key={i} className="bg-slate-800/50 border-slate-600">
               <CardContent className="p-6">
-                <div className="h-16 bg-slate-700 rounded"></div>
+                <div className="flex items-center justify-center h-16">
+                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                </div>
               </CardContent>
             </Card>
           ))}

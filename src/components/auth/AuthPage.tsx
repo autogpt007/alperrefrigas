@@ -12,8 +12,11 @@ const AuthPage = () => {
   const { user, isLoading, isAdmin } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
 
+  console.log('AuthPage - user:', user, 'isLoading:', isLoading, 'isAdmin:', isAdmin);
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('AuthPage - Auth state change:', event, session?.user?.id);
       if (event === 'SIGNED_IN') {
         setAuthLoading(true);
         setTimeout(() => setAuthLoading(false), 2000);
