@@ -7,12 +7,17 @@ import AuthPage from '@/components/auth/AuthPage';
 import { Loader2 } from 'lucide-react';
 
 const AdminLayout = () => {
-  const { user, isAdmin, isLoading, profile } = useAuth();
+  const { user, isAdmin, isLoading } = useAuth();
 
-  console.log('AdminLayout - user:', !!user, 'isAdmin:', isAdmin, 'isLoading:', isLoading, 'profile:', !!profile);
+  console.log('AdminLayout render:', { 
+    user: !!user, 
+    isAdmin, 
+    isLoading 
+  });
 
+  // Show loading only if we're still determining auth state
   if (isLoading) {
-    console.log('AdminLayout - Still loading...');
+    console.log('AdminLayout - Still loading auth state...');
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -30,8 +35,8 @@ const AdminLayout = () => {
   }
 
   // If user exists but is not admin, redirect to home
-  if (user && !isAdmin) {
-    console.log('AdminLayout - User exists but not admin, redirecting to home');
+  if (!isAdmin) {
+    console.log('AdminLayout - User is not admin, redirecting to home');
     return <Navigate to="/" replace />;
   }
 

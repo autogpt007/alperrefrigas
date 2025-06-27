@@ -47,11 +47,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (profileData) {
         const profile = {
           id: profileData.id,
-          email: profileData.email,
-          full_name: profileData.full_name,
-          role: profileData.role as 'admin' | 'user'
+          email: profileData.email || '',
+          full_name: profileData.full_name || '',
+          role: (profileData.role as 'admin' | 'user') || 'user'
         };
-        console.log('Profile fetched:', profile);
+        console.log('Profile fetched successfully:', profile);
         return profile;
       }
       return null;
@@ -69,8 +69,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('Initializing auth...');
         
         // Get initial session
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        console.log('Initial session:', initialSession?.user?.id);
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          if (mounted) {
+            setIsLoading(false);
+          }
+          return;
+        }
+
+        console.log('Initial session:', initialSession?.user?.id || 'no session');
         
         if (mounted) {
           setSession(initialSession);
@@ -81,8 +90,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (mounted) {
               setProfile(profileData);
             }
-          } else {
-            setProfile(null);
           }
           
           setIsLoading(false);
@@ -98,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state change:', event, session?.user?.id);
+        console.log('Auth state change:', event, session?.user?.id || 'no session');
         
         if (!mounted) return;
         
@@ -106,18 +113,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          const profileData = await fetchProfile(session.user.id);
-          if (mounted) {
-            setProfile(profileData);
-          }
+          // Fetch profile without blocking the auth state
+          setTimeout(async () => {
+            if (mounted) {
+              const profileData = await fetchProfile(session.user.id);
+              if (mounted) {
+                setProfile(profileData);
+              }
+            }
+          }, 0);
         } else {
           setProfile(null);
         }
         
-        // Always set loading to false after handling auth state change
-        if (mounted) {
-          setIsLoading(false);
-        }
+        // Set loading to false immediately after handling auth state
+        setIsLoading(false);
       }
     );
 
@@ -176,7 +186,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
   };
 
-  console.log('AuthProvider value:', { user: !!user, profile: !!profile, isAdmin, isLoading });
+  console.log('AuthProvider render:', { 
+    user: !!user, 
+    profile: !!profile, 
+    isAdmin, 
+    isLoading,
+    profileRole: profile?.role 
+  });
 
   return (
     <AuthContext.Provider value={value}>
