@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, FileText, ShoppingCart, TrendingUp, Loader2 } from 'lucide-react';
+import { Package, FileText, ShoppingCart, TrendingUp, Loader2, Settings, Users, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,8 @@ interface Stats {
   totalPosts: number;
   totalOrders: number;
   pendingOrders: number;
+  totalRevenue: number;
+  recentOrders: number;
 }
 
 const Dashboard = () => {
@@ -19,6 +21,8 @@ const Dashboard = () => {
     totalPosts: 0,
     totalOrders: 0,
     pendingOrders: 0,
+    totalRevenue: 0,
+    recentOrders: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +45,7 @@ const Dashboard = () => {
         const [products, posts, orders] = await Promise.all([
           supabase.from('products').select('id', { count: 'exact', head: true }),
           supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
-          supabase.from('orders').select('id, status', { count: 'exact' }),
+          supabase.from('orders').select('id, status, total_amount, created_at', { count: 'exact' }),
         ]);
 
         console.log('Products query result:', products);
@@ -53,12 +57,21 @@ const Dashboard = () => {
         if (orders.error) throw orders.error;
 
         const pendingCount = orders.data?.filter(order => order.status === 'pending').length || 0;
+        const totalRevenue = orders.data?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+        const recentOrders = orders.data?.filter(order => {
+          const orderDate = new Date(order.created_at);
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          return orderDate >= weekAgo;
+        }).length || 0;
 
         const newStats = {
           totalProducts: products.count || 0,
           totalPosts: posts.count || 0,
           totalOrders: orders.count || 0,
           pendingOrders: pendingCount,
+          totalRevenue,
+          recentOrders,
         };
 
         console.log('Dashboard stats:', newStats);
@@ -112,6 +125,22 @@ const Dashboard = () => {
       iconColor: 'text-yellow-400',
       onClick: () => navigate('/admin/orders'),
     },
+    {
+      title: 'Total Revenue',
+      value: `$${stats.totalRevenue.toFixed(2)}`,
+      icon: BarChart3,
+      color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/20',
+      iconColor: 'text-emerald-400',
+      onClick: () => navigate('/admin/orders'),
+    },
+    {
+      title: 'Recent Orders',
+      value: `${stats.recentOrders} this week`,
+      icon: TrendingUp,
+      color: 'from-indigo-500/20 to-purple-500/20 border-indigo-500/20',
+      iconColor: 'text-indigo-400',
+      onClick: () => navigate('/admin/orders'),
+    },
   ];
 
   if (loading) {
@@ -121,8 +150,8 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
           <p className="text-gray-300">Loading dashboard...</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <Card key={i} className="bg-slate-800/50 border-slate-600">
               <CardContent className="p-6">
                 <div className="flex items-center justify-center h-16">
@@ -150,12 +179,12 @@ const Dashboard = () => {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-300">Welcome to your admin dashboard</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
+        <p className="text-gray-300">Welcome to your comprehensive admin dashboard</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {statCards.map((stat) => (
           <Card 
             key={stat.title} 
@@ -166,7 +195,7 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-300">{stat.title}</p>
-                  <p className="text-3xl font-bold text-white">{stat.value}</p>
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
                 </div>
                 <stat.icon className={`h-8 w-8 ${stat.iconColor}`} />
               </div>
@@ -181,7 +210,7 @@ const Dashboard = () => {
           <CardTitle className="text-cyan-400">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card 
               className="bg-slate-700/50 border-slate-600 hover:border-cyan-500/50 transition-colors cursor-pointer"
               onClick={() => navigate('/admin/products')}
@@ -210,6 +239,16 @@ const Dashboard = () => {
                 <ShoppingCart className="h-8 w-8 text-purple-400 mx-auto mb-2" />
                 <h3 className="font-semibold text-white">Manage Orders</h3>
                 <p className="text-sm text-gray-400">Process customer orders</p>
+              </CardContent>
+            </Card>
+            <Card 
+              className="bg-slate-700/50 border-slate-600 hover:border-orange-500/50 transition-colors cursor-pointer"
+              onClick={() => navigate('/admin/content')}
+            >
+              <CardContent className="p-4 text-center">
+                <Settings className="h-8 w-8 text-orange-400 mx-auto mb-2" />
+                <h3 className="font-semibold text-white">Site Settings</h3>
+                <p className="text-sm text-gray-400">Manage website content</p>
               </CardContent>
             </Card>
           </div>

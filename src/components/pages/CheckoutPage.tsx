@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
@@ -85,7 +84,7 @@ const CheckoutPage = () => {
         },
         notes: formData.notes,
         items: items.map(item => ({
-          product_id: item.id,
+          product_id: null, // Set to null since we're using custom cart IDs
           product_name: item.name,
           quantity: item.quantity,
           price: item.price,
