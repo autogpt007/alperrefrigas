@@ -28,46 +28,66 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
+    console.log('Adding item to cart:', newItem);
+    
     setItems(currentItems => {
-      const existingItem = currentItems.find(item => 
+      const existingItemIndex = currentItems.findIndex(item => 
         item.id === newItem.id && item.packaging === newItem.packaging
       );
       
-      if (existingItem) {
-        return currentItems.map(item =>
-          item.id === newItem.id && item.packaging === newItem.packaging
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+      if (existingItemIndex !== -1) {
+        // Update existing item quantity
+        const updatedItems = [...currentItems];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1
+        };
+        console.log('Updated existing item, new cart:', updatedItems);
+        return updatedItems;
       }
       
-      return [...currentItems, { ...newItem, quantity: 1 }];
+      // Add new item
+      const newCart = [...currentItems, { ...newItem, quantity: 1 }];
+      console.log('Added new item, new cart:', newCart);
+      return newCart;
     });
   };
 
   const removeItem = (id: string) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== id));
+    console.log('Removing item from cart:', id);
+    setItems(currentItems => {
+      const newItems = currentItems.filter(item => item.id !== id);
+      console.log('Cart after removal:', newItems);
+      return newItems;
+    });
   };
 
   const updateQuantity = (id: string, quantity: number) => {
+    console.log('Updating quantity for item:', id, 'to:', quantity);
+    
     if (quantity <= 0) {
       removeItem(id);
       return;
     }
     
-    setItems(currentItems =>
-      currentItems.map(item =>
+    setItems(currentItems => {
+      const updatedItems = currentItems.map(item =>
         item.id === id ? { ...item, quantity } : item
-      )
-    );
+      );
+      console.log('Cart after quantity update:', updatedItems);
+      return updatedItems;
+    });
   };
 
   const clearCart = () => {
+    console.log('Clearing cart');
     setItems([]);
   };
 
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  console.log('Cart state:', { items, total, itemCount });
 
   const value = {
     items,

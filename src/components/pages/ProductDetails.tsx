@@ -81,15 +81,18 @@ const ProductDetails = () => {
     // Create unique cart item ID based on product and packaging
     const cartItemId = `${product.id}-${packaging.replace(/\s+/g, '-').toLowerCase()}`;
 
-    addToCart({
-      id: cartItemId,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      sku: product.sku,
-      epaApproved: product.epaApproved,
-      packaging
-    });
+    // Add multiple quantities based on user selection
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: cartItemId,
+        name: product.name,
+        price: product.price,
+        image: product.image || '/placeholder.svg',
+        sku: product.sku || 'N/A',
+        epaApproved: product.epaApproved || false,
+        packaging
+      });
+    }
 
     toast({
       title: "Added to Cart",
@@ -101,7 +104,9 @@ const ProductDetails = () => {
       )
     });
 
-    // Don't reset form after adding to cart so user can add more quantities
+    // Reset form after adding to cart
+    setQuantity(1);
+    setPackaging('');
   };
 
   return (
