@@ -4,8 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, X, FileText, User, LogIn, Search, ShoppingCart } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
+import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AuthModal from '../AuthModal';
 
@@ -13,7 +15,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { itemCount } = useRFQ();
+  const { itemCount: rfqItemCount } = useRFQ();
+  const { itemCount: cartItemCount } = useCart();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -42,7 +45,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-4">
               {/* Search Bar */}
               <form onSubmit={handleSearch} className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -58,36 +61,55 @@ const Header = () => {
               <Link to="/products" className="text-white hover:text-blue-300 font-medium transition-colors">
                 Products
               </Link>
-              
-              <Link to="/rfq" className="text-white hover:text-blue-300 font-medium relative transition-colors">
+
+              {/* Shopping Cart */}
+              <Link to="/cart" className="text-white hover:text-blue-300 font-medium relative transition-colors">
                 <div className="flex items-center space-x-2">
                   <ShoppingCart className="h-4 w-4" />
+                  <span>Cart</span>
+                  {cartItemCount > 0 && (
+                    <Badge className="bg-orange-500 text-white text-xs ml-1 animate-pulse">
+                      {cartItemCount}
+                    </Badge>
+                  )}
+                </div>
+              </Link>
+              
+              {/* RFQ/Quote Request */}
+              <Link to="/rfq" className="text-white hover:text-blue-300 font-medium relative transition-colors">
+                <div className="flex items-center space-x-2">
+                  <FileText className="h-4 w-4" />
                   <span>Quote Request</span>
-                  {itemCount > 0 && (
+                  {rfqItemCount > 0 && (
                     <Badge className="bg-blue-500 text-white text-xs ml-1 animate-pulse">
-                      {itemCount}
+                      {rfqItemCount}
                     </Badge>
                   )}
                 </div>
               </Link>
               
               {user ? (
-                <div className="flex items-center space-x-4">
-                  <Link to="/portal" className="text-white hover:text-blue-300 font-medium transition-colors">
-                    <div className="flex items-center space-x-2">
-                      <User className="h-4 w-4" />
-                      <span>Portal</span>
-                    </div>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="text-white hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    Logout
-                  </Button>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-white hover:text-blue-300 hover:bg-blue-500/10 transition-colors">
+                      <User className="h-4 w-4 mr-2" />
+                      Portal
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link to="/portal" className="w-full">
+                        <User className="h-4 w-4 mr-2" />
+                        My Account
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <Button
                   variant="ghost"
@@ -143,17 +165,31 @@ const Header = () => {
                 >
                   Products
                 </Link>
+
+                <Link
+                  to="/cart"
+                  className="text-white hover:text-blue-300 font-medium flex items-center py-2 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Cart
+                  {cartItemCount > 0 && (
+                    <Badge className="bg-orange-500 text-white text-xs ml-2">
+                      {cartItemCount}
+                    </Badge>
+                  )}
+                </Link>
                 
                 <Link
                   to="/rfq"
                   className="text-white hover:text-blue-300 font-medium flex items-center py-2 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  <FileText className="h-4 w-4 mr-2" />
                   Quote Request
-                  {itemCount > 0 && (
+                  {rfqItemCount > 0 && (
                     <Badge className="bg-blue-500 text-white text-xs ml-2">
-                      {itemCount}
+                      {rfqItemCount}
                     </Badge>
                   )}
                 </Link>
@@ -174,6 +210,7 @@ const Header = () => {
                       onClick={handleLogout}
                       className="text-white hover:text-red-400 hover:bg-red-500/10 justify-start py-2 px-0 transition-colors"
                     >
+                      <LogIn className="h-4 w-4 mr-2" />
                       Logout
                     </Button>
                   </>

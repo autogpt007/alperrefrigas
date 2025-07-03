@@ -78,8 +78,11 @@ const ProductDetails = () => {
       return;
     }
 
+    // Create unique cart item ID based on product and packaging
+    const cartItemId = `${product.id}-${packaging.replace(/\s+/g, '-').toLowerCase()}`;
+
     addToCart({
-      id: `${product.id}-${packaging}`,
+      id: cartItemId,
       name: product.name,
       price: product.price,
       image: product.image,
@@ -90,11 +93,15 @@ const ProductDetails = () => {
 
     toast({
       title: "Added to Cart",
-      description: `${quantity} ${packaging} of ${product.name} added to your cart.`
+      description: `${quantity} ${packaging} of ${product.name} added to your cart.`,
+      action: (
+        <Link to="/cart" className="text-sm underline">
+          View Cart
+        </Link>
+      )
     });
 
-    setQuantity(1);
-    setPackaging('');
+    // Don't reset form after adding to cart so user can add more quantities
   };
 
   return (
@@ -341,10 +348,15 @@ const ProductDetails = () => {
                   </Button>
                 </div>
 
-                <div className="text-center">
+                <div className="grid grid-cols-2 gap-3">
                   <Link to="/cart">
                     <Button variant="outline" className="w-full">
                       View Cart
+                    </Button>
+                  </Link>
+                  <Link to="/rfq">
+                    <Button variant="outline" className="w-full">
+                      View Quotes
                     </Button>
                   </Link>
                 </div>

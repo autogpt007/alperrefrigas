@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, User, Building, Shield, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -17,6 +18,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
+  const [error, setError] = useState<string>('');
   const { login, register } = useAuth();
 
   const [loginData, setLoginData] = useState({
@@ -35,12 +37,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
     try {
-      await login(loginData.email, loginData.password);
-      onClose();
+      const { error } = await login(loginData.email, loginData.password);
+      if (error) {
+        setError(error.message || 'Login failed. Please check your credentials.');
+      } else {
+        onClose();
+        setLoginData({ email: '', password: '' });
+      }
     } catch (error) {
       console.error('Login failed:', error);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -49,15 +58,45 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
     try {
-      await register(registerData);
-      onClose();
+      const { error } = await register(registerData);
+      if (error) {
+        if (error.message?.includes('already registered')) {
+          setError('This email is already registered. Please sign in instead.');
+        } else {
+          setError(error.message || 'Registration failed. Please try again.');
+        }
+      } else {
+        onClose();
+        setRegisterData({
+          name: '',
+          email: '',
+          password: '',
+          company: '',
+          epaLicense: ''
+        });
+      }
     } catch (error) {
       console.error('Registration failed:', error);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    onClose();
+    setError('');
+    setLoginData({ email: '', password: '' });
+    setRegisterData({
+      name: '',
+      email: '',
+      password: '',
+      company: '',
+      epaLicense: ''
+    });
   };
 
   if (!isOpen) return null;
@@ -76,13 +115,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                Quantum Access Portal
+                Access Portal
               </CardTitle>
-              <p className="text-gray-400 text-sm">Enter the future of refrigerant distribution</p>
+              <p className="text-gray-400 text-sm">Sign in or create your account</p>
             </div>
           </CardHeader>
 
           <CardContent>
+            {error && (
+              <Alert className="mb-4 border-red-500/50 bg-red-500/10">
+                <AlertDescription className="text-red-400">
+                  {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-cyan-500/20">
                 <TabsTrigger 
@@ -111,7 +158,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       value={loginData.email}
                       onChange={(e) => setLoginData({...loginData, email: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
-                      placeholder="quantum@frigidflow.com"
+                      placeholder="your@email.com"
                       required
                     />
                   </div>
@@ -150,10 +197,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                        Accessing Portal...
+                        Signing In...
                       </div>
                     ) : (
-                      'Enter Portal'
+                      'Sign In'
                     )}
                   </Button>
                 </form>
@@ -171,7 +218,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       value={registerData.name}
                       onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
-                      placeholder="Tony Stark"
+                      placeholder="John Doe"
                       required
                     />
                   </div>
@@ -186,7 +233,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       value={registerData.email}
                       onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
-                      placeholder="quantum@frigidflow.com"
+                      placeholder="your@email.com"
                       required
                     />
                   </div>
@@ -194,14 +241,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   <div className="space-y-2">
                     <Label className="text-gray-300 flex items-center gap-2">
                       <Building className="h-4 w-4 text-cyan-400" />
-                      Company
+                      Company (Optional)
                     </Label>
                     <Input
                       type="text"
                       value={registerData.company}
                       onChange={(e) => setRegisterData({...registerData, company: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
-                      placeholder="Stark Industries"
+                      placeholder="Your Company"
                     />
                   </div>
 
@@ -253,10 +300,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                        Creating Portal...
+                        Creating Account...
                       </div>
                     ) : (
-                      'Create Portal Access'
+                      'Create Account'
                     )}
                   </Button>
                 </form>
@@ -266,10 +313,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <div className="mt-6 pt-4 border-t border-cyan-500/20">
               <Button
                 variant="ghost"
-                onClick={onClose}
+                onClick={handleClose}
                 className="w-full text-gray-400 hover:text-white hover:bg-slate-700/50"
               >
-                Close Portal
+                Close
               </Button>
             </div>
           </CardContent>
