@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,6 +13,7 @@ import SEOComponent from '../seo/SEOComponent';
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { products } = useProducts();
   const { addItem: addToRFQ } = useRFQ();
   const { addItem: addToCart } = useCart();
@@ -98,9 +98,13 @@ const ProductDetails = () => {
       title: "Added to Cart",
       description: `${quantity} ${packaging} of ${product.name} added to your cart.`,
       action: (
-        <Link to="/cart" className="text-sm underline">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => navigate('/cart')}
+        >
           View Cart
-        </Link>
+        </Button>
       )
     });
 
