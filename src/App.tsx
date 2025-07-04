@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import { ProductsProvider } from './contexts/ProductsContext';
 import { CartProvider } from './contexts/CartContext';
 import { RFQProvider } from './contexts/RFQContext';
@@ -41,54 +42,56 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ProductsProvider>
-          <CartProvider>
-            <RFQProvider>
-              <OrdersProvider>
-                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-                  <Router>
-                    <div className="flex flex-col min-h-screen">
-                      <Header />
-                      <main className="flex-1">
-                        <Routes>
-                          <Route path="/" element={<Home />} />
-                          <Route path="/products" element={<Products />} />
-                          <Route path="/products/:id" element={<ProductDetail />} />
-                          <Route path="/cart" element={<Cart />} />
-                          <Route path="/checkout" element={<Checkout />} />
-                          <Route path="/rfq" element={<RFQForm />} />
-                          <Route path="/order-confirmation" element={<OrderConfirmation />} />
-                          <Route path="/auth" element={<AuthPage />} />
-                          
-                          {/* Admin Routes */}
-                          <Route path="/admin" element={<AdminLayout />}>
-                            <Route index element={<Dashboard />} />
-                            <Route path="products" element={<ProductManagement />} />
-                            <Route path="posts" element={<SimpleBlogManagement />} />
-                            <Route path="orders" element={<OrderManagement />} />
-                            <Route path="content" element={<ContentManagement />} />
-                            <Route path="settings" element={<AdminSettings />} />
-                          </Route>
-                          
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </main>
-                      <Footer />
-                    </div>
-                  </Router>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ProductsProvider>
+            <CartProvider>
+              <RFQProvider>
+                <OrdersProvider>
+                  <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+                    <Router>
+                      <div className="flex flex-col min-h-screen">
+                        <Header />
+                        <main className="flex-1">
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/products" element={<Products />} />
+                            <Route path="/products/:id" element={<ProductDetail />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/rfq" element={<RFQForm />} />
+                            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                            <Route path="/auth" element={<AuthPage />} />
+                            
+                            {/* Admin Routes */}
+                            <Route path="/admin" element={<AdminLayout />}>
+                              <Route index element={<Dashboard />} />
+                              <Route path="products" element={<ProductManagement />} />
+                              <Route path="posts" element={<SimpleBlogManagement />} />
+                              <Route path="orders" element={<OrderManagement />} />
+                              <Route path="content" element={<ContentManagement />} />
+                              <Route path="settings" element={<AdminSettings />} />
+                            </Route>
+                            
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                        <Footer />
+                      </div>
+                    </Router>
 
-                  {/* Modals */}
-                  <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
-                  <Toaster />
-                </div>
-              </OrdersProvider>
-            </RFQProvider>
-          </CartProvider>
-        </ProductsProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+                    {/* Modals */}
+                    <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
+                    <Toaster />
+                  </div>
+                </OrdersProvider>
+              </RFQProvider>
+            </CartProvider>
+          </ProductsProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
