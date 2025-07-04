@@ -1,96 +1,34 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, FileText, ShoppingCart, TrendingUp, Loader2, Settings, Users, BarChart3 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Package, FileText, ShoppingCart, TrendingUp, Settings, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-
-interface Stats {
-  totalProducts: number;
-  totalPosts: number;
-  totalOrders: number;
-  pendingOrders: number;
-  totalRevenue: number;
-  recentOrders: number;
-}
+import { useProducts } from '@/contexts/ProductsContext';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({
-    totalProducts: 0,
-    totalPosts: 0,
-    totalOrders: 0,
-    pendingOrders: 0,
-    totalRevenue: 0,
-    recentOrders: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      console.log('Dashboard - fetchStats called, user:', user, 'isAdmin:', isAdmin);
-      
-      if (!user || !isAdmin) {
-        console.log('Dashboard - No user or not admin, skipping stats fetch');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        console.log('Fetching dashboard stats...');
-        
-        const [products, posts, orders] = await Promise.all([
-          supabase.from('products').select('id', { count: 'exact', head: true }),
-          supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
-          supabase.from('orders').select('id, status, total_amount, created_at', { count: 'exact' }),
-        ]);
-
-        console.log('Products query result:', products);
-        console.log('Posts query result:', posts);
-        console.log('Orders query result:', orders);
-
-        if (products.error) throw products.error;
-        if (posts.error) throw posts.error;
-        if (orders.error) throw orders.error;
-
-        const pendingCount = orders.data?.filter(order => order.status === 'pending').length || 0;
-        const totalRevenue = orders.data?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
-        const recentOrders = orders.data?.filter(order => {
-          const orderDate = new Date(order.created_at);
-          const weekAgo = new Date();
-          weekAgo.setDate(weekAgo.getDate() - 7);
-          return orderDate >= weekAgo;
-        }).length || 0;
-
-        const newStats = {
-          totalProducts: products.count || 0,
-          totalPosts: posts.count || 0,
-          totalOrders: orders.count || 0,
-          pendingOrders: pendingCount,
-          totalRevenue,
-          recentOrders,
-        };
-
-        console.log('Dashboard stats:', newStats);
-        setStats(newStats);
-      } catch (err: any) {
-        console.error('Error fetching dashboard stats:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [user, isAdmin]);
+  const { products } = useProducts();
 
   // If not admin, don't render anything (should be handled by layout)
   if (!user || !isAdmin) {
     return null;
   }
+
+  // Calculate stats from products context
+  const stats = {
+    totalProducts: products.length,
+    totalPosts: 0, // TODO: Implement blog posts context
+    totalOrders: 0, // TODO: Implement orders from context or supabase
+    pendingOrders: 0,
+    totalRevenue: 0,
+    recentOrders: 0,
+    inStockProducts: products.filter(p => p.availability === 'in_stock').length,
+    outOfStockProducts: products.filter(p => p.availability === 'out_of_stock').length,
+    epaApprovedProducts: products.filter(p => p.epaApproved).length,
+    lowStockProducts: products.filter(p => (p.stock || 0) < 10).length,
+  };
 
   const statCards = [
     {
@@ -102,79 +40,46 @@ const Dashboard = () => {
       onClick: () => navigate('/admin/products'),
     },
     {
-      title: 'Blog Posts',
-      value: stats.totalPosts,
-      icon: FileText,
+      title: 'In Stock',
+      value: stats.inStockProducts,
+      icon: Package,
       color: 'from-green-500/20 to-emerald-500/20 border-green-500/20',
       iconColor: 'text-green-400',
-      onClick: () => navigate('/admin/posts'),
+      onClick: () => navigate('/admin/products'),
     },
     {
-      title: 'Total Orders',
-      value: stats.totalOrders,
-      icon: ShoppingCart,
-      color: 'from-purple-500/20 to-pink-500/20 border-purple-500/20',
-      iconColor: 'text-purple-400',
-      onClick: () => navigate('/admin/orders'),
+      title: 'Out of Stock',
+      value: stats.outOfStockProducts,
+      icon: Package,
+      color: 'from-red-500/20 to-pink-500/20 border-red-500/20',
+      iconColor: 'text-red-400',
+      onClick: () => navigate('/admin/products'),
     },
     {
-      title: 'Pending Orders',
-      value: stats.pendingOrders,
+      title: 'EPA Approved',
+      value: stats.epaApprovedProducts,
+      icon: Package,
+      color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/20',
+      iconColor: 'text-emerald-400',
+      onClick: () => navigate('/admin/products'),
+    },
+    {
+      title: 'Low Stock Alert',
+      value: stats.lowStockProducts,
       icon: TrendingUp,
       color: 'from-yellow-500/20 to-orange-500/20 border-yellow-500/20',
       iconColor: 'text-yellow-400',
-      onClick: () => navigate('/admin/orders'),
+      onClick: () => navigate('/admin/products'),
     },
     {
-      title: 'Total Revenue',
-      value: `$${stats.totalRevenue.toFixed(2)}`,
-      icon: BarChart3,
-      color: 'from-emerald-500/20 to-green-500/20 border-emerald-500/20',
-      iconColor: 'text-emerald-400',
-      onClick: () => navigate('/admin/orders'),
-    },
-    {
-      title: 'Recent Orders',
-      value: `${stats.recentOrders} this week`,
-      icon: TrendingUp,
-      color: 'from-indigo-500/20 to-purple-500/20 border-indigo-500/20',
-      iconColor: 'text-indigo-400',
-      onClick: () => navigate('/admin/orders'),
+      title: 'Blog Posts',
+      value: stats.totalPosts,
+      icon: FileText,
+      color: 'from-purple-500/20 to-pink-500/20 border-purple-500/20',
+      iconColor: 'text-purple-400',
+      onClick: () => navigate('/admin/posts'),
     },
   ];
-
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-300">Loading dashboard...</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Card key={i} className="bg-slate-800/50 border-slate-600">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-center h-16">
-                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-red-400">Error loading dashboard: {error}</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 space-y-6">
@@ -203,6 +108,33 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
+
+      {/* Product Categories Overview */}
+      <Card className="bg-slate-800/50 border-cyan-500/20">
+        <CardHeader>
+          <CardTitle className="text-cyan-400">Product Categories</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {['HFC', 'HFO', 'Natural', 'HCFC', 'CFC'].map((category) => {
+              const count = products.filter(p => p.category === category).length;
+              return (
+                <Card 
+                  key={category}
+                  className="bg-slate-700/50 border-slate-600 hover:border-cyan-500/50 transition-colors cursor-pointer"
+                  onClick={() => navigate('/admin/products')}
+                >
+                  <CardContent className="p-4 text-center">
+                    <h3 className="font-semibold text-white">{category}</h3>
+                    <p className="text-2xl font-bold text-cyan-400">{count}</p>
+                    <p className="text-sm text-gray-400">products</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Actions */}
       <Card className="bg-slate-800/50 border-cyan-500/20">
@@ -251,6 +183,34 @@ const Dashboard = () => {
                 <p className="text-sm text-gray-400">Manage website content</p>
               </CardContent>
             </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card className="bg-slate-800/50 border-cyan-500/20">
+        <CardHeader>
+          <CardTitle className="text-cyan-400">Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {products.slice(0, 5).map((product) => (
+              <div key={product.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-slate-600 rounded-lg flex items-center justify-center">
+                    <Package className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <p className="text-white font-medium">{product.name}</p>
+                    <p className="text-gray-400 text-sm">SKU: {product.sku}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-cyan-400 font-medium">${product.price}</p>
+                  <p className="text-gray-400 text-sm">Stock: {product.stock || 0}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
