@@ -42,11 +42,11 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ProductsProvider>
-        <CartProvider>
-          <RFQProvider>
-            <OrdersProvider>
-              <AuthProvider>
+      <AuthProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <RFQProvider>
+              <OrdersProvider>
                 <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
                   <Router>
                     <div className="flex flex-col min-h-screen">
@@ -61,7 +61,6 @@ function App() {
                           <Route path="/rfq" element={<RFQForm />} />
                           <Route path="/order-confirmation" element={<OrderConfirmation />} />
                           <Route path="/auth" element={<AuthPage />} />
-                          <Route path="*" element={<NotFound />} />
                           
                           {/* Admin Routes */}
                           <Route path="/admin" element={<AdminLayout />}>
@@ -84,11 +83,11 @@ function App() {
                   <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
                   <Toaster />
                 </div>
-              </AuthProvider>
-            </OrdersProvider>
-          </RFQProvider>
-        </CartProvider>
-      </ProductsProvider>
+              </OrdersProvider>
+            </RFQProvider>
+          </CartProvider>
+        </ProductsProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
