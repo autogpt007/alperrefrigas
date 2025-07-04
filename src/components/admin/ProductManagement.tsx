@@ -20,24 +20,24 @@ const ProductManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
 
-  // Form state for new/edit product
+  // Form state for new/edit product - aligned with Product interface
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
     price: 0,
-    category: 'HFC' as 'HFC' | 'HFO' | 'Natural' | 'HCFC' | 'CFC',
+    category: 'HFC' as string,
     description: '',
     availability: 'in_stock' as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder',
     condition: 'new' as 'new' | 'used' | 'refurbished',
-    stock_quantity: 0,
-    epa_approved: false,
+    stock: 0,
+    epaApproved: false,
     brand: '',
-    chemical_formula: '',
-    cas_number: '',
-    hazard_class: '',
-    un_number: '',
-    shipping_weight: '',
-    thumbnail_url: ''
+    chemicalFormula: '',
+    casNumber: '',
+    hazardClass: '',
+    unNumber: '',
+    shippingWeight: '',
+    image: '/placeholder.svg'
   });
 
   const resetForm = () => {
@@ -49,15 +49,15 @@ const ProductManagement = () => {
       description: '',
       availability: 'in_stock',
       condition: 'new',
-      stock_quantity: 0,
-      epa_approved: false,
+      stock: 0,
+      epaApproved: false,
       brand: '',
-      chemical_formula: '',
-      cas_number: '',
-      hazard_class: '',
-      un_number: '',
-      shipping_weight: '',
-      thumbnail_url: ''
+      chemicalFormula: '',
+      casNumber: '',
+      hazardClass: '',
+      unNumber: '',
+      shippingWeight: '',
+      image: '/placeholder.svg'
     });
     setEditingProduct(null);
   };
@@ -100,15 +100,15 @@ const ProductManagement = () => {
       description: product.description || '',
       availability: product.availability || 'in_stock',
       condition: product.condition || 'new',
-      stock_quantity: product.stock_quantity || 0,
-      epa_approved: product.epa_approved || false,
+      stock: product.stock || 0,
+      epaApproved: product.epaApproved || false,
       brand: product.brand || '',
-      chemical_formula: product.chemical_formula || '',
-      cas_number: product.cas_number || '',
-      hazard_class: product.hazard_class || '',
-      un_number: product.un_number || '',
-      shipping_weight: product.shipping_weight || '',
-      thumbnail_url: product.thumbnail_url || ''
+      chemicalFormula: product.chemicalFormula || '',
+      casNumber: product.casNumber || '',
+      hazardClass: product.hazardClass || '',
+      unNumber: product.unNumber || '',
+      shippingWeight: product.shippingWeight || '',
+      image: product.image || '/placeholder.svg'
     });
     setEditingProduct(product);
     setIsAddDialogOpen(true);
@@ -209,8 +209,8 @@ const ProductManagement = () => {
                   <Input
                     id="stock"
                     type="number"
-                    value={formData.stock_quantity}
-                    onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) || 0 })}
+                    value={formData.stock}
+                    onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
                     className="bg-slate-700 border-slate-600 text-white"
                   />
                 </div>
@@ -221,7 +221,7 @@ const ProductManagement = () => {
                   <Label htmlFor="category" className="text-white">Category</Label>
                   <Select
                     value={formData.category}
-                    onValueChange={(value: 'HFC' | 'HFO' | 'Natural' | 'HCFC' | 'CFC') => 
+                    onValueChange={(value: string) => 
                       setFormData({ ...formData, category: value })
                     }
                   >
@@ -388,9 +388,9 @@ const ProductManagement = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Stock:</span>
-                  <span className="text-white">{product.stock_quantity || 0}</span>
+                  <span className="text-white">{product.stock || 0}</span>
                 </div>
-                {product.epa_approved && (
+                {product.epaApproved && (
                   <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                     EPA Approved
                   </Badge>
