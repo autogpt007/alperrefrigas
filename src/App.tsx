@@ -37,6 +37,12 @@ import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import TermsOfService from './components/pages/TermsOfService';
 import CookiePolicy from './components/pages/CookiePolicy';
 import Sitemap from './components/pages/Sitemap';
+import ShippingCalculator from './components/pages/ShippingCalculator';
+import MyAccount from './components/pages/MyAccount';
+import CustomerSupport from './components/pages/CustomerSupport';
+import EPACompliance from './components/pages/EPACompliance';
+import Certifications from './components/pages/Certifications';
+import FAQ from './components/pages/FAQ';
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -79,6 +85,12 @@ function App() {
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/cookies" element={<CookiePolicy />} />
                             <Route path="/sitemap" element={<Sitemap />} />
+                            <Route path="/shipping" element={<ShippingCalculator />} />
+                            <Route path="/account" element={<MyAccount />} />
+                            <Route path="/support" element={<CustomerSupport />} />
+                            <Route path="/compliance" element={<EPACompliance />} />
+                            <Route path="/certifications" element={<Certifications />} />
+                            <Route path="/faq" element={<FAQ />} />
                             
                             {/* Admin Routes */}
                             <Route path="/admin" element={<AdminLayout />}>

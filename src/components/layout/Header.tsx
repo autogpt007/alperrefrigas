@@ -42,7 +42,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <div className="text-xl sm:text-2xl font-bold text-white hover:text-blue-300 transition-colors">
-                North American <span className="text-blue-400">Refrigerants</span>
+                Alper <span className="text-blue-400">Refrigerants</span>
               </div>
             </Link>
 
@@ -68,6 +68,13 @@ const Header = () => {
                 >
                   <Package className="h-4 w-4" />
                   <span>Products</span>
+                </Link>
+
+                <Link 
+                  to="/shipping" 
+                  className="text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
+                >
+                  Shipping
                 </Link>
 
                 <Link 
@@ -134,7 +141,7 @@ const Header = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-white border border-gray-200 shadow-lg">
                       <DropdownMenuItem asChild>
-                        <Link to="/portal" className="w-full">
+                        <Link to="/account" className="w-full">
                           <User className="h-4 w-4 mr-2" />
                           My Account
                         </Link>

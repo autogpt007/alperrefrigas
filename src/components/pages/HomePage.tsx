@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,8 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle, Truck, Shield, Award, ArrowRight, Star, Users, Package } from 'lucide-react';
+import { useProducts } from '../../contexts/ProductsContext';
 
 const HomePage = () => {
+  const { products } = useProducts();
   const [contactForm, setContactForm] = useState({
     fullName: '',
     companyName: '',
@@ -15,6 +16,11 @@ const HomePage = () => {
     phone: '',
     message: ''
   });
+
+  // Get featured products (first 3 in-stock products)
+  const featuredProducts = products
+    .filter(product => product.availability === 'in_stock')
+    .slice(0, 3);
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +45,7 @@ const HomePage = () => {
             Reliable Bulk Refrigerant Distribution
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-blue-200 max-w-4xl mx-auto mb-8 sm:mb-12 leading-relaxed">
-            Your trusted source for Freon™ and other leading refrigerant brands, 
+            Your trusted source for premium refrigerants and cooling solutions, 
             delivered by the pallet or container across the USA and Canada.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
@@ -120,68 +126,45 @@ const HomePage = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Product Card 1 */}
-            <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden">
-              <CardContent className="p-0">
-                <div className="h-56 sm:h-64 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
-                  <div className="text-4xl sm:text-5xl font-bold text-blue-600 group-hover:scale-110 transition-transform duration-300">R-410A</div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">Refrigerant R-410A</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    A high-efficiency, non-ozone-depleting HFC refrigerant for modern air-conditioning systems.
-                  </p>
-                  <Link to="/products/r410a">
-                    <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                      View Details & Quote
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Product Card 2 */}
-            <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden">
-              <CardContent className="p-0">
-                <div className="h-56 sm:h-64 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center relative overflow-hidden">
-                  <div className="text-4xl sm:text-5xl font-bold text-green-600 group-hover:scale-110 transition-transform duration-300">R-134a</div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900 group-hover:text-green-600 transition-colors">Refrigerant R-134a</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    A widely used HFC for automotive air-conditioning and medium-temperature refrigeration.
-                  </p>
-                  <Link to="/products/r134a">
-                    <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                      View Details & Quote
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Product Card 3 */}
-            <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden md:col-span-2 lg:col-span-1">
-              <CardContent className="p-0">
-                <div className="h-56 sm:h-64 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center relative overflow-hidden">
-                  <div className="text-4xl sm:text-5xl font-bold text-purple-600 group-hover:scale-110 transition-transform duration-300">R-404A</div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900 group-hover:text-purple-600 transition-colors">Refrigerant R-404A</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    An HFC blend for low and medium-temperature commercial refrigeration applications.
-                  </p>
-                  <Link to="/products/r404a">
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                      View Details & Quote
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((product, index) => (
+                <Card key={product.id} className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="h-56 sm:h-64 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
+                      {product.image && product.image !== '/placeholder.svg' ? (
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="text-4xl sm:text-5xl font-bold text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                          {product.name.split(' ')[1] || product.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+                      <p className="text-gray-600 mb-6 leading-relaxed line-clamp-3">
+                        {product.description}
+                      </p>
+                      <Link to={`/products/${product.id}`}>
+                        <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                          View Details & Quote
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              // Fallback display when no products are available
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-600 text-lg mb-4">Our product catalog is being updated.</p>
+                <Link to="/products">
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    Browse All Products
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -195,7 +178,7 @@ const HomePage = () => {
                 Your Partner in Bulk Refrigerant Supply
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                North American Refrigerants was founded to solve one major problem: providing a reliable, 
+                Alper Refrigerants was founded to solve one major problem: providing a reliable, 
                 straightforward supply chain for HVAC and refrigeration professionals who buy in bulk.
               </p>
               <ul className="space-y-6">
