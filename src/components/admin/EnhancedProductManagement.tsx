@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,7 +45,11 @@ const EnhancedProductManagement = () => {
     technicalSpecs: {} as Record<string, any>,
     packaging: [] as string[],
     gtin: '',
-    dimensions: {} as Record<string, any>
+    dimensions: {
+      length: '',
+      width: '',
+      height: ''
+    }
   });
 
   const resetForm = () => {
@@ -73,7 +76,11 @@ const EnhancedProductManagement = () => {
       technicalSpecs: {},
       packaging: [],
       gtin: '',
-      dimensions: {}
+      dimensions: {
+        length: '',
+        width: '',
+        height: ''
+      }
     });
     setEditingProduct(null);
   };
@@ -136,7 +143,7 @@ const EnhancedProductManagement = () => {
       technicalSpecs: product.technicalSpecs || {},
       packaging: Array.isArray(product.packaging) ? product.packaging : [],
       gtin: product.gtin || '',
-      dimensions: product.dimensions || {}
+      dimensions: product.dimensions || { length: '', width: '', height: '' }
     });
     setEditingProduct(product);
     setIsAddDialogOpen(true);
@@ -408,6 +415,51 @@ const EnhancedProductManagement = () => {
                   </div>
 
                   <div>
+                    <Label className="text-white">Dimensions</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
+                      <div>
+                        <Label htmlFor="length" className="text-sm text-gray-300">Length</Label>
+                        <Input
+                          id="length"
+                          value={formData.dimensions.length}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            dimensions: { ...formData.dimensions, length: e.target.value }
+                          })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="e.g., 12 in"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="width" className="text-sm text-gray-300">Width</Label>
+                        <Input
+                          id="width"
+                          value={formData.dimensions.width}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            dimensions: { ...formData.dimensions, width: e.target.value }
+                          })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="e.g., 12 in"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="height" className="text-sm text-gray-300">Height</Label>
+                        <Input
+                          id="height"
+                          value={formData.dimensions.height}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            dimensions: { ...formData.dimensions, height: e.target.value }
+                          })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="e.g., 18 in"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
                     <Label htmlFor="sdsUrl" className="text-white">SDS Document URL</Label>
                     <Input
                       id="sdsUrl"
@@ -484,7 +536,6 @@ const EnhancedProductManagement = () => {
         </Dialog>
       </div>
 
-      {/* Filters */}
       <Card className="bg-slate-800/50 border-slate-700">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4 items-center">
@@ -514,7 +565,6 @@ const EnhancedProductManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
           <Card key={product.id} className="bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 transition-colors">
