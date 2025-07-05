@@ -15,9 +15,13 @@ export type Database = {
           banner_image_url: string | null
           body: string | null
           created_at: string | null
+          excerpt: string | null
+          featured_image_url: string | null
           id: string
           published: boolean | null
+          reading_time: number | null
           slug: string
+          tags: string[] | null
           title: string
           updated_at: string | null
         }
@@ -26,9 +30,13 @@ export type Database = {
           banner_image_url?: string | null
           body?: string | null
           created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
           id?: string
           published?: boolean | null
+          reading_time?: number | null
           slug: string
+          tags?: string[] | null
           title: string
           updated_at?: string | null
         }
@@ -37,9 +45,13 @@ export type Database = {
           banner_image_url?: string | null
           body?: string | null
           created_at?: string | null
+          excerpt?: string | null
+          featured_image_url?: string | null
           id?: string
           published?: boolean | null
+          reading_time?: number | null
           slug?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string | null
         }
@@ -52,6 +64,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          status: string | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          status?: string | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          status?: string | null
+          subject?: string | null
+        }
+        Relationships: []
       }
       order_items: {
         Row: {

@@ -28,6 +28,11 @@ import ContentManagement from './components/admin/ContentManagement';
 import AdminSettings from './components/admin/AdminSettings';
 import NotFound from './pages/NotFound';
 import SimpleBlogManagement from './components/admin/SimpleBlogManagement';
+import BlogPostManagement from './components/admin/BlogPostManagement';
+import EnhancedProductManagement from './components/admin/EnhancedProductManagement';
+import BlogPage from './components/pages/BlogPage';
+import AboutUs from './components/pages/AboutUs';
+import ContactUs from './components/pages/ContactUs';
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -63,12 +68,15 @@ function App() {
                             <Route path="/rfq" element={<RFQForm />} />
                             <Route path="/order-confirmation" element={<OrderConfirmation />} />
                             <Route path="/auth" element={<AuthPage />} />
+                            <Route path="/news" element={<BlogPage />} />
+                            <Route path="/about" element={<AboutUs />} />
+                            <Route path="/contact" element={<ContactUs />} />
                             
                             {/* Admin Routes */}
                             <Route path="/admin" element={<AdminLayout />}>
                               <Route index element={<Dashboard />} />
-                              <Route path="products" element={<ProductManagement />} />
-                              <Route path="posts" element={<SimpleBlogManagement />} />
+                              <Route path="products" element={<EnhancedProductManagement />} />
+                              <Route path="posts" element={<BlogPostManagement />} />
                               <Route path="orders" element={<OrderManagement />} />
                               <Route path="content" element={<ContentManagement />} />
                               <Route path="settings" element={<AdminSettings />} />

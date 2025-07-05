@@ -60,14 +60,38 @@ const Header = () => {
                 />
               </form>
 
-              {/* Products Link */}
-              <Link 
-                to="/products" 
-                className="flex items-center space-x-2 text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
-              >
-                <Package className="h-4 w-4" />
-                <span>Products</span>
-              </Link>
+              {/* Navigation Links */}
+              <div className="flex items-center space-x-4">
+                <Link 
+                  to="/products" 
+                  className="flex items-center space-x-2 text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
+                >
+                  <Package className="h-4 w-4" />
+                  <span>Products</span>
+                </Link>
+
+                <Link 
+                  to="/news" 
+                  className="flex items-center space-x-2 text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>News</span>
+                </Link>
+
+                <Link 
+                  to="/about" 
+                  className="text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
+                >
+                  About
+                </Link>
+
+                <Link 
+                  to="/contact" 
+                  className="text-white hover:text-blue-300 font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-500/10"
+                >
+                  Contact
+                </Link>
+              </div>
 
               {/* Cart & RFQ Section */}
               <div className="flex items-center space-x-4 border-l border-blue-800/30 pl-6">
@@ -178,6 +202,31 @@ const Header = () => {
                 >
                   <Package className="h-4 w-4" />
                   <span>Products</span>
+                </Link>
+
+                <Link
+                  to="/news"
+                  className="flex items-center space-x-2 text-white hover:text-blue-300 font-medium py-2 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>News</span>
+                </Link>
+
+                <Link
+                  to="/about"
+                  className="text-white hover:text-blue-300 font-medium py-2 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  About Us
+                </Link>
+
+                <Link
+                  to="/contact"
+                  className="text-white hover:text-blue-300 font-medium py-2 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Contact Us
                 </Link>
 
                 <Link
