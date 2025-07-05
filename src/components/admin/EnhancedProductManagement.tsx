@@ -8,19 +8,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Edit, Trash2, Search, Package, Save } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Package, Save, Loader2 } from 'lucide-react';
 import { useProducts } from '@/contexts/ProductsContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/ui/image-upload';
 
 const EnhancedProductManagement = () => {
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
+  const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -88,7 +89,11 @@ const EnhancedProductManagement = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (isSubmitting) return;
+
     try {
+      setIsSubmitting(true);
+      
       const productData = {
         ...formData,
         images: formData.image ? [formData.image, ...formData.images] : formData.images
@@ -96,26 +101,16 @@ const EnhancedProductManagement = () => {
 
       if (editingProduct) {
         await updateProduct(editingProduct.id, productData);
-        toast({
-          title: "Success",
-          description: "Product updated successfully",
-        });
       } else {
         await addProduct(productData);
-        toast({
-          title: "Success",
-          description: "Product added successfully",
-        });
       }
       
       resetForm();
       setIsAddDialogOpen(false);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save product",
-        variant: "destructive",
-      });
+      // Error handling is done in the context
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,16 +148,8 @@ const EnhancedProductManagement = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await deleteProduct(productId);
-        toast({
-          title: "Success",
-          description: "Product deleted successfully",
-        });
       } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to delete product",
-          variant: "destructive",
-        });
+        // Error handling is done in the context
       }
     }
   };
@@ -173,6 +160,17 @@ const EnhancedProductManagement = () => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center space-x-2 text-white">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading products...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -520,15 +518,26 @@ const EnhancedProductManagement = () => {
                     setIsAddDialogOpen(false);
                   }}
                   className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                  disabled={isSubmitting}
                 >
-                  <Save className="h-4 w-4 mr-2" />
-                  {editingProduct ? 'Update Product' : 'Add Product'}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {editingProduct ? 'Updating...' : 'Adding...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      {editingProduct ? 'Update Product' : 'Add Product'}
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
@@ -631,7 +640,7 @@ const EnhancedProductManagement = () => {
         ))}
       </div>
 
-      {filteredProducts.length === 0 && (
+      {filteredProducts.length === 0 && !loading && (
         <Card className="bg-slate-800/50 border-slate-700">
           <CardContent className="p-8 text-center">
             <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
