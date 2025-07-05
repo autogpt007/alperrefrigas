@@ -46,6 +46,36 @@ interface ProductsContextType {
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
+// Helper function to safely convert Json arrays to string arrays
+const jsonToStringArray = (jsonValue: any): string[] => {
+  if (!jsonValue) return [];
+  if (Array.isArray(jsonValue)) {
+    return jsonValue.filter(item => typeof item === 'string');
+  }
+  return [];
+};
+
+// Helper function to safely convert Json to Record<string, any>
+const jsonToRecord = (jsonValue: any): Record<string, any> => {
+  if (!jsonValue) return {};
+  if (typeof jsonValue === 'object' && jsonValue !== null && !Array.isArray(jsonValue)) {
+    return jsonValue as Record<string, any>;
+  }
+  return {};
+};
+
+// Helper function to safely convert Json to dimensions object
+const jsonToDimensions = (jsonValue: any): { length: string; width: string; height: string } => {
+  const defaultDimensions = { length: '', width: '', height: '' };
+  if (!jsonValue || typeof jsonValue !== 'object') return defaultDimensions;
+  
+  return {
+    length: typeof jsonValue.length === 'string' ? jsonValue.length : '',
+    width: typeof jsonValue.width === 'string' ? jsonValue.width : '',
+    height: typeof jsonValue.height === 'string' ? jsonValue.height : ''
+  };
+};
+
 export const ProductsProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,26 +97,26 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         name: product.name,
         price: Number(product.price),
         image: product.images?.[0] || product.thumbnail_url || '/placeholder.svg',
-        images: product.images || [],
+        images: Array.isArray(product.images) ? product.images.filter(img => typeof img === 'string') : [],
         sku: product.sku || '',
         epaApproved: product.epa_approved || false,
         category: product.category || 'HFC',
         description: product.description || '',
         stock: product.stock_quantity || 0,
-        packaging: Array.isArray(product.packaging) ? product.packaging : [],
-        applications: Array.isArray(product.applications) ? product.applications : [],
+        packaging: jsonToStringArray(product.packaging),
+        applications: jsonToStringArray(product.applications),
         sdsUrl: product.sds_url || '',
         gtin: product.gtin || '',
         brand: product.brand || 'FrigidFlow',
         condition: (product.condition as 'new' | 'used' | 'refurbished') || 'new',
         availability: (product.availability as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder') || 'in_stock',
         shippingWeight: product.shipping_weight || '',
-        dimensions: product.dimensions || { length: '', width: '', height: '' },
+        dimensions: jsonToDimensions(product.dimensions),
         chemicalFormula: product.chemical_formula || '',
         casNumber: product.cas_number || '',
         unNumber: product.un_number || '',
         hazardClass: product.hazard_class || '',
-        technicalSpecs: product.technical_specs || {}
+        technicalSpecs: jsonToRecord(product.technical_specs)
       }));
 
       setProducts(transformedProducts);
@@ -149,26 +179,26 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         name: data.name,
         price: Number(data.price),
         image: data.images?.[0] || data.thumbnail_url || '/placeholder.svg',
-        images: data.images || [],
+        images: Array.isArray(data.images) ? data.images.filter(img => typeof img === 'string') : [],
         sku: data.sku || '',
         epaApproved: data.epa_approved || false,
         category: data.category || 'HFC',
         description: data.description || '',
         stock: data.stock_quantity || 0,
-        packaging: data.packaging || [],
-        applications: data.applications || [],
+        packaging: jsonToStringArray(data.packaging),
+        applications: jsonToStringArray(data.applications),
         sdsUrl: data.sds_url || '',
         gtin: data.gtin || '',
         brand: data.brand || 'FrigidFlow',
-        condition: data.condition || 'new',
-        availability: data.availability || 'in_stock',
+        condition: (data.condition as 'new' | 'used' | 'refurbished') || 'new',
+        availability: (data.availability as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder') || 'in_stock',
         shippingWeight: data.shipping_weight || '',
-        dimensions: data.dimensions || { length: '', width: '', height: '' },
+        dimensions: jsonToDimensions(data.dimensions),
         chemicalFormula: data.chemical_formula || '',
         casNumber: data.cas_number || '',
         unNumber: data.un_number || '',
         hazardClass: data.hazard_class || '',
-        technicalSpecs: data.technical_specs || {}
+        technicalSpecs: jsonToRecord(data.technical_specs)
       };
 
       setProducts(prev => [newProduct, ...prev]);
