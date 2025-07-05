@@ -33,6 +33,10 @@ import EnhancedProductManagement from './components/admin/EnhancedProductManagem
 import BlogPage from './components/pages/BlogPage';
 import AboutUs from './components/pages/AboutUs';
 import ContactUs from './components/pages/ContactUs';
+import PrivacyPolicy from './components/pages/PrivacyPolicy';
+import TermsOfService from './components/pages/TermsOfService';
+import CookiePolicy from './components/pages/CookiePolicy';
+import Sitemap from './components/pages/Sitemap';
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -71,6 +75,10 @@ function App() {
                             <Route path="/news" element={<BlogPage />} />
                             <Route path="/about" element={<AboutUs />} />
                             <Route path="/contact" element={<ContactUs />} />
+                            <Route path="/privacy" element={<PrivacyPolicy />} />
+                            <Route path="/terms" element={<TermsOfService />} />
+                            <Route path="/cookies" element={<CookiePolicy />} />
+                            <Route path="/sitemap" element={<Sitemap />} />
                             
                             {/* Admin Routes */}
                             <Route path="/admin" element={<AdminLayout />}>
