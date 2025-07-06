@@ -105,6 +105,36 @@ const Footer = () => {
             </div>
           </div>
         </div>
+
+        {/* Payment Methods Section */}
+        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="text-center mb-6">
+            <h4 className="text-lg font-semibold mb-4">We Accept</h4>
+            <div className="flex justify-center items-center space-x-6 flex-wrap gap-4">
+              {/* Credit Cards */}
+              <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
+                <span className="text-blue-600 font-bold text-xs">VISA</span>
+              </div>
+              <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
+                <span className="text-red-600 font-bold text-xs">MC</span>
+              </div>
+              <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
+                <span className="text-blue-600 font-bold text-xs">AMEX</span>
+              </div>
+              <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
+                <span className="text-orange-600 font-bold text-xs">DISC</span>
+              </div>
+              {/* PayPal */}
+              <div className="bg-blue-600 rounded-lg p-2 w-16 h-8 flex items-center justify-center">
+                <span className="text-white font-bold text-xs">PayPal</span>
+              </div>
+              {/* Bank Wire */}
+              <div className="bg-gray-700 rounded-lg p-2 w-20 h-8 flex items-center justify-center">
+                <span className="text-white font-bold text-xs">Wire</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Bottom Bar */}

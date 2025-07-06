@@ -55,13 +55,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       
       toast({
         title: "Success",
-        description: "Image uploaded successfully",
+        description: "File uploaded successfully",
       });
     } catch (error: any) {
-      console.error('Error uploading image:', error);
+      console.error('Error uploading file:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to upload image",
+        description: error.message || "Failed to upload file",
         variant: "destructive",
       });
     } finally {
@@ -89,11 +89,21 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       
       {preview ? (
         <div className="relative">
-          <img 
-            src={preview} 
-            alt="Preview" 
-            className="w-full h-48 object-cover rounded-lg border border-slate-600"
-          />
+          {accept.includes('pdf') ? (
+            <div className="w-full h-48 bg-slate-700 border border-slate-600 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-white text-sm">PDF File Uploaded</p>
+                <p className="text-gray-400 text-xs">{preview.split('/').pop()}</p>
+              </div>
+            </div>
+          ) : (
+            <img 
+              src={preview} 
+              alt="Preview" 
+              className="w-full h-48 object-contain rounded-lg border border-slate-600 bg-white"
+            />
+          )}
           <Button
             type="button"
             variant="destructive"
@@ -107,7 +117,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       ) : (
         <div className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
           <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-400 mb-4">No image selected</p>
+          <p className="text-gray-400 mb-4">No file selected</p>
         </div>
       )}
 

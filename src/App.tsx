@@ -1,127 +1,119 @@
 
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HelmetProvider } from 'react-helmet-async';
-import { ProductsProvider } from './contexts/ProductsContext';
-import { CartProvider } from './contexts/CartContext';
-import { RFQProvider } from './contexts/RFQContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { OrdersProvider } from './contexts/OrdersContext';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
-import Home from './components/pages/HomePage';
-import Products from './components/pages/ProductCatalog';
-import ProductDetail from './components/pages/ProductDetails';
-import Cart from './components/pages/CartPage';
-import Checkout from './components/pages/CheckoutPage';
-import RFQForm from './components/pages/RFQPage';
-import OrderConfirmation from './components/pages/OrderConfirmation';
-import AuthPage from './components/auth/AuthPage';
-import AuthModal from './components/AuthModal';
-import { Toaster } from '@/components/ui/toaster';
-import AdminLayout from './components/admin/AdminLayout';
-import Dashboard from './components/admin/Dashboard';
-import ProductManagement from './components/admin/ProductManagement';
-import OrderManagement from './components/admin/OrderManagement';
-import ContentManagement from './components/admin/ContentManagement';
-import AdminSettings from './components/admin/AdminSettings';
-import ContactManagement from './components/admin/ContactManagement';
-import NotFound from './pages/NotFound';
-import SimpleBlogManagement from './components/admin/SimpleBlogManagement';
-import BlogPostManagement from './components/admin/BlogPostManagement';
-import EnhancedProductManagement from './components/admin/EnhancedProductManagement';
-import BlogPage from './components/pages/BlogPage';
-import AboutUs from './components/pages/AboutUs';
-import ContactUs from './components/pages/ContactUs';
-import PrivacyPolicy from './components/pages/PrivacyPolicy';
-import TermsOfService from './components/pages/TermsOfService';
-import CookiePolicy from './components/pages/CookiePolicy';
-import Sitemap from './components/pages/Sitemap';
-import ShippingCalculator from './components/pages/ShippingCalculator';
-import MyAccount from './components/pages/MyAccount';
-import CustomerSupport from './components/pages/CustomerSupport';
-import EPACompliance from './components/pages/EPACompliance';
-import Certifications from './components/pages/Certifications';
-import FAQ from './components/pages/FAQ';
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProductsProvider } from "./contexts/ProductsContext";
+import { CartProvider } from "./contexts/CartContext";
+import { RFQProvider } from "./contexts/RFQContext";
+import { OrdersProvider } from "./contexts/OrdersContext";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import { WhatsAppButton } from "./components/ui/WhatsAppButton";
+import HomePage from "./components/pages/HomePage";
+import ProductCatalog from "./components/pages/ProductCatalog";
+import ProductDetails from "./components/pages/ProductDetails";
+import CartPage from "./components/pages/CartPage";
+import RFQPage from "./components/pages/RFQPage";
+import CheckoutPage from "./components/pages/CheckoutPage";
+import OrderConfirmation from "./components/pages/OrderConfirmation";
+import AboutUs from "./components/pages/AboutUs";
+import ContactUs from "./components/pages/ContactUs";
+import FAQ from "./components/pages/FAQ";
+import ShippingCalculator from "./components/pages/ShippingCalculator";
+import EPACompliance from "./components/pages/EPACompliance";
+import Certifications from "./components/pages/Certifications";
+import PrivacyPolicy from "./components/pages/PrivacyPolicy";
+import TermsOfService from "./components/pages/TermsOfService";
+import CookiePolicy from "./components/pages/CookiePolicy";
+import Sitemap from "./components/pages/Sitemap";
+import CustomerSupport from "./components/pages/CustomerSupport";
+import AdminDashboard from "./components/pages/AdminDashboard";
+import MyAccount from "./components/pages/MyAccount";
+import AuthPage from "./components/auth/AuthPage";
+import AdminLayout from "./components/admin/AdminLayout";
+import Dashboard from "./components/admin/Dashboard";
+import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
+import OrderManagement from "./components/admin/OrderManagement";
+import SimpleBlogManagement from "./components/admin/SimpleBlogManagement";
+import ContactManagement from "./components/admin/ContactManagement";
+import AdminSettings from "./components/admin/AdminSettings";
+import TeamManagement from "./components/admin/TeamManagement";
+import CertificationManagement from "./components/admin/CertificationManagement";
+import BlogPage from "./components/pages/BlogPage";
+import "./App.css";
+
+const queryClient = new QueryClient();
 
 function App() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const queryClient = new QueryClient();
-
-  const openAuthModal = () => {
-    setIsAuthModalOpen(true);
-  };
-
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-  };
-
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
         <AuthProvider>
           <ProductsProvider>
             <CartProvider>
               <RFQProvider>
                 <OrdersProvider>
-                  <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-                    <Router>
-                      <div className="flex flex-col min-h-screen">
-                        <Header />
-                        <main className="flex-1">
-                          <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/products" element={<Products />} />
-                            <Route path="/products/:id" element={<ProductDetail />} />
-                            <Route path="/cart" element={<Cart />} />
-                            <Route path="/checkout" element={<Checkout />} />
-                            <Route path="/rfq" element={<RFQForm />} />
-                            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-                            <Route path="/auth" element={<AuthPage />} />
-                            <Route path="/news" element={<BlogPage />} />
-                            <Route path="/about" element={<AboutUs />} />
-                            <Route path="/contact" element={<ContactUs />} />
-                            <Route path="/privacy" element={<PrivacyPolicy />} />
-                            <Route path="/terms" element={<TermsOfService />} />
-                            <Route path="/cookies" element={<CookiePolicy />} />
-                            <Route path="/sitemap" element={<Sitemap />} />
-                            <Route path="/shipping" element={<ShippingCalculator />} />
-                            <Route path="/account" element={<MyAccount />} />
-                            <Route path="/support" element={<CustomerSupport />} />
-                            <Route path="/compliance" element={<EPACompliance />} />
-                            <Route path="/certifications" element={<Certifications />} />
-                            <Route path="/faq" element={<FAQ />} />
-                            
-                            {/* Admin Routes */}
-                            <Route path="/admin" element={<AdminLayout />}>
-                              <Route index element={<Dashboard />} />
-                              <Route path="products" element={<EnhancedProductManagement />} />
-                              <Route path="posts" element={<BlogPostManagement />} />
-                              <Route path="orders" element={<OrderManagement />} />
-                              <Route path="contacts" element={<ContactManagement />} />
-                              <Route path="content" element={<ContentManagement />} />
-                              <Route path="settings" element={<AdminSettings />} />
-                            </Route>
-                            
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </main>
-                        <Footer />
-                      </div>
-                    </Router>
-
-                    {/* Modals */}
-                    <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
-                    <Toaster />
-                  </div>
+                  <Toaster />
+                  <BrowserRouter>
+                    <div className="min-h-screen flex flex-col">
+                      <Routes>
+                        {/* Admin Routes */}
+                        <Route path="/admin" element={<AdminLayout />}>
+                          <Route index element={<Dashboard />} />
+                          <Route path="products" element={<EnhancedProductManagement />} />
+                          <Route path="orders" element={<OrderManagement />} />
+                          <Route path="blog" element={<SimpleBlogManagement />} />
+                          <Route path="contacts" element={<ContactManagement />} />
+                          <Route path="team" element={<TeamManagement />} />
+                          <Route path="certificates" element={<CertificationManagement />} />
+                          <Route path="settings" element={<AdminSettings />} />
+                        </Route>
+                        
+                        {/* Public Routes */}
+                        <Route path="/*" element={
+                          <>
+                            <Header />
+                            <main className="flex-1">
+                              <Routes>
+                                <Route path="/" element={<HomePage />} />
+                                <Route path="/products" element={<ProductCatalog />} />
+                                <Route path="/products/:id" element={<ProductDetails />} />
+                                <Route path="/cart" element={<CartPage />} />
+                                <Route path="/rfq" element={<RFQPage />} />
+                                <Route path="/checkout" element={<CheckoutPage />} />
+                                <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+                                <Route path="/about" element={<AboutUs />} />
+                                <Route path="/contact" element={<ContactUs />} />
+                                <Route path="/faq" element={<FAQ />} />
+                                <Route path="/shipping" element={<ShippingCalculator />} />
+                                <Route path="/compliance" element={<EPACompliance />} />
+                                <Route path="/certifications" element={<Certifications />} />
+                                <Route path="/privacy" element={<PrivacyPolicy />} />
+                                <Route path="/terms" element={<TermsOfService />} />
+                                <Route path="/cookies" element={<CookiePolicy />} />
+                                <Route path="/sitemap" element={<Sitemap />} />
+                                <Route path="/support" element={<CustomerSupport />} />
+                                <Route path="/account" element={<MyAccount />} />
+                                <Route path="/auth" element={<AuthPage />} />
+                                <Route path="/blog" element={<BlogPage />} />
+                              </Routes>
+                            </main>
+                            <Footer />
+                            <WhatsAppButton phoneNumber="+18007347443" />
+                          </>
+                        } />
+                      </Routes>
+                    </div>
+                  </BrowserRouter>
                 </OrdersProvider>
               </RFQProvider>
             </CartProvider>
           </ProductsProvider>
         </AuthProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 

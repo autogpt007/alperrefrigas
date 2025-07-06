@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, Trash2, ArrowLeft, Send, ShoppingCart } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
 import { useToast } from '../../hooks/use-toast';
@@ -49,24 +48,32 @@ const RFQPage = () => {
       return;
     }
 
-    // Here you would submit to Firestore
-    console.log('Submitting RFQ:', { ...formData, items });
-    
-    toast({
-      title: "Quote request submitted!",
-      description: "We'll contact you within one business day with your quote."
-    });
+    try {
+      // Submit RFQ to database or send email
+      console.log('Submitting RFQ:', { ...formData, items });
+      
+      toast({
+        title: "Quote request submitted!",
+        description: "We'll contact you within one business day with your quote."
+      });
 
-    // Clear form and items
-    setFormData({
-      customerName: '',
-      companyName: '',
-      email: '',
-      phone: '',
-      shippingAddress: '',
-      notes: ''
-    });
-    clearRFQ();
+      // Clear form and items
+      setFormData({
+        customerName: '',
+        companyName: '',
+        email: '',
+        phone: '',
+        shippingAddress: '',
+        notes: ''
+      });
+      clearRFQ();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit quote request. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (items.length === 0) {
@@ -121,9 +128,17 @@ const RFQPage = () => {
                     {items.map((item, index) => (
                       <div key={`${item.productId}-${item.packaging}`} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
                         <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-bold text-blue-600">
-                            {item.productName.split(' ')[1]}
-                          </span>
+                          {item.imageUrl ? (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.productName}
+                              className="w-full h-full object-contain rounded"
+                            />
+                          ) : (
+                            <span className="text-xs font-bold text-blue-600">
+                              {item.productName.split(' ')[1] || 'IMG'}
+                            </span>
+                          )}
                         </div>
                         
                         <div className="flex-1 min-w-0">
@@ -135,8 +150,7 @@ const RFQPage = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
+                            onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))}
                             className="h-8 w-8 p-0"
                           >
                             <Minus className="h-4 w-4" />
