@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -10,6 +9,9 @@ import { Award, Shield, Plus, Edit, Trash2, Save, X, FileText, Download } from '
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ImageUpload } from '../ui/image-upload';
+
+const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
 interface Certificate {
   id?: string;
@@ -45,10 +47,10 @@ const CertificationManagement = () => {
 
   const fetchCertificates = async () => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/certificates?order=type.asc,order_index.asc`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/certificates?order=type.asc,order_index.asc`, {
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -81,14 +83,14 @@ const CertificationManagement = () => {
 
       const method = editingCert?.id ? 'PATCH' : 'POST';
       const url = editingCert?.id 
-        ? `${supabase.supabaseUrl}/rest/v1/certificates?id=eq.${editingCert.id}`
-        : `${supabase.supabaseUrl}/rest/v1/certificates`;
+        ? `${SUPABASE_URL}/rest/v1/certificates?id=eq.${editingCert.id}`
+        : `${SUPABASE_URL}/rest/v1/certificates`;
 
       const response = await fetch(url, {
         method,
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(editingCert?.id ? formData : { ...formData, order_index: certificates.length })
@@ -116,11 +118,11 @@ const CertificationManagement = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/certificates?id=eq.${id}`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/certificates?id=eq.${id}`, {
         method: 'DELETE',
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         }
       });
 

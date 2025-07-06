@@ -1,9 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Award, Shield, CheckCircle, Target, Eye, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+
+const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
 interface TeamMember {
   id: string;
@@ -24,10 +26,10 @@ const AboutUs = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/team_members?order=order_index.asc`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?order=order_index.asc`, {
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });

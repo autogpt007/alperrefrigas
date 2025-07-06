@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -10,6 +9,9 @@ import { Users, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ImageUpload } from '../ui/image-upload';
+
+const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
 interface TeamMember {
   id?: string;
@@ -41,10 +43,10 @@ const TeamManagement = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/team_members?order=order_index.asc`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?order=order_index.asc`, {
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -77,14 +79,14 @@ const TeamManagement = () => {
 
       const method = editingMember?.id ? 'PATCH' : 'POST';
       const url = editingMember?.id 
-        ? `${supabase.supabaseUrl}/rest/v1/team_members?id=eq.${editingMember.id}`
-        : `${supabase.supabaseUrl}/rest/v1/team_members`;
+        ? `${SUPABASE_URL}/rest/v1/team_members?id=eq.${editingMember.id}`
+        : `${SUPABASE_URL}/rest/v1/team_members`;
 
       const response = await fetch(url, {
         method,
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(editingMember?.id ? formData : { ...formData, order_index: teamMembers.length })
@@ -112,11 +114,11 @@ const TeamManagement = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/team_members?id=eq.${id}`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?id=eq.${id}`, {
         method: 'DELETE',
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         }
       });
 

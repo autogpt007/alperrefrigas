@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -8,6 +7,9 @@ import { Textarea } from '../ui/textarea';
 import { Settings, Save, Phone, Mail, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+
+const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
 interface NotificationSetting {
   id: string;
@@ -42,19 +44,19 @@ const AdminSettings = () => {
   const fetchSettings = async () => {
     try {
       // Fetch notification settings
-      const notifResponse = await fetch(`${supabase.supabaseUrl}/rest/v1/notification_settings`, {
+      const notifResponse = await fetch(`${SUPABASE_URL}/rest/v1/notification_settings`, {
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
 
       // Fetch site settings  
-      const siteResponse = await fetch(`${supabase.supabaseUrl}/rest/v1/site_settings`, {
+      const siteResponse = await fetch(`${SUPABASE_URL}/rest/v1/site_settings`, {
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -91,11 +93,11 @@ const AdminSettings = () => {
 
   const updateSetting = async (table: string, key: string, value: string) => {
     try {
-      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/${table}?setting_key=eq.${key}`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?setting_key=eq.${key}`, {
         method: 'PATCH',
         headers: {
-          'apikey': supabase.supabaseKey,
-          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ setting_value: value })
