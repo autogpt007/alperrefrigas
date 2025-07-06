@@ -41,12 +41,16 @@ const TeamManagement = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const { data, error } = await supabase
-        .from('team_members')
-        .select('*')
-        .order('order_index');
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/team_members?order=order_index.asc`, {
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to fetch team members');
+      const data = await response.json();
       setTeamMembers(data || []);
     } catch (error: any) {
       console.error('Error fetching team members:', error);
@@ -71,22 +75,26 @@ const TeamManagement = () => {
         return;
       }
 
-      if (editingMember?.id) {
-        const { error } = await supabase
-          .from('team_members')
-          .update(formData)
-          .eq('id', editingMember.id);
+      const method = editingMember?.id ? 'PATCH' : 'POST';
+      const url = editingMember?.id 
+        ? `${supabase.supabaseUrl}/rest/v1/team_members?id=eq.${editingMember.id}`
+        : `${supabase.supabaseUrl}/rest/v1/team_members`;
 
-        if (error) throw error;
-        toast({ title: 'Team member updated successfully!' });
-      } else {
-        const { error } = await supabase
-          .from('team_members')
-          .insert({ ...formData, order_index: teamMembers.length });
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editingMember?.id ? formData : { ...formData, order_index: teamMembers.length })
+      });
 
-        if (error) throw error;
-        toast({ title: 'Team member added successfully!' });
-      }
+      if (!response.ok) throw new Error('Failed to save team member');
+
+      toast({ 
+        title: editingMember ? 'Team member updated successfully!' : 'Team member added successfully!' 
+      });
 
       setFormData({ name: '', position: '', bio: '', image_url: '', order_index: 0 });
       setEditingMember(null);
@@ -104,12 +112,15 @@ const TeamManagement = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('team_members')
-        .delete()
-        .eq('id', id);
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/team_members?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+        }
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to delete team member');
       toast({ title: 'Team member deleted successfully!' });
       fetchTeamMembers();
     } catch (error: any) {

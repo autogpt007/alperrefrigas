@@ -45,12 +45,16 @@ const CertificationManagement = () => {
 
   const fetchCertificates = async () => {
     try {
-      const { data, error } = await supabase
-        .from('certificates')
-        .select('*')
-        .order('type, order_index');
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/certificates?order=type.asc,order_index.asc`, {
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to fetch certificates');
+      const data = await response.json();
       setCertificates(data || []);
     } catch (error: any) {
       console.error('Error fetching certificates:', error);
@@ -75,22 +79,26 @@ const CertificationManagement = () => {
         return;
       }
 
-      if (editingCert?.id) {
-        const { error } = await supabase
-          .from('certificates')
-          .update(formData)
-          .eq('id', editingCert.id);
+      const method = editingCert?.id ? 'PATCH' : 'POST';
+      const url = editingCert?.id 
+        ? `${supabase.supabaseUrl}/rest/v1/certificates?id=eq.${editingCert.id}`
+        : `${supabase.supabaseUrl}/rest/v1/certificates`;
 
-        if (error) throw error;
-        toast({ title: 'Certificate updated successfully!' });
-      } else {
-        const { error } = await supabase
-          .from('certificates')
-          .insert({ ...formData, order_index: certificates.length });
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editingCert?.id ? formData : { ...formData, order_index: certificates.length })
+      });
 
-        if (error) throw error;
-        toast({ title: 'Certificate added successfully!' });
-      }
+      if (!response.ok) throw new Error('Failed to save certificate');
+
+      toast({ 
+        title: editingCert ? 'Certificate updated successfully!' : 'Certificate added successfully!' 
+      });
 
       setFormData({ name: '', type: 'epa', description: '', pdf_url: '', image_url: '', is_active: true, order_index: 0 });
       setEditingCert(null);
@@ -108,12 +116,15 @@ const CertificationManagement = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('certificates')
-        .delete()
-        .eq('id', id);
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/certificates?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+        }
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to delete certificate');
       toast({ title: 'Certificate deleted successfully!' });
       fetchCertificates();
     } catch (error: any) {
