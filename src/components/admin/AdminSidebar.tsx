@@ -1,89 +1,96 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
   Package, 
-  FileText, 
   ShoppingCart, 
+  FileText, 
   Settings, 
   Users,
-  BarChart3,
-  MessageSquare,
-  Globe
+  Mail,
+  MessageSquare
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const AdminSidebar = () => {
   const location = useLocation();
-
-  const navigation = [
+  
+  const menuItems = [
     {
-      name: 'Dashboard',
-      href: '/admin',
       icon: LayoutDashboard,
-      current: location.pathname === '/admin'
+      label: 'Dashboard',
+      href: '/admin',
+      active: location.pathname === '/admin'
     },
     {
-      name: 'Products',
-      href: '/admin/products',
       icon: Package,
-      current: location.pathname === '/admin/products'
+      label: 'Products',
+      href: '/admin/products',
+      active: location.pathname === '/admin/products'
     },
     {
-      name: 'Orders',
-      href: '/admin/orders',
       icon: ShoppingCart,
-      current: location.pathname === '/admin/orders'
+      label: 'Orders',
+      href: '/admin/orders',
+      active: location.pathname === '/admin/orders'
     },
     {
-      name: 'Blog Posts',
-      href: '/admin/posts',
+      icon: MessageSquare,
+      label: 'Contact Forms',
+      href: '/admin/contacts',
+      active: location.pathname === '/admin/contacts'
+    },
+    {
       icon: FileText,
-      current: location.pathname === '/admin/posts'
+      label: 'Blog Posts',
+      href: '/admin/posts',
+      active: location.pathname === '/admin/posts'
     },
     {
-      name: 'Content Management',
+      icon: FileText,
+      label: 'Content',
       href: '/admin/content',
-      icon: Globe,
-      current: location.pathname === '/admin/content'
+      active: location.pathname === '/admin/content'
     },
     {
-      name: 'Analytics',
-      href: '/admin/analytics',
-      icon: BarChart3,
-      current: location.pathname === '/admin/analytics'
-    },
-    {
-      name: 'Settings',
-      href: '/admin/settings',
       icon: Settings,
-      current: location.pathname === '/admin/settings'
+      label: 'Settings',
+      href: '/admin/settings',
+      active: location.pathname === '/admin/settings'
     }
   ];
 
   return (
-    <div className="flex flex-col w-64 bg-slate-900 border-r border-slate-800">
-      <div className="flex items-center h-16 px-6 border-b border-slate-800">
-        <h2 className="text-xl font-bold text-white">Admin Panel</h2>
+    <div className="w-64 bg-slate-800 min-h-screen p-6">
+      <div className="mb-8">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">AR</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Admin Panel</h2>
+            <p className="text-sm text-gray-400">Alper Refrigerants</p>
+          </div>
+        </div>
       </div>
-      
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {navigation.map((item) => {
+
+      <nav className="space-y-2">
+        {menuItems.map((item) => {
           const Icon = item.icon;
           return (
             <Link
-              key={item.name}
+              key={item.href}
               to={item.href}
               className={cn(
-                'flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors',
-                item.current
-                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                  : 'text-gray-300 hover:bg-slate-800 hover:text-white'
+                "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors",
+                item.active
+                  ? "bg-cyan-500/20 text-cyan-400 border-r-2 border-cyan-400"
+                  : "text-gray-300 hover:bg-slate-700 hover:text-white"
               )}
             >
-              <Icon className="h-5 w-5 mr-3" />
-              {item.name}
+              <Icon className="h-5 w-5" />
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,11 +25,25 @@ const ContactUs = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      // Insert contact submission into database
+      const { error: dbError } = await supabase
         .from('contact_submissions')
         .insert([formData]);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
+
+      // Send notification email
+      try {
+        await supabase.functions.invoke('send-notification-email', {
+          body: {
+            type: 'contact',
+            data: formData
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending notification email:', emailError);
+        // Don't fail the whole process if email fails
+      }
 
       toast({
         title: "Message Sent Successfully!",
@@ -66,14 +79,14 @@ const ContactUs = () => {
     {
       icon: Mail,
       title: "Email",
-      details: "info@narefrigerants.com",
+      details: "info@alperrefrigerants.com",
       description: "We respond within 4 hours"
     },
     {
       icon: MapPin,
       title: "Address",
       details: "1234 Industrial Blvd, Suite 100",
-      description: "Chicago, IL 60601"
+      description: "Houston, TX 77041"
     },
     {
       icon: Clock,
@@ -94,8 +107,8 @@ const ContactUs = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - North American Refrigerants</title>
-        <meta name="description" content="Get in touch with North American Refrigerants for expert refrigerant solutions, technical support, and customer service." />
+        <title>Contact Us - Alper Refrigerants</title>
+        <meta name="description" content="Get in touch with Alper Refrigerants for expert refrigerant solutions, technical support, and customer service." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">

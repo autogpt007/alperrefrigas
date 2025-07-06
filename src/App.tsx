@@ -26,6 +26,7 @@ import ProductManagement from './components/admin/ProductManagement';
 import OrderManagement from './components/admin/OrderManagement';
 import ContentManagement from './components/admin/ContentManagement';
 import AdminSettings from './components/admin/AdminSettings';
+import ContactManagement from './components/admin/ContactManagement';
 import NotFound from './pages/NotFound';
 import SimpleBlogManagement from './components/admin/SimpleBlogManagement';
 import BlogPostManagement from './components/admin/BlogPostManagement';
@@ -98,6 +99,7 @@ function App() {
                               <Route path="products" element={<EnhancedProductManagement />} />
                               <Route path="posts" element={<BlogPostManagement />} />
                               <Route path="orders" element={<OrderManagement />} />
+                              <Route path="contacts" element={<ContactManagement />} />
                               <Route path="content" element={<ContentManagement />} />
                               <Route path="settings" element={<AdminSettings />} />
                             </Route>

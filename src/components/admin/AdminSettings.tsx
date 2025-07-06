@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -9,17 +8,21 @@ import { Label } from '../ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Settings, Bell, Shield, Database, Globe, Mail, Key, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Settings, Bell, Shield, Database, Globe, Mail, Key, Trash2, Save } from 'lucide-react';
 
 const AdminSettings = () => {
   const [generalSettings, setGeneralSettings] = useState({
-    siteName: 'FrigidFlow',
+    siteName: 'Alper Refrigerants',
     siteDescription: 'Professional refrigerant supplier',
-    contactEmail: 'contact@frigidflow.com',
-    supportEmail: 'support@frigidflow.com',
-    phoneNumber: '+1 (555) 123-4567',
-    address: '123 Industrial Drive, Commerce City, CO 80022'
+    contactEmail: 'contact@alperrefrigerants.com',
+    supportEmail: 'support@alperrefrigerants.com',
+    phoneNumber: '+1 (800) 555-COOL',
+    address: '1234 Industrial Drive, Houston, TX 77041'
   });
+
+  const [notificationEmail, setNotificationEmail] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
@@ -41,11 +44,58 @@ const AdminSettings = () => {
     smtpPort: 587,
     smtpUsername: '',
     smtpPassword: '',
-    fromEmail: 'noreply@frigidflow.com',
-    fromName: 'FrigidFlow'
+    fromEmail: 'noreply@alperrefrigerants.com',
+    fromName: 'Alper Refrigerants'
   });
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchNotificationSettings();
+  }, []);
+
+  const fetchNotificationSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('notification_settings')
+        .select('*')
+        .eq('setting_key', 'notification_email')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setNotificationEmail(data.setting_value);
+      }
+    } catch (error: any) {
+      console.error('Error fetching notification settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveNotificationEmail = async () => {
+    try {
+      const { error } = await supabase
+        .from('notification_settings')
+        .upsert({
+          setting_key: 'notification_email',
+          setting_value: notificationEmail,
+          description: 'Email address for receiving form submissions and order notifications'
+        });
+
+      if (error) throw error;
+
+      toast({ title: 'Notification email updated successfully!' });
+    } catch (error: any) {
+      console.error('Error updating notification email:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update notification email.',
+        variant: 'destructive'
+      });
+    }
+  };
 
   const handleSaveGeneral = () => {
     // In a real app, this would save to the database
@@ -82,6 +132,10 @@ const AdminSettings = () => {
     toast({ title: 'Database backup initiated!' });
   };
 
+  if (loading) {
+    return <div className="p-6 text-white">Loading settings...</div>;
+  }
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="mb-6">
@@ -90,11 +144,12 @@ const AdminSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="email-config">Email Config</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="email">Email</TabsTrigger>
+          <TabsTrigger value="email">SMTP</TabsTrigger>
           <TabsTrigger value="system">System</TabsTrigger>
         </TabsList>
 
@@ -170,6 +225,54 @@ const AdminSettings = () => {
               <Button onClick={handleSaveGeneral} className="bg-cyan-500 hover:bg-cyan-600">
                 Save General Settings
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="email-config">
+          <Card className="bg-slate-800/50 border-cyan-500/20">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Email Notification Settings
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                Configure email address for receiving notifications
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label className="text-gray-300">Notification Email Address</Label>
+                <div className="flex gap-2 mt-2">
+                  <Input
+                    type="email"
+                    value={notificationEmail}
+                    onChange={(e) => setNotificationEmail(e.target.value)}
+                    placeholder="email@example.com"
+                    className="bg-slate-700 border-slate-600 text-white"
+                  />
+                  <Button
+                    onClick={handleSaveNotificationEmail}
+                    className="bg-cyan-500 hover:bg-cyan-600"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Save
+                  </Button>
+                </div>
+                <p className="text-gray-400 text-sm mt-2">
+                  This email will receive notifications for contact form submissions, new orders, and quote requests.
+                </p>
+              </div>
+
+              <div className="bg-blue-900/20 border border-blue-600/50 rounded-lg p-4">
+                <h3 className="text-blue-400 font-medium mb-2">Current Configuration</h3>
+                <p className="text-blue-300 text-sm">
+                  Notification Email: {notificationEmail || 'Not set'}
+                </p>
+                <p className="text-blue-300 text-sm mt-1">
+                  Status: {notificationEmail ? 'Configured' : 'Needs configuration'}
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -322,7 +425,7 @@ const AdminSettings = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Mail className="h-5 w-5" />
-                Email Settings
+                SMTP Settings
               </CardTitle>
               <CardDescription className="text-gray-300">
                 Configure SMTP settings for sending emails
@@ -457,6 +560,10 @@ const AdminSettings = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-300">Storage Service:</span>
                     <Badge className="bg-green-600">Active</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300">Email Service:</span>
+                    <Badge className="bg-yellow-600">Needs Configuration</Badge>
                   </div>
                 </div>
               </div>
