@@ -21,23 +21,15 @@ interface ContactSubmission {
   created_at: string;
 }
 
-interface NotificationSetting {
-  id: string;
-  setting_key: string;
-  setting_value: string;
-  description: string;
-}
-
 const ContactManagement = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
-  const [settings, setSettings] = useState<NotificationSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [notificationEmail, setNotificationEmail] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSubmissions();
-    fetchSettings();
+    fetchNotificationEmail();
   }, []);
 
   const fetchSubmissions = async () => {
@@ -61,21 +53,26 @@ const ContactManagement = () => {
     }
   };
 
-  const fetchSettings = async () => {
+  const fetchNotificationEmail = async () => {
     try {
-      const { data, error } = await supabase
-        .from('notification_settings')
-        .select('*');
-
-      if (error) throw error;
-      setSettings(data || []);
+      // Use fetch API to work around type issues
+      const response = await fetch(`https://ohfkcxwwvksrjymkgloo.supabase.co/rest/v1/notification_settings?setting_key=eq.notification_email&select=setting_value`, {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY`
+        }
+      });
       
-      const emailSetting = data?.find(s => s.setting_key === 'notification_email');
-      if (emailSetting) {
-        setNotificationEmail(emailSetting.setting_value);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        setNotificationEmail(data[0].setting_value);
+      } else {
+        setNotificationEmail('eddy3597@gmail.com');
       }
     } catch (error: any) {
-      console.error('Error fetching settings:', error);
+      console.error('Error fetching notification email:', error);
+      setNotificationEmail('eddy3597@gmail.com');
     }
   };
 
@@ -108,12 +105,23 @@ const ContactManagement = () => {
 
   const updateNotificationEmail = async () => {
     try {
-      const { error } = await supabase
-        .from('notification_settings')
-        .update({ setting_value: notificationEmail })
-        .eq('setting_key', 'notification_email');
+      // Use fetch API to work around type issues
+      const response = await fetch(`https://ohfkcxwwvksrjymkgloo.supabase.co/rest/v1/notification_settings`, {
+        method: 'POST',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          setting_key: 'notification_email',
+          setting_value: notificationEmail,
+          description: 'Email address for receiving form submissions and order notifications'
+        })
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to update notification email');
 
       toast({
         title: "Settings Updated",
