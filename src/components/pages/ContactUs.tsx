@@ -97,18 +97,19 @@ const ContactUs = () => {
   ];
 
   const departments = [
-    { value: "sales", label: "Sales Inquiry" },
-    { value: "support", label: "Technical Support" },
-    { value: "billing", label: "Billing & Orders" },
-    { value: "compliance", label: "Compliance & Regulations" },
-    { value: "general", label: "General Information" }
+    { value: "bulk-pricing", label: "Bulk Pricing Quote" },
+    { value: "technical-support", label: "Technical Support" },
+    { value: "order-status", label: "Order Status & Shipping" },
+    { value: "epa-compliance", label: "EPA Compliance & Regulations" },
+    { value: "product-availability", label: "Product Availability" }
   ];
 
   return (
     <>
       <Helmet>
-        <title>Contact Us - Alper Refrigerants</title>
-        <meta name="description" content="Get in touch with Alper Refrigerants for expert refrigerant solutions, technical support, and customer service." />
+        <title>Contact Alper Refrigerants | Get Wholesale Refrigerant Pricing Quote</title>
+        <meta name="description" content="Contact EPA-certified refrigerant experts for wholesale pricing on R-410A, R-134a, R-1234yf. Bulk quotes for HVAC contractors with 24/7 emergency support." />
+        <meta name="keywords" content="refrigerant wholesale pricing, bulk refrigerant quote, HVAC contractor pricing, EPA certified refrigerant supplier contact" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
@@ -116,10 +117,10 @@ const ContactUs = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Contact <span className="text-cyan-400">Us</span>
+              Contact Our <span className="text-cyan-400">Refrigerant Experts</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Have questions about our products or need technical support? Our expert team is here to help you find the right refrigerant solutions.
+              Need wholesale pricing on R-410A, R-134a, or R-1234yf? Our EPA-certified team provides expert guidance and competitive bulk quotes for HVAC contractors.
             </p>
           </div>
 
@@ -158,9 +159,9 @@ const ContactUs = () => {
               {/* Quick Contact Cards */}
               <Card className="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border-cyan-500/20">
                 <CardContent className="p-6">
-                  <h3 className="text-white font-semibold mb-2">Emergency Support</h3>
+                  <h3 className="text-white font-semibold mb-2">Emergency Refrigerant Support</h3>
                   <p className="text-gray-300 text-sm mb-4">
-                    Need urgent assistance? Our emergency hotline is available 24/7 for critical refrigerant issues.
+                    Critical HVAC system failure? Our emergency hotline provides 24/7 access to refrigerant supply and technical support.
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700">
                     <Phone className="h-4 w-4 mr-2" />
@@ -171,9 +172,9 @@ const ContactUs = () => {
 
               <Card className="bg-gradient-to-r from-green-500/10 to-emerald-600/10 border-green-500/20">
                 <CardContent className="p-6">
-                  <h3 className="text-white font-semibold mb-2">Request a Quote</h3>
+                  <h3 className="text-white font-semibold mb-2">Get Wholesale Pricing</h3>
                   <p className="text-gray-300 text-sm mb-4">
-                    Need bulk pricing or custom solutions? Get a personalized quote for your specific requirements.
+                    Need bulk refrigerant pricing for your project? Get competitive wholesale quotes with volume discounts for contractors.
                   </p>
                   <Button className="w-full bg-green-600 hover:bg-green-700">
                     <Send className="h-4 w-4 mr-2" />
@@ -187,9 +188,9 @@ const ContactUs = () => {
             <div className="lg:col-span-2">
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardHeader>
-                  <CardTitle className="text-white">Send Us a Message</CardTitle>
+                  <CardTitle className="text-white">Get Your Refrigerant Quote</CardTitle>
                   <CardDescription className="text-gray-300">
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Submit your requirements below and our EPA-certified team will provide competitive wholesale pricing within 4 hours.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -270,16 +271,16 @@ const ContactUs = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-white mb-2">What are your shipping options?</h4>
-                    <p className="text-gray-300 text-sm">We offer ground, expedited, and emergency shipping across North America with temperature-controlled transport for sensitive products.</p>
+                    <h4 className="font-semibold text-white mb-2">Do you offer bulk pricing for contractors?</h4>
+                    <p className="text-gray-300 text-sm">Yes, we provide competitive wholesale pricing with volume discounts. Bulk orders of R-410A, R-134a, and R-1234yf qualify for contractor pricing.</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white mb-2">Do you provide technical support?</h4>
-                    <p className="text-gray-300 text-sm">Yes! Our certified technicians provide expert guidance on refrigerant selection, handling procedures, and regulatory compliance.</p>
+                    <h4 className="font-semibold text-white mb-2">Are your refrigerants EPA-compliant?</h4>
+                    <p className="text-gray-300 text-sm">All our refrigerants are EPA Section 608 compliant with 99.8% purity certification. Complete documentation provided for regulatory compliance.</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white mb-2">What certifications do you have?</h4>
-                    <p className="text-gray-300 text-sm">We're EPA Section 608 certified, ISO 9001:2015 compliant, and DOT licensed for hazardous material transportation.</p>
+                    <h4 className="font-semibold text-white mb-2">What's your typical shipping timeframe?</h4>
+                    <p className="text-gray-300 text-sm">Most bulk orders ship within 24 hours via temperature-controlled transport. We offer ground, expedited, and emergency delivery across North America.</p>
                   </div>
                 </CardContent>
               </Card>
