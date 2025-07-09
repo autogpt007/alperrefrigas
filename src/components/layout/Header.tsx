@@ -31,10 +31,10 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50 w-full">
+    <header className="bg-white shadow-lg sticky top-0 z-50">
       {/* Top bar */}
-      <div className="bg-blue-600 text-white py-2 w-full">
-        <div className="container mx-auto px-4 max-w-full">
+      <div className="bg-blue-600 text-white py-2">
+        <div className="container mx-auto px-4">
           <div className="flex justify-between items-center text-sm">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
@@ -54,7 +54,7 @@ const Header = () => {
       </div>
 
       {/* Main header */}
-      <div className="container mx-auto px-4 py-4 max-w-full">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
@@ -165,8 +165,8 @@ const Header = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t w-full">
-          <div className="container mx-auto px-4 py-4 space-y-4 max-w-full">
+        <div className="md:hidden bg-white border-t">
+          <div className="container mx-auto px-4 py-4 space-y-4">
             {/* Mobile search */}
             <form onSubmit={handleSearch} className="flex">
               <div className="relative flex-1">

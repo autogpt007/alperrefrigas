@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, Users, Award, Shield, CheckCircle, Star, TrendingUp, Package, Truck, Phone, Mail, ArrowRight } from 'lucide-react';
@@ -73,10 +74,10 @@ const HomePage = () => {
         <meta name="keywords" content="wholesale refrigerant gas, bulk R-410A, HVAC refrigerant supplier, refrigerant distributor, R-134a for sale, EPA certified refrigerant" />
       </Helmet>
       
-      <div className="min-h-screen w-full">
+      <div className="min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 text-white py-20 w-full">
-          <div className="container mx-auto px-4 max-w-6xl">
+        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 text-white py-20">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
@@ -95,7 +96,7 @@ const HomePage = () => {
                     </Button>
                   </Link>
                   <Link to="/contact">
-                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+                    <Button size="lg" className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-blue-600 transition-colors">
                       Get Bulk Pricing Quote
                     </Button>
                   </Link>
@@ -124,8 +125,8 @@ const HomePage = () => {
 
         {/* Search Results Section (conditionally shown) */}
         {searchTerm && (
-          <section className="py-12 bg-gray-50 w-full">
-            <div className="container mx-auto px-4 max-w-6xl">
+          <section className="py-12 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Search Results for "{searchTerm}" ({filteredProducts.length} found)
               </h2>
@@ -180,8 +181,8 @@ const HomePage = () => {
         )}
 
         {/* Trust Indicators */}
-        <section className="py-16 bg-white w-full">
-          <div className="container mx-auto px-4 max-w-6xl">
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Trusted HVAC Refrigerant Distributor Since 2010</h2>
               <p className="text-gray-600 text-lg">EPA-certified supplier serving contractors and technicians across North America</p>
@@ -225,7 +226,7 @@ const HomePage = () => {
 
         {/* Featured Products */}
         <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-6xl">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Wholesale Refrigerant Products</h2>
               <p className="text-gray-600 text-lg">Certified pure refrigerants including R-410A, R-134a, and R-1234yf at bulk pricing</p>
@@ -293,8 +294,8 @@ const HomePage = () => {
         </section>
 
         {/* Why Choose Us */}
-        <section className="py-16 bg-white w-full">
-          <div className="container mx-auto px-4 max-w-6xl">
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Why HVAC Contractors Choose Alper Refrigerants</h2>
               <p className="text-gray-600 text-lg">Certified purity standards, competitive bulk pricing, and reliable shipping across North America</p>
@@ -350,8 +351,8 @@ const HomePage = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white w-full">
-          <div className="container mx-auto px-4 max-w-4xl text-center">
+        <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+          <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Get Your Wholesale Refrigerant Quote Today</h2>
             <p className="text-xl mb-8 text-blue-100">
               Join over 5,000 HVAC contractors who rely on our certified refrigerants and competitive bulk pricing.
@@ -363,7 +364,7 @@ const HomePage = () => {
                 Call: 1-800-REFRIGERANT
               </Button>
               <Link to="/contact">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+                <Button size="lg" className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-blue-600 transition-colors">
                   <Mail className="h-5 w-5 mr-2" />
                   Get Bulk Pricing Quote
                 </Button>

@@ -59,57 +59,55 @@ function App() {
                 <OrdersProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <div className="min-h-screen flex flex-col">
-                      <Routes>
-                        {/* Admin Routes */}
-                        <Route path="/admin" element={<AdminLayout />}>
-                          <Route index element={<Dashboard />} />
-                          <Route path="products" element={<EnhancedProductManagement />} />
-                          <Route path="orders" element={<OrderManagement />} />
-                          <Route path="blog" element={<SimpleBlogManagement />} />
-                          <Route path="contacts" element={<ContactManagement />} />
-                          <Route path="team" element={<TeamManagement />} />
-                          <Route path="certificates" element={<CertificationManagement />} />
-                          <Route path="content" element={<ContentManagement />} />
-                          <Route path="settings" element={<AdminSettings />} />
-                        </Route>
-                        
-                        {/* Public Routes */}
-                        <Route path="/*" element={
-                          <>
-                            <Header />
-                            <main className="flex-1">
-                              <Routes>
-                                <Route path="/" element={<HomePage />} />
-                                <Route path="/products" element={<ProductCatalog />} />
-                                <Route path="/products/:id" element={<ProductDetails />} />
-                                <Route path="/cart" element={<CartPage />} />
-                                <Route path="/rfq" element={<RFQPage />} />
-                                <Route path="/checkout" element={<CheckoutPage />} />
-                                <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
-                                <Route path="/about" element={<AboutUs />} />
-                                <Route path="/contact" element={<ContactUs />} />
-                                <Route path="/faq" element={<FAQ />} />
-                                <Route path="/shipping" element={<ShippingCalculator />} />
-                                <Route path="/compliance" element={<EPACompliance />} />
-                                <Route path="/certifications" element={<Certifications />} />
-                                <Route path="/privacy" element={<PrivacyPolicy />} />
-                                <Route path="/terms" element={<TermsOfService />} />
-                                <Route path="/cookies" element={<CookiePolicy />} />
-                                <Route path="/sitemap" element={<Sitemap />} />
-                                <Route path="/support" element={<CustomerSupport />} />
-                                <Route path="/account" element={<MyAccount />} />
-                                <Route path="/auth" element={<UserAuthPage />} />
-                                <Route path="/admin-auth" element={<AuthPage />} />
-                                <Route path="/blog" element={<BlogPage />} />
-                              </Routes>
-                            </main>
-                            <Footer />
-                            <WhatsAppButton phoneNumber="+18007347443" />
-                          </>
-                        } />
-                      </Routes>
-                    </div>
+                    <Routes>
+                      {/* Admin Routes */}
+                      <Route path="/admin" element={<AdminLayout />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="products" element={<EnhancedProductManagement />} />
+                        <Route path="orders" element={<OrderManagement />} />
+                        <Route path="blog" element={<SimpleBlogManagement />} />
+                        <Route path="contacts" element={<ContactManagement />} />
+                        <Route path="team" element={<TeamManagement />} />
+                        <Route path="certificates" element={<CertificationManagement />} />
+                        <Route path="content" element={<ContentManagement />} />
+                        <Route path="settings" element={<AdminSettings />} />
+                      </Route>
+                      
+                      {/* Public Routes */}
+                      <Route path="/*" element={
+                        <div className="min-h-screen flex flex-col">
+                          <Header />
+                          <main className="flex-1">
+                            <Routes>
+                              <Route path="/" element={<HomePage />} />
+                              <Route path="/products" element={<ProductCatalog />} />
+                              <Route path="/products/:id" element={<ProductDetails />} />
+                              <Route path="/cart" element={<CartPage />} />
+                              <Route path="/rfq" element={<RFQPage />} />
+                              <Route path="/checkout" element={<CheckoutPage />} />
+                              <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+                              <Route path="/about" element={<AboutUs />} />
+                              <Route path="/contact" element={<ContactUs />} />
+                              <Route path="/faq" element={<FAQ />} />
+                              <Route path="/shipping" element={<ShippingCalculator />} />
+                              <Route path="/compliance" element={<EPACompliance />} />
+                              <Route path="/certifications" element={<Certifications />} />
+                              <Route path="/privacy" element={<PrivacyPolicy />} />
+                              <Route path="/terms" element={<TermsOfService />} />
+                              <Route path="/cookies" element={<CookiePolicy />} />
+                              <Route path="/sitemap" element={<Sitemap />} />
+                              <Route path="/support" element={<CustomerSupport />} />
+                              <Route path="/account" element={<MyAccount />} />
+                              <Route path="/auth" element={<UserAuthPage />} />
+                              <Route path="/admin-auth" element={<AuthPage />} />
+                              <Route path="/blog" element={<BlogPage />} />
+                            </Routes>
+                          </main>
+                          <Footer />
+                          <WhatsAppButton phoneNumber="+18007347443" />
+                        </div>
+                      } />
+                    </Routes>
                   </BrowserRouter>
                 </OrdersProvider>
               </RFQProvider>
