@@ -77,7 +77,7 @@ const Dashboard = () => {
       icon: FileText,
       color: 'from-purple-500/20 to-pink-500/20 border-purple-500/20',
       iconColor: 'text-purple-400',
-      onClick: () => navigate('/admin/posts'),
+      onClick: () => navigate('/admin/blog'),
     },
   ];
 
@@ -155,11 +155,11 @@ const Dashboard = () => {
             </Card>
             <Card 
               className="bg-slate-700/50 border-slate-600 hover:border-green-500/50 transition-colors cursor-pointer"
-              onClick={() => navigate('/admin/posts')}
+              onClick={() => navigate('/admin/blog')}
             >
               <CardContent className="p-4 text-center">
                 <FileText className="h-8 w-8 text-green-400 mx-auto mb-2" />
-                <h3 className="font-semibold text-white">Manage Posts</h3>
+                <h3 className="font-semibold text-white">Manage Blog</h3>
                 <p className="text-sm text-gray-400">Create and edit blog posts</p>
               </CardContent>
             </Card>
@@ -179,7 +179,7 @@ const Dashboard = () => {
             >
               <CardContent className="p-4 text-center">
                 <Settings className="h-8 w-8 text-orange-400 mx-auto mb-2" />
-                <h3 className="font-semibold text-white">Site Settings</h3>
+                <h3 className="font-semibold text-white">Site Content</h3>
                 <p className="text-sm text-gray-400">Manage website content</p>
               </CardContent>
             </Card>

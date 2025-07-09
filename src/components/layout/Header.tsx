@@ -31,10 +31,10 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-white shadow-lg sticky top-0 z-50 w-full">
       {/* Top bar */}
-      <div className="bg-blue-600 text-white py-2">
-        <div className="container mx-auto px-4">
+      <div className="bg-blue-600 text-white py-2 w-full">
+        <div className="container mx-auto px-4 max-w-full">
           <div className="flex justify-between items-center text-sm">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
@@ -54,7 +54,7 @@ const Header = () => {
       </div>
 
       {/* Main header */}
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-4 max-w-full">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
@@ -80,7 +80,7 @@ const Header = () => {
                   className="pl-10"
                 />
               </div>
-              <Button type="submit" className="ml-2">
+              <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
                 Search
               </Button>
             </form>
@@ -136,6 +136,9 @@ const Header = () => {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center space-x-8 mt-4 pt-4 border-t">
+          <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium">
+            Home
+          </Link>
           <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium">
             Products
           </Link>
@@ -162,8 +165,8 @@ const Header = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t">
-          <div className="container mx-auto px-4 py-4 space-y-4">
+        <div className="md:hidden bg-white border-t w-full">
+          <div className="container mx-auto px-4 py-4 space-y-4 max-w-full">
             {/* Mobile search */}
             <form onSubmit={handleSearch} className="flex">
               <div className="relative flex-1">
@@ -176,13 +179,20 @@ const Header = () => {
                   className="pl-10"
                 />
               </div>
-              <Button type="submit" className="ml-2">
+              <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
                 Search
               </Button>
             </form>
 
             {/* Mobile navigation */}
             <nav className="space-y-2">
+              <Link
+                to="/"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
               <Link
                 to="/products"
                 className="block py-2 text-gray-700 hover:text-blue-600"
@@ -269,7 +279,6 @@ const Header = () => {
         </div>
       )}
 
-      {/* Auth Modal */}
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );

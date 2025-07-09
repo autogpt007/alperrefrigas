@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   Settings,
   Users,
-  Award
+  Award,
+  Globe
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -23,6 +24,7 @@ const AdminSidebar = () => {
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
     { icon: Users, label: 'Team', path: '/admin/team' },
     { icon: Award, label: 'Certificates', path: '/admin/certificates' },
+    { icon: Globe, label: 'Content', path: '/admin/content' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 

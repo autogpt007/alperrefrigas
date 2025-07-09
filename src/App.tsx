@@ -42,6 +42,7 @@ import ContactManagement from "./components/admin/ContactManagement";
 import AdminSettings from "./components/admin/AdminSettings";
 import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
+import ContentManagement from "./components/admin/ContentManagement";
 import BlogPage from "./components/pages/BlogPage";
 import "./App.css";
 
@@ -58,7 +59,7 @@ function App() {
                 <OrdersProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <div className="min-h-screen flex flex-col w-full">
+                    <div className="min-h-screen flex flex-col">
                       <Routes>
                         {/* Admin Routes */}
                         <Route path="/admin" element={<AdminLayout />}>
@@ -69,6 +70,7 @@ function App() {
                           <Route path="contacts" element={<ContactManagement />} />
                           <Route path="team" element={<TeamManagement />} />
                           <Route path="certificates" element={<CertificationManagement />} />
+                          <Route path="content" element={<ContentManagement />} />
                           <Route path="settings" element={<AdminSettings />} />
                         </Route>
                         
@@ -76,7 +78,7 @@ function App() {
                         <Route path="/*" element={
                           <>
                             <Header />
-                            <main className="flex-1 w-full">
+                            <main className="flex-1">
                               <Routes>
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/products" element={<ProductCatalog />} />

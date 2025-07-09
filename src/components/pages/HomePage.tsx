@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, Users, Award, Shield, CheckCircle, Star, TrendingUp, Package, Truck, Phone, Mail, ArrowRight } from 'lucide-react';
@@ -74,9 +73,9 @@ const HomePage = () => {
         <meta name="keywords" content="wholesale refrigerant gas, bulk R-410A, HVAC refrigerant supplier, refrigerant distributor, R-134a for sale, EPA certified refrigerant" />
       </Helmet>
       
-      <div className="min-h-screen">
+      <div className="min-h-screen w-full">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 text-white py-20">
+        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 text-white py-20 w-full">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
@@ -89,25 +88,6 @@ const HomePage = () => {
                   EPA-compliant products with fast shipping across North America since 2010.
                 </p>
                 
-                {/* Search Bar */}
-                <form onSubmit={handleSearch} className="mb-8">
-                  <div className="flex gap-3 max-w-md">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                      <Input
-                        type="text"
-                        placeholder="Search refrigerants, brands, or SKUs..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-white/70 focus:bg-white/20"
-                      />
-                    </div>
-                    <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 px-6">
-                      Search
-                    </Button>
-                  </div>
-                </form>
-
                 <div className="flex flex-wrap gap-4">
                   <Link to="/products">
                     <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
@@ -125,7 +105,7 @@ const HomePage = () => {
               <div className="relative">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
                   <img 
-                    src="/api/placeholder/500/400" 
+                    src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
                     alt="Refrigerant Cylinders" 
                     className="rounded-xl shadow-lg w-full"
                   />
@@ -144,7 +124,7 @@ const HomePage = () => {
 
         {/* Search Results Section (conditionally shown) */}
         {searchTerm && (
-          <section className="py-12 bg-gray-50">
+          <section className="py-12 bg-gray-50 w-full">
             <div className="container mx-auto px-4 max-w-6xl">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Search Results for "{searchTerm}" ({filteredProducts.length} found)
@@ -180,7 +160,7 @@ const HomePage = () => {
                           )}
                         </div>
                         
-                        <Button className="w-full">
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700">
                           <ShoppingCart className="h-4 w-4 mr-2" />
                           Add to Quote
                         </Button>
@@ -200,7 +180,7 @@ const HomePage = () => {
         )}
 
         {/* Trust Indicators */}
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white w-full">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Trusted HVAC Refrigerant Distributor Since 2010</h2>
@@ -313,7 +293,7 @@ const HomePage = () => {
         </section>
 
         {/* Why Choose Us */}
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white w-full">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Why HVAC Contractors Choose Alper Refrigerants</h2>
@@ -370,7 +350,7 @@ const HomePage = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+        <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white w-full">
           <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="text-3xl font-bold mb-4">Get Your Wholesale Refrigerant Quote Today</h2>
             <p className="text-xl mb-8 text-blue-100">
