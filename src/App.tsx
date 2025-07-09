@@ -32,6 +32,7 @@ import CustomerSupport from "./components/pages/CustomerSupport";
 import AdminDashboard from "./components/pages/AdminDashboard";
 import MyAccount from "./components/pages/MyAccount";
 import AuthPage from "./components/auth/AuthPage";
+import UserAuthPage from "./components/auth/UserAuthPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./components/admin/Dashboard";
 import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
@@ -57,7 +58,7 @@ function App() {
                 <OrdersProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <div className="min-h-screen flex flex-col">
+                    <div className="min-h-screen flex flex-col w-full">
                       <Routes>
                         {/* Admin Routes */}
                         <Route path="/admin" element={<AdminLayout />}>
@@ -75,7 +76,7 @@ function App() {
                         <Route path="/*" element={
                           <>
                             <Header />
-                            <main className="flex-1">
+                            <main className="flex-1 w-full">
                               <Routes>
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/products" element={<ProductCatalog />} />
@@ -96,7 +97,8 @@ function App() {
                                 <Route path="/sitemap" element={<Sitemap />} />
                                 <Route path="/support" element={<CustomerSupport />} />
                                 <Route path="/account" element={<MyAccount />} />
-                                <Route path="/auth" element={<AuthPage />} />
+                                <Route path="/auth" element={<UserAuthPage />} />
+                                <Route path="/admin-auth" element={<AuthPage />} />
                                 <Route path="/blog" element={<BlogPage />} />
                               </Routes>
                             </main>

@@ -1,171 +1,276 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User, Search } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useCart } from '@/contexts/CartContext';
+import { ShoppingCart, User, Search, Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { user, signOut } = useAuth();
-  const { getTotalItems } = useCart();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { itemCount } = useCart();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const totalItems = getTotalItems();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
+    if (searchTerm.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm('');
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
-
-  const navigationLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/products', label: 'Products' },
-    { href: '/news', label: 'News' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
-  ];
 
   return (
-    <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">AR</span>
+    <header className="bg-white shadow-lg sticky top-0 z-50">
+      {/* Top bar */}
+      <div className="bg-blue-600 text-white py-2">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center text-sm">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <Phone className="h-4 w-4 mr-1" />
+                <span>1-800-REFRIGERANT</span>
+              </div>
+              <div className="flex items-center">
+                <Mail className="h-4 w-4 mr-1" />
+                <span>info@alperrefrigerants.com</span>
+              </div>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-white">Alper Refrigerants</h1>
-              <p className="text-xs text-gray-400">Professional Distribution</p>
+            <div className="hidden md:block">
+              <span>EPA Certified Refrigerant Distributor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main header */}
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">A</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Alper Refrigerants</h1>
+              <p className="text-xs text-gray-600">Wholesale Supplier</p>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navigationLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Search Bar */}
-          <div className="hidden md:block flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="relative">
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-slate-800 border-slate-600 text-white placeholder-gray-400 pr-10"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400"
-              >
-                <Search className="h-4 w-4" />
-              </button>
+          {/* Search bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form onSubmit={handleSearch} className="flex w-full">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search refrigerants..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Button type="submit" className="ml-2">
+                Search
+              </Button>
             </form>
           </div>
 
-          {/* Right side buttons */}
+          {/* Actions */}
           <div className="flex items-center space-x-4">
-            {/* Cart */}
-            <Link to="/cart" className="relative">
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-cyan-400">
-                <ShoppingCart className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </Button>
-            </Link>
-
-            {/* User Menu */}
+            {/* User Account */}
             {user ? (
-              <div className="relative">
-                <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-gray-300 hover:text-cyan-400">
-                  <User className="h-5 w-5" />
-                  <span className="hidden sm:inline ml-2">Sign Out</span>
+              <div className="hidden md:flex items-center space-x-2">
+                <Link to="/account">
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    My Account
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={handleLogout}>
+                  Sign Out
                 </Button>
               </div>
             ) : (
-              <Link to="/auth">
-                <Button variant="ghost" size="sm" className="text-gray-300 hover:text-cyan-400">
-                  <User className="h-5 w-5" />
-                  <span className="hidden sm:inline ml-2">Sign In</span>
+              <Link to="/auth" className="hidden md:block">
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
                 </Button>
               </Link>
             )}
+
+            {/* Cart */}
+            <Link to="/cart">
+              <Button variant="ghost" size="sm" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-blue-600">
+                    {itemCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
 
             {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden text-gray-300"
+              className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-slate-700">
-            <div className="flex flex-col space-y-4">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="md:hidden relative">
+        {/* Navigation - Desktop */}
+        <nav className="hidden md:flex items-center space-x-8 mt-4 pt-4 border-t">
+          <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium">
+            Products
+          </Link>
+          <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium">
+            About Us
+          </Link>
+          <Link to="/compliance" className="text-gray-700 hover:text-blue-600 font-medium">
+            EPA Compliance
+          </Link>
+          <Link to="/certifications" className="text-gray-700 hover:text-blue-600 font-medium">
+            Certifications
+          </Link>
+          <Link to="/shipping" className="text-gray-700 hover:text-blue-600 font-medium">
+            Shipping Calculator
+          </Link>
+          <Link to="/contact" className="text-gray-700 hover:text-blue-600 font-medium">
+            Contact
+          </Link>
+          <Link to="/faq" className="text-gray-700 hover:text-blue-600 font-medium">
+            FAQ
+          </Link>
+        </nav>
+      </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-t">
+          <div className="container mx-auto px-4 py-4 space-y-4">
+            {/* Mobile search */}
+            <form onSubmit={handleSearch} className="flex">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-slate-800 border-slate-600 text-white placeholder-gray-400 pr-10"
+                  placeholder="Search refrigerants..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
                 />
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400"
-                >
-                  <Search className="h-4 w-4" />
-                </button>
-              </form>
+              </div>
+              <Button type="submit" className="ml-2">
+                Search
+              </Button>
+            </form>
 
-              {/* Mobile Navigation Links */}
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="text-gray-300 hover:text-cyan-400 transition-colors font-medium py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+            {/* Mobile navigation */}
+            <nav className="space-y-2">
+              <Link
+                to="/products"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Products
+              </Link>
+              <Link
+                to="/about"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link
+                to="/compliance"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                EPA Compliance
+              </Link>
+              <Link
+                to="/certifications"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Certifications
+              </Link>
+              <Link
+                to="/shipping"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Shipping Calculator
+              </Link>
+              <Link
+                to="/contact"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link
+                to="/faq"
+                className="block py-2 text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                FAQ
+              </Link>
+
+              {/* Mobile auth */}
+              <div className="pt-4 border-t">
+                {user ? (
+                  <div className="space-y-2">
+                    <Link
+                      to="/account"
+                      className="block py-2 text-gray-700 hover:text-blue-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Account
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="block py-2 text-gray-700 hover:text-blue-600 w-full text-left"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="block py-2 text-gray-700 hover:text-blue-600"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In / Create Account
+                  </Link>
+                )}
+              </div>
+            </nav>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 };

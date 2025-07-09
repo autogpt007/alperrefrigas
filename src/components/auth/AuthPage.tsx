@@ -6,11 +6,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Shield } from 'lucide-react';
+import { Loader2, Shield, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
   const { user, isLoading, isAdmin } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
+  const navigate = useNavigate();
 
   console.log('AuthPage - user:', user, 'isLoading:', isLoading, 'isAdmin:', isAdmin);
 
@@ -40,33 +42,47 @@ const AuthPage = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
-        <Card className="w-full max-w-md bg-slate-800/50 border-cyan-500/20">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mb-4">
-              <Shield className="h-6 w-6 text-white" />
-            </div>
-            <CardTitle className="text-2xl text-cyan-400">Admin Access</CardTitle>
-            <p className="text-gray-300">Sign in to access the admin dashboard</p>
-          </CardHeader>
-          <CardContent>
-            <Auth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#06b6d4',
-                      brandAccent: '#0891b2',
+        <div className="w-full max-w-md">
+          <div className="mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+
+          <Card className="bg-slate-800/50 border-cyan-500/20">
+            <CardHeader className="text-center">
+              <div className="mx-auto w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+              <CardTitle className="text-2xl text-cyan-400">Admin Access</CardTitle>
+              <p className="text-gray-300">Sign in to access the admin dashboard</p>
+              <p className="text-xs text-gray-500 mt-2">This is restricted to administrators only</p>
+            </CardHeader>
+            <CardContent>
+              <Auth
+                supabaseClient={supabase}
+                appearance={{
+                  theme: ThemeSupa,
+                  variables: {
+                    default: {
+                      colors: {
+                        brand: '#06b6d4',
+                        brandAccent: '#0891b2',
+                      }
                     }
                   }
-                }
-              }}
-              providers={[]}
-              redirectTo={`${window.location.origin}/admin`}
-            />
-          </CardContent>
-        </Card>
+                }}
+                providers={[]}
+                redirectTo={`${window.location.origin}/admin`}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -79,13 +95,22 @@ const AuthPage = () => {
             <Shield className="h-12 w-12 text-red-400 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-red-400 mb-2">Access Denied</h2>
             <p className="text-gray-300 mb-4">You don't have admin privileges to access this dashboard.</p>
-            <Button 
-              onClick={() => supabase.auth.signOut()}
-              variant="outline"
-              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-            >
-              Sign Out
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                onClick={() => supabase.auth.signOut()}
+                variant="outline"
+                className="border-red-500/50 text-red-400 hover:bg-red-500/10 w-full"
+              >
+                Sign Out
+              </Button>
+              <Button
+                onClick={() => navigate('/')}
+                variant="ghost"
+                className="text-gray-400 hover:text-white w-full"
+              >
+                Return to Home
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
