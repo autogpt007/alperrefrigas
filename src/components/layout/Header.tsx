@@ -1,285 +1,212 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Phone, Mail } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { ShoppingCart, Search, Menu, X, User, LogOut } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import AuthModal from '@/components/AuthModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { itemCount } = useCart();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
-      setSearchTerm('');
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
     }
   };
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/');
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
+
+  const isActive = (path: string) => location.pathname === path;
+
+  const navItems = [
+    { label: 'Home', path: '/' },
+    { label: 'Products', path: '/products' },
+    { label: 'About', path: '/about' },
+    { label: 'Contact', path: '/contact' },
+    { label: 'Blog', path: '/blog' },
+    { label: 'EPA Compliance', path: '/compliance' },
+    { label: 'Certifications', path: '/certifications' },
+  ];
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
-      {/* Top bar */}
-      <div className="bg-blue-600 text-white py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-1" />
-                <span>1-800-REFRIGERANT</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-1" />
-                <span>info@alperrefrigerants.com</span>
-              </div>
-            </div>
-            <div className="hidden md:block">
-              <span>EPA Certified Refrigerant Distributor</span>
-            </div>
+      <div className="container mx-auto px-4">
+        {/* Top Bar */}
+        <div className="flex items-center justify-between py-2 border-b border-gray-200">
+          <div className="flex items-center space-x-4 text-sm text-gray-600">
+            <span>📞 1-800-REFRIGERANT</span>
+            <span>📧 info@frigidflow.com</span>
           </div>
-        </div>
-      </div>
-
-      {/* Main header */}
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">A</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Alper Refrigerants</h1>
-              <p className="text-xs text-gray-600">Wholesale Supplier</p>
-            </div>
-          </Link>
-
-          {/* Search bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="flex w-full">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search refrigerants..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
-                Search
-              </Button>
-            </form>
-          </div>
-
-          {/* Actions */}
           <div className="flex items-center space-x-4">
-            {/* User Account */}
             {user ? (
-              <div className="hidden md:flex items-center space-x-2">
-                <Link to="/account">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    My Account
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/account')}
+                  className="flex items-center gap-2 text-gray-600 hover:text-blue-600"
+                >
+                  <User className="h-4 w-4" />
+                  My Account
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-gray-600 hover:text-red-600"
+                >
+                  <LogOut className="h-4 w-4" />
                   Sign Out
                 </Button>
               </div>
             ) : (
-              <Link to="/auth" className="hidden md:block">
-                <Button variant="ghost" size="sm">
-                  <User className="h-4 w-4 mr-2" />
-                  Sign In
-                </Button>
-              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/auth')}
+                className="flex items-center gap-2 text-gray-600 hover:text-blue-600"
+              >
+                <User className="h-4 w-4" />
+                Sign In
+              </Button>
             )}
+          </div>
+        </div>
 
-            {/* Cart */}
-            <Link to="/cart">
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="h-5 w-5" />
+        {/* Main Header */}
+        <div className="flex items-center justify-between py-4">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">FF</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">FrigidFlow</h1>
+              <p className="text-sm text-gray-600">Refrigerant Solutions</p>
+            </div>
+          </Link>
+
+          {/* Search Bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form onSubmit={handleSearch} className="w-full flex">
+              <Input
+                type="text"
+                placeholder="Search refrigerants..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-r-none"
+              />
+              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+                <Search className="h-4 w-4" />
+              </Button>
+            </form>
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            <Link to="/rfq">
+              <Button className="hidden md:inline-flex bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2">
+                Get Bulk Pricing Quote
+              </Button>
+            </Link>
+            
+            <Link to="/cart" className="relative">
+              <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                <ShoppingCart className="h-4 w-4" />
+                <span className="hidden sm:inline">Cart</span>
                 {itemCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-blue-600">
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {itemCount}
-                  </Badge>
+                  </span>
                 )}
               </Button>
             </Link>
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="sm"
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
 
         {/* Navigation - Desktop */}
-        <nav className="hidden md:flex items-center space-x-8 mt-4 pt-4 border-t">
-          <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium">
-            Home
-          </Link>
-          <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium">
-            Products
-          </Link>
-          <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium">
-            About Us
-          </Link>
-          <Link to="/compliance" className="text-gray-700 hover:text-blue-600 font-medium">
-            EPA Compliance
-          </Link>
-          <Link to="/certifications" className="text-gray-700 hover:text-blue-600 font-medium">
-            Certifications
-          </Link>
-          <Link to="/shipping" className="text-gray-700 hover:text-blue-600 font-medium">
-            Shipping Calculator
-          </Link>
-          <Link to="/contact" className="text-gray-700 hover:text-blue-600 font-medium">
-            Contact
-          </Link>
-          <Link to="/faq" className="text-gray-700 hover:text-blue-600 font-medium">
-            FAQ
-          </Link>
+        <nav className="hidden md:flex items-center space-x-8 py-3 border-t border-gray-200">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${
+                isActive(item.path) ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t">
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            {/* Mobile search */}
-            <form onSubmit={handleSearch} className="flex">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search refrigerants..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Button type="submit" className="ml-2 bg-blue-600 hover:bg-blue-700">
-                Search
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="container mx-auto px-4 py-4">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="mb-4 flex">
+              <Input
+                type="text"
+                placeholder="Search refrigerants..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-r-none"
+              />
+              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+                <Search className="h-4 w-4" />
               </Button>
             </form>
 
-            {/* Mobile navigation */}
+            {/* Mobile Navigation */}
             <nav className="space-y-2">
-              <Link
-                to="/"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Home
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors ${
+                    isActive(item.path) ? 'text-blue-600' : ''
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link to="/rfq" onClick={() => setIsMenuOpen(false)}>
+                <Button className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
+                  Get Bulk Pricing Quote
+                </Button>
               </Link>
-              <Link
-                to="/products"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Products
-              </Link>
-              <Link
-                to="/about"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About Us
-              </Link>
-              <Link
-                to="/compliance"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                EPA Compliance
-              </Link>
-              <Link
-                to="/certifications"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Certifications
-              </Link>
-              <Link
-                to="/shipping"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Shipping Calculator
-              </Link>
-              <Link
-                to="/contact"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
-              <Link
-                to="/faq"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                FAQ
-              </Link>
-
-              {/* Mobile auth */}
-              <div className="pt-4 border-t">
-                {user ? (
-                  <div className="space-y-2">
-                    <Link
-                      to="/account"
-                      className="block py-2 text-gray-700 hover:text-blue-600"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      My Account
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="block py-2 text-gray-700 hover:text-blue-600 w-full text-left"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <Link
-                    to="/auth"
-                    className="block py-2 text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign In / Create Account
-                  </Link>
-                )}
-              </div>
             </nav>
           </div>
         </div>
       )}
-
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 };

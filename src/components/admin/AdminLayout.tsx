@@ -45,9 +45,7 @@ const AdminLayout = () => {
   console.log('AdminLayout - User is admin, showing admin layout');
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex">
-      <div className="w-64 flex-shrink-0">
-        <AdminSidebar />
-      </div>
+      <AdminSidebar />
       <div className="flex-1 overflow-auto">
         <Outlet />
       </div>

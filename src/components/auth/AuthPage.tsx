@@ -28,6 +28,14 @@ const AuthPage = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // If user is admin and logged in, redirect to admin dashboard
+  useEffect(() => {
+    if (user && isAdmin && !isLoading) {
+      console.log('AuthPage - Redirecting admin to dashboard');
+      navigate('/admin', { replace: true });
+    }
+  }, [user, isAdmin, isLoading, navigate]);
+
   if (isLoading || authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -79,6 +87,8 @@ const AuthPage = () => {
                 }}
                 providers={[]}
                 redirectTo={`${window.location.origin}/admin`}
+                view="sign_in"
+                showLinks={false}
               />
             </CardContent>
           </Card>
@@ -117,7 +127,8 @@ const AuthPage = () => {
     );
   }
 
-  return null; // Will be handled by the admin dashboard
+  // If user is admin, redirect to admin dashboard
+  return null;
 };
 
 export default AuthPage;

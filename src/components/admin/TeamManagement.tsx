@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -9,9 +10,6 @@ import { Users, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ImageUpload } from '../ui/image-upload';
-
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
 interface TeamMember {
   id?: string;
@@ -27,6 +25,7 @@ const TeamManagement = () => {
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState<TeamMember>({
@@ -43,16 +42,18 @@ const TeamManagement = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?order=order_index.asc`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      console.log('Fetching team members...');
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .order('order_index', { ascending: true });
 
-      if (!response.ok) throw new Error('Failed to fetch team members');
-      const data = await response.json();
+      if (error) {
+        console.error('Error fetching team members:', error);
+        throw error;
+      }
+
+      console.log('Team members fetched:', data);
       setTeamMembers(data || []);
     } catch (error: any) {
       console.error('Error fetching team members:', error);
@@ -68,6 +69,9 @@ const TeamManagement = () => {
 
   const handleSave = async () => {
     try {
+      console.log('Saving team member:', formData);
+      setSaving(true);
+      
       if (!formData.name || !formData.position) {
         toast({
           title: 'Error',
@@ -77,71 +81,103 @@ const TeamManagement = () => {
         return;
       }
 
-      const method = editingMember?.id ? 'PATCH' : 'POST';
-      const url = editingMember?.id 
-        ? `${SUPABASE_URL}/rest/v1/team_members?id=eq.${editingMember.id}`
-        : `${SUPABASE_URL}/rest/v1/team_members`;
+      // Prepare the data for insert/update
+      const memberData = {
+        name: formData.name.trim(),
+        position: formData.position.trim(),
+        bio: formData.bio?.trim() || '',
+        image_url: formData.image_url || '',
+        order_index: formData.order_index || teamMembers.length
+      };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(editingMember?.id ? formData : { ...formData, order_index: teamMembers.length })
-      });
+      let result;
+      if (editingMember?.id) {
+        // Update existing member
+        console.log('Updating member with ID:', editingMember.id);
+        result = await supabase
+          .from('team_members')
+          .update(memberData)
+          .eq('id', editingMember.id)
+          .select();
+      } else {
+        // Insert new member
+        console.log('Inserting new member');
+        result = await supabase
+          .from('team_members')
+          .insert([memberData])
+          .select();
+      }
 
-      if (!response.ok) throw new Error('Failed to save team member');
+      if (result.error) {
+        console.error('Supabase error:', result.error);
+        throw result.error;
+      }
 
+      console.log('Save successful:', result.data);
+      
       toast({ 
         title: editingMember ? 'Team member updated successfully!' : 'Team member added successfully!' 
       });
 
+      // Reset form and state
       setFormData({ name: '', position: '', bio: '', image_url: '', order_index: 0 });
       setEditingMember(null);
       setIsAdding(false);
-      fetchTeamMembers();
+      
+      // Refresh the list
+      await fetchTeamMembers();
     } catch (error: any) {
       console.error('Error saving team member:', error);
       toast({
         title: 'Error',
-        description: 'Failed to save team member.',
+        description: error.message || 'Failed to save team member.',
         variant: 'destructive'
       });
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        }
-      });
+      console.log('Deleting team member with ID:', id);
+      const { error } = await supabase
+        .from('team_members')
+        .delete()
+        .eq('id', id);
 
-      if (!response.ok) throw new Error('Failed to delete team member');
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
+
       toast({ title: 'Team member deleted successfully!' });
-      fetchTeamMembers();
+      await fetchTeamMembers();
     } catch (error: any) {
       console.error('Error deleting team member:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete team member.',
+        description: error.message || 'Failed to delete team member.',
         variant: 'destructive'
       });
     }
   };
 
   const startEdit = (member: TeamMember) => {
+    console.log('Starting edit for member:', member);
     setEditingMember(member);
-    setFormData(member);
+    setFormData({
+      name: member.name,
+      position: member.position,
+      bio: member.bio || '',
+      image_url: member.image_url || '',
+      order_index: member.order_index
+    });
     setIsAdding(true);
   };
 
   const cancelEdit = () => {
+    console.log('Canceling edit/add');
     setEditingMember(null);
     setFormData({ name: '', position: '', bio: '', image_url: '', order_index: 0 });
     setIsAdding(false);
@@ -171,6 +207,7 @@ const TeamManagement = () => {
                 onClick={() => setIsAdding(true)}
                 size="sm"
                 className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={saving}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Member
@@ -205,6 +242,7 @@ const TeamManagement = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => startEdit(member)}
+                    disabled={saving}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -212,6 +250,7 @@ const TeamManagement = () => {
                     variant="destructive"
                     size="sm"
                     onClick={() => handleDelete(member.id!)}
+                    disabled={saving}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -230,7 +269,7 @@ const TeamManagement = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center justify-between">
                 {editingMember ? 'Edit Team Member' : 'Add Team Member'}
-                <Button variant="ghost" size="sm" onClick={cancelEdit}>
+                <Button variant="ghost" size="sm" onClick={cancelEdit} disabled={saving}>
                   <X className="h-4 w-4" />
                 </Button>
               </CardTitle>
@@ -243,6 +282,7 @@ const TeamManagement = () => {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Enter team member name"
+                  disabled={saving}
                 />
               </div>
 
@@ -253,6 +293,7 @@ const TeamManagement = () => {
                   onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Enter position/title"
+                  disabled={saving}
                 />
               </div>
 
@@ -264,6 +305,7 @@ const TeamManagement = () => {
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Enter bio/description"
                   rows={3}
+                  disabled={saving}
                 />
               </div>
 
@@ -275,6 +317,7 @@ const TeamManagement = () => {
                   onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Display order"
+                  disabled={saving}
                 />
               </div>
 
@@ -290,9 +333,10 @@ const TeamManagement = () => {
               <Button
                 onClick={handleSave}
                 className="w-full bg-cyan-500 hover:bg-cyan-600"
+                disabled={saving || !formData.name || !formData.position}
               >
                 <Save className="h-4 w-4 mr-2" />
-                {editingMember ? 'Update Member' : 'Add Member'}
+                {saving ? 'Saving...' : (editingMember ? 'Update Member' : 'Add Member')}
               </Button>
             </CardContent>
           </Card>

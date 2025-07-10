@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Mail, Lock, User, Building, Shield, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const UserAuthPage = () => {
@@ -42,10 +42,13 @@ const UserAuthPage = () => {
     setError('');
     
     try {
+      console.log('Attempting login for:', loginData.email);
       const { error } = await login(loginData.email, loginData.password);
       if (error) {
+        console.error('Login error:', error);
         setError(error.message || 'Login failed. Please check your credentials.');
       } else {
+        console.log('Login successful, redirecting to account');
         navigate('/account');
       }
     } catch (error) {
@@ -62,8 +65,16 @@ const UserAuthPage = () => {
     setError('');
     
     try {
-      const { error } = await register(registerData);
+      console.log('Attempting registration for:', registerData.email);
+      const { error } = await register({
+        name: registerData.name,
+        email: registerData.email,
+        password: registerData.password,
+        company: registerData.company
+      });
+      
       if (error) {
+        console.error('Registration error:', error);
         if (error.message?.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
           setActiveTab('signin');
@@ -71,6 +82,9 @@ const UserAuthPage = () => {
           setError(error.message || 'Registration failed. Please try again.');
         }
       } else {
+        console.log('Registration successful');
+        setError('');
+        // Show success message or redirect
         navigate('/account');
       }
     } catch (error) {
@@ -136,6 +150,7 @@ const UserAuthPage = () => {
                       onChange={(e) => setLoginData({...loginData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -151,6 +166,7 @@ const UserAuthPage = () => {
                         onChange={(e) => setLoginData({...loginData, password: e.target.value})}
                         placeholder="••••••••"
                         required
+                        disabled={isLoading}
                       />
                       <Button
                         type="button"
@@ -158,6 +174,7 @@ const UserAuthPage = () => {
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3"
                         onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -194,6 +211,7 @@ const UserAuthPage = () => {
                       onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
                       placeholder="John Doe"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -208,6 +226,7 @@ const UserAuthPage = () => {
                       onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
                       placeholder="your@email.com"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -221,6 +240,7 @@ const UserAuthPage = () => {
                       value={registerData.company}
                       onChange={(e) => setRegisterData({...registerData, company: e.target.value})}
                       placeholder="Your Company"
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -236,6 +256,7 @@ const UserAuthPage = () => {
                         onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
                         placeholder="••••••••"
                         required
+                        disabled={isLoading}
                       />
                       <Button
                         type="button"
@@ -243,6 +264,7 @@ const UserAuthPage = () => {
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3"
                         onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
