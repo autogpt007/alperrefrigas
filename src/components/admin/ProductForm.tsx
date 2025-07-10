@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Upload, X, ImageIcon, FileText } from 'lucide-react';
+import { Plus, Upload, X, ImageIcon, FileText, Award } from 'lucide-react';
 import { useProducts } from '../../contexts/ProductsContext';
 import { useToast } from '../../hooks/use-toast';
 
@@ -39,13 +39,26 @@ const ProductForm = () => {
     chemicalFormula: '',
     casNumber: '',
     unNumber: '',
-    hazardClass: ''
+    hazardClass: '',
+    certificates: [] as Array<{
+      name: string;
+      type: 'product' | 'iso' | 'epa' | 'distributor' | 'quality' | 'safety';
+      description: string;
+      pdf_url: string;
+    }>
   });
 
   const [imagePreview, setImagePreview] = useState('');
   const [sdsFileName, setSdsFileName] = useState('');
   const [packagingInput, setPackagingInput] = useState('');
   const [applicationInput, setApplicationInput] = useState('');
+  const [certificateInput, setCertificateInput] = useState({
+    name: '',
+    type: 'product' as 'product' | 'iso' | 'epa' | 'distributor' | 'quality' | 'safety',
+    description: '',
+    file: null as File | null,
+    fileName: ''
+  });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,6 +93,62 @@ const ProductForm = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCertificateUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        toast({
+          title: "Invalid File Type",
+          description: "Please upload a PDF file for the certificate",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setCertificateInput({
+        ...certificateInput,
+        file: file,
+        fileName: file.name
+      });
+    }
+  };
+
+  const addCertificate = () => {
+    if (certificateInput.name.trim() && certificateInput.file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        const newCertificate = {
+          name: certificateInput.name.trim(),
+          type: certificateInput.type,
+          description: certificateInput.description.trim(),
+          pdf_url: result
+        };
+        
+        setNewProduct({
+          ...newProduct,
+          certificates: [...newProduct.certificates, newCertificate]
+        });
+        
+        setCertificateInput({
+          name: '',
+          type: 'product',
+          description: '',
+          file: null,
+          fileName: ''
+        });
+      };
+      reader.readAsDataURL(certificateInput.file);
+    }
+  };
+
+  const removeCertificate = (index: number) => {
+    setNewProduct({
+      ...newProduct,
+      certificates: newProduct.certificates.filter((_, i) => i !== index)
+    });
   };
 
   const addPackaging = () => {
@@ -159,10 +228,18 @@ const ProductForm = () => {
       chemicalFormula: '',
       casNumber: '',
       unNumber: '',
-      hazardClass: ''
+      hazardClass: '',
+      certificates: []
     });
     setImagePreview('');
     setSdsFileName('');
+    setCertificateInput({
+      name: '',
+      type: 'product',
+      description: '',
+      file: null,
+      fileName: ''
+    });
   };
 
   return (
@@ -350,6 +427,98 @@ const ProductForm = () => {
             rows={3}
             placeholder="Detailed product description..."
           />
+        </div>
+
+        {/* Certificates Section */}
+        <div>
+          <Label className="text-gray-300 block mb-4">Product Certificates</Label>
+          
+          {/* Certificate Input Form */}
+          <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label className="text-gray-300 text-sm">Certificate Name</Label>
+                <Input
+                  value={certificateInput.name}
+                  onChange={(e) => setCertificateInput({...certificateInput, name: e.target.value})}
+                  className="bg-slate-600 border-slate-500 text-white"
+                  placeholder="e.g., EPA Section 608 Certificate"
+                />
+              </div>
+              <div>
+                <Label className="text-gray-300 text-sm">Certificate Type</Label>
+                <Select 
+                  value={certificateInput.type} 
+                  onValueChange={(value) => setCertificateInput({...certificateInput, type: value as any})}
+                >
+                  <SelectTrigger className="bg-slate-600 border-slate-500 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="product">Product Certificate</SelectItem>
+                    <SelectItem value="iso">ISO Certificate</SelectItem>
+                    <SelectItem value="epa">EPA Certificate</SelectItem>
+                    <SelectItem value="distributor">Distributor Agreement</SelectItem>
+                    <SelectItem value="quality">Quality Certificate</SelectItem>
+                    <SelectItem value="safety">Safety Certificate</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="mb-4">
+              <Label className="text-gray-300 text-sm">Description</Label>
+              <Textarea
+                value={certificateInput.description}
+                onChange={(e) => setCertificateInput({...certificateInput, description: e.target.value})}
+                className="bg-slate-600 border-slate-500 text-white"
+                rows={2}
+                placeholder="Brief description of the certificate..."
+              />
+            </div>
+            
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleCertificateUpload}
+                  className="hidden"
+                  id="certificate-upload"
+                />
+                <Label htmlFor="certificate-upload" className="cursor-pointer">
+                  <Button type="button" size="sm" className="bg-purple-600 hover:bg-purple-700">
+                    <Award className="h-4 w-4 mr-2" />
+                    Upload Certificate PDF
+                  </Button>
+                </Label>
+                {certificateInput.fileName && (
+                  <p className="text-sm text-green-400 mt-1">{certificateInput.fileName}</p>
+                )}
+              </div>
+              <Button type="button" onClick={addCertificate} size="sm" disabled={!certificateInput.name || !certificateInput.file}>
+                <Plus className="h-4 w-4 mr-1" />
+                Add Certificate
+              </Button>
+            </div>
+          </div>
+          
+          {/* Existing Certificates List */}
+          {newProduct.certificates.length > 0 && (
+            <div className="space-y-2">
+              {newProduct.certificates.map((cert, index) => (
+                <div key={index} className="bg-purple-600/20 text-white px-4 py-3 rounded-lg border border-purple-500/30 flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold">{cert.name}</div>
+                    <div className="text-sm text-gray-300">Type: {cert.type} | {cert.description}</div>
+                  </div>
+                  <button onClick={() => removeCertificate(index)} className="text-red-400 hover:text-red-300">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Additional SEO/GMC Fields */}
