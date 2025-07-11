@@ -68,7 +68,25 @@ export const adminSettingsSchema = z.object({
     .max(20, 'Phone number must be less than 20 characters'),
   mainPhone: z.string()
     .min(1, 'Phone number is required')
-    .max(20, 'Phone number must be less than 20 characters')
+    .max(20, 'Phone number must be less than 20 characters'),
+  // Payment settings
+  bankWireInstructions: z.string()
+    .min(10, 'Instructions must be at least 10 characters')
+    .max(1000, 'Instructions must be less than 1000 characters'),
+  bankName: z.string()
+    .min(2, 'Bank name must be at least 2 characters')
+    .max(100, 'Bank name must be less than 100 characters'),
+  bankRoutingNumber: z.string()
+    .regex(/^\d{9}$/, 'Routing number must be exactly 9 digits')
+    .max(9, 'Routing number must be exactly 9 digits'),
+  bankAccountNumber: z.string()
+    .min(8, 'Account number must be at least 8 characters')
+    .max(20, 'Account number must be less than 20 characters')
+    .regex(/^\d+$/, 'Account number must contain only digits'),
+  bankSwiftCode: z.string()
+    .min(8, 'SWIFT code must be at least 8 characters')
+    .max(11, 'SWIFT code must be at most 11 characters')
+    .regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, 'Please enter a valid SWIFT code')
 });
 
 // Rate limiting utility
