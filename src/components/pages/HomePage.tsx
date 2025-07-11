@@ -4,9 +4,15 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCircle, Star, Zap, Users, Building2, Globe, ThermometerSun } from 'lucide-react';
+import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCircle, Star, Zap, Users, Building2, Globe, ThermometerSun, ArrowRight, Search, FileText, Package } from 'lucide-react';
+import { useProducts } from '@/contexts/ProductsContext';
+import ProductCard from '@/components/ProductCard';
 
 const HomePage = () => {
+  const { products, loading } = useProducts();
+  
+  // Get first 3 products for featured section
+  const featuredProducts = products.slice(0, 3);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section with improved visibility */}
@@ -81,118 +87,37 @@ const HomePage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-gradient-to-br from-slate-800 to-slate-700 border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300 group">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-cyan-400 group-hover:text-cyan-300 transition-colors">R-410A</CardTitle>
-                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Popular</Badge>
+          {loading ? (
+            <div className="grid md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="bg-gradient-to-br from-slate-800 to-slate-700 border-cyan-500/20 animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="aspect-square w-full bg-slate-600 rounded-lg mb-4"></div>
+                    <div className="h-6 bg-slate-600 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-600 rounded mb-4"></div>
+                    <div className="h-10 bg-slate-600 rounded"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-8">
+              {featuredProducts.map((product) => (
+                <div key={product.id} className="animate-fade-in">
+                  <ProductCard product={product} />
                 </div>
-                <CardDescription className="text-gray-300">
-                  Most widely used refrigerant for residential and commercial air conditioning systems. Environmentally friendly HFC blend.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Product Image */}
-                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300&h=300&fit=crop&crop=center"
-                      alt="R-410A Refrigerant Cylinder"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Starting at:</span>
-                    <span className="text-2xl font-bold text-cyan-400">$299.99</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">25lb Cylinder</Badge>
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">EPA Approved</Badge>
-                  </div>
-                  <Link to="/products">
-                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white">
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-slate-800 to-slate-700 border-purple-500/20 hover:border-purple-400/50 transition-all duration-300 group">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-purple-400 group-hover:text-purple-300 transition-colors">R-134A</CardTitle>
-                  <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Reliable</Badge>
-                </div>
-                <CardDescription className="text-gray-300">
-                  Versatile refrigerant for automotive and medium-temperature applications. Non-toxic and non-flammable HFC.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Product Image */}
-                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=300&fit=crop&crop=center"
-                      alt="R-134A Refrigerant Cylinder"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Starting at:</span>
-                    <span className="text-2xl font-bold text-purple-400">$189.99</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">30lb Cylinder</Badge>
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">Automotive</Badge>
-                  </div>
-                  <Link to="/products">
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-slate-800 to-slate-700 border-green-500/20 hover:border-green-400/50 transition-all duration-300 group">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-green-400 group-hover:text-green-300 transition-colors">R-32</CardTitle>
-                  <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Eco-Friendly</Badge>
-                </div>
-                <CardDescription className="text-gray-300">
-                  Next-generation refrigerant with lower global warming potential. Perfect for new energy-efficient systems.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Product Image */}
-                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=300&fit=crop&crop=center"
-                      alt="R-32 Refrigerant Cylinder"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Starting at:</span>
-                    <span className="text-2xl font-bold text-green-400">$249.99</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">20lb Cylinder</Badge>
-                    <Badge variant="outline" className="text-gray-300 border-gray-500">Low GWP</Badge>
-                  </div>
-                  <Link to="/products">
-                    <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white">
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-400 text-lg">No products available yet. Please add some products in the admin panel.</p>
+              <Link to="/admin" className="inline-block mt-4">
+                <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
+                  Go to Admin Panel
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -312,6 +237,97 @@ const HomePage = () => {
                 <p className="text-gray-300 text-sm">Regular delivery schedules to maintain your inventory levels.</p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Seamless Sourcing Process Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">Seamless Sourcing: Our Simple Process</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              From inquiry to delivery, we've streamlined every step to make refrigerant procurement effortless and efficient for your business.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {/* Step 1 */}
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Search className="h-10 w-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  1
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Browse & Search</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Explore our comprehensive catalog of EPA-approved refrigerants. Use our advanced search filters to find exactly what you need.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Quote className="h-10 w-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  2
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Request Quote</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Submit your requirements for bulk orders. Our team provides competitive pricing and customized solutions within 24 hours.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <FileText className="h-10 w-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  3
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Order & Documentation</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Place your order with complete EPA documentation, certifications, and compliance paperwork handled automatically.
+              </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="text-center group">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Package className="h-10 w-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  4
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Fast Delivery</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Receive your refrigerants with our 48-hour delivery guarantee. Real-time tracking and signature confirmation included.
+              </p>
+            </div>
+          </div>
+
+          {/* Process CTA */}
+          <div className="text-center mt-12">
+            <Link to="/products">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-cyan-500/25 transform hover:scale-105 transition-all duration-300"
+              >
+                Start Your Order Today
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
