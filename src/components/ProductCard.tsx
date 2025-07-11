@@ -58,11 +58,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <CardContent className="p-6 relative z-10">
         {/* Product Image */}
-        <div className="relative mb-4 overflow-hidden rounded-lg bg-slate-700/50">
+        <div className="relative mb-4 overflow-hidden rounded-lg bg-slate-700/50 aspect-square">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           />
           
           {/* EPA Badge */}

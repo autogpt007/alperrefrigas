@@ -94,6 +94,14 @@ const HomePage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Product Image */}
+                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300&h=300&fit=crop&crop=center"
+                      alt="R-410A Refrigerant Cylinder"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Starting at:</span>
                     <span className="text-2xl font-bold text-cyan-400">$299.99</span>
@@ -123,6 +131,14 @@ const HomePage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Product Image */}
+                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=300&fit=crop&crop=center"
+                      alt="R-134A Refrigerant Cylinder"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Starting at:</span>
                     <span className="text-2xl font-bold text-purple-400">$189.99</span>
@@ -152,6 +168,14 @@ const HomePage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Product Image */}
+                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-slate-700/50 mb-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=300&fit=crop&crop=center"
+                      alt="R-32 Refrigerant Cylinder"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Starting at:</span>
                     <span className="text-2xl font-bold text-green-400">$249.99</span>

@@ -21,6 +21,7 @@ const ShippingCalculator = () => {
     toZip: '',
     weight: '',
     productType: '',
+    country: '',
     state: ''
   });
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
@@ -115,17 +116,99 @@ const ShippingCalculator = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Destination State</label>
-              <Select onValueChange={(value) => handleInputChange('state', value)}>
+              <label className="block text-sm font-medium mb-2">Country</label>
+              <Select onValueChange={(value) => handleInputChange('country', value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select state" />
+                  <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="CA">California</SelectItem>
-                  <SelectItem value="TX">Texas</SelectItem>
-                  <SelectItem value="FL">Florida</SelectItem>
-                  <SelectItem value="NY">New York</SelectItem>
-                  <SelectItem value="ON">Ontario, Canada</SelectItem>
+                  <SelectItem value="US">United States</SelectItem>
+                  <SelectItem value="CA">Canada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">State/Province</label>
+              <Select 
+                onValueChange={(value) => handleInputChange('state', value)}
+                disabled={!formData.country}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={formData.country ? "Select state/province" : "Select country first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {formData.country === 'US' && (
+                    <>
+                      <SelectItem value="CA">California</SelectItem>
+                      <SelectItem value="TX">Texas</SelectItem>
+                      <SelectItem value="FL">Florida</SelectItem>
+                      <SelectItem value="NY">New York</SelectItem>
+                      <SelectItem value="IL">Illinois</SelectItem>
+                      <SelectItem value="PA">Pennsylvania</SelectItem>
+                      <SelectItem value="OH">Ohio</SelectItem>
+                      <SelectItem value="GA">Georgia</SelectItem>
+                      <SelectItem value="NC">North Carolina</SelectItem>
+                      <SelectItem value="MI">Michigan</SelectItem>
+                      <SelectItem value="NJ">New Jersey</SelectItem>
+                      <SelectItem value="VA">Virginia</SelectItem>
+                      <SelectItem value="WA">Washington</SelectItem>
+                      <SelectItem value="AZ">Arizona</SelectItem>
+                      <SelectItem value="MA">Massachusetts</SelectItem>
+                      <SelectItem value="TN">Tennessee</SelectItem>
+                      <SelectItem value="IN">Indiana</SelectItem>
+                      <SelectItem value="MO">Missouri</SelectItem>
+                      <SelectItem value="MD">Maryland</SelectItem>
+                      <SelectItem value="WI">Wisconsin</SelectItem>
+                      <SelectItem value="CO">Colorado</SelectItem>
+                      <SelectItem value="MN">Minnesota</SelectItem>
+                      <SelectItem value="SC">South Carolina</SelectItem>
+                      <SelectItem value="AL">Alabama</SelectItem>
+                      <SelectItem value="LA">Louisiana</SelectItem>
+                      <SelectItem value="KY">Kentucky</SelectItem>
+                      <SelectItem value="OR">Oregon</SelectItem>
+                      <SelectItem value="OK">Oklahoma</SelectItem>
+                      <SelectItem value="CT">Connecticut</SelectItem>
+                      <SelectItem value="UT">Utah</SelectItem>
+                      <SelectItem value="IA">Iowa</SelectItem>
+                      <SelectItem value="NV">Nevada</SelectItem>
+                      <SelectItem value="AR">Arkansas</SelectItem>
+                      <SelectItem value="MS">Mississippi</SelectItem>
+                      <SelectItem value="KS">Kansas</SelectItem>
+                      <SelectItem value="NM">New Mexico</SelectItem>
+                      <SelectItem value="NE">Nebraska</SelectItem>
+                      <SelectItem value="WV">West Virginia</SelectItem>
+                      <SelectItem value="ID">Idaho</SelectItem>
+                      <SelectItem value="HI">Hawaii</SelectItem>
+                      <SelectItem value="NH">New Hampshire</SelectItem>
+                      <SelectItem value="ME">Maine</SelectItem>
+                      <SelectItem value="MT">Montana</SelectItem>
+                      <SelectItem value="RI">Rhode Island</SelectItem>
+                      <SelectItem value="DE">Delaware</SelectItem>
+                      <SelectItem value="SD">South Dakota</SelectItem>
+                      <SelectItem value="ND">North Dakota</SelectItem>
+                      <SelectItem value="AK">Alaska</SelectItem>
+                      <SelectItem value="VT">Vermont</SelectItem>
+                      <SelectItem value="WY">Wyoming</SelectItem>
+                    </>
+                  )}
+                  {formData.country === 'CA' && (
+                    <>
+                      <SelectItem value="ON">Ontario</SelectItem>
+                      <SelectItem value="BC">British Columbia</SelectItem>
+                      <SelectItem value="AB">Alberta</SelectItem>
+                      <SelectItem value="QC">Quebec</SelectItem>
+                      <SelectItem value="SK">Saskatchewan</SelectItem>
+                      <SelectItem value="MB">Manitoba</SelectItem>
+                      <SelectItem value="NS">Nova Scotia</SelectItem>
+                      <SelectItem value="NB">New Brunswick</SelectItem>
+                      <SelectItem value="NL">Newfoundland and Labrador</SelectItem>
+                      <SelectItem value="PE">Prince Edward Island</SelectItem>
+                      <SelectItem value="NT">Northwest Territories</SelectItem>
+                      <SelectItem value="YT">Yukon</SelectItem>
+                      <SelectItem value="NU">Nunavut</SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>

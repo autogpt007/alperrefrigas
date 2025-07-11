@@ -186,10 +186,10 @@ const ProductForm = () => {
   };
 
   const handleAddProduct = () => {
-    if (!newProduct.name || !newProduct.sku || !newProduct.category) {
+    if (!newProduct.name || !newProduct.sku || !newProduct.category || !newProduct.sdsUrl) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields (Name, SKU, Category)",
+        description: "Please fill in all required fields (Name, SKU, Category, and SDS document)",
         variant: "destructive"
       });
       return;
@@ -281,9 +281,9 @@ const ProductForm = () => {
           </div>
         </div>
 
-        {/* SDS Document Upload */}
+        {/* SDS Document Upload - Required */}
         <div>
-          <Label className="text-gray-300 block mb-2">Safety Data Sheet (SDS)</Label>
+          <Label className="text-gray-300 block mb-2">Safety Data Sheet (SDS) *</Label>
           <div className="flex items-center gap-4">
             <div className="w-32 h-32 border-2 border-dashed border-gray-600 rounded-lg flex items-center justify-center bg-slate-700/50">
               {sdsFileName ? (
@@ -302,14 +302,15 @@ const ProductForm = () => {
                 onChange={handleSdsUpload}
                 className="hidden"
                 id="sds-upload"
+                required
               />
               <Label htmlFor="sds-upload" className="cursor-pointer">
                 <Button type="button" className="bg-green-600 hover:bg-green-700">
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload SDS
+                  Upload SDS (Required)
                 </Button>
               </Label>
-              <p className="text-gray-400 text-sm mt-2">Upload SDS document (PDF only)</p>
+              <p className="text-gray-400 text-sm mt-2">Upload SDS document (PDF only) - Required for all products</p>
             </div>
           </div>
         </div>
