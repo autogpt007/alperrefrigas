@@ -65,8 +65,9 @@ const Certifications = () => {
     const productCerts: ProductCertificate[] = [];
     
     products.forEach(product => {
-      if (product.certificates && Array.isArray(product.certificates)) {
-        product.certificates.forEach(cert => {
+      const certificateUrls = (product as any).certificate_urls;
+      if (certificateUrls && Array.isArray(certificateUrls) && certificateUrls.length > 0) {
+        certificateUrls.forEach((cert: any) => {
           productCerts.push({
             ...cert,
             productName: product.name,
