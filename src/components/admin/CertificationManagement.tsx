@@ -208,6 +208,9 @@ const CertificationManagement = () => {
                   <div className="flex-1">
                     <h3 className="font-semibold text-white">{cert.name}</h3>
                     <p className="text-sm text-gray-300 mt-1">{cert.description}</p>
+                    <div className="text-xs text-cyan-400 mt-2">
+                      Appears on: Homepage, About Us, Certifications page
+                    </div>
                   </div>
                   <div className="flex gap-2 ml-4">
                     <Button

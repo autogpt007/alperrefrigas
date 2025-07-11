@@ -77,6 +77,73 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* SEO Content Section */}
+      <section className="py-20 bg-slate-900">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-12 border border-cyan-500/20">
+              <h2 className="text-4xl font-bold text-white mb-8 text-center">
+                Leading Refrigerant Wholesale Distributor in North America
+              </h2>
+              
+              <div className="prose prose-lg prose-invert mx-auto">
+                <div className="text-gray-300 leading-relaxed space-y-6">
+                  <p className="text-xl">
+                    FrigidFlow stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
+                  </p>
+                  
+                  <p>
+                    Our comprehensive inventory includes <strong className="text-cyan-400">R-410A, R-134a, R-22, R-404A, R-507, and next-generation low-GWP refrigerants</strong> that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
+                  </p>
+                  
+                  <p>
+                    What sets FrigidFlow apart is our deep understanding of the evolving refrigerant landscape. As environmental regulations continue to shape the industry, we've positioned ourselves at the forefront of sustainable refrigerant solutions. Our technical team works closely with leading manufacturers to offer cutting-edge alternatives that reduce environmental impact while maintaining superior cooling performance.
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 gap-8 my-8">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">Industry Expertise</h3>
+                      <p>
+                        With decades of combined experience, our certified technicians understand the complexities of refrigerant selection, system compatibility, and regulatory compliance. We provide comprehensive technical support, helping you navigate EPA Section 608 requirements, proper handling procedures, and optimal storage solutions.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">Nationwide Distribution</h3>
+                      <p>
+                        Our strategically located distribution centers across North America ensure rapid delivery to any location. Whether you need emergency refrigerant supply for critical repairs or scheduled deliveries for large-scale projects, our logistics network guarantees reliable, on-time service.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p>
+                    Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose FrigidFlow refrigerants, you're getting products that perform consistently and reliably in the field.
+                  </p>
+                  
+                  <p>
+                    We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
+                  </p>
+                  
+                  <p>
+                    Environmental responsibility drives our operations. We maintain comprehensive recycling programs for used refrigerants, partner with certified reclamation facilities, and continuously invest in cleaner, more sustainable refrigerant technologies. Our commitment to environmental stewardship helps our customers meet their sustainability goals while maintaining operational efficiency.
+                  </p>
+                  
+                  <div className="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 rounded-lg p-6 border border-cyan-500/30">
+                    <h3 className="text-2xl font-bold text-white mb-4">24/7 Emergency Support</h3>
+                    <p>
+                      System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on FrigidFlow to get you back up and running quickly.
+                    </p>
+                  </div>
+                  
+                  <p>
+                    Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants – you're gaining a strategic advantage in an evolving industry.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Products Section */}
       <section className="py-20 bg-slate-800/50">
         <div className="container mx-auto px-4">

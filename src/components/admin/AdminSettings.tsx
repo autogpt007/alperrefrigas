@@ -8,6 +8,7 @@ import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2 } fro
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { adminSettingsSchema, sanitizeInput, RateLimiter, type AdminSettingsData } from '@/lib/validation';
+import { ImageUpload } from '../ui/image-upload';
 
 interface NotificationSetting {
   id: string;
@@ -269,6 +270,24 @@ const AdminSettings = () => {
               )}
               <p className="text-sm text-gray-400 mt-1">
                 Primary business phone number displayed across the website
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300 flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
+                Alper Refrigerants Facility Image
+              </Label>
+              <ImageUpload
+                label=""
+                currentImage={siteSettings.find(s => s.setting_key === 'facility_image')?.setting_value}
+                onImageUploaded={(url) => updateSetting('site_settings', 'facility_image', url)}
+                onImageRemoved={() => updateSetting('site_settings', 'facility_image', '')}
+                bucket="images"
+                folder="facilities"
+              />
+              <p className="text-sm text-gray-400 mt-1">
+                Image of the Alper Refrigerants facility displayed on the About Us page
               </p>
             </div>
 

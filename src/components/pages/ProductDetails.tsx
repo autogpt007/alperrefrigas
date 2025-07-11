@@ -340,17 +340,15 @@ const ProductDetails = () => {
                   <Button 
                     onClick={handleAddToCart} 
                     className="w-full bg-orange-500 hover:bg-orange-600"
-                    disabled={product.availability !== 'in_stock'}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />
-                    {product.availability === 'in_stock' ? 'Add to Cart' : 'Out of Stock'}
+                    Add to Cart
                   </Button>
 
                   <Button 
                     onClick={handleAddToRFQ} 
                     variant="outline"
                     className="w-full"
-                    disabled={product.availability !== 'in_stock'}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Add to Quote Request
