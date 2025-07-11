@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import { useOrders } from '../../contexts/OrdersContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -30,10 +31,38 @@ const CheckoutPage = () => {
     zipCode: '',
     country: 'United States',
     paymentMethod: 'credit_card',
-    notes: ''
+    notes: '',
+    // Credit card fields
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    cardholderName: '',
+    billingStreet: '',
+    billingCity: '',
+    billingState: '',
+    billingZipCode: '',
+    billingCountry: 'United States'
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bankWireDetails, setBankWireDetails] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchBankWireDetails = async () => {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('setting_key, setting_value')
+        .in('setting_key', ['bank_wire_instructions', 'bank_name', 'bank_routing_number', 'bank_account_number', 'bank_swift_code']);
+      
+      const details: any = {};
+      data?.forEach(setting => {
+        details[setting.setting_key] = setting.setting_value;
+      });
+      setBankWireDetails(details);
+    };
+    
+    fetchBankWireDetails();
+  }, []);
 
   const shippingCost = total > 500 ? 0 : 50;
   const taxAmount = total * 0.08; // 8% tax
@@ -98,7 +127,7 @@ const CheckoutPage = () => {
       
       if (order) {
         clearCart();
-        navigate(`/order-confirmation?orderNumber=${order.order_number}`);
+        navigate(`/order-confirmation?orderNumber=${order.order_number}&type=order`);
       }
     } catch (error) {
       console.error('Error placing order:', error);
@@ -263,12 +292,125 @@ const CheckoutPage = () => {
                     </div>
                   </RadioGroup>
                   
-                  {formData.paymentMethod === 'bank_wire' && (
-                    <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
-                      <p className="text-gray-300 text-sm">
-                        Wire transfer instructions will be provided after order confirmation.
-                        Payment must be received within 7 business days.
+                  {formData.paymentMethod === 'credit_card' && (
+                    <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg">
+                      <h4 className="text-white font-medium">Credit Card Information</h4>
+                      <p className="text-gray-300 text-sm mb-4">
+                        We will call you to process your credit card payment securely over the phone.
                       </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-gray-300">Cardholder Name</Label>
+                          <Input
+                            value={formData.cardholderName}
+                            onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+                            placeholder="Full name on card"
+                            className="bg-slate-600 border-slate-500 text-white"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-300">Card Number (Last 4 digits)</Label>
+                          <Input
+                            value={formData.cardNumber}
+                            onChange={(e) => handleInputChange('cardNumber', e.target.value)}
+                            placeholder="****-****-****-1234"
+                            maxLength={4}
+                            className="bg-slate-600 border-slate-500 text-white"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-300">Expiry Date</Label>
+                          <Input
+                            value={formData.expiryDate}
+                            onChange={(e) => handleInputChange('expiryDate', e.target.value)}
+                            placeholder="MM/YY"
+                            className="bg-slate-600 border-slate-500 text-white"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-300">Phone for Card Processing</Label>
+                          <Input
+                            type="tel"
+                            value={formData.customerEmail}
+                            placeholder="Phone number"
+                            className="bg-slate-600 border-slate-500 text-white"
+                            required
+                          />
+                        </div>
+                      </div>
+                      
+                      <Separator className="bg-slate-600" />
+                      
+                      <h4 className="text-white font-medium">Billing Address</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="text-gray-300">Street Address</Label>
+                          <Input
+                            value={formData.billingStreet}
+                            onChange={(e) => handleInputChange('billingStreet', e.target.value)}
+                            placeholder="Same as shipping"
+                            className="bg-slate-600 border-slate-500 text-white"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <Label className="text-gray-300">City</Label>
+                            <Input
+                              value={formData.billingCity}
+                              onChange={(e) => handleInputChange('billingCity', e.target.value)}
+                              className="bg-slate-600 border-slate-500 text-white"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-gray-300">State</Label>
+                            <Input
+                              value={formData.billingState}
+                              onChange={(e) => handleInputChange('billingState', e.target.value)}
+                              className="bg-slate-600 border-slate-500 text-white"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-gray-300">ZIP Code</Label>
+                            <Input
+                              value={formData.billingZipCode}
+                              onChange={(e) => handleInputChange('billingZipCode', e.target.value)}
+                              className="bg-slate-600 border-slate-500 text-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.paymentMethod === 'bank_wire' && bankWireDetails && (
+                    <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                      <h4 className="text-white font-medium mb-3">Bank Wire Transfer Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <span className="text-gray-400">Bank Name:</span>
+                            <span className="text-white ml-2">{bankWireDetails.bank_name}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400">Routing Number:</span>
+                            <span className="text-white ml-2">{bankWireDetails.bank_routing_number}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400">Account Number:</span>
+                            <span className="text-white ml-2">{bankWireDetails.bank_account_number}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400">SWIFT Code:</span>
+                            <span className="text-white ml-2">{bankWireDetails.bank_swift_code}</span>
+                          </div>
+                        </div>
+                        <p className="text-gray-300 text-xs mt-3">
+                          Payment must be received within 7 business days. Include your order number in the wire transfer reference.
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>

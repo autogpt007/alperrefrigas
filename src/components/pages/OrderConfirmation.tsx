@@ -1,160 +1,218 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Package, Truck, FileText, ArrowRight } from 'lucide-react';
-
-interface OrderData {
-  orderNumber: string;
-  items: any[];
-  total: number;
-  shippingCost: number;
-  customerInfo: any;
-  orderDate: string;
-}
+import { CheckCircle, Package, Truck, FileText, ArrowRight, Quote } from 'lucide-react';
+import { useOrders } from '../../contexts/OrdersContext';
+import { useQuotes } from '../../contexts/QuotesContext';
 
 const OrderConfirmation = () => {
-  const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { orders } = useOrders();
+  const { quotes } = useQuotes();
+  
+  const orderNumber = searchParams.get('orderNumber');
+  const quoteNumber = searchParams.get('quoteNumber');
+  const type = searchParams.get('type');
+  
+  const isQuote = type === 'quote';
+  const confirmationNumber = isQuote ? quoteNumber : orderNumber;
+  
+  const data = isQuote 
+    ? quotes.find(q => q.quote_number === quoteNumber)
+    : orders.find(o => o.order_number === orderNumber);
 
   useEffect(() => {
-    const savedOrder = localStorage.getItem('lastOrder');
-    if (savedOrder) {
-      setOrderData(JSON.parse(savedOrder));
-    } else {
-      // If no order data, redirect to home
-      navigate('/');
+    if (!confirmationNumber || !data) {
+      // If no confirmation data, redirect to account page
+      setTimeout(() => navigate('/account'), 3000);
     }
-  }, [navigate]);
+  }, [confirmationNumber, data, navigate]);
 
-  if (!orderData) {
-    return <div>Loading...</div>;
+  if (!data) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {isQuote ? 'Quote Request Submitted!' : 'Order Confirmed!'}
+        </h1>
+        <p className="text-xl text-gray-600 mb-4">
+          {isQuote 
+            ? "Thank you for your quote request. We'll contact you soon with pricing."
+            : "Thank you for your order. We've received your payment and will process your order shortly."
+          }
+        </p>
+        <p className="text-sm text-gray-500">Redirecting to your account...</p>
+      </div>
+    );
   }
 
-  const orderDate = new Date(orderData.orderDate);
-  const estimatedDelivery = new Date(orderDate);
-  estimatedDelivery.setDate(estimatedDelivery.getDate() + 7); // Add 7 days
+  const createdDate = new Date(data.created_at);
+  const estimatedDelivery = new Date(createdDate);
+  estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Order Confirmed!</h1>
+          {isQuote ? (
+            <Quote className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+          ) : (
+            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+          )}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {isQuote ? 'Quote Request Submitted!' : 'Order Confirmed!'}
+          </h1>
           <p className="text-xl text-gray-600">
-            Thank you for your order. We've received your payment and will process your order shortly.
+            {isQuote 
+              ? "Thank you for your quote request. Our sales team will contact you within one business day with detailed pricing."
+              : "Thank you for your order. We've received your payment and will process your order shortly."
+            }
           </p>
         </div>
 
-        {/* Order Details */}
+        {/* Details */}
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Order Details
+                {isQuote ? <Quote className="h-5 w-5" /> : <Package className="h-5 w-5" />}
+                {isQuote ? 'Quote Request Details' : 'Order Details'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between items-center border-b pb-4">
                 <div>
-                  <h3 className="font-semibold">Order Number</h3>
-                  <p className="text-lg font-mono text-blue-600">{orderData.orderNumber}</p>
+                  <h3 className="font-semibold">{isQuote ? 'Quote Number' : 'Order Number'}</h3>
+                  <p className="text-lg font-mono text-blue-600">{confirmationNumber}</p>
                 </div>
                 <div className="text-right">
-                  <h3 className="font-semibold">Order Date</h3>
-                  <p>{orderDate.toLocaleDateString()}</p>
+                  <h3 className="font-semibold">{isQuote ? 'Request Date' : 'Order Date'}</h3>
+                  <p>{createdDate.toLocaleDateString()}</p>
                 </div>
               </div>
               
-              {orderData.items.map((item, index) => (
+              {data.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 border-b pb-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded-lg bg-gray-100"
-                  />
+                  <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Package className="h-8 w-8 text-gray-400" />
+                  </div>
                   <div className="flex-1">
-                    <h4 className="font-medium">{item.name}</h4>
-                    <p className="text-sm text-gray-600">SKU: {item.sku}</p>
+                    <h4 className="font-medium">{item.product_name}</h4>
+                    {item.packaging && (
+                      <p className="text-sm text-gray-600">Packaging: {item.packaging}</p>
+                    )}
                     <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                    {item.epaApproved && (
+                    {item.epa_approved && (
                       <Badge variant="secondary" className="bg-green-100 text-green-800 mt-1">
                         EPA Approved
                       </Badge>
                     )}
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-                  </div>
+                  {!isQuote && item.price && (
+                    <div className="text-right">
+                      <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                  )}
                 </div>
               ))}
               
-              <div className="space-y-2 pt-4">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>${(orderData.total - orderData.shippingCost).toFixed(2)}</span>
+              {!isQuote && 'total_amount' in data && (
+                <div className="space-y-2 pt-4">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>${(data.total_amount - (data.shipping_cost || 0) - (data.tax_amount || 0)).toFixed(2)}</span>
+                  </div>
+                  {data.shipping_cost > 0 && (
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span>${data.shipping_cost.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {data.tax_amount > 0 && (
+                    <div className="flex justify-between">
+                      <span>Tax</span>
+                      <span>${data.tax_amount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-lg font-bold border-t pt-2">
+                    <span>Total</span>
+                    <span className="text-green-600">${data.total_amount.toFixed(2)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>${orderData.shippingCost.toFixed(2)}</span>
+              )}
+              
+              {isQuote && (
+                <div className="pt-4 bg-blue-50 p-4 rounded-lg">
+                  <p className="text-blue-800 text-sm font-medium">
+                    This is a quote request. Pricing will be provided by our sales team within one business day.
+                  </p>
                 </div>
-                <div className="flex justify-between text-lg font-bold border-t pt-2">
-                  <span>Total</span>
-                  <span className="text-green-600">${orderData.total.toFixed(2)}</span>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
           <div className="space-y-6">
-            {/* Shipping Info */}
+            {/* Contact/Shipping Info */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Truck className="h-5 w-5" />
-                  Shipping Info
+                  {isQuote ? <FileText className="h-5 w-5" /> : <Truck className="h-5 w-5" />}
+                  {isQuote ? 'Contact Info' : 'Shipping Info'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div>
-                    <p className="font-medium">{orderData.customerInfo.firstName} {orderData.customerInfo.lastName}</p>
-                    <p className="text-sm text-gray-600">{orderData.customerInfo.company}</p>
+                    <p className="font-medium">{data.customer_name}</p>
+                    <p className="text-sm text-gray-600">{data.customer_email}</p>
+                    {'company_name' in data && data.company_name && (
+                      <p className="text-sm text-gray-600">{data.company_name}</p>
+                    )}
                   </div>
-                  <div className="text-sm text-gray-600">
-                    <p>{orderData.customerInfo.address}</p>
-                    <p>{orderData.customerInfo.city}, {orderData.customerInfo.state} {orderData.customerInfo.zipCode}</p>
-                  </div>
-                  <div className="pt-2 border-t">
-                    <p className="text-sm font-medium">Estimated Delivery</p>
-                    <p className="text-sm text-green-600">{estimatedDelivery.toLocaleDateString()}</p>
-                  </div>
+                  {data.shipping_address && (
+                    <div className="text-sm text-gray-600">
+                      <p>{data.shipping_address}</p>
+                    </div>
+                  )}
+                  {!isQuote && (
+                    <div className="pt-2 border-t">
+                      <p className="text-sm font-medium">Estimated Delivery</p>
+                      <p className="text-sm text-green-600">{estimatedDelivery.toLocaleDateString()}</p>
+                    </div>
+                  )}
+                  {isQuote && (
+                    <div className="pt-2 border-t">
+                      <p className="text-sm font-medium">Response Time</p>
+                      <p className="text-sm text-blue-600">Within 1 business day</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
-            {/* EPA Compliance */}
+            {/* Status */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-green-600" />
-                  EPA Compliance
+                  Status
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p className="text-sm">
-                    <span className="font-medium">EPA Cert #:</span> {orderData.customerInfo.epaNumber}
-                  </p>
                   <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    ✓ Verified
+                    {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
                   </Badge>
                   <p className="text-xs text-gray-600 mt-2">
-                    Your EPA certification has been verified and is on file for this order.
+                    {isQuote 
+                      ? "Your quote request has been submitted and is pending review by our sales team."
+                      : "Your order has been confirmed and is being processed."
+                    }
                   </p>
                 </div>
               </CardContent>

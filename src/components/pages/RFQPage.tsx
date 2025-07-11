@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,10 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Minus, Plus, Trash2, ArrowLeft, Send, ShoppingCart } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
+import { useQuotes } from '../../contexts/QuotesContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/use-toast';
 
 const RFQPage = () => {
+  const navigate = useNavigate();
   const { items, updateQuantity, removeItem, clearRFQ } = useRFQ();
+  const { createQuote } = useQuotes();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     customerName: '',
@@ -29,6 +34,15 @@ const RFQPage = () => {
 
   const handleSubmitRFQ = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to submit a quote request",
+        variant: "destructive"
+      });
+      return;
+    }
     
     if (items.length === 0) {
       toast({
@@ -49,25 +63,31 @@ const RFQPage = () => {
     }
 
     try {
-      // Submit RFQ to database or send email
-      console.log('Submitting RFQ:', { ...formData, items });
-      
-      toast({
-        title: "Quote request submitted!",
-        description: "We'll contact you within one business day with your quote."
-      });
+      const quoteData = {
+        user_id: user.id,
+        customer_name: formData.customerName,
+        customer_email: formData.email,
+        company_name: formData.companyName,
+        phone: formData.phone,
+        shipping_address: formData.shippingAddress,
+        status: 'pending' as const,
+        notes: formData.notes,
+        items: items.map(item => ({
+          product_id: null,
+          product_name: item.productName,
+          quantity: item.quantity,
+          packaging: item.packaging
+        }))
+      };
 
-      // Clear form and items
-      setFormData({
-        customerName: '',
-        companyName: '',
-        email: '',
-        phone: '',
-        shippingAddress: '',
-        notes: ''
-      });
-      clearRFQ();
+      const quote = await createQuote(quoteData);
+      
+      if (quote) {
+        clearRFQ();
+        navigate(`/quote-confirmation?quoteNumber=${quote.quote_number}&type=quote`);
+      }
     } catch (error) {
+      console.error('Error submitting quote:', error);
       toast({
         title: "Error",
         description: "Failed to submit quote request. Please try again.",

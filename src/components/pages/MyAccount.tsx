@@ -1,48 +1,56 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
 import { User, Package, FileText, Settings, Bell, CreditCard } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useOrders } from '../../contexts/OrdersContext';
+import { useQuotes } from '../../contexts/QuotesContext';
 import SEOComponent from '../seo/SEOComponent';
 
 const MyAccount = () => {
+  const { user } = useAuth();
+  const { orders, fetchOrders, loading: ordersLoading } = useOrders();
+  const { quotes, fetchQuotes, loading: quotesLoading } = useQuotes();
+
   const [userInfo, setUserInfo] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
+    firstName: user?.user_metadata?.full_name?.split(' ')[0] || '',
+    lastName: user?.user_metadata?.full_name?.split(' ')[1] || '',
+    email: user?.email || '',
     phone: '+1 (555) 123-4567',
     company: 'HVAC Solutions Inc.',
     licenseNumber: 'EPA-608-123456'
   });
 
-  const orders = [
-    {
-      id: 'ORD-20241201-001',
-      date: '2024-12-01',
-      status: 'Delivered',
-      total: 2850.00,
-      items: ['R-410A (25 lbs)', 'R-134a (30 lbs)']
-    },
-    {
-      id: 'ORD-20241115-002',
-      date: '2024-11-15',
-      status: 'Processing',
-      total: 1250.00,
-      items: ['R-404A (25 lbs)']
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+      fetchQuotes();
     }
-  ];
+  }, [user]);
 
-  const quotes = [
-    {
-      id: 'RFQ-20241205-001',
-      date: '2024-12-05',
-      status: 'Pending Review',
-      items: ['2 Pallets R-410A', '1 Container R-134a']
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'delivered':
+      case 'quoted':
+      case 'accepted':
+        return 'default';
+      case 'processing':
+      case 'pending':
+      case 'reviewed':
+        return 'secondary';
+      case 'shipped':
+        return 'outline';
+      case 'cancelled':
+      case 'declined':
+        return 'destructive';
+      default:
+        return 'secondary';
     }
-  ];
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -154,33 +162,39 @@ const MyAccount = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {orders.map((order) => (
-                    <div key={order.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold">{order.id}</h3>
-                          <p className="text-sm text-gray-600">Ordered on {order.date}</p>
+                {ordersLoading ? (
+                  <p className="text-gray-600">Loading orders...</p>
+                ) : orders.length === 0 ? (
+                  <p className="text-gray-600">No orders found. Start shopping to see your orders here!</p>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
+                      <div key={order.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-semibold">{order.order_number}</h3>
+                            <p className="text-sm text-gray-600">Ordered on {new Date(order.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant={getStatusColor(order.status)}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </Badge>
+                            <p className="text-lg font-semibold mt-1">${order.total_amount.toFixed(2)}</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>
-                            {order.status}
-                          </Badge>
-                          <p className="text-lg font-semibold mt-1">${order.total.toFixed(2)}</p>
+                        <div className="text-sm text-gray-600">
+                          Items: {order.items.map(item => `${item.product_name} (${item.quantity})`).join(', ')}
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                          <Button variant="outline" size="sm">View Details</Button>
+                          {order.status !== 'delivered' && (
+                            <Button variant="outline" size="sm">Track Order</Button>
+                          )}
                         </div>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Items: {order.items.join(', ')}
-                      </div>
-                      <div className="mt-3 flex gap-2">
-                        <Button variant="outline" size="sm">View Details</Button>
-                        {order.status !== 'Delivered' && (
-                          <Button variant="outline" size="sm">Track Order</Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -194,23 +208,34 @@ const MyAccount = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {quotes.map((quote) => (
-                    <div key={quote.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold">{quote.id}</h3>
-                          <p className="text-sm text-gray-600">Requested on {quote.date}</p>
+                {quotesLoading ? (
+                  <p className="text-gray-600">Loading quotes...</p>
+                ) : quotes.length === 0 ? (
+                  <p className="text-gray-600">No quote requests found. Request a quote to see them here!</p>
+                ) : (
+                  <div className="space-y-4">
+                    {quotes.map((quote) => (
+                      <div key={quote.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-semibold">{quote.quote_number}</h3>
+                            <p className="text-sm text-gray-600">Requested on {new Date(quote.created_at).toLocaleDateString()}</p>
+                            {quote.company_name && (
+                              <p className="text-sm text-gray-600">Company: {quote.company_name}</p>
+                            )}
+                          </div>
+                          <Badge variant={getStatusColor(quote.status)}>
+                            {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
+                          </Badge>
                         </div>
-                        <Badge variant="secondary">{quote.status}</Badge>
+                        <div className="text-sm text-gray-600 mb-3">
+                          Items: {quote.items.map(item => `${item.product_name} (${item.quantity})`).join(', ')}
+                        </div>
+                        <Button variant="outline" size="sm">View Quote</Button>
                       </div>
-                      <div className="text-sm text-gray-600 mb-3">
-                        Items: {quote.items.join(', ')}
-                      </div>
-                      <Button variant="outline" size="sm">View Quote</Button>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

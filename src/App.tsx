@@ -8,6 +8,7 @@ import { ProductsProvider } from "./contexts/ProductsContext";
 import { CartProvider } from "./contexts/CartContext";
 import { RFQProvider } from "./contexts/RFQContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
+import { QuotesProvider } from "./contexts/QuotesContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { WhatsAppButton } from "./components/ui/WhatsAppButton";
@@ -56,7 +57,8 @@ function App() {
           <ProductsProvider>
             <CartProvider>
               <RFQProvider>
-                <OrdersProvider>
+                <QuotesProvider>
+                  <OrdersProvider>
                   <Toaster />
                   <BrowserRouter>
                     <Routes>
@@ -85,7 +87,8 @@ function App() {
                               <Route path="/cart" element={<CartPage />} />
                               <Route path="/rfq" element={<RFQPage />} />
                               <Route path="/checkout" element={<CheckoutPage />} />
-                              <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+                              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                              <Route path="/quote-confirmation" element={<OrderConfirmation />} />
                               <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
                               <Route path="/faq" element={<FAQ />} />
@@ -109,7 +112,8 @@ function App() {
                       } />
                     </Routes>
                   </BrowserRouter>
-                </OrdersProvider>
+                  </OrdersProvider>
+                </QuotesProvider>
               </RFQProvider>
             </CartProvider>
           </ProductsProvider>

@@ -391,6 +391,96 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_items: {
+        Row: {
+          created_at: string
+          id: string
+          packaging: string | null
+          product_id: string | null
+          product_name: string
+          quantity: number
+          quote_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          packaging?: string | null
+          product_id?: string | null
+          product_name: string
+          quantity?: number
+          quote_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          packaging?: string | null
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          quote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_quote_items_quote_id"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          quote_number: string | null
+          shipping_address: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          quote_number?: string | null
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          quote_number?: string | null
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string | null
@@ -472,6 +562,10 @@ export type Database = {
     }
     Functions: {
       generate_order_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_quote_number: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
