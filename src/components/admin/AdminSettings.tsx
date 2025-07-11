@@ -7,9 +7,7 @@ import { Textarea } from '../ui/textarea';
 import { Settings, Save, Phone, Mail, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
+import { adminSettingsSchema, sanitizeInput, RateLimiter, type AdminSettingsData } from '@/lib/validation';
 
 interface NotificationSetting {
   id: string;
@@ -29,6 +27,7 @@ const AdminSettings = () => {
   const [notificationSettings, setNotificationSettings] = useState<NotificationSetting[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSetting[]>([]);
   const [loading, setLoading] = useState(true);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -37,48 +36,40 @@ const AdminSettings = () => {
     mainPhone: ''
   });
 
+  // Rate limiter for form submissions
+  const rateLimiter = new RateLimiter(3, 60000); // 3 attempts per minute
+
   useEffect(() => {
     fetchSettings();
   }, []);
 
   const fetchSettings = async () => {
     try {
-      // Fetch notification settings
-      const notifResponse = await fetch(`${SUPABASE_URL}/rest/v1/notification_settings`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        }
+      // Use Supabase client instead of hardcoded credentials
+      const { data: notifData, error: notifError } = await supabase
+        .from('notification_settings')
+        .select('*');
+
+      const { data: siteData, error: siteError } = await supabase
+        .from('site_settings')
+        .select('*');
+
+      if (notifError) throw notifError;
+      if (siteError) throw siteError;
+
+      setNotificationSettings(notifData || []);
+      setSiteSettings(siteData || []);
+
+      // Populate form data
+      const emailSetting = notifData?.find((s: any) => s.setting_key === 'notification_email');
+      const whatsappSetting = siteData?.find((s: any) => s.setting_key === 'whatsapp_number');
+      const phoneSetting = siteData?.find((s: any) => s.setting_key === 'main_phone');
+
+      setFormData({
+        notificationEmail: emailSetting?.setting_value || '',
+        whatsappNumber: whatsappSetting?.setting_value || '',
+        mainPhone: phoneSetting?.setting_value || ''
       });
-
-      // Fetch site settings  
-      const siteResponse = await fetch(`${SUPABASE_URL}/rest/v1/site_settings`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (notifResponse.ok && siteResponse.ok) {
-        const notifData = await notifResponse.json();
-        const siteData = await siteResponse.json();
-        
-        setNotificationSettings(notifData || []);
-        setSiteSettings(siteData || []);
-
-        // Populate form data
-        const emailSetting = notifData?.find((s: any) => s.setting_key === 'notification_email');
-        const whatsappSetting = siteData?.find((s: any) => s.setting_key === 'whatsapp_number');
-        const phoneSetting = siteData?.find((s: any) => s.setting_key === 'main_phone');
-
-        setFormData({
-          notificationEmail: emailSetting?.setting_value || '',
-          whatsappNumber: whatsappSetting?.setting_value || '',
-          mainPhone: phoneSetting?.setting_value || ''
-        });
-      }
     } catch (error: any) {
       console.error('Error fetching settings:', error);
       toast({
@@ -91,21 +82,16 @@ const AdminSettings = () => {
     }
   };
 
-  const updateSetting = async (table: string, key: string, value: string) => {
+  const updateSetting = async (table: 'notification_settings' | 'site_settings', key: string, value: string) => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?setting_key=eq.${key}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ setting_value: value })
-      });
+      const sanitizedValue = sanitizeInput(value);
+      
+      const { error } = await supabase
+        .from(table)
+        .update({ setting_value: sanitizedValue })
+        .eq('setting_key', key);
 
-      if (!response.ok) {
-        throw new Error(`Failed to update ${key}`);
-      }
+      if (error) throw error;
     } catch (error) {
       console.error(`Error updating ${key}:`, error);
       throw error;
@@ -113,15 +99,26 @@ const AdminSettings = () => {
   };
 
   const handleSaveSettings = async () => {
+    // Check rate limiting
+    if (!rateLimiter.canAttempt('admin-settings')) {
+      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset('admin-settings') / 1000);
+      toast({
+        title: 'Too many attempts',
+        description: `Please wait ${timeLeft} seconds before trying again.`,
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    // Validate form data
     try {
-      // Update notification email
-      await updateSetting('notification_settings', 'notification_email', formData.notificationEmail);
-      
-      // Update WhatsApp number
-      await updateSetting('site_settings', 'whatsapp_number', formData.whatsappNumber);
-      
-      // Update main phone
-      await updateSetting('site_settings', 'main_phone', formData.mainPhone);
+      const validatedData = adminSettingsSchema.parse(formData);
+      setValidationErrors({});
+
+      // Update settings
+      await updateSetting('notification_settings', 'notification_email', validatedData.notificationEmail);
+      await updateSetting('site_settings', 'whatsapp_number', validatedData.whatsappNumber);
+      await updateSetting('site_settings', 'main_phone', validatedData.mainPhone);
 
       toast({
         title: 'Settings updated successfully!',
@@ -130,19 +127,36 @@ const AdminSettings = () => {
 
       fetchSettings(); // Refresh the data
     } catch (error: any) {
-      console.error('Error saving settings:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to save settings. Please try again.',
-        variant: 'destructive'
-      });
+      if (error.errors) {
+        // Zod validation errors
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err: any) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
+      } else {
+        console.error('Error saving settings:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to save settings. Please try again.',
+          variant: 'destructive'
+        });
+      }
     }
   };
 
   const handleInputChange = (field: string, value: string) => {
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: sanitizeInput(value)
     }));
   };
 
@@ -176,9 +190,14 @@ const AdminSettings = () => {
                 type="email"
                 value={formData.notificationEmail}
                 onChange={(e) => handleInputChange('notificationEmail', e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white mt-2"
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.notificationEmail ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter email for notifications"
               />
+              {validationErrors.notificationEmail && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.notificationEmail}</p>
+              )}
               <p className="text-sm text-gray-400 mt-1">
                 Email address for receiving contact form submissions and order notifications
               </p>
@@ -193,9 +212,14 @@ const AdminSettings = () => {
                 type="tel"
                 value={formData.whatsappNumber}
                 onChange={(e) => handleInputChange('whatsappNumber', e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white mt-2"
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.whatsappNumber ? 'border-red-500' : ''
+                }`}
                 placeholder="e.g., +18007347443"
               />
+              {validationErrors.whatsappNumber && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.whatsappNumber}</p>
+              )}
               <p className="text-sm text-gray-400 mt-1">
                 WhatsApp number for the floating chat button (include country code)
               </p>
@@ -210,9 +234,14 @@ const AdminSettings = () => {
                 type="tel"
                 value={formData.mainPhone}
                 onChange={(e) => handleInputChange('mainPhone', e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white mt-2"
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.mainPhone ? 'border-red-500' : ''
+                }`}
                 placeholder="e.g., 1-800-REFRIGERANT"
               />
+              {validationErrors.mainPhone && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.mainPhone}</p>
+              )}
               <p className="text-sm text-gray-400 mt-1">
                 Primary business phone number displayed across the website
               </p>

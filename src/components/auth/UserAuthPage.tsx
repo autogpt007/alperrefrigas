@@ -9,14 +9,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
 
 const UserAuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
+
+  // Rate limiter for authentication attempts
+  const rateLimiter = new RateLimiter(5, 900000); // 5 attempts per 15 minutes
 
   const [loginData, setLoginData] = useState({
     email: '',
@@ -38,12 +43,24 @@ const UserAuthPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
     
+    // Check rate limiting
+    const userIP = 'login-user'; // In a real app, you'd get the user's IP
+    if (!rateLimiter.canAttempt(userIP)) {
+      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
+      setError(`Too many login attempts. Please wait ${timeLeft} minutes before trying again.`);
+      return;
+    }
+
+    // Validate form data
     try {
-      console.log('Attempting login for:', loginData.email);
-      const { error } = await login(loginData.email, loginData.password);
+      const validatedData = loginSchema.parse(loginData);
+      setValidationErrors({});
+      setIsLoading(true);
+      setError('');
+      
+      console.log('Attempting login for:', validatedData.email);
+      const { error } = await login(validatedData.email, validatedData.password);
       if (error) {
         console.error('Login error:', error);
         setError(error.message || 'Login failed. Please check your credentials.');
@@ -51,9 +68,18 @@ const UserAuthPage = () => {
         console.log('Login successful, redirecting to account');
         navigate('/account');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
-      setError('An unexpected error occurred. Please try again.');
+    } catch (error: any) {
+      if (error.errors) {
+        // Zod validation errors
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err: any) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
+      } else {
+        console.error('Login failed:', error);
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -61,16 +87,28 @@ const UserAuthPage = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
     
+    // Check rate limiting
+    const userIP = 'register-user'; // In a real app, you'd get the user's IP
+    if (!rateLimiter.canAttempt(userIP)) {
+      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
+      setError(`Too many registration attempts. Please wait ${timeLeft} minutes before trying again.`);
+      return;
+    }
+
+    // Validate form data
     try {
-      console.log('Attempting registration for:', registerData.email);
+      const validatedData = registerSchema.parse(registerData);
+      setValidationErrors({});
+      setIsLoading(true);
+      setError('');
+      
+      console.log('Attempting registration for:', validatedData.email);
       const { error } = await register({
-        name: registerData.name,
-        email: registerData.email,
-        password: registerData.password,
-        company: registerData.company
+        name: sanitizeInput(validatedData.name),
+        email: validatedData.email.toLowerCase().trim(),
+        password: validatedData.password,
+        company: validatedData.company ? sanitizeInput(validatedData.company) : undefined
       });
       
       if (error) {
@@ -84,14 +122,54 @@ const UserAuthPage = () => {
       } else {
         console.log('Registration successful');
         setError('');
-        // Show success message or redirect
         navigate('/account');
       }
-    } catch (error) {
-      console.error('Registration failed:', error);
-      setError('An unexpected error occurred. Please try again.');
+    } catch (error: any) {
+      if (error.errors) {
+        // Zod validation errors
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err: any) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
+      } else {
+        console.error('Registration failed:', error);
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (
+    formType: 'login' | 'register',
+    field: keyof LoginData | keyof RegisterData,
+    value: string
+  ) => {
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+
+    const sanitizedValue = field === 'email' 
+      ? value.toLowerCase().trim() 
+      : field === 'password' 
+        ? value 
+        : sanitizeInput(value);
+
+    if (formType === 'login') {
+      setLoginData(prev => ({
+        ...prev,
+        [field]: sanitizedValue
+      }));
+    } else {
+      setRegisterData(prev => ({
+        ...prev,
+        [field]: sanitizedValue
+      }));
     }
   };
 
@@ -147,11 +225,15 @@ const UserAuthPage = () => {
                     <Input
                       type="email"
                       value={loginData.email}
-                      onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                      onChange={(e) => handleInputChange('login', 'email', e.target.value)}
                       placeholder="your@email.com"
+                      className={validationErrors.email ? 'border-red-500' : ''}
                       required
                       disabled={isLoading}
                     />
+                    {validationErrors.email && (
+                      <p className="text-red-600 text-sm mt-1">{validationErrors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -163,11 +245,15 @@ const UserAuthPage = () => {
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         value={loginData.password}
-                        onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                        onChange={(e) => handleInputChange('login', 'password', e.target.value)}
                         placeholder="••••••••"
+                        className={validationErrors.password ? 'border-red-500' : ''}
                         required
                         disabled={isLoading}
                       />
+                      {validationErrors.password && (
+                        <p className="text-red-600 text-sm mt-1">{validationErrors.password}</p>
+                      )}
                       <Button
                         type="button"
                         variant="ghost"
@@ -208,11 +294,15 @@ const UserAuthPage = () => {
                     <Input
                       type="text"
                       value={registerData.name}
-                      onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
+                      onChange={(e) => handleInputChange('register', 'name', e.target.value)}
                       placeholder="John Doe"
+                      className={validationErrors.name ? 'border-red-500' : ''}
                       required
                       disabled={isLoading}
                     />
+                    {validationErrors.name && (
+                      <p className="text-red-600 text-sm mt-1">{validationErrors.name}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -223,11 +313,15 @@ const UserAuthPage = () => {
                     <Input
                       type="email"
                       value={registerData.email}
-                      onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
+                      onChange={(e) => handleInputChange('register', 'email', e.target.value)}
                       placeholder="your@email.com"
+                      className={validationErrors.email ? 'border-red-500' : ''}
                       required
                       disabled={isLoading}
                     />
+                    {validationErrors.email && (
+                      <p className="text-red-600 text-sm mt-1">{validationErrors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -238,10 +332,14 @@ const UserAuthPage = () => {
                     <Input
                       type="text"
                       value={registerData.company}
-                      onChange={(e) => setRegisterData({...registerData, company: e.target.value})}
+                      onChange={(e) => handleInputChange('register', 'company', e.target.value)}
                       placeholder="Your Company"
+                      className={validationErrors.company ? 'border-red-500' : ''}
                       disabled={isLoading}
                     />
+                    {validationErrors.company && (
+                      <p className="text-red-600 text-sm mt-1">{validationErrors.company}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -253,11 +351,15 @@ const UserAuthPage = () => {
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         value={registerData.password}
-                        onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
+                        onChange={(e) => handleInputChange('register', 'password', e.target.value)}
                         placeholder="••••••••"
+                        className={validationErrors.password ? 'border-red-500' : ''}
                         required
                         disabled={isLoading}
                       />
+                      {validationErrors.password && (
+                        <p className="text-red-600 text-sm mt-1">{validationErrors.password}</p>
+                      )}
                       <Button
                         type="button"
                         variant="ghost"

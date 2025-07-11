@@ -481,6 +481,39 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          target_user_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string | null
@@ -561,11 +594,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_user_role: {
+        Args: { target_user_id: string; new_role: string }
+        Returns: boolean
+      }
       generate_order_number: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
       generate_quote_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
       }

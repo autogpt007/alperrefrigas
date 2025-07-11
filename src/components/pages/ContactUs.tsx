@@ -9,6 +9,7 @@ import { MapPin, Phone, Mail, Clock, Send, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
+import { contactFormSchema, sanitizeInput, sanitizeHtml, RateLimiter, type ContactFormData } from '@/lib/validation';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -18,17 +19,45 @@ const ContactUs = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  // Rate limiter for form submissions
+  const rateLimiter = new RateLimiter(3, 300000); // 3 attempts per 5 minutes
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    // Check rate limiting
+    const userIP = 'user'; // In a real app, you'd get the user's IP
+    if (!rateLimiter.canAttempt(userIP)) {
+      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
+      toast({
+        title: "Too many attempts",
+        description: `Please wait ${timeLeft} minutes before trying again.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
+    // Validate form data
     try {
+      const validatedData = contactFormSchema.parse(formData);
+      setValidationErrors({});
+      setIsSubmitting(true);
+
+      // Sanitize data before submission
+      const sanitizedData = {
+        name: sanitizeHtml(validatedData.name),
+        email: validatedData.email.toLowerCase().trim(),
+        subject: sanitizeHtml(validatedData.subject),
+        message: sanitizeHtml(validatedData.message)
+      };
+
       // Insert contact submission into database
       const { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert([formData]);
+        .insert([sanitizedData]);
 
       if (dbError) throw dbError;
 
@@ -37,7 +66,7 @@ const ContactUs = () => {
         await supabase.functions.invoke('send-notification-email', {
           body: {
             type: 'contact',
-            data: formData
+            data: sanitizedData
           }
         });
       } catch (emailError) {
@@ -58,15 +87,39 @@ const ContactUs = () => {
         message: ''
       });
     } catch (error: any) {
-      console.error('Error submitting contact form:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
+      if (error.errors) {
+        // Zod validation errors
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err: any) => {
+          errors[err.path[0]] = err.message;
+        });
+        setValidationErrors(errors);
+      } else {
+        console.error('Error submitting contact form:', error);
+        toast({
+          title: "Error",
+          description: "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleInputChange = (field: keyof ContactFormData, value: string) => {
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+    
+    setFormData(prev => ({
+      ...prev,
+      [field]: field === 'email' ? value.toLowerCase().trim() : sanitizeInput(value)
+    }));
   };
 
   const contactInfo = [
@@ -201,10 +254,15 @@ const ContactUs = () => {
                         <Input
                           id="name"
                           value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          onChange={(e) => handleInputChange('name', e.target.value)}
+                          className={`bg-slate-700 border-slate-600 text-white ${
+                            validationErrors.name ? 'border-red-500' : ''
+                          }`}
                           required
                         />
+                        {validationErrors.name && (
+                          <p className="text-red-400 text-sm mt-1">{validationErrors.name}</p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="email" className="text-white">Email Address *</Label>
@@ -212,10 +270,15 @@ const ContactUs = () => {
                           id="email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          className={`bg-slate-700 border-slate-600 text-white ${
+                            validationErrors.email ? 'border-red-500' : ''
+                          }`}
                           required
                         />
+                        {validationErrors.email && (
+                          <p className="text-red-400 text-sm mt-1">{validationErrors.email}</p>
+                        )}
                       </div>
                     </div>
 
@@ -223,9 +286,11 @@ const ContactUs = () => {
                       <Label htmlFor="subject" className="text-white">Subject *</Label>
                       <Select
                         value={formData.subject}
-                        onValueChange={(value) => setFormData({ ...formData, subject: value })}
+                        onValueChange={(value) => handleInputChange('subject', value)}
                       >
-                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                        <SelectTrigger className={`bg-slate-700 border-slate-600 text-white ${
+                          validationErrors.subject ? 'border-red-500' : ''
+                        }`}>
                           <SelectValue placeholder="Select a subject" />
                         </SelectTrigger>
                         <SelectContent>
@@ -236,6 +301,9 @@ const ContactUs = () => {
                           ))}
                         </SelectContent>
                       </Select>
+                      {validationErrors.subject && (
+                        <p className="text-red-400 text-sm mt-1">{validationErrors.subject}</p>
+                      )}
                     </div>
 
                     <div>
@@ -243,11 +311,16 @@ const ContactUs = () => {
                       <Textarea
                         id="message"
                         value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="bg-slate-700 border-slate-600 text-white min-h-[120px]"
+                        onChange={(e) => handleInputChange('message', e.target.value)}
+                        className={`bg-slate-700 border-slate-600 text-white min-h-[120px] ${
+                          validationErrors.message ? 'border-red-500' : ''
+                        }`}
                         placeholder="Please provide details about your inquiry..."
                         required
                       />
+                      {validationErrors.message && (
+                        <p className="text-red-400 text-sm mt-1">{validationErrors.message}</p>
+                      )}
                     </div>
 
                     <div className="flex justify-end">
