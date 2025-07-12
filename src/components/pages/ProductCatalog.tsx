@@ -128,7 +128,7 @@ const ProductCatalog = () => {
           </div>
         </div>
         
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full">
           <div className="mb-2">
             <h3 className="text-xl font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
             <p className="text-sm text-gray-500">SKU: {product.sku}</p>
@@ -164,21 +164,24 @@ const ProductCatalog = () => {
             </div>
           )}
           
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-lg font-bold text-blue-600">
-              ${product.price.toFixed(2)}
-            </span>
-            <span className="text-xs text-gray-500">per cylinder</span>
+          {/* Push price and button to bottom */}
+          <div className="mt-auto">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-lg font-bold text-blue-600">
+                ${product.price.toFixed(2)}
+              </span>
+              <span className="text-xs text-gray-500">per cylinder</span>
+            </div>
+            
+            <Link to={`/products/${product.id}`}>
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                disabled={product.availability !== 'in_stock'}
+              >
+                {product.availability === 'in_stock' ? 'View Details & Quote' : 'Out of Stock'}
+              </Button>
+            </Link>
           </div>
-          
-          <Link to={`/products/${product.id}`}>
-            <Button 
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={product.availability !== 'in_stock'}
-            >
-              {product.availability === 'in_stock' ? 'View Details & Quote' : 'Out of Stock'}
-            </Button>
-          </Link>
         </div>
       </CardContent>
     </Card>
