@@ -116,9 +116,10 @@ const ContactUs = () => {
       }));
     }
     
+    // Don't sanitize during typing - only sanitize on submit to preserve natural typing flow
     setFormData(prev => ({
       ...prev,
-      [field]: field === 'email' ? value.toLowerCase().trim() : sanitizeInput(value)
+      [field]: field === 'email' ? value.toLowerCase().trim() : value
     }));
   };
 

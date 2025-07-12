@@ -154,11 +154,10 @@ const UserAuthPage = () => {
       }));
     }
 
+    // Don't sanitize during typing - only sanitize on submit to preserve natural typing flow
     const sanitizedValue = field === 'email' 
       ? value.toLowerCase().trim() 
-      : field === 'password' 
-        ? value 
-        : sanitizeInput(value);
+      : value;
 
     if (formType === 'login') {
       setLoginData(prev => ({

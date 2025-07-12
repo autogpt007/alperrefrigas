@@ -180,9 +180,10 @@ const AdminSettings = () => {
       }));
     }
     
+    // Don't sanitize during typing - only sanitize on submit to preserve natural typing flow
     setFormData(prev => ({
       ...prev,
-      [field]: sanitizeInput(value)
+      [field]: value
     }));
   };
 
