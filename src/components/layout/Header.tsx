@@ -1,13 +1,16 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ShoppingCart, Search, Menu, X, User, LogOut } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 
 const Header = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { itemCount } = useCart();
@@ -35,13 +38,13 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Products', path: '/products' },
-    { label: 'About', path: '/about' },
-    { label: 'Contact', path: '/contact' },
+    { label: t('nav.home'), path: '/' },
+    { label: t('nav.products'), path: '/products' },
+    { label: t('nav.about'), path: '/about' },
+    { label: t('nav.contact'), path: '/contact' },
     { label: 'Blog', path: '/blog' },
     { label: 'EPA Compliance', path: '/compliance' },
-    { label: 'Certifications', path: '/certifications' },
+    { label: t('nav.certifications'), path: '/certifications' },
   ];
 
   return (
@@ -54,6 +57,7 @@ const Header = () => {
             <span>📧 info@frigidflow.com</span>
           </div>
           <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
             {user ? (
               <div className="flex items-center space-x-2">
                 <Button
@@ -63,7 +67,7 @@ const Header = () => {
                   className="flex items-center gap-2 text-gray-600 hover:text-blue-600"
                 >
                   <User className="h-4 w-4" />
-                  My Account
+                  {t('nav.account')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -72,7 +76,7 @@ const Header = () => {
                   className="flex items-center gap-2 text-gray-600 hover:text-red-600"
                 >
                   <LogOut className="h-4 w-4" />
-                  Sign Out
+                  {t('nav.logout')}
                 </Button>
               </div>
             ) : (
@@ -83,7 +87,7 @@ const Header = () => {
                 className="flex items-center gap-2 text-gray-600 hover:text-blue-600"
               >
                 <User className="h-4 w-4" />
-                Sign In
+                {t('nav.login')}
               </Button>
             )}
           </div>
@@ -129,7 +133,7 @@ const Header = () => {
             <Link to="/cart" className="relative">
               <Button variant="outline" size="sm" className="flex items-center space-x-2">
                 <ShoppingCart className="h-4 w-4" />
-                <span className="hidden sm:inline">Cart</span>
+                <span className="hidden sm:inline">{t('nav.cart')}</span>
                 {itemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {itemCount}

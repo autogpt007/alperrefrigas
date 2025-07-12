@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../../contexts/CartContext';
 import { useOrders } from '../../contexts/OrdersContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -12,11 +13,13 @@ import { Separator } from '../ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign } from 'lucide-react';
+import { Checkbox } from '../ui/checkbox';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { items, total, clearCart } = useCart();
   const { createOrder } = useOrders();
   const { user } = useAuth();
@@ -46,6 +49,7 @@ const CheckoutPage = () => {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
+  const [legalAcknowledged, setLegalAcknowledged] = useState(false);
 
   useEffect(() => {
     const fetchBankWireDetails = async () => {
@@ -79,6 +83,15 @@ const CheckoutPage = () => {
       toast({
         title: "Authentication required",
         description: "Please log in to place an order",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!legalAcknowledged) {
+      toast({
+        title: "Legal acknowledgment required",
+        description: t('checkout.mustAgree'),
         variant: "destructive"
       });
       return;
@@ -166,7 +179,7 @@ const CheckoutPage = () => {
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
             <CreditCard className="h-8 w-8 text-cyan-400" />
-            Checkout
+            {t('checkout.title')}
           </h1>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -177,13 +190,13 @@ const CheckoutPage = () => {
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <MapPin className="h-5 w-5 text-cyan-400" />
-                    Customer Information
+                    {t('checkout.customerInfo')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-gray-300">Full Name</Label>
+                      <Label className="text-gray-300">{t('checkout.fields.fullName')}</Label>
                       <Input
                         value={formData.customerName}
                         onChange={(e) => handleInputChange('customerName', e.target.value)}
@@ -192,7 +205,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div>
-                      <Label className="text-gray-300">Email</Label>
+                      <Label className="text-gray-300">{t('checkout.fields.email')}</Label>
                       <Input
                         type="email"
                         value={formData.customerEmail}
@@ -210,7 +223,7 @@ const CheckoutPage = () => {
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <Truck className="h-5 w-5 text-cyan-400" />
-                    Shipping Address
+                    {t('checkout.shippingAddress')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -434,6 +447,53 @@ const CheckoutPage = () => {
                   />
                 </CardContent>
               </Card>
+
+              {/* Legal Acknowledgment */}
+              <Card className="bg-slate-800/50 border-cyan-500/20 border-2 border-amber-500/30">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Scale className="h-5 w-5 text-amber-400" />
+                    {t('checkout.legalAcknowledgment')}
+                  </CardTitle>
+                  <CardDescription className="text-amber-200">
+                    {t('checkout.legalNotice')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-3">
+                        <p className="text-amber-100 text-sm leading-relaxed">
+                          {t('checkout.complianceText')}
+                        </p>
+                        
+                        <div className="flex items-start space-x-3 pt-2">
+                          <Checkbox 
+                            id="legal-acknowledgment"
+                            checked={legalAcknowledged}
+                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                            className="mt-1 border-amber-400/50 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
+                          />
+                          <label 
+                            htmlFor="legal-acknowledgment" 
+                            className="text-white text-sm font-medium leading-relaxed cursor-pointer"
+                          >
+                            {t('checkout.legalStatement')}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {!legalAcknowledged && (
+                    <div className="text-amber-300 text-xs flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      {t('checkout.mustAgree')}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
 
             {/* Order Summary */}
@@ -493,10 +553,10 @@ const CheckoutPage = () => {
 
                   <Button
                     type="submit"
-                    disabled={isProcessing}
+                    disabled={isProcessing || !legalAcknowledged}
                     className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-3"
                   >
-                    {isProcessing ? 'Processing...' : `Place Order - $${finalTotal.toFixed(2)}`}
+                    {isProcessing ? t('checkout.processing') : `${t('checkout.placeOrder')} - $${finalTotal.toFixed(2)}`}
                   </Button>
                 </CardContent>
               </Card>

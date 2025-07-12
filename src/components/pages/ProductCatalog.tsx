@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, Filter, Grid, List, Shield, Truck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
 
 const ProductCatalog = () => {
+  const { t } = useTranslation();
   const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const { category: urlCategory } = useParams();
@@ -178,7 +180,7 @@ const ProductCatalog = () => {
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={product.availability !== 'in_stock'}
               >
-                {product.availability === 'in_stock' ? 'View Details & Quote' : 'Out of Stock'}
+                {product.availability === 'in_stock' ? t('products.viewDetails') : t('products.outOfStock')}
               </Button>
             </Link>
           </div>
@@ -208,7 +210,7 @@ const ProductCatalog = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              {getCategoryDisplayName()}
+              {t('products.title')}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
               Browse our comprehensive selection of EPA-approved refrigerants. Available in bulk quantities 
@@ -221,7 +223,7 @@ const ProductCatalog = () => {
                 <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder="Search by refrigerant name, SKU, or application..."
+                  placeholder={t('products.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 text-lg bg-white border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400"
