@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,12 +7,53 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCircle, Star, Zap, Users, Building2, Globe, ThermometerSun, ArrowRight, Search, FileText, Package } from 'lucide-react';
 import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
+import { supabase } from '@/integrations/supabase/client';
 
 const HomePage = () => {
   const { products, loading } = useProducts();
+  const [homepageProducts, setHomepageProducts] = useState<Array<{name: string, href: string}>>([]);
   
   // Get first 3 products for featured section
   const featuredProducts = products.slice(0, 3);
+
+  useEffect(() => {
+    const fetchHomepageProducts = async () => {
+      try {
+        const { data: featuredData, error } = await supabase
+          .from('featured_products')
+          .select(`
+            products (
+              name
+            )
+          `)
+          .eq('section_name', 'homepage_inventory')
+          .eq('is_active', true)
+          .order('order_index');
+
+        if (error) throw error;
+
+        const productList = featuredData?.map(item => ({
+          name: item.products?.name || '',
+          href: '/products'
+        })) || [];
+
+        setHomepageProducts(productList);
+      } catch (error) {
+        console.error('Error fetching homepage products:', error);
+        // Fallback to default products
+        setHomepageProducts([
+          { name: 'R-410A', href: '/products' },
+          { name: 'R-134a', href: '/products' },
+          { name: 'R-22', href: '/products' },
+          { name: 'R-404A', href: '/products' },
+          { name: 'R-507', href: '/products' },
+          { name: 'Low-GWP', href: '/products' }
+        ]);
+      }
+    };
+
+    fetchHomepageProducts();
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section with improved visibility */}
@@ -134,14 +175,7 @@ const HomePage = () => {
                         Our comprehensive inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {[
-                          { name: 'R-410A', href: '/products' },
-                          { name: 'R-134a', href: '/products' },
-                          { name: 'R-22', href: '/products' },
-                          { name: 'R-404A', href: '/products' },
-                          { name: 'R-507', href: '/products' },
-                          { name: 'Low-GWP', href: '/products' }
-                        ].map((product) => (
+                        {homepageProducts.map((product) => (
                           <Link key={product.name} to={product.href}>
                             <Badge className="bg-cyan-500/20 text-cyan-200 border-cyan-400/30 hover:bg-cyan-500/40 hover:text-white transition-all duration-200 cursor-pointer">
                               {product.name}
