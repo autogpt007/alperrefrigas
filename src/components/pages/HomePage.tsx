@@ -186,7 +186,7 @@ const HomePage = () => {
               </div>
 
               {/* Quality assurance section */}
-              <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300">
+              <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300">
                 <CardContent className="p-8">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -194,10 +194,10 @@ const HomePage = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-white mb-4">Uncompromising Quality Assurance</h3>
-                      <p className="text-gray-300 leading-relaxed mb-4">
+                      <p className="text-gray-100 leading-relaxed mb-4">
                         Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose FrigidFlow refrigerants, you're getting products that perform consistently and reliably in the field.
                       </p>
-                      <p className="text-gray-300 leading-relaxed">
+                      <p className="text-gray-100 leading-relaxed">
                         We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
                       </p>
                     </div>
@@ -206,7 +206,7 @@ const HomePage = () => {
               </Card>
 
               {/* Environmental responsibility */}
-              <Card className="bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-500/20 backdrop-blur-sm hover:border-teal-400/40 transition-all duration-300">
+              <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-teal-500/20 backdrop-blur-sm hover:border-teal-400/40 transition-all duration-300">
                 <CardContent className="p-8">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
@@ -214,7 +214,7 @@ const HomePage = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-white mb-4">Environmental Stewardship</h3>
-                      <p className="text-gray-300 leading-relaxed">
+                      <p className="text-gray-100 leading-relaxed">
                         Environmental responsibility drives our operations. We maintain comprehensive recycling programs for used refrigerants, partner with certified reclamation facilities, and continuously invest in cleaner, more sustainable refrigerant technologies. Our commitment to environmental stewardship helps our customers meet their sustainability goals while maintaining operational efficiency.
                       </p>
                     </div>
