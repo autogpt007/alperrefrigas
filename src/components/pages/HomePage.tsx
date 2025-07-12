@@ -66,13 +66,13 @@ const HomePage = () => {
             <div className="space-y-4">
               <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 px-6 py-2 text-lg">
                 <Shield className="h-5 w-5 mr-2" />
-                EPA Certified & Compliant
+                {t('home.hero.badge')}
               </Badge>
-              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
-                Professional Grade<br />Refrigerants
+              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
+                  dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Your trusted partner for wholesale refrigerant distribution. We provide premium quality refrigerants, expert technical support, and reliable delivery to HVAC professionals across North America.
+                {t('home.hero.description')}
               </p>
             </div>
 
@@ -83,7 +83,7 @@ const HomePage = () => {
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105"
                 >
                   <ShoppingCart className="mr-3 h-6 w-6" />
-                  Shop Refrigerants
+                  {t('home.hero.shopRefrigerants')}
                 </Button>
               </Link>
               <Link to="/rfq">
@@ -93,7 +93,7 @@ const HomePage = () => {
                   className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <Quote className="mr-3 h-6 w-6" />
-                  Get Bulk Pricing Quote
+                  {t('home.hero.getBulkQuote')}
                 </Button>
               </Link>
             </div>
