@@ -10,7 +10,8 @@ import {
   Settings,
   Users,
   Award,
-  Globe
+  Globe,
+  Star
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -19,6 +20,7 @@ const AdminSidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
     { icon: Package, label: 'Products', path: '/admin/products' },
+    { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },

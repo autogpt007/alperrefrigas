@@ -44,6 +44,7 @@ import AdminSettings from "./components/admin/AdminSettings";
 import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
 import ContentManagement from "./components/admin/ContentManagement";
+import FeaturedProductManagement from "./components/admin/FeaturedProductManagement";
 import BlogPage from "./components/pages/BlogPage";
 import "./App.css";
 
@@ -66,6 +67,7 @@ function App() {
                       <Route path="/admin" element={<AdminLayout />}>
                         <Route index element={<Dashboard />} />
                         <Route path="products" element={<EnhancedProductManagement />} />
+                        <Route path="featured-products" element={<FeaturedProductManagement />} />
                         <Route path="orders" element={<OrderManagement />} />
                         <Route path="blog" element={<SimpleBlogManagement />} />
                         <Route path="contacts" element={<ContactManagement />} />
