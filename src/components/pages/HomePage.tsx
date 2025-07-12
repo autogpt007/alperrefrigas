@@ -78,65 +78,191 @@ const HomePage = () => {
       </div>
 
       {/* SEO Content Section */}
-      <section className="py-20 bg-slate-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-2xl p-12 border border-cyan-500/20">
-              <h2 className="text-4xl font-bold text-white mb-8 text-center">
-                Leading Refrigerant Wholesale Distributor in North America
+      <section className="py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 right-20 w-48 h-48 bg-blue-500/10 rounded-full blur-xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            {/* Header section with visual elements */}
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full mb-6 shadow-lg shadow-cyan-500/25">
+                <Building2 className="h-10 w-10 text-white" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                Leading Refrigerant Wholesale Distributor
               </h2>
-              
-              <div className="prose prose-lg prose-invert mx-auto">
-                <div className="text-gray-300 leading-relaxed space-y-6">
-                  <p className="text-xl">
-                    FrigidFlow stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
-                  </p>
-                  
-                  <p>
-                    Our comprehensive inventory includes <strong className="text-cyan-400">R-410A, R-134a, R-22, R-404A, R-507, and next-generation low-GWP refrigerants</strong> that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
-                  </p>
-                  
-                  <p>
-                    What sets FrigidFlow apart is our deep understanding of the evolving refrigerant landscape. As environmental regulations continue to shape the industry, we've positioned ourselves at the forefront of sustainable refrigerant solutions. Our technical team works closely with leading manufacturers to offer cutting-edge alternatives that reduce environmental impact while maintaining superior cooling performance.
-                  </p>
-                  
-                  <div className="grid md:grid-cols-2 gap-8 my-8">
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Industry Expertise</h3>
-                      <p>
-                        With decades of combined experience, our certified technicians understand the complexities of refrigerant selection, system compatibility, and regulatory compliance. We provide comprehensive technical support, helping you navigate EPA Section 608 requirements, proper handling procedures, and optimal storage solutions.
-                      </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-6 rounded-full"></div>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Trusted by thousands of HVAC professionals across North America
+              </p>
+            </div>
+
+            {/* Main content in cards layout */}
+            <div className="space-y-8">
+              {/* Introduction card */}
+              <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 backdrop-blur-sm hover:border-cyan-400/40 transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                      <Award className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Nationwide Distribution</h3>
-                      <p>
-                        Our strategically located distribution centers across North America ensure rapid delivery to any location. Whether you need emergency refrigerant supply for critical repairs or scheduled deliveries for large-scale projects, our logistics network guarantees reliable, on-time service.
+                      <h3 className="text-2xl font-bold text-white mb-4">Premier Quality & Service Excellence</h3>
+                      <p className="text-gray-300 text-lg leading-relaxed">
+                        FrigidFlow stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
                       </p>
                     </div>
                   </div>
-                  
-                  <p>
-                    Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose FrigidFlow refrigerants, you're getting products that perform consistently and reliably in the field.
-                  </p>
-                  
-                  <p>
-                    We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
-                  </p>
-                  
-                  <p>
-                    Environmental responsibility drives our operations. We maintain comprehensive recycling programs for used refrigerants, partner with certified reclamation facilities, and continuously invest in cleaner, more sustainable refrigerant technologies. Our commitment to environmental stewardship helps our customers meet their sustainability goals while maintaining operational efficiency.
-                  </p>
-                  
-                  <div className="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 rounded-lg p-6 border border-cyan-500/30">
-                    <h3 className="text-2xl font-bold text-white mb-4">24/7 Emergency Support</h3>
-                    <p>
-                      System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on FrigidFlow to get you back up and running quickly.
+                </CardContent>
+              </Card>
+
+              {/* Product range highlight */}
+              <Card className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/20 backdrop-blur-sm hover:border-blue-400/40 transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <Package className="h-8 w-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-white mb-4">Comprehensive Refrigerant Inventory</h3>
+                      <p className="text-gray-300 leading-relaxed mb-4">
+                        Our comprehensive inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {['R-410A', 'R-134a', 'R-22', 'R-404A', 'R-507', 'Low-GWP'].map((product) => (
+                          <Badge key={product} className="bg-cyan-500/20 text-cyan-300 border-cyan-400/30 hover:bg-cyan-500/30 transition-colors">
+                            {product}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Two-column expertise section */}
+              <div className="grid md:grid-cols-2 gap-8">
+                <Card className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 border-green-500/20 backdrop-blur-sm hover:border-green-400/40 transition-all duration-300">
+                  <CardContent className="p-8">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                        <Users className="h-6 w-6 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Industry Expertise</h3>
+                    </div>
+                    <p className="text-gray-300 leading-relaxed">
+                      With decades of combined experience, our certified technicians understand the complexities of refrigerant selection, system compatibility, and regulatory compliance. We provide comprehensive technical support, helping you navigate EPA Section 608 requirements, proper handling procedures, and optimal storage solutions.
                     </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-orange-900/30 to-red-900/30 border-orange-500/20 backdrop-blur-sm hover:border-orange-400/40 transition-all duration-300">
+                  <CardContent className="p-8">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                        <Truck className="h-6 w-6 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Nationwide Distribution</h3>
+                    </div>
+                    <p className="text-gray-300 leading-relaxed">
+                      Our strategically located distribution centers across North America ensure rapid delivery to any location. Whether you need emergency refrigerant supply for critical repairs or scheduled deliveries for large-scale projects, our logistics network guarantees reliable, on-time service.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Quality assurance section */}
+              <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                      <CheckCircle className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">Uncompromising Quality Assurance</h3>
+                      <p className="text-gray-300 leading-relaxed mb-4">
+                        Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose FrigidFlow refrigerants, you're getting products that perform consistently and reliably in the field.
+                      </p>
+                      <p className="text-gray-300 leading-relaxed">
+                        We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <p>
-                    Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants – you're gaining a strategic advantage in an evolving industry.
-                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Environmental responsibility */}
+              <Card className="bg-gradient-to-br from-teal-900/30 to-cyan-900/30 border-teal-500/20 backdrop-blur-sm hover:border-teal-400/40 transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                      <Globe className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">Environmental Stewardship</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        Environmental responsibility drives our operations. We maintain comprehensive recycling programs for used refrigerants, partner with certified reclamation facilities, and continuously invest in cleaner, more sustainable refrigerant technologies. Our commitment to environmental stewardship helps our customers meet their sustainability goals while maintaining operational efficiency.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Emergency support callout */}
+              <Card className="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-2 border-red-500/30 backdrop-blur-sm hover:border-red-400/50 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-xl"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="flex items-center gap-6">
+                    <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25">
+                      <Clock className="h-10 w-10 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-white mb-4">24/7 Emergency Support</h3>
+                      <p className="text-gray-300 text-lg leading-relaxed">
+                        System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on FrigidFlow to get you back up and running quickly.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Future innovation section */}
+              <Card className="bg-gradient-to-br from-indigo-900/30 to-blue-900/30 border-indigo-500/20 backdrop-blur-sm hover:border-indigo-400/40 transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+                      <Zap className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4">Innovation & Future-Ready Solutions</h3>
+                      <p className="text-gray-300 leading-relaxed">
+                        Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants – you're gaining a strategic advantage in an evolving industry.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Call to action */}
+              <div className="text-center pt-8">
+                <div className="inline-flex gap-4">
+                  <Link to="/products">
+                    <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
+                      <Search className="mr-2 h-5 w-5" />
+                      Explore Our Products
+                    </Button>
+                  </Link>
+                  <Link to="/contact">
+                    <Button size="lg" variant="outline" className="bg-white/5 backdrop-blur-sm border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                      <ArrowRight className="mr-2 h-5 w-5" />
+                      Get Expert Guidance
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
