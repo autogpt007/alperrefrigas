@@ -122,7 +122,7 @@ const HomePage = () => {
               </Card>
 
               {/* Product range highlight */}
-              <Card className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/20 backdrop-blur-sm hover:border-blue-400/40 transition-all duration-300">
+              <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-blue-500/20 backdrop-blur-sm hover:border-blue-400/40 transition-all duration-300">
                 <CardContent className="p-8">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
@@ -130,14 +130,23 @@ const HomePage = () => {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-2xl font-bold text-white mb-4">Comprehensive Refrigerant Inventory</h3>
-                      <p className="text-gray-300 leading-relaxed mb-4">
+                      <p className="text-gray-100 leading-relaxed mb-4">
                         Our comprehensive inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {['R-410A', 'R-134a', 'R-22', 'R-404A', 'R-507', 'Low-GWP'].map((product) => (
-                          <Badge key={product} className="bg-cyan-500/20 text-cyan-300 border-cyan-400/30 hover:bg-cyan-500/30 transition-colors">
-                            {product}
-                          </Badge>
+                        {[
+                          { name: 'R-410A', href: '/products' },
+                          { name: 'R-134a', href: '/products' },
+                          { name: 'R-22', href: '/products' },
+                          { name: 'R-404A', href: '/products' },
+                          { name: 'R-507', href: '/products' },
+                          { name: 'Low-GWP', href: '/products' }
+                        ].map((product) => (
+                          <Link key={product.name} to={product.href}>
+                            <Badge className="bg-cyan-500/20 text-cyan-200 border-cyan-400/30 hover:bg-cyan-500/40 hover:text-white transition-all duration-200 cursor-pointer">
+                              {product.name}
+                            </Badge>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -147,7 +156,7 @@ const HomePage = () => {
 
               {/* Two-column expertise section */}
               <div className="grid md:grid-cols-2 gap-8">
-                <Card className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 border-green-500/20 backdrop-blur-sm hover:border-green-400/40 transition-all duration-300">
+                <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-green-500/20 backdrop-blur-sm hover:border-green-400/40 transition-all duration-300">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
@@ -155,13 +164,13 @@ const HomePage = () => {
                       </div>
                       <h3 className="text-xl font-bold text-white">Industry Expertise</h3>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-100 leading-relaxed">
                       With decades of combined experience, our certified technicians understand the complexities of refrigerant selection, system compatibility, and regulatory compliance. We provide comprehensive technical support, helping you navigate EPA Section 608 requirements, proper handling procedures, and optimal storage solutions.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-900/30 to-red-900/30 border-orange-500/20 backdrop-blur-sm hover:border-orange-400/40 transition-all duration-300">
+                <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-orange-500/20 backdrop-blur-sm hover:border-orange-400/40 transition-all duration-300">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
@@ -169,7 +178,7 @@ const HomePage = () => {
                       </div>
                       <h3 className="text-xl font-bold text-white">Nationwide Distribution</h3>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-100 leading-relaxed">
                       Our strategically located distribution centers across North America ensure rapid delivery to any location. Whether you need emergency refrigerant supply for critical repairs or scheduled deliveries for large-scale projects, our logistics network guarantees reliable, on-time service.
                     </p>
                   </CardContent>
