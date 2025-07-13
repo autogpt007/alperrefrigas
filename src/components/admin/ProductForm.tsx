@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Upload, X, ImageIcon, FileText, Award } from 'lucide-react';
 import { useProducts } from '../../contexts/ProductsContext';
 import { useToast } from '../../hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ProductForm = () => {
   const { addProduct } = useProducts();
@@ -73,7 +74,7 @@ const ProductForm = () => {
     }
   };
 
-  const handleSdsUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSdsUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.type !== 'application/pdf') {
@@ -85,13 +86,37 @@ const ProductForm = () => {
         return;
       }
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setNewProduct({...newProduct, sdsUrl: result});
+      try {
+        // Upload to Supabase storage
+        const fileName = `sds_${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage
+          .from('product-documents')
+          .upload(fileName, file);
+
+        if (error) {
+          throw error;
+        }
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('product-documents')
+          .getPublicUrl(fileName);
+
+        setNewProduct({...newProduct, sdsUrl: publicUrlData.publicUrl});
         setSdsFileName(file.name);
-      };
-      reader.readAsDataURL(file);
+        
+        toast({
+          title: "Success",
+          description: "SDS document uploaded successfully",
+        });
+      } catch (error) {
+        console.error('Error uploading SDS:', error);
+        toast({
+          title: "Upload Failed",
+          description: "Failed to upload SDS document. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
