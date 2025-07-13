@@ -22,6 +22,7 @@ const ContactUs = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const { toast } = useToast();
 
   // Rate limiter for form submissions
@@ -29,6 +30,19 @@ const ContactUs = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Execute reCAPTCHA
+    try {
+      const token = await (window as any).grecaptcha.enterprise.execute('6Lcv1IErAAAAAFTCcvSuDlZZYBNcwHpv983Qpd1q', { action: 'contact_form' });
+      setRecaptchaToken(token);
+    } catch (error) {
+      toast({
+        title: "Security Error",
+        description: "reCAPTCHA verification failed. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Check rate limiting
     const userIP = 'user'; // In a real app, you'd get the user's IP

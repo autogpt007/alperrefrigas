@@ -504,10 +504,10 @@ const BlogPostManagement = () => {
                         plugins: [
                           // Core editing features
                           'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-                          // Premium features
-                          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+                          // Working premium features (removed ai, tinycomments, and other problematic ones)
+                          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'advtable', 'advcode', 'editimage', 'typography', 'inlinecss', 'markdown'
                         ],
-                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                         images_upload_handler: async (blobInfo: any, progress: any) => {
                           return new Promise(async (resolve, reject) => {
