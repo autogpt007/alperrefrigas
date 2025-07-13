@@ -16,8 +16,40 @@ export interface HeroImageFormData {
 }
 
 export const PAGE_OPTIONS = [
-  { value: 'about', label: 'About Us Page' },
-  { value: 'home', label: 'Home Page' },
-  { value: 'contact', label: 'Contact Page' },
-  { value: 'products', label: 'Products Page' }
+  { 
+    value: 'about', 
+    label: 'About Us Page',
+    description: 'Hero image shown at the top of the About Us page',
+    recommendedSize: '1920x1080px (16:9)',
+    usage: 'Full-width background behind company introduction'
+  },
+  { 
+    value: 'home', 
+    label: 'Home Page',
+    description: 'Main hero image for the homepage',
+    recommendedSize: '1920x1080px (16:9)',
+    usage: 'Primary hero section background'
+  },
+  { 
+    value: 'contact', 
+    label: 'Contact Page',
+    description: 'Background image for contact section',
+    recommendedSize: '1920x1080px (16:9)',
+    usage: 'Contact page hero background'
+  },
+  { 
+    value: 'products', 
+    label: 'Products Page',
+    description: 'Hero image for product catalog',
+    recommendedSize: '1920x1080px (16:9)',
+    usage: 'Product page header background'
+  }
 ];
+
+export interface PageOption {
+  value: string;
+  label: string;
+  description: string;
+  recommendedSize: string;
+  usage: string;
+}

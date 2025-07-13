@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUpload } from '@/components/ui/image-upload';
-import { HeroImageFormData, PAGE_OPTIONS } from '@/types/hero-image';
+import { HeroImageFormData, PAGE_OPTIONS, PageOption } from '@/types/hero-image';
 
 interface HeroImageFormProps {
   formData: HeroImageFormData;
@@ -25,15 +25,17 @@ export const HeroImageForm: React.FC<HeroImageFormProps> = ({
     onFormDataChange({ ...formData, ...updates });
   };
 
+  const selectedPage = PAGE_OPTIONS.find(option => option.value === formData.page_name);
+
   return (
     <Card className="mb-6">
       <CardHeader>
         <CardTitle>Add/Edit Hero Image</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="page_name">Page</Label>
+            <Label htmlFor="page_name">Select Page *</Label>
             <Select 
               value={formData.page_name} 
               onValueChange={(value) => updateFormData({ page_name: value })}
@@ -44,11 +46,25 @@ export const HeroImageForm: React.FC<HeroImageFormProps> = ({
               <SelectContent>
                 {PAGE_OPTIONS.map(option => (
                   <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                    <div className="py-2">
+                      <div className="font-medium">{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            
+            {selectedPage && (
+              <div className="mt-3 p-3 bg-blue-50 rounded-md border">
+                <h4 className="font-medium text-blue-900 mb-2">Image Guidelines for {selectedPage.label}</h4>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li><strong>Usage:</strong> {selectedPage.usage}</li>
+                  <li><strong>Recommended Size:</strong> {selectedPage.recommendedSize}</li>
+                  <li><strong>Format:</strong> JPG or PNG, optimized for web</li>
+                </ul>
+              </div>
+            )}
           </div>
 
           <div>

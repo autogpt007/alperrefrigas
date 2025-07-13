@@ -75,10 +75,12 @@ const AboutUs = () => {
           .select('image_url')
           .eq('page_name', 'about')
           .eq('is_active', true)
-          .single();
+          .maybeSingle();
 
         if (!heroError && heroData) {
           setHeroImage(heroData.image_url);
+        } else {
+          console.log('No hero image found for About Us page');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
