@@ -293,6 +293,71 @@ const HomePage = () => {
                 </CardContent>
               </Card>
 
+              {/* How to Order Section */}
+              <Card className="bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-2 border-green-500/30 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-xl"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full mb-6 shadow-lg shadow-green-500/25">
+                      <Package className="h-10 w-10 text-white" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-white mb-4">How to Order</h3>
+                    <p className="text-gray-300 text-lg">
+                      Simple steps to get your refrigerants delivered fast
+                    </p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mb-4 shadow-lg">
+                        <Search className="h-8 w-8 text-white" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-2">1. Browse & Select</h4>
+                      <p className="text-gray-300">
+                        Browse our catalog and select the refrigerants you need. Add them to your cart with desired quantities.
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-4 shadow-lg">
+                        <FileText className="h-8 w-8 text-white" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-2">2. Quick Checkout</h4>
+                      <p className="text-gray-300">
+                        Provide your shipping details and EPA certification. Choose from credit card, wire transfer, or company check.
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mb-4 shadow-lg">
+                        <Truck className="h-8 w-8 text-white" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-2">3. Fast Delivery</h4>
+                      <p className="text-gray-300">
+                        Orders ship within 24-48 hours. Track your shipment and receive SMS notifications for delivery updates.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mt-8">
+                    <div className="inline-flex gap-4">
+                      <Link to="/products">
+                        <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-green-500/25 transition-all duration-300">
+                          <ShoppingCart className="mr-2 h-5 w-5" />
+                          Start Shopping
+                        </Button>
+                      </Link>
+                      <Link to="/rfq">
+                        <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300">
+                          <Quote className="mr-2 h-5 w-5" />
+                          Get Bulk Quote
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Call to action */}
               <div className="text-center pt-8">
                 <div className="inline-flex gap-4">
