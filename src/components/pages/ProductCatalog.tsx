@@ -97,8 +97,8 @@ const ProductCatalog = () => {
   });
 
   const ProductCard = ({ product }: { product: any }) => (
-    <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden">
-      <CardContent className="p-0">
+    <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden h-full flex flex-col">
+      <CardContent className="p-0 flex-1 flex flex-col">
         <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
           {product.image && product.image !== '/placeholder.svg' ? (
             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -130,13 +130,13 @@ const ProductCatalog = () => {
           </div>
         </div>
         
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-6 flex-1 flex flex-col">
           <div className="mb-2">
             <h3 className="text-xl font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
             <p className="text-sm text-gray-500">SKU: {product.sku}</p>
           </div>
           
-          <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">{product.description}</p>
+          <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3 flex-1">{product.description}</p>
           
           {/* Category Badge */}
           <div className="mb-3">
