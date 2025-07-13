@@ -28,56 +28,67 @@ interface HeroImage {
   is_active: boolean;
 }
 
+interface Testimonial {
+  id: string;
+  name: string;
+  company: string | null;
+  position: string | null;
+  content: string;
+  rating: number | null;
+  image_url: string | null;
+  approved: boolean;
+  order_index: number | null;
+}
+
 const AboutUs = () => {
   const { t } = useTranslation();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [heroImage, setHeroImage] = useState<HeroImage | null>(null);
   const [loading, setLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [heroImage, setHeroImage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchTeamMembers();
-    fetchHeroImage();
-  }, []);
+    const fetchData = async () => {
+      try {
+        // Fetch team members
+        const { data: teamData, error: teamError } = await supabase
+          .from('team_members')
+          .select('*')
+          .order('order_index', { ascending: true });
 
-  const fetchTeamMembers = async () => {
-    try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/team_members?order=order_index.asc`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
+        if (teamError) throw teamError;
+        setTeamMembers(teamData || []);
+
+        // Fetch testimonials
+        const { data: testimonialData, error: testimonialError } = await supabase
+          .from('testimonials')
+          .select('*')
+          .eq('approved', true)
+          .order('order_index', { ascending: true });
+
+        if (testimonialError) throw testimonialError;
+        setTestimonials(testimonialData || []);
+
+        // Fetch hero image for About Us page
+        const { data: heroData, error: heroError } = await supabase
+          .from('hero_images')
+          .select('image_url')
+          .eq('page_name', 'about')
+          .eq('is_active', true)
+          .single();
+
+        if (!heroError && heroData) {
+          setHeroImage(heroData.image_url);
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setTeamMembers(data || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching team members:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  const fetchHeroImage = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('hero_images')
-        .select('*')
-        .eq('page_name', 'about')
-        .eq('is_active', true)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching hero image:', error);
-      } else if (data) {
-        setHeroImage(data);
-      }
-    } catch (error) {
-      console.error('Error fetching hero image:', error);
-    }
-  };
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -93,7 +104,7 @@ const AboutUs = () => {
         className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16 bg-cover bg-center"
         style={{
           backgroundImage: heroImage 
-            ? `linear-gradient(rgba(37, 99, 235, 0.8), rgba(29, 78, 216, 0.8)), url(${heroImage.image_url})`
+            ? `linear-gradient(rgba(37, 99, 235, 0.8), rgba(29, 78, 216, 0.8)), url(${heroImage})`
             : undefined
         }}
       >
@@ -150,9 +161,9 @@ const AboutUs = () => {
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-8 shadow-lg">
-                {teamMembers.length > 0 && teamMembers[0]?.image_url ? (
+                {heroImage ? (
                   <img 
-                    src={teamMembers[0].image_url} 
+                    src={heroImage} 
                     alt="Alper Refrigerants Facility" 
                     className="rounded-xl shadow-lg w-full h-80 object-cover"
                   />
