@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 
 const CartPage = () => {
+  const { t } = useTranslation();
   const { items, updateQuantity, removeItem, total, itemCount } = useCart();
   const navigate = useNavigate();
 
@@ -16,13 +18,13 @@ const CartPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto text-center">
           <ShoppingCart className="h-24 w-24 text-gray-400 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Cart is Empty</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('cart.empty.title')}</h1>
           <p className="text-gray-600 mb-8">
-            Start shopping for refrigerants and add them to your cart.
+            {t('cart.empty.description')}
           </p>
           <Link to="/products">
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Browse Products
+              {t('cart.empty.browseProducts')}
             </Button>
           </Link>
         </div>

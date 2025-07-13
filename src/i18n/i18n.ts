@@ -213,6 +213,22 @@ const resources = {
         rights: "All rights reserved.",
         paymentMethods: "We Accept"
       },
+      // Contact
+      contact: {
+        pageTitle: "Contact Alper Refrigerants | Get Wholesale Refrigerant Pricing Quote",
+        pageDescription: "Contact EPA-certified refrigerant experts for wholesale pricing on R-410A, R-134a, R-1234yf. Bulk quotes for HVAC contractors with 24/7 emergency support.",
+        heroTitle: "Contact Our Refrigerant Experts",
+        heroDescription: "Need wholesale pricing on R-410A, R-134a, or R-1234yf? Our EPA-certified team provides expert guidance and competitive bulk quotes for HVAC contractors.",
+        getInTouch: "Get In Touch",
+        formTitle: "Get Your Refrigerant Quote",
+        formDescription: "Submit your requirements below and our EPA-certified team will provide competitive wholesale pricing within 4 hours.",
+        fullName: "Full Name",
+        emailAddress: "Email Address",
+        subject: "Subject",
+        message: "Message",
+        sendMessage: "Send Message",
+        sending: "Sending..."
+      },
       // Common
       common: {
         loading: "Loading...",
