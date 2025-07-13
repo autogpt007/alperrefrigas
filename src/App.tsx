@@ -28,6 +28,7 @@ import Certifications from "./components/pages/Certifications";
 import PrivacyPolicy from "./components/pages/PrivacyPolicy";
 import TermsOfService from "./components/pages/TermsOfService";
 import CookiePolicy from "./components/pages/CookiePolicy";
+import RefundPolicy from "./components/pages/RefundPolicy";
 import Sitemap from "./components/pages/Sitemap";
 import CustomerSupport from "./components/pages/CustomerSupport";
 import AdminDashboard from "./components/pages/AdminDashboard";
@@ -99,6 +100,7 @@ function App() {
                               <Route path="/certifications" element={<Certifications />} />
                               <Route path="/privacy" element={<PrivacyPolicy />} />
                               <Route path="/terms" element={<TermsOfService />} />
+                              <Route path="/refund-policy" element={<RefundPolicy />} />
                               <Route path="/cookies" element={<CookiePolicy />} />
                               <Route path="/sitemap" element={<Sitemap />} />
                               <Route path="/support" element={<CustomerSupport />} />

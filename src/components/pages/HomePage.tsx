@@ -276,17 +276,17 @@ const HomePage = () => {
                 </CardContent>
               </Card>
 
-              {/* Future innovation section */}
-              <Card className="bg-gradient-to-br from-slate-800/50 to-indigo-900/50 border-indigo-500/20 backdrop-blur-sm hover:border-indigo-400/40 transition-all duration-300 shadow-lg">
+              {/* Future innovation section - Fixed visibility */}
+              <Card className="bg-white/95 border-2 border-indigo-200 backdrop-blur-sm hover:border-indigo-300 transition-all duration-300 shadow-xl">
                 <CardContent className="p-8">
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
                       <Zap className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('home.whyChoose.innovation')}</h3>
-                      <p className="text-gray-200 leading-relaxed text-lg">
-                        {t('home.whyChoose.innovationDescription')}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Innovation & Future-Ready Solutions</h3>
+                      <p className="text-gray-700 leading-relaxed text-lg">
+                        Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants - you're gaining a strategic advantage in an evolving industry.
                       </p>
                     </div>
                   </div>
@@ -340,20 +340,12 @@ const HomePage = () => {
                   </div>
                   
                   <div className="text-center mt-8">
-                    <div className="inline-flex gap-4">
-                      <Link to="/products">
-                        <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-green-500/25 transition-all duration-300">
-                          <ShoppingCart className="mr-2 h-5 w-5" />
-                          Start Shopping
-                        </Button>
-                      </Link>
-                      <Link to="/rfq">
-                        <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300">
-                          <Quote className="mr-2 h-5 w-5" />
-                          Get Bulk Quote
-                        </Button>
-                      </Link>
-                    </div>
+                    <Link to="/rfq">
+                      <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300">
+                        <Quote className="mr-2 h-5 w-5" />
+                        Get Bulk Quote
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

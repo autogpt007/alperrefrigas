@@ -148,6 +148,7 @@ const Footer = () => {
             <div className="flex space-x-6 text-sm">
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link>
               <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.termsOfService')}</Link>
+              <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund & Return Policy</Link>
               <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">{t('footer.cookiePolicy')}</Link>
               <Link to="/sitemap" className="text-gray-400 hover:text-white transition-colors">{t('footer.sitemap')}</Link>
               <Link to="/faq" className="text-gray-400 hover:text-white transition-colors">{t('footer.faq')}</Link>
