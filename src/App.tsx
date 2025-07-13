@@ -117,7 +117,7 @@ function App() {
                             </Routes>
                           </main>
                           <Footer />
-                          <WhatsAppButton phoneNumber="+18007347443" />
+                          <WhatsAppButton phoneNumber="18007347443" />
                         </div>
                       } />
                     </Routes>
