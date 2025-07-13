@@ -138,6 +138,10 @@ const resources = {
         mikeChenBio: "EPA certified with 15+ years of experience, Mike provides technical support and helps customers choose the right refrigerant for their specific applications.",
         whyChooseUs: "Why HVAC Contractors Trust Alper Refrigerants",
         whyChooseDescription: "Certified quality, competitive wholesale pricing, and reliable nationwide shipping",
+        whyChoose: {
+          innovation: "Innovation & Future-Ready Solutions",
+          innovationDescription: "Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants - you're gaining a strategic advantage in an evolving industry."
+        },
         epaSection608: "EPA Section 608 Certified",
         epaSection608Description: "Fully licensed refrigerant distributor with EPA certification and DOT hazmat permits for safe transport across North America.",
         purityGuarantee: "99.8% Purity Guarantee",
@@ -412,6 +416,10 @@ const resources = {
         mikeChenBio: "Certifié EPA avec plus de 15 ans d'expérience, Mike fournit un support technique et aide les clients à choisir le bon réfrigérant pour leurs applications spécifiques.",
         whyChooseUs: "Pourquoi les Entrepreneurs CVC Font Confiance à Alper Refrigerants",
         whyChooseDescription: "Qualité certifiée, prix de gros compétitifs et expédition fiable à l'échelle nationale",
+        whyChoose: {
+          innovation: "Innovation et Solutions Prêtes pour l'Avenir",
+          innovationDescription: "En regardant vers l'avenir, FrigidFlow continue d'innover et d'élargir nos offres de services. Nous investissons dans des systèmes avancés de gestion des stocks, des capacités logistiques améliorées et des technologies de réfrigérants émergentes qui définiront l'avenir du CVC et de la réfrigération. Quand vous vous associez avec FrigidFlow, vous n'achetez pas seulement des réfrigérants - vous gagnez un avantage stratégique dans une industrie en évolution."
+        },
         epaSection608: "Certifié EPA Section 608",
         epaSection608Description: "Distributeur de réfrigérants entièrement licencié avec certification EPA et permis de matières dangereuses DOT pour un transport sûr à travers l'Amérique du Nord.",
         purityGuarantee: "Garantie de Pureté 99,8%",
@@ -666,6 +674,10 @@ const resources = {
         mikeChenBio: "Certificado EPA con más de 15 años de experiencia, Mike proporciona soporte técnico y ayuda a los clientes a elegir el refrigerante correcto para sus aplicaciones específicas.",
         whyChooseUs: "Por Qué los Contratistas HVAC Confían en Alper Refrigerants",
         whyChooseDescription: "Calidad certificada, precios mayoristas competitivos y envío confiable a nivel nacional",
+        whyChoose: {
+          innovation: "Innovación y Soluciones Listas para el Futuro",
+          innovationDescription: "Mirando hacia adelante, FrigidFlow continúa innovando y expandiendo nuestras ofertas de servicios. Estamos invirtiendo en sistemas avanzados de gestión de inventario, capacidades logísticas mejoradas y tecnologías emergentes de refrigerantes que definirán el futuro de HVAC y refrigeración. Cuando se asocia con FrigidFlow, no solo está comprando refrigerantes - está ganando una ventaja estratégica en una industria en evolución."
+        },
         epaSection608: "Certificado EPA Sección 608",
         epaSection608Description: "Distribuidor de refrigerantes completamente licenciado con certificación EPA y permisos de materiales peligrosos DOT para transporte seguro en América del Norte.",
         purityGuarantee: "Garantía de Pureza 99.8%",
