@@ -495,22 +495,19 @@ const BlogPostManagement = () => {
                   </Label>
                   <div className="bg-white rounded-lg">
                     <Editor
-                      apiKey="no-api-key"
+                      apiKey="qnbiekj6zcaybsw1089kpgw32gfsk6lbisotyiqzktixxl4w"
                       value={formData.body}
                       onEditorChange={(content) => setFormData({ ...formData, body: content })}
                       init={{
                         height: 500,
                         menubar: true,
                         plugins: [
-                          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
-                          'paste', 'codesample', 'emoticons'
+                          // Core editing features
+                          'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                          // Premium features
+                          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
                         ],
-                        toolbar: 'undo redo | blocks | ' +
-                          'bold italic forecolor | alignleft aligncenter ' +
-                          'alignright alignjustify | bullist numlist outdent indent | ' +
-                          'removeformat | image media link | codesample emoticons | help',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                         images_upload_handler: async (blobInfo: any, progress: any) => {
                           return new Promise(async (resolve, reject) => {
