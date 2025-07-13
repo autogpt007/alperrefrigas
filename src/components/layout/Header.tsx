@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ShoppingCart, Search, Menu, X, User, LogOut, FileText } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
 
@@ -20,6 +22,30 @@ const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch logo settings
+  const { data: logoSettings } = useQuery({
+    queryKey: ['logo-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_key, setting_value')
+        .in('setting_key', ['logo_url', 'company_name', 'company_tagline']);
+
+      if (error) throw error;
+
+      const settingsMap = data?.reduce((acc, item) => {
+        acc[item.setting_key] = item.setting_value;
+        return acc;
+      }, {} as Record<string, string>) || {};
+
+      return {
+        logo_url: settingsMap.logo_url || '',
+        company_name: settingsMap.company_name || 'FrigidFlow',
+        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions'
+      };
+    },
+  });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,12 +126,22 @@ const Header = () => {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">FF</span>
-            </div>
+            {logoSettings?.logo_url ? (
+              <img 
+                src={logoSettings.logo_url} 
+                alt={logoSettings.company_name || 'Company Logo'} 
+                className="h-12 w-auto object-contain"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">
+                  {logoSettings?.company_name?.charAt(0) || 'FF'}
+                </span>
+              </div>
+            )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">FrigidFlow</h1>
-              <p className="text-sm text-gray-600">Refrigerant Solutions</p>
+              <h1 className="text-2xl font-bold text-gray-900">{logoSettings?.company_name || 'FrigidFlow'}</h1>
+              <p className="text-sm text-gray-600">{logoSettings?.company_tagline || 'Refrigerant Solutions'}</p>
             </div>
           </Link>
 

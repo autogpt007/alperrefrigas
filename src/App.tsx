@@ -39,7 +39,8 @@ import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./components/admin/Dashboard";
 import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
 import OrderManagement from "./components/admin/OrderManagement";
-import SimpleBlogManagement from "./components/admin/SimpleBlogManagement";
+import BlogPostManagement from "./components/admin/BlogPostManagement";
+import LogoManagement from "./components/admin/LogoManagement";
 import ContactManagement from "./components/admin/ContactManagement";
 import AdminSettings from "./components/admin/AdminSettings";
 import TeamManagement from "./components/admin/TeamManagement";
@@ -72,7 +73,8 @@ function App() {
                         <Route path="products" element={<EnhancedProductManagement />} />
                         <Route path="featured-products" element={<FeaturedProductManagement />} />
                         <Route path="orders" element={<OrderManagement />} />
-                        <Route path="blog" element={<SimpleBlogManagement />} />
+                        <Route path="blog" element={<BlogPostManagement />} />
+                        <Route path="logo" element={<LogoManagement />} />
                         <Route path="contacts" element={<ContactManagement />} />
                         <Route path="team" element={<TeamManagement />} />
                         <Route path="certificates" element={<CertificationManagement />} />
