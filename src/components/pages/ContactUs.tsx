@@ -213,26 +213,26 @@ const ContactUs = () => {
               </Card>
 
               {/* Quick Contact Cards */}
-              <Card className="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border-cyan-500/20">
+              <Card className="bg-red-900/30 border-red-500/30 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-white font-semibold mb-2">Emergency Refrigerant Support</h3>
-                  <p className="text-gray-300 text-sm mb-4">
+                  <h3 className="text-white font-semibold mb-2 text-lg">Emergency Refrigerant Support</h3>
+                  <p className="text-gray-100 text-sm mb-4">
                     Critical HVAC system failure? Our emergency hotline provides 24/7 access to refrigerant supply and technical support.
                   </p>
-                  <Button className="w-full bg-red-600 hover:bg-red-700">
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold">
                     <Phone className="h-4 w-4 mr-2" />
                     Emergency: +1 (800) 555-HELP
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-r from-green-500/10 to-emerald-600/10 border-green-500/20">
+              <Card className="bg-green-900/30 border-green-500/30 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-white font-semibold mb-2">Get Wholesale Pricing</h3>
-                  <p className="text-gray-300 text-sm mb-4">
+                  <h3 className="text-white font-semibold mb-2 text-lg">Get Wholesale Pricing</h3>
+                  <p className="text-gray-100 text-sm mb-4">
                     Need bulk refrigerant pricing for your project? Get competitive wholesale quotes with volume discounts for contractors.
                   </p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
                     <Send className="h-4 w-4 mr-2" />
                     Get Quote
                   </Button>

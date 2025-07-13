@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCircle, Star, Zap, Users, Building2, Globe, ThermometerSun, ArrowRight, Search, FileText, Package } from 'lucide-react';
 import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
+import TestimonialSection from '@/components/ui/TestimonialSection';
 import { supabase } from '@/integrations/supabase/client';
 
 const HomePage = () => {
@@ -626,6 +627,9 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <TestimonialSection />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-cyan-600/20 to-purple-600/20">

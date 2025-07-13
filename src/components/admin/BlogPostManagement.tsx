@@ -10,15 +10,18 @@ import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Edit, Trash2, FileText, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, Eye, EyeOff, Image, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Editor } from '@tinymce/tinymce-react';
 
 interface BlogPost {
   id: string;
   title: string;
   body: string;
   slug: string;
+  excerpt: string;
   banner_image_url: string;
+  featured_image_url: string;
   published: boolean;
   author_id: string;
   created_at: string;
@@ -32,10 +35,13 @@ const BlogPostManagement = () => {
     title: '',
     body: '',
     slug: '',
+    excerpt: '',
     banner_image_url: '',
+    featured_image_url: '',
     published: false
   });
   const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [featuredFile, setFeaturedFile] = useState<File | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -62,11 +68,11 @@ const BlogPostManagement = () => {
     retryDelay: 1000,
   });
 
-  // Upload banner image
-  const uploadBannerImage = async (file: File) => {
+  // Upload image function for both banner and featured images
+  const uploadImage = async (file: File, folder: string) => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `banners/${fileName}`;
+    const filePath = `${folder}/${fileName}`;
 
     const { data, error } = await supabase.storage
       .from('product-images')
@@ -96,13 +102,20 @@ const BlogPostManagement = () => {
       console.log('Creating blog post with data:', postData);
       
       let bannerUrl = postData.banner_image_url;
+      let featuredUrl = postData.featured_image_url;
+      
       if (bannerFile) {
-        bannerUrl = await uploadBannerImage(bannerFile);
+        bannerUrl = await uploadImage(bannerFile, 'banners');
+      }
+      
+      if (featuredFile) {
+        featuredUrl = await uploadImage(featuredFile, 'featured');
       }
 
       const finalPostData = {
         ...postData,
         banner_image_url: bannerUrl,
+        featured_image_url: featuredUrl,
         slug: postData.slug || generateSlug(postData.title),
         author_id: null // You might want to get this from auth context
       };
@@ -139,13 +152,20 @@ const BlogPostManagement = () => {
       console.log('Updating blog post:', id, postData);
       
       let bannerUrl = postData.banner_image_url;
+      let featuredUrl = postData.featured_image_url;
+      
       if (bannerFile) {
-        bannerUrl = await uploadBannerImage(bannerFile);
+        bannerUrl = await uploadImage(bannerFile, 'banners');
+      }
+      
+      if (featuredFile) {
+        featuredUrl = await uploadImage(featuredFile, 'featured');
       }
 
       const finalPostData = {
         ...postData,
         banner_image_url: bannerUrl,
+        featured_image_url: featuredUrl,
         slug: postData.slug || generateSlug(postData.title),
         updated_at: new Date().toISOString()
       };
@@ -204,11 +224,14 @@ const BlogPostManagement = () => {
       title: '',
       body: '',
       slug: '',
+      excerpt: '',
       banner_image_url: '',
+      featured_image_url: '',
       published: false
     });
     setEditingPost(null);
     setBannerFile(null);
+    setFeaturedFile(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -237,7 +260,9 @@ const BlogPostManagement = () => {
       title: post.title,
       body: post.body || '',
       slug: post.slug,
+      excerpt: post.excerpt || '',
       banner_image_url: post.banner_image_url || '',
+      featured_image_url: post.featured_image_url || '',
       published: post.published || false
     });
     setActiveTab('form');
@@ -434,16 +459,90 @@ const BlogPostManagement = () => {
 
                 <div>
                   <Label className="block text-sm font-medium text-white mb-2">
-                    Content *
+                    Excerpt *
                   </Label>
                   <Textarea
-                    value={formData.body}
-                    onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                    placeholder="Write your blog post content here..."
-                    rows={12}
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    placeholder="Brief description of the blog post (shown in previews)"
+                    rows={3}
                     required
                     className="bg-slate-700 border-slate-600 text-white"
                   />
+                </div>
+
+                <div>
+                  <Label className="block text-sm font-medium text-white mb-2">
+                    Featured Image
+                  </Label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setFeaturedFile(e.target.files?.[0] || null)}
+                    className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  />
+                  {featuredFile && (
+                    <div className="mt-2 text-green-400 text-sm">
+                      Featured image selected: {featuredFile.name}
+                    </div>
+                  )}
+                  <p className="text-gray-400 text-sm mt-1">This image shows in blog listings and social sharing</p>
+                </div>
+
+                <div>
+                  <Label className="block text-sm font-medium text-white mb-2">
+                    Content * (WordPress-style Editor)
+                  </Label>
+                  <div className="bg-white rounded-lg">
+                    <Editor
+                      apiKey="no-api-key"
+                      value={formData.body}
+                      onEditorChange={(content) => setFormData({ ...formData, body: content })}
+                      init={{
+                        height: 500,
+                        menubar: true,
+                        plugins: [
+                          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
+                          'paste', 'codesample', 'emoticons'
+                        ],
+                        toolbar: 'undo redo | blocks | ' +
+                          'bold italic forecolor | alignleft aligncenter ' +
+                          'alignright alignjustify | bullist numlist outdent indent | ' +
+                          'removeformat | image media link | codesample emoticons | help',
+                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                        images_upload_handler: async (blobInfo: any, progress: any) => {
+                          return new Promise(async (resolve, reject) => {
+                            try {
+                              const file = blobInfo.blob();
+                              const fileExt = file.name?.split('.').pop() || 'png';
+                              const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                              const filePath = `blog-content/${fileName}`;
+
+                              const { data, error } = await supabase.storage
+                                .from('product-images')
+                                .upload(filePath, file);
+
+                              if (error) throw error;
+
+                              const { data: urlData } = supabase.storage
+                                .from('product-images')
+                                .getPublicUrl(filePath);
+
+                              resolve(urlData.publicUrl);
+                            } catch (error) {
+                              reject('Image upload failed');
+                            }
+                          });
+                        },
+                        automatic_uploads: true,
+                        file_picker_types: 'image media',
+                        media_live_embeds: true,
+                        paste_data_images: true
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
