@@ -171,7 +171,7 @@ const Header = () => {
         </div>
 
         {/* Navigation - Desktop */}
-        <nav className="hidden md:flex items-center space-x-8 py-3 border-t border-gray-200">
+        <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
           {navItems.map((item) => (
             <Link
               key={item.path}

@@ -177,6 +177,36 @@ export type Database = {
           },
         ]
       }
+      hero_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          page_name: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          page_name: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          page_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_settings: {
         Row: {
           created_at: string | null
@@ -624,6 +654,48 @@ export type Database = {
           order_index?: number
           position?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          approved: boolean | null
+          company: string | null
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          order_index: number | null
+          position: string | null
+          rating: number | null
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean | null
+          company?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          order_index?: number | null
+          position?: string | null
+          rating?: number | null
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean | null
+          company?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          order_index?: number | null
+          position?: string | null
+          rating?: number | null
+          updated_at?: string
         }
         Relationships: []
       }

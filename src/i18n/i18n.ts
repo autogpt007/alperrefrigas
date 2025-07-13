@@ -106,8 +106,13 @@ const resources = {
       },
       // About page
       about: {
+        pageTitle: "About Alper Refrigerants | Professional Refrigerant Solutions",
+        pageDescription: "Learn about Alper Refrigerants, EPA-certified wholesale distributor serving HVAC professionals across North America since 2010.",
+        pageKeywords: "about alper refrigerants, EPA certified, HVAC refrigerants, wholesale distributor",
         title: "About Alper Refrigerants",
         subtitle: "EPA-certified wholesale refrigerant distributor serving HVAC contractors across North America since 2010",
+        heroTitle: "About Alper Refrigerants",
+        heroSubtitle: "EPA-certified wholesale refrigerant distributor serving HVAC contractors across North America since 2010",
         epaCertified: "EPA Certified",
         ahriMember: "AHRI Member",
         isoCertified: "ISO Certified",

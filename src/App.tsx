@@ -46,6 +46,8 @@ import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
 import ContentManagement from "./components/admin/ContentManagement";
 import FeaturedProductManagement from "./components/admin/FeaturedProductManagement";
+import TestimonialManagement from "./components/admin/TestimonialManagement";
+import HeroImageManagement from "./components/admin/HeroImageManagement";
 import BlogPage from "./components/pages/BlogPage";
 import "./App.css";
 
@@ -75,6 +77,8 @@ function App() {
                         <Route path="team" element={<TeamManagement />} />
                         <Route path="certificates" element={<CertificationManagement />} />
                         <Route path="content" element={<ContentManagement />} />
+                        <Route path="testimonials" element={<TestimonialManagement />} />
+                        <Route path="hero-images" element={<HeroImageManagement />} />
                         <Route path="settings" element={<AdminSettings />} />
                       </Route>
                       

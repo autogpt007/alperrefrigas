@@ -5,6 +5,8 @@ import { Users, Award, Shield, CheckCircle, Target, Eye, Heart } from 'lucide-re
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
+import TestimonialSection from '@/components/ui/TestimonialSection';
+import TestimonialForm from '@/components/ui/TestimonialForm';
 
 const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
@@ -18,13 +20,23 @@ interface TeamMember {
   order_index: number;
 }
 
+interface HeroImage {
+  id: string;
+  page_name: string;
+  image_url: string;
+  alt_text: string | null;
+  is_active: boolean;
+}
+
 const AboutUs = () => {
   const { t } = useTranslation();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [heroImage, setHeroImage] = useState<HeroImage | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTeamMembers();
+    fetchHeroImage();
   }, []);
 
   const fetchTeamMembers = async () => {
@@ -48,6 +60,25 @@ const AboutUs = () => {
     }
   };
 
+  const fetchHeroImage = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('hero_images')
+        .select('*')
+        .eq('page_name', 'about')
+        .eq('is_active', true)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching hero image:', error);
+      } else if (data) {
+        setHeroImage(data);
+      }
+    } catch (error) {
+      console.error('Error fetching hero image:', error);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -58,8 +89,15 @@ const AboutUs = () => {
       
       <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <div 
+        className="relative bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16 bg-cover bg-center"
+        style={{
+          backgroundImage: heroImage 
+            ? `linear-gradient(rgba(37, 99, 235, 0.8), rgba(29, 78, 216, 0.8)), url(${heroImage.image_url})`
+            : undefined
+        }}
+      >
+        <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">{t('about.heroTitle')}</h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100">
@@ -323,6 +361,22 @@ const AboutUs = () => {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <TestimonialSection />
+
+      {/* Testimonial Form */}
+      <div className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Share Your Experience</h2>
+            <p className="text-gray-600 text-lg">
+              Help other HVAC professionals by sharing your experience with Alper Refrigerants
+            </p>
+          </div>
+          <TestimonialForm />
         </div>
       </div>
     </div>

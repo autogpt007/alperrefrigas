@@ -27,6 +27,8 @@ const AdminSidebar = () => {
     { icon: Users, label: 'Team', path: '/admin/team' },
     { icon: Award, label: 'Certificates', path: '/admin/certificates' },
     { icon: Globe, label: 'Content', path: '/admin/content' },
+    { icon: MessageSquare, label: 'Testimonials', path: '/admin/testimonials' },
+    { icon: Globe, label: 'Hero Images', path: '/admin/hero-images' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 
