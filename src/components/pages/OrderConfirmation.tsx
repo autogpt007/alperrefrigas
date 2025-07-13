@@ -7,12 +7,15 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Package, Truck, FileText, ArrowRight, Quote } from 'lucide-react';
 import { useOrders } from '../../contexts/OrdersContext';
 import { useQuotes } from '../../contexts/QuotesContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { orders } = useOrders();
-  const { quotes } = useQuotes();
+  const { orders, fetchOrders } = useOrders();
+  const { quotes, fetchQuotes } = useQuotes();
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   
   const orderNumber = searchParams.get('orderNumber');
   const quoteNumber = searchParams.get('quoteNumber');
@@ -20,17 +23,108 @@ const OrderConfirmation = () => {
   
   const isQuote = type === 'quote';
   const confirmationNumber = isQuote ? quoteNumber : orderNumber;
-  
-  const data = isQuote 
-    ? quotes.find(q => q.quote_number === quoteNumber)
-    : orders.find(o => o.order_number === orderNumber);
 
   useEffect(() => {
-    if (!confirmationNumber || !data) {
-      // If no confirmation data, redirect to account page
-      setTimeout(() => navigate('/account'), 3000);
-    }
-  }, [confirmationNumber, data, navigate]);
+    const fetchData = async () => {
+      if (!confirmationNumber) {
+        navigate('/');
+        return;
+      }
+
+      setLoading(true);
+      
+      // First check if data exists in context
+      let foundData = isQuote 
+        ? quotes.find(q => q.quote_number === quoteNumber)
+        : orders.find(o => o.order_number === orderNumber);
+
+      if (!foundData) {
+        // If not found in context, refresh the data and try again
+        try {
+          if (isQuote) {
+            await fetchQuotes();
+            foundData = quotes.find(q => q.quote_number === quoteNumber);
+          } else {
+            await fetchOrders();
+            foundData = orders.find(o => o.order_number === orderNumber);
+          }
+
+          // If still not found, fetch directly from database
+          if (!foundData) {
+            if (isQuote) {
+              const { data: quoteData, error } = await supabase
+                .from('quotes')
+                .select(`
+                  *,
+                  quote_items (
+                    id,
+                    product_name,
+                    quantity,
+                    packaging,
+                    product_id
+                  )
+                `)
+                .eq('quote_number', quoteNumber)
+                .single();
+
+              if (!error && quoteData) {
+                foundData = {
+                  ...quoteData,
+                  items: quoteData.quote_items || []
+                } as any;
+              }
+            } else {
+              const { data: orderData, error } = await supabase
+                .from('orders')
+                .select(`
+                  *,
+                  order_items (
+                    id,
+                    product_name,
+                    quantity,
+                    price,
+                    packaging,
+                    epa_approved,
+                    product_id
+                  )
+                `)
+                .eq('order_number', orderNumber)
+                .single();
+
+              if (!error && orderData) {
+                foundData = {
+                  ...orderData,
+                  items: orderData.order_items || []
+                } as any;
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching confirmation data:', error);
+        }
+      }
+
+      setData(foundData);
+      setLoading(false);
+
+      // If still no data found, redirect after showing message
+      if (!foundData) {
+        setTimeout(() => navigate('/account'), 5000);
+      }
+    };
+
+    fetchData();
+  }, [confirmationNumber, isQuote, orderNumber, quoteNumber, orders, quotes, fetchOrders, fetchQuotes, navigate]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading your order details...</h1>
+        <p className="text-gray-600">Please wait while we retrieve your information.</p>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
@@ -45,7 +139,17 @@ const OrderConfirmation = () => {
             : "Thank you for your order. We've received your payment and will process your order shortly."
           }
         </p>
+        <p className="text-sm text-gray-500 mb-4">
+          {confirmationNumber && (
+            <>Reference Number: <span className="font-mono text-blue-600">{confirmationNumber}</span></>
+          )}
+        </p>
         <p className="text-sm text-gray-500">Redirecting to your account...</p>
+        <div className="mt-6">
+          <Link to="/account">
+            <Button>Go to Account</Button>
+          </Link>
+        </div>
       </div>
     );
   }
