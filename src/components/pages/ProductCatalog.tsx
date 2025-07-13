@@ -35,13 +35,13 @@ const ProductCatalog = () => {
   }, [searchParams, urlCategory]);
 
   const categories = [
-    { value: 'all', label: 'All Categories' },
-    { value: 'hfc', label: 'HFC Refrigerants' },
-    { value: 'hfo', label: 'HFO Refrigerants' },
-    { value: 'natural', label: 'Natural Refrigerants' },
-    { value: 'automotive', label: 'Automotive' },
-    { value: 'commercial', label: 'Commercial HVAC' },
-    { value: 'industrial', label: 'Industrial' }
+    { value: 'all', label: t('products.categories.all') },
+    { value: 'hfc', label: t('products.categories.hfc') },
+    { value: 'hfo', label: t('products.categories.hfo') },
+    { value: 'natural', label: t('products.categories.natural') },
+    { value: 'automotive', label: t('products.categories.automotive') },
+    { value: 'commercial', label: t('products.categories.commercial') },
+    { value: 'industrial', label: t('products.categories.industrial') }
   ];
 
   // Enhanced filtering logic to handle application-based categories
@@ -113,11 +113,11 @@ const ProductCatalog = () => {
             {product.epaApproved && (
               <Badge className="bg-green-600 text-white text-xs">
                 <Shield className="h-3 w-3 mr-1" />
-                EPA
+                {t('products.epaApproved')}
               </Badge>
             )}
             <Badge className={`text-xs ${product.availability === 'in_stock' ? 'bg-green-600' : 'bg-red-600'} text-white`}>
-              {product.availability === 'in_stock' ? 'In Stock' : 'Out of Stock'}
+              {product.availability === 'in_stock' ? t('products.inStock') : t('products.outOfStock')}
             </Badge>
           </div>
 
@@ -146,8 +146,8 @@ const ProductCatalog = () => {
           </div>
           
           {product.applications && product.applications.length > 0 && (
-            <div className="mb-4">
-              <h4 className="font-medium text-gray-700 mb-2 text-sm">Applications:</h4>
+          <div className="mb-4">
+            <h4 className="font-medium text-gray-700 mb-2 text-sm">{t('products.applications')}:</h4>
               <div className="flex flex-wrap gap-1">
                 {product.applications.slice(0, 2).map((app: string, index: number) => (
                   <span
@@ -172,7 +172,7 @@ const ProductCatalog = () => {
               <span className="text-lg font-bold text-blue-600">
                 ${product.price.toFixed(2)}
               </span>
-              <span className="text-xs text-gray-500">per cylinder</span>
+              <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
             </div>
             
             <Link to={`/products/${product.id}`}>
@@ -213,8 +213,7 @@ const ProductCatalog = () => {
               {t('products.title')}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              Browse our comprehensive selection of EPA-approved refrigerants. Available in bulk quantities 
-              for professional HVAC, automotive, and industrial applications.
+              {t('products.description')}
             </p>
             
             {/* Search Bar */}
@@ -240,13 +239,13 @@ const ProductCatalog = () => {
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
             <div className="flex items-center gap-2">
               <Filter className="h-5 w-5 text-gray-600" />
-              <span className="text-gray-700 font-medium">Filters:</span>
+              <span className="text-gray-700 font-medium">{t('products.filters')}:</span>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t('products.selectCategory')} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
@@ -259,12 +258,12 @@ const ProductCatalog = () => {
 
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t('products.sortBy')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="name">Name A-Z</SelectItem>
-                  <SelectItem value="price">Price Low to High</SelectItem>
-                  <SelectItem value="category">Category</SelectItem>
+                  <SelectItem value="name">{t('products.sortOptions.name')}</SelectItem>
+                  <SelectItem value="price">{t('products.sortOptions.price')}</SelectItem>
+                  <SelectItem value="category">{t('products.sortOptions.category')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,7 +271,7 @@ const ProductCatalog = () => {
 
           <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             <div className="text-gray-600 text-sm">
-              {sortedProducts.length} products found
+              {t('products.productsFound', { count: sortedProducts.length })}
             </div>
             
             <div className="flex items-center gap-2">
@@ -308,7 +307,7 @@ const ProductCatalog = () => {
         {sortedProducts.length === 0 && (
           <div className="text-center py-12 bg-white rounded-lg shadow-sm">
             <div className="text-gray-600 text-lg mb-4">
-              No products found matching your criteria.
+              {t('products.noProducts')}
             </div>
             <Button
               onClick={() => {
@@ -317,7 +316,7 @@ const ProductCatalog = () => {
               }}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Clear Filters
+              {t('products.clearFilters')}
             </Button>
           </div>
         )}

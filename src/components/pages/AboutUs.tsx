@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Users, Award, Shield, CheckCircle, Target, Eye, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 
 const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
@@ -18,6 +19,7 @@ interface TeamMember {
 }
 
 const AboutUs = () => {
+  const { t } = useTranslation();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,9 +51,9 @@ const AboutUs = () => {
   return (
     <>
       <Helmet>
-        <title>About Alper Refrigerants | EPA-Certified Wholesale Distributor Since 2010</title>
-        <meta name="description" content="Learn about Alper Refrigerants, EPA-certified wholesale refrigerant distributor serving over 5,000 HVAC contractors since 2010. 99.8% purity guarantee, competitive bulk pricing." />
-        <meta name="keywords" content="EPA certified refrigerant distributor, wholesale HVAC refrigerants, bulk refrigerant supplier, R-410A distributor, refrigerant company history" />
+        <title>{t('about.pageTitle')}</title>
+        <meta name="description" content={t('about.pageDescription')} />
+        <meta name="keywords" content={t('about.pageKeywords')} />
       </Helmet>
       
       <div className="min-h-screen bg-gray-50">
@@ -59,22 +61,22 @@ const AboutUs = () => {
       <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Alper Refrigerants</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">{t('about.heroTitle')}</h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100">
-              EPA-certified wholesale refrigerant distributor serving HVAC contractors across North America since 2010
+              {t('about.heroSubtitle')}
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               <Badge className="bg-blue-500 text-white px-4 py-2 text-sm">
                 <Shield className="h-4 w-4 mr-2" />
-                EPA Certified
+                {t('about.epaCertified')}
               </Badge>
               <Badge className="bg-green-500 text-white px-4 py-2 text-sm">
                 <Award className="h-4 w-4 mr-2" />
-                AHRI Member
+                {t('about.ahriMember')}
               </Badge>
               <Badge className="bg-purple-500 text-white px-4 py-2 text-sm">
                 <CheckCircle className="h-4 w-4 mr-2" />
-                ISO Certified
+                {t('about.isoCertified')}
               </Badge>
             </div>
           </div>
@@ -86,29 +88,25 @@ const AboutUs = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('about.ourMission')}</h2>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                Founded in 2010, Alper Refrigerants was established to provide HVAC contractors and technicians 
-                with reliable wholesale refrigerant solutions. Our mission is to deliver EPA-compliant, laboratory-tested 
-                refrigerants including R-410A, R-134a, and R-1234yf at competitive bulk pricing.
+                {t('about.missionDescription1')}
               </p>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                Today, we serve over 5,000 HVAC professionals across the United States and Canada. Every refrigerant 
-                cylinder meets stringent AHRI purity standards and ships with complete certification documentation 
-                for regulatory compliance.
+                {t('about.missionDescription2')}
               </p>
               <div className="grid grid-cols-3 gap-6 mt-8">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600">13+</div>
-                  <div className="text-sm text-gray-600">Years Experience</div>
+                  <div className="text-sm text-gray-600">{t('about.yearsExperience')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600">5000+</div>
-                  <div className="text-sm text-gray-600">Customers Served</div>
+                  <div className="text-sm text-gray-600">{t('about.customersServed')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600">99.8%</div>
-                  <div className="text-sm text-gray-600">Purity Rating</div>
+                  <div className="text-sm text-gray-600">{t('about.purityRating')}</div>
                 </div>
               </div>
             </div>
@@ -129,8 +127,8 @@ const AboutUs = () => {
       <div className="bg-white py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Commitment to Quality</h2>
-            <p className="text-gray-600 text-lg">EPA certification, AHRI compliance, and proven expertise serving HVAC professionals</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.qualityCommitment')}</h2>
+            <p className="text-gray-600 text-lg">{t('about.qualityDescription')}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -139,12 +137,11 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target className="h-8 w-8 text-blue-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">EPA Certification</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.epaCertificationTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Fully licensed EPA Section 608 certified distributor with DOT hazmat transportation permits. 
-                  All refrigerants meet federal purity standards and regulatory compliance requirements.
+                  {t('about.epaCertificationDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -154,12 +151,11 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Eye className="h-8 w-8 text-green-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">Quality Assurance</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.qualityAssuranceTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Every batch is laboratory tested for 99.8% purity rating. ISO 9001:2015 quality management 
-                  ensures consistent product performance and complete traceability documentation.
+                  {t('about.qualityAssuranceDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -169,12 +165,11 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="h-8 w-8 text-purple-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">Technical Expertise</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.technicalExpertiseTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Our EPA-certified technicians provide expert guidance on refrigerant selection, handling procedures, 
-                  and regulatory compliance for commercial and residential HVAC applications.
+                  {t('about.technicalExpertiseDescription')}
                 </p>
               </CardContent>
             </Card>
@@ -186,13 +181,13 @@ const AboutUs = () => {
       <div className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-            <p className="text-gray-600 text-lg">The experts behind your refrigerant solutions</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.meetOurTeam')}</h2>
+            <p className="text-gray-600 text-lg">{t('about.teamDescription')}</p>
           </div>
 
           {loading ? (
             <div className="text-center py-8">
-              <p className="text-gray-600">Loading team members...</p>
+            <p className="text-gray-600">Loading team members...</p>
             </div>
           ) : teamMembers.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -274,8 +269,8 @@ const AboutUs = () => {
       <div className="bg-white py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why HVAC Contractors Trust Alper Refrigerants</h2>
-            <p className="text-gray-600 text-lg">Certified quality, competitive wholesale pricing, and reliable nationwide shipping</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.whyChooseUs')}</h2>
+            <p className="text-gray-600 text-lg">{t('about.whyChooseUsDescription')}</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">

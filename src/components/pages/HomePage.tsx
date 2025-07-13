@@ -277,16 +277,16 @@ const HomePage = () => {
               </Card>
 
               {/* Future innovation section */}
-              <Card className="bg-gradient-to-br from-indigo-900/30 to-blue-900/30 border-indigo-500/20 backdrop-blur-sm hover:border-indigo-400/40 transition-all duration-300">
+              <Card className="bg-gradient-to-br from-slate-800/50 to-indigo-900/50 border-indigo-500/20 backdrop-blur-sm hover:border-indigo-400/40 transition-all duration-300 shadow-lg">
                 <CardContent className="p-8">
                   <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
                       <Zap className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Innovation & Future-Ready Solutions</h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants – you're gaining a strategic advantage in an evolving industry.
+                      <h3 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('home.whyChoose.innovation')}</h3>
+                      <p className="text-gray-200 leading-relaxed text-lg">
+                        {t('home.whyChoose.innovationDescription')}
                       </p>
                     </div>
                   </div>
