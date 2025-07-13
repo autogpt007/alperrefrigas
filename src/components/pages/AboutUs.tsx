@@ -112,11 +112,20 @@ const AboutUs = () => {
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-8 shadow-lg">
-                <img 
-                  src="/api/placeholder/500/400" 
-                  alt="Alper Refrigerants Facility" 
-                  className="rounded-xl shadow-lg w-full"
-                />
+                {teamMembers.length > 0 && teamMembers[0]?.image_url ? (
+                  <img 
+                    src={teamMembers[0].image_url} 
+                    alt="Alper Refrigerants Facility" 
+                    className="rounded-xl shadow-lg w-full h-80 object-cover"
+                  />
+                ) : (
+                  <div className="rounded-xl shadow-lg w-full h-80 bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center">
+                    <div className="text-center text-blue-800">
+                      <div className="text-2xl font-bold mb-2">Alper Refrigerants</div>
+                      <div className="text-lg">Professional Facility</div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -127,7 +136,7 @@ const AboutUs = () => {
       <div className="bg-white py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.qualityCommitment')}</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.commitmentToQuality')}</h2>
             <p className="text-gray-600 text-lg">{t('about.qualityDescription')}</p>
           </div>
           
@@ -137,7 +146,7 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target className="h-8 w-8 text-blue-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">{t('about.epaCertificationTitle')}</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.epaCertification')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
@@ -151,7 +160,7 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Eye className="h-8 w-8 text-green-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">{t('about.qualityAssuranceTitle')}</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.qualityAssurance')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
@@ -165,7 +174,7 @@ const AboutUs = () => {
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="h-8 w-8 text-purple-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-900">{t('about.technicalExpertiseTitle')}</CardTitle>
+                <CardTitle className="text-xl text-gray-900">{t('about.technicalExpertise')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">

@@ -4,16 +4,19 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
+import QuoteDialog from '../ui/QuoteDialog';
 
 const Header = () => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { itemCount } = useCart();
+  const { itemCount: quoteItemCount } = useRFQ();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -129,6 +132,19 @@ const Header = () => {
                 Get Bulk Pricing Quote
               </Button>
             </Link>
+            
+            {/* Quote Dialog Button */}
+            <QuoteDialog>
+              <Button variant="outline" size="sm" className="flex items-center space-x-2 relative">
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Quote</span>
+                {quoteItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {quoteItemCount}
+                  </span>
+                )}
+              </Button>
+            </QuoteDialog>
             
             <Link to="/cart" className="relative">
               <Button variant="outline" size="sm" className="flex items-center space-x-2">

@@ -114,11 +114,9 @@ const resources = {
         ourMission: "Our Mission",
         missionDescription1: "Founded in 2010, Alper Refrigerants was established to provide HVAC contractors and technicians with reliable wholesale refrigerant solutions. Our mission is to deliver EPA-compliant, laboratory-tested refrigerants including R-410A, R-134a, and R-1234yf at competitive bulk pricing.",
         missionDescription2: "Today, we serve over 5,000 HVAC professionals across the United States and Canada. Every refrigerant cylinder meets stringent AHRI purity standards and ships with complete certification documentation for regulatory compliance.",
-        stats: {
-          yearsExperience: "Years Experience",
-          customersServed: "Customers Served",
-          purityRating: "Purity Rating"
-        },
+        yearsExperience: "Years Experience",
+        customersServed: "Customers Served", 
+        purityRating: "Purity Rating",
         commitmentToQuality: "Our Commitment to Quality",
         qualityDescription: "EPA certification, AHRI compliance, and proven expertise serving HVAC professionals",
         epaCertification: "EPA Certification",
