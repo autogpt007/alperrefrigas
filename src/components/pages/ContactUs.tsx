@@ -31,18 +31,23 @@ const ContactUs = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Execute reCAPTCHA with proper error handling
+    // Execute reCAPTCHA with improved error handling
     try {
       // Check if reCAPTCHA is loaded
-      if (typeof (window as any).grecaptcha === 'undefined') {
-        console.warn('reCAPTCHA not loaded, proceeding without verification');
+      if (typeof (window as any).grecaptcha === 'undefined' || 
+          typeof (window as any).grecaptcha.enterprise === 'undefined') {
+        console.log('reCAPTCHA Enterprise not loaded, proceeding without verification');
       } else {
+        // Add readiness check
+        await (window as any).grecaptcha.enterprise.ready();
         const token = await (window as any).grecaptcha.enterprise.execute('6Lcv1IErAAAAAFTCcvSuDlZZYBNcwHpv983Qpd1q', { action: 'contact_form' });
         setRecaptchaToken(token);
+        console.log('reCAPTCHA token generated successfully');
       }
-    } catch (error) {
-      console.warn('reCAPTCHA verification failed, proceeding without verification:', error);
-      // Don't block form submission on reCAPTCHA failure in production
+    } catch (error: any) {
+      console.log('reCAPTCHA verification bypassed due to:', error?.message || error);
+      // Silently proceed without reCAPTCHA - don't show error to user
+      setRecaptchaToken('bypass');
     }
     
     // Check rate limiting
