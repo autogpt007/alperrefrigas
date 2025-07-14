@@ -46,6 +46,7 @@ const AboutUs = () => {
   const [loading, setLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [facilityImage, setFacilityImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,14 +74,24 @@ const AboutUs = () => {
         const { data: heroData, error: heroError } = await supabase
           .from('hero_images')
           .select('image_url')
-          .eq('page_name', 'about')
+          .eq('page_name', 'about-hero')
           .eq('is_active', true)
           .maybeSingle();
 
         if (!heroError && heroData) {
           setHeroImage(heroData.image_url);
-        } else {
-          console.log('No hero image found for About Us page');
+        }
+
+        // Fetch facility image for About Us page
+        const { data: facilityData, error: facilityError } = await supabase
+          .from('hero_images')
+          .select('image_url')
+          .eq('page_name', 'about-facility')
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (!facilityError && facilityData) {
+          setFacilityImage(facilityData.image_url);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -163,10 +174,10 @@ const AboutUs = () => {
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-8 shadow-lg">
-                {heroImage ? (
+                {facilityImage ? (
                   <img 
-                    src={heroImage} 
-                    alt="Alper Refrigerants Facility" 
+                    src={facilityImage} 
+                    alt="Alper Refrigerants Professional Facility" 
                     className="rounded-xl shadow-lg w-full h-80 object-cover"
                   />
                 ) : (
@@ -174,6 +185,7 @@ const AboutUs = () => {
                     <div className="text-center text-blue-800">
                       <div className="text-2xl font-bold mb-2">Alper Refrigerants</div>
                       <div className="text-lg">Professional Facility</div>
+                      <div className="text-sm mt-2 opacity-75">Upload your facility image in Admin → Website Images</div>
                     </div>
                   </div>
                 )}
