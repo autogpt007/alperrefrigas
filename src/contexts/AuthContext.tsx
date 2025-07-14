@@ -149,19 +149,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          full_name: data.name,
-          company: data.company,
-          epa_license: data.epaLicense,
+    try {
+      console.log('Starting registration for:', data.email);
+      
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.name,
+            company: data.company,
+            epa_license: data.epaLicense,
+          },
+          emailRedirectTo: `${window.location.origin}/`,
         },
-        emailRedirectTo: `${window.location.origin}/`,
-      },
-    });
-    return { error };
+      });
+      
+      if (error) {
+        console.error('Registration error:', error);
+        return { error };
+      }
+      
+      if (authData.user) {
+        console.log('Registration successful, user created:', authData.user.id);
+        // Wait a moment for the trigger to create the profile
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      return { error: null };
+    } catch (err) {
+      console.error('Unexpected registration error:', err);
+      return { error: err };
+    }
   };
 
   const signOut = async () => {

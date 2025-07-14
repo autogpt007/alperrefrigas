@@ -116,13 +116,15 @@ const UserAuthPage = () => {
         if (error.message?.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
           setActiveTab('signin');
+        } else if (error.message?.includes('email not confirmed')) {
+          setError('Please check your email and click the confirmation link to complete registration.');
         } else {
           setError(error.message || 'Registration failed. Please try again.');
         }
       } else {
         console.log('Registration successful');
-        setError('');
-        navigate('/account');
+        setError('Account created successfully! Please check your email for a confirmation link.');
+        // Don't navigate immediately, let user confirm email first
       }
     } catch (error: any) {
       if (error.errors) {
