@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { contactFormSchema, sanitizeInput, sanitizeHtml, RateLimiter, type ContactFormData } from '@/lib/validation';
+import TestimonialForm from '@/components/ui/TestimonialForm';
 
 const ContactUs = () => {
   const { t } = useTranslation();
@@ -363,6 +364,21 @@ const ContactUs = () => {
                 </CardContent>
               </Card>
             </div>
+          </div>
+
+          {/* Testimonial Section */}
+          <div className="mt-16">
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl text-white">Share Your Experience</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Help other HVAC professionals by sharing your experience with Alper Refrigerants
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TestimonialForm />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

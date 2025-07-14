@@ -70,6 +70,7 @@ const Header = () => {
     { label: t('nav.home'), path: '/' },
     { label: t('nav.products'), path: '/products' },
     { label: t('nav.about'), path: '/about' },
+    { label: 'Testimonials', path: '/testimonials' },
     { label: t('nav.contact'), path: '/contact' },
     { label: 'Blog', path: '/blog' },
     { label: 'EPA Compliance', path: '/compliance' },

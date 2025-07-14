@@ -44,6 +44,8 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-6">{t('footer.quickLinks')}</h4>
             <ul className="space-y-3">
               <li><Link to="/products" className="text-gray-300 hover:text-white transition-colors">{t('footer.productCatalog')}</Link></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/testimonials" className="text-gray-300 hover:text-white transition-colors">Testimonials</Link></li>
               <li><Link to="/shipping" className="text-gray-300 hover:text-white transition-colors">{t('footer.shippingCalculator')}</Link></li>
               <li><Link to="/account" className="text-gray-300 hover:text-white transition-colors">{t('footer.myAccount')}</Link></li>
               <li><Link to="/support" className="text-gray-300 hover:text-white transition-colors">{t('footer.customerSupport')}</Link></li>

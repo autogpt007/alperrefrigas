@@ -47,6 +47,7 @@ import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
 import ContentManagement from "./components/admin/ContentManagement";
 import FeaturedProductManagement from "./components/admin/FeaturedProductManagement";
+import TestimonialsPage from "./components/pages/TestimonialsPage";
 import TestimonialManagement from "./components/admin/TestimonialManagement";
 import HeroImageManagement from "./components/admin/HeroImageManagement";
 import BlogPage from "./components/pages/BlogPage";
@@ -98,7 +99,8 @@ function App() {
                               <Route path="/checkout" element={<CheckoutPage />} />
                               <Route path="/order-confirmation" element={<OrderConfirmation />} />
                               <Route path="/quote-confirmation" element={<OrderConfirmation />} />
-                              <Route path="/about" element={<AboutUs />} />
+                        <Route path="/testimonials" element={<TestimonialsPage />} />
+                        <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
                               <Route path="/faq" element={<FAQ />} />
                               <Route path="/shipping" element={<ShippingCalculator />} />
