@@ -22,7 +22,7 @@ const ContactUs = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
+  
   const { toast } = useToast();
 
   // Rate limiter for form submissions
@@ -31,24 +31,6 @@ const ContactUs = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Execute reCAPTCHA with improved error handling
-    try {
-      // Check if reCAPTCHA is loaded
-      if (typeof (window as any).grecaptcha === 'undefined' || 
-          typeof (window as any).grecaptcha.enterprise === 'undefined') {
-        console.log('reCAPTCHA Enterprise not loaded, proceeding without verification');
-      } else {
-        // Add readiness check
-        await (window as any).grecaptcha.enterprise.ready();
-        const token = await (window as any).grecaptcha.enterprise.execute('6Lcv1IErAAAAAFTCcvSuDlZZYBNcwHpv983Qpd1q', { action: 'contact_form' });
-        setRecaptchaToken(token);
-        console.log('reCAPTCHA token generated successfully');
-      }
-    } catch (error: any) {
-      console.log('reCAPTCHA verification bypassed due to:', error?.message || error);
-      // Silently proceed without reCAPTCHA - don't show error to user
-      setRecaptchaToken('bypass');
-    }
     
     // Check rate limiting
     const userIP = 'user'; // In a real app, you'd get the user's IP
