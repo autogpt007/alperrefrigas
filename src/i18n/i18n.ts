@@ -96,6 +96,7 @@ const resources = {
         inStock: "In Stock",
         fastShip: "Fast Ship",
         epa: "EPA",
+        epaApproved: "EPA Approved",
         applications: "Applications",
         perCylinder: "per cylinder",
         productsFound: "products found",
