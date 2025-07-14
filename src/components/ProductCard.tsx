@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingCart, Plus, Minus, Check, Zap } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { Link } from 'react-router-dom';
 
 interface Product {
   id: string;
@@ -56,9 +57,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Glowing Border Animation */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
-      <CardContent className="p-6 relative z-10 flex-1 flex flex-col">
-        {/* Product Image */}
-        <div className="relative mb-4 overflow-hidden rounded-lg bg-slate-700/50 h-48">
+      <CardContent className="p-4 relative z-10 flex-1 flex flex-col">
+        {/* Product Image - Larger display */}
+        <div className="relative mb-3 overflow-hidden rounded-lg bg-slate-700/50 h-64">
           <img
             src={product.image}
             alt={product.name}
@@ -85,54 +86,56 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
 
-        {/* Product Info */}
+        {/* Product Info - Condensed */}
         <div className="flex-1 flex flex-col">
-          <div className="mb-3">
-            <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors duration-300">
-              {product.name}
-            </h3>
-            <p className="text-sm text-gray-400 font-mono">{product.sku}</p>
+          <div className="mb-2">
+            <Link to={`/products/${product.id}`} className="block">
+              <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors duration-300 hover:underline cursor-pointer">
+                {product.name}
+              </h3>
+            </Link>
+            <p className="text-xs text-gray-400 font-mono">{product.sku}</p>
           </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
               ${product.price.toFixed(2)}
             </div>
             
-            {/* Quantity Selector */}
-            <div className={`flex items-center space-x-2 transition-all duration-300 ${
+            {/* Quantity Selector - Smaller */}
+            <div className={`flex items-center space-x-1 transition-all duration-300 ${
               isHovered ? 'opacity-100 scale-100' : 'opacity-75 scale-95'
             }`}>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={decrementQuantity}
-                className="h-8 w-8 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20"
+                className="h-7 w-7 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20"
               >
-                <Minus className="h-4 w-4" />
+                <Minus className="h-3 w-3" />
               </Button>
               
-              <div className="w-12 h-8 bg-slate-700/50 border border-cyan-500/30 rounded flex items-center justify-center">
-                <span className="text-cyan-400 font-bold">{quantity}</span>
+              <div className="w-10 h-7 bg-slate-700/50 border border-cyan-500/30 rounded flex items-center justify-center">
+                <span className="text-cyan-400 font-bold text-sm">{quantity}</span>
               </div>
               
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={incrementQuantity}
-                className="h-8 w-8 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20"
+                className="h-7 w-7 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3 w-3" />
               </Button>
             </div>
           </div>
 
-          {/* Add to Cart Button - Push to bottom */}
+          {/* Add to Cart Button - Smaller */}
           <div className="mt-auto">
             <Button
               onClick={handleAddToCart}
               disabled={isAdded}
-              className={`w-full h-12 font-semibold transition-all duration-500 ${
+              className={`w-full h-10 font-semibold transition-all duration-500 ${
                 isAdded
                   ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
                   : 'bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white'
@@ -140,13 +143,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             >
               {isAdded ? (
                 <div className="flex items-center justify-center space-x-2">
-                  <Check className="h-5 w-5" />
-                  <span>Added to Quantum Cart!</span>
+                  <Check className="h-4 w-4" />
+                  <span>Added!</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center space-x-2">
-                  <ShoppingCart className="h-5 w-5" />
-                  <span>Add {quantity} to Cart</span>
+                  <ShoppingCart className="h-4 w-4" />
+                  <span>Add {quantity}</span>
                 </div>
               )}
             </Button>

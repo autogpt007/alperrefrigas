@@ -99,7 +99,8 @@ const ProductCatalog = () => {
   const ProductCard = ({ product }: { product: any }) => (
     <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden h-full flex flex-col">
       <CardContent className="p-0 flex-1 flex flex-col">
-        <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
+        {/* Larger Image Display */}
+        <div className="h-64 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
           {product.image && product.image !== '/placeholder.svg' ? (
             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
           ) : (
@@ -130,45 +131,25 @@ const ProductCatalog = () => {
           </div>
         </div>
         
-        <div className="p-6 flex-1 flex flex-col">
+        {/* Condensed Product Info */}
+        <div className="p-4 flex-1 flex flex-col">
           <div className="mb-2">
-            <h3 className="text-xl font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors">{product.name}</h3>
-            <p className="text-sm text-gray-500">SKU: {product.sku}</p>
+            <Link to={`/products/${product.id}`} className="block">
+              <h3 className="text-lg font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors hover:underline cursor-pointer">{product.name}</h3>
+            </Link>
+            <p className="text-xs text-gray-500">SKU: {product.sku}</p>
           </div>
           
-          <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3 flex-1">{product.description}</p>
-          
-          {/* Category Badge */}
+          {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
               {product.category} Refrigerant
             </Badge>
           </div>
           
-          {product.applications && product.applications.length > 0 && (
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-700 mb-2 text-sm">{t('products.applications')}:</h4>
-              <div className="flex flex-wrap gap-1">
-                {product.applications.slice(0, 2).map((app: string, index: number) => (
-                  <span
-                    key={index}
-                    className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-                  >
-                    {app}
-                  </span>
-                ))}
-                {product.applications.length > 2 && (
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    +{product.applications.length - 2} more
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-          
           {/* Push price and button to bottom */}
           <div className="mt-auto">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-bold text-blue-600">
                 ${product.price.toFixed(2)}
               </span>
