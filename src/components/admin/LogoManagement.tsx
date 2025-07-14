@@ -12,13 +12,15 @@ interface LogoSettings {
   logo_url: string;
   company_name: string;
   company_tagline: string;
+  favicon_url: string;
 }
 
 const LogoManagement = () => {
   const [settings, setSettings] = useState<LogoSettings>({
     logo_url: '',
     company_name: 'FrigidFlow',
-    company_tagline: 'Refrigerant Solutions'
+    company_tagline: 'Refrigerant Solutions',
+    favicon_url: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,7 +34,7 @@ const LogoManagement = () => {
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_key, setting_value')
-        .in('setting_key', ['logo_url', 'company_name', 'company_tagline']);
+        .in('setting_key', ['logo_url', 'company_name', 'company_tagline', 'favicon_url']);
 
       if (error) throw error;
 
@@ -44,7 +46,8 @@ const LogoManagement = () => {
       setSettings({
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'FrigidFlow',
-        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions'
+        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions',
+        favicon_url: settingsMap.favicon_url || ''
       });
     } catch (error) {
       console.error('Error fetching logo settings:', error);
@@ -71,6 +74,11 @@ const LogoManagement = () => {
           setting_key: 'company_tagline',
           setting_value: settings.company_tagline,
           description: 'Company tagline displayed under logo'
+        },
+        {
+          setting_key: 'favicon_url',
+          setting_value: settings.favicon_url,
+          description: 'Website favicon URL'
         }
       ];
 
@@ -95,7 +103,8 @@ const LogoManagement = () => {
     setSettings({
       logo_url: '',
       company_name: 'FrigidFlow',
-      company_tagline: 'Refrigerant Solutions'
+      company_tagline: 'Refrigerant Solutions',
+      favicon_url: ''
     });
     toast.info('Settings reset to defaults');
   };
@@ -186,6 +195,33 @@ const LogoManagement = () => {
           />
         </div>
 
+        {/* Favicon Upload */}
+        <div>
+          <Label className="text-sm font-medium mb-2 block">
+            Website Favicon
+            <span className="text-gray-500 font-normal ml-2">(Recommended: 32x32px, PNG/JPG format)</span>
+          </Label>
+          <ImageUpload
+            onImageUploaded={(url) => setSettings(prev => ({ ...prev, favicon_url: url }))}
+            currentImage={settings.favicon_url}
+            bucket="images"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Upload a favicon that will appear in browser tabs. PNG/JPG only - ICO files are not supported.
+          </p>
+          {settings.favicon_url && (
+            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-800">
+                <strong>Note:</strong> After saving, you'll need to manually update your index.html file to use the new favicon. 
+                Add this line to the &lt;head&gt; section: <br/>
+                <code className="text-xs bg-amber-100 px-1 py-0.5 rounded mt-1 inline-block">
+                  &lt;link rel="icon" href="{settings.favicon_url}" type="image/png"&gt;
+                </code>
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Action Buttons */}
         <div className="flex space-x-4 pt-4">
           <Button 
@@ -208,13 +244,14 @@ const LogoManagement = () => {
 
         {/* Usage Information */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-medium text-blue-900 mb-2">Logo Usage Guidelines</h4>
+          <h4 className="font-medium text-blue-900 mb-2">Logo & Branding Guidelines</h4>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Logo appears in the website header and is clickable to return to homepage</li>
-            <li>• Recommended size: 200x60 pixels for optimal display</li>
-            <li>• Supports PNG (with transparency) and JPG formats</li>
-            <li>• Will automatically scale to fit header height while maintaining aspect ratio</li>
-            <li>• Changes take effect immediately after saving</li>
+            <li>• <strong>Logo:</strong> Appears in the website header and is clickable to return to homepage</li>
+            <li>• <strong>Logo Size:</strong> Recommended 200x60 pixels for optimal display</li>
+            <li>• <strong>Favicon:</strong> Appears in browser tabs - recommended 32x32 pixels</li>
+            <li>• <strong>File Formats:</strong> PNG (with transparency) and JPG supported - ICO files not supported</li>
+            <li>• <strong>Logo Changes:</strong> Take effect immediately after saving</li>
+            <li>• <strong>Favicon Changes:</strong> Require manual update to index.html file (instructions shown above)</li>
           </ul>
         </div>
       </CardContent>
