@@ -210,13 +210,9 @@ const LogoManagement = () => {
             Upload a favicon that will appear in browser tabs. PNG/JPG only - ICO files are not supported.
           </p>
           {settings.favicon_url && (
-            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-sm text-amber-800">
-                <strong>Note:</strong> After saving, you'll need to manually update your index.html file to use the new favicon. 
-                Add this line to the &lt;head&gt; section: <br/>
-                <code className="text-xs bg-amber-100 px-1 py-0.5 rounded mt-1 inline-block">
-                  &lt;link rel="icon" href="{settings.favicon_url}" type="image/png"&gt;
-                </code>
+            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-800">
+                ✓ The favicon will be automatically updated across your site when you save.
               </p>
             </div>
           )}
@@ -251,7 +247,7 @@ const LogoManagement = () => {
             <li>• <strong>Favicon:</strong> Appears in browser tabs - recommended 32x32 pixels</li>
             <li>• <strong>File Formats:</strong> PNG (with transparency) and JPG supported - ICO files not supported</li>
             <li>• <strong>Logo Changes:</strong> Take effect immediately after saving</li>
-            <li>• <strong>Favicon Changes:</strong> Require manual update to index.html file (instructions shown above)</li>
+            <li>• <strong>Favicon Changes:</strong> Automatically applied across your site when saved</li>
           </ul>
         </div>
       </CardContent>

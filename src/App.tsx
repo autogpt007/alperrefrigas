@@ -2,6 +2,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useFavicon } from "./hooks/useFavicon";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
@@ -56,6 +57,8 @@ import "./App.css";
 const queryClient = new QueryClient();
 
 function App() {
+  useFavicon();
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
