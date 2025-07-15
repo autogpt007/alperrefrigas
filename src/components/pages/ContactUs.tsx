@@ -66,18 +66,18 @@ const ContactUs = () => {
 
       if (dbError) throw dbError;
 
-      // Send notification email
-      try {
-        await supabase.functions.invoke('send-notification-email', {
-          body: {
-            type: 'contact',
-            data: sanitizedData
-          }
-        });
-      } catch (emailError) {
-        console.error('Error sending notification email:', emailError);
-        // Don't fail the whole process if email fails
-      }
+      // Send notification email - DISABLED for now to prevent blocking
+      // try {
+      //   await supabase.functions.invoke('send-notification-email', {
+      //     body: {
+      //       type: 'contact',
+      //       data: sanitizedData
+      //     }
+      //   });
+      // } catch (emailError) {
+      //   console.error('Error sending notification email:', emailError);
+      //   // Don't fail the whole process if email fails
+      // }
 
       toast({
         title: "Message Sent Successfully!",
