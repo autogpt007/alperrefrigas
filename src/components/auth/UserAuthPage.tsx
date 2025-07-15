@@ -113,13 +113,26 @@ const UserAuthPage = () => {
       
       if (error) {
         console.error('Registration error:', error);
-        if (error.message?.includes('already registered')) {
+        
+        // Handle different types of error objects
+        const errorMessage = typeof error === 'string' ? error : 
+                           error.message || 
+                           (error.details && error.details.message) ||
+                           'Registration failed';
+        
+        console.log('Error message type:', typeof error, 'Error details:', error);
+        
+        if (errorMessage.includes('already registered') || errorMessage.includes('User already registered')) {
           setError('This email is already registered. Please sign in instead.');
           setActiveTab('signin');
-        } else if (error.message?.includes('email not confirmed')) {
+        } else if (errorMessage.includes('email not confirmed')) {
           setError('Please check your email and click the confirmation link to complete registration.');
+        } else if (errorMessage.includes('Invalid login credentials')) {
+          setError('Invalid email or password format. Please check your input.');
+        } else if (errorMessage.includes('Too many requests')) {
+          setError('Too many registration attempts. Please wait a moment before trying again.');
         } else {
-          setError(error.message || 'Registration failed. Please try again.');
+          setError(`Registration failed: ${errorMessage}`);
         }
       } else {
         console.log('Registration successful');

@@ -166,20 +166,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       if (error) {
-        console.error('Registration error:', error);
-        return { error };
+        console.error('Registration error details:', error);
+        return { 
+          error: {
+            message: error.message,
+            status: error.status,
+            statusText: error.status ? `${error.status}` : 'Registration failed'
+          }
+        };
       }
       
       if (authData.user) {
         console.log('Registration successful, user created:', authData.user.id);
+        console.log('User confirmation required:', !authData.user.email_confirmed_at);
+        
         // Wait a moment for the trigger to create the profile
         await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Try to verify the profile was created
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+          
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+          } else {
+            console.log('Profile created successfully:', profileData);
+          }
+        } catch (profileCheckError) {
+          console.error('Error checking profile:', profileCheckError);
+        }
       }
       
       return { error: null };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Unexpected registration error:', err);
-      return { error: err };
+      return { 
+        error: {
+          message: err.message || 'An unexpected error occurred during registration',
+          details: err
+        }
+      };
     }
   };
 
