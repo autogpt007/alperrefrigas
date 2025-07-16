@@ -44,12 +44,31 @@ const ProductCatalog = () => {
     { value: 'industrial', label: t('products.categories.industrial') }
   ];
 
-  // Enhanced filtering logic to handle application-based categories
+  // Enhanced filtering logic with improved search capabilities
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (product.applications && product.applications.some(app => app.toLowerCase().includes(searchQuery.toLowerCase()))) ||
-                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
+    // Normalize search query and product text for better matching
+    const normalizedQuery = searchQuery.toLowerCase().trim().replace(/[-\s]/g, '');
+    
+    // Check multiple fields with flexible matching
+    const searchableFields = [
+      product.name,
+      product.description || '',
+      product.sku || '',
+      product.chemicalFormula || '',
+      product.casNumber || '',
+      ...(product.applications || [])
+    ];
+    
+    const matchesSearch = searchableFields.some(field => {
+      if (!field) return false;
+      const normalizedField = field.toString().toLowerCase().replace(/[-\s]/g, '');
+      
+      // Check for partial matches (contains) and also exact chemical formula matches
+      return normalizedField.includes(normalizedQuery) || 
+             field.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+             // Handle common refrigerant naming variations (e.g., R410A vs R-410A)
+             (normalizedQuery.startsWith('r') && normalizedField.includes(normalizedQuery.substring(1)));
+    });
 
     if (selectedCategory === 'all') {
       return matchesSearch;

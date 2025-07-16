@@ -33,7 +33,60 @@ const ContentManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Mock data for now - in production this would come from a settings table
+  // Fetch site settings from database
+  const { data: siteSettings, isLoading } = useQuery({
+    queryKey: ['site-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('*');
+      
+      if (error) throw error;
+      
+      // Convert array of settings to object
+      const settingsObj: any = {};
+      data?.forEach(setting => {
+        settingsObj[setting.setting_key] = setting.setting_value;
+      });
+      
+      return settingsObj;
+    }
+  });
+
+  // Mutation for saving settings
+  const saveMutation = useMutation({
+    mutationFn: async (settings: Record<string, any>) => {
+      // Convert settings object to array of upsert operations
+      const settingsArray = Object.entries(settings).map(([key, value]) => ({
+        setting_key: key,
+        setting_value: typeof value === 'object' ? JSON.stringify(value) : String(value),
+        description: `Setting for ${key.replace(/_/g, ' ')}`
+      }));
+
+      const { error } = await supabase
+        .from('site_settings')
+        .upsert(settingsArray, { onConflict: 'setting_key' });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Settings saved successfully!",
+        description: "Your changes have been applied and saved to the database."
+      });
+      queryClient.invalidateQueries({ queryKey: ['site-settings'] });
+      setEditingSettings({});
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to save settings",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Default settings fallback
   const defaultSettings = {
     company_name: 'FrigidFlow Refrigerants',
     tagline: 'Premium Refrigerants for Professional HVAC',
@@ -42,7 +95,7 @@ const ContentManagement = () => {
     email: 'info@frigidflow.com',
     address: '123 Industrial Blvd, Houston, TX 77001',
     website: 'https://frigidflow.com',
-    business_hours: {
+    business_hours: JSON.stringify({
       monday: '8:00 AM - 6:00 PM',
       tuesday: '8:00 AM - 6:00 PM',
       wednesday: '8:00 AM - 6:00 PM',
@@ -50,21 +103,36 @@ const ContentManagement = () => {
       friday: '8:00 AM - 6:00 PM',
       saturday: '9:00 AM - 4:00 PM',
       sunday: 'Closed'
-    },
-    social_links: {
+    }),
+    social_links: JSON.stringify({
       facebook: 'https://facebook.com/frigidflow',
       twitter: 'https://twitter.com/frigidflow',
       linkedin: 'https://linkedin.com/company/frigidflow',
       youtube: 'https://youtube.com/frigidflow'
-    },
-    seo_settings: {
+    }),
+    seo_settings: JSON.stringify({
       meta_title: 'FrigidFlow - Premium Refrigerants & HVAC Chemicals',
       meta_description: 'Professional-grade refrigerants, EPA-approved chemicals, and HVAC supplies. Fast shipping, competitive prices, expert support.',
       keywords: 'refrigerants, HVAC, EPA approved, R-410A, R-134A, cooling chemicals'
-    }
+    })
   };
 
-  const [settings, setSettings] = useState(defaultSettings);
+  // Merge database settings with defaults
+  const settings = { ...defaultSettings, ...siteSettings };
+
+  // Parse JSON strings for nested objects
+  const parsedSettings = {
+    ...settings,
+    business_hours: typeof settings.business_hours === 'string' 
+      ? JSON.parse(settings.business_hours) 
+      : settings.business_hours || JSON.parse(defaultSettings.business_hours),
+    social_links: typeof settings.social_links === 'string' 
+      ? JSON.parse(settings.social_links) 
+      : settings.social_links || JSON.parse(defaultSettings.social_links),
+    seo_settings: typeof settings.seo_settings === 'string' 
+      ? JSON.parse(settings.seo_settings) 
+      : settings.seo_settings || JSON.parse(defaultSettings.seo_settings)
+  };
 
   const handleInputChange = (field: string, value: string | any) => {
     setEditingSettings(prev => ({ ...prev, [field]: value }));
@@ -74,20 +142,15 @@ const ContentManagement = () => {
     setEditingSettings(prev => ({
       ...prev,
       [parent]: {
-        ...(prev[parent as keyof SiteSettings] as any || {}),
+        ...(prev[parent as keyof SiteSettings] as any || parsedSettings[parent as keyof typeof parsedSettings] || {}),
         [field]: value
       }
     }));
   };
 
   const handleSaveSettings = () => {
-    // In production, this would save to a database
-    setSettings(prev => ({ ...prev, ...editingSettings }));
-    setEditingSettings({});
-    toast({
-      title: "Settings saved successfully!",
-      description: "Your changes have been applied."
-    });
+    const settingsToSave = { ...settings, ...editingSettings };
+    saveMutation.mutate(settingsToSave);
   };
 
   return (
@@ -121,31 +184,38 @@ const ContentManagement = () => {
               <div>
                 <Label className="text-gray-300">Company Name</Label>
                 <Input
-                  value={editingSettings.company_name || settings.company_name}
+                  value={editingSettings.company_name || parsedSettings.company_name}
                   onChange={(e) => handleInputChange('company_name', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <Label className="text-gray-300">Tagline</Label>
                 <Input
-                  value={editingSettings.tagline || settings.tagline}
+                  value={editingSettings.tagline || parsedSettings.tagline}
                   onChange={(e) => handleInputChange('tagline', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <Label className="text-gray-300">Description</Label>
                 <Textarea
-                  value={editingSettings.description || settings.description}
+                  value={editingSettings.description || parsedSettings.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
                   rows={4}
+                  disabled={isLoading}
                 />
               </div>
-              <Button onClick={handleSaveSettings} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </CardContent>
           </Card>
@@ -169,9 +239,10 @@ const ContentManagement = () => {
                   Phone Number
                 </Label>
                 <Input
-                  value={editingSettings.phone || settings.phone}
+                  value={editingSettings.phone || parsedSettings.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -181,9 +252,10 @@ const ContentManagement = () => {
                 </Label>
                 <Input
                   type="email"
-                  value={editingSettings.email || settings.email}
+                  value={editingSettings.email || parsedSettings.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -192,10 +264,11 @@ const ContentManagement = () => {
                   Business Address
                 </Label>
                 <Textarea
-                  value={editingSettings.address || settings.address}
+                  value={editingSettings.address || parsedSettings.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
                   rows={3}
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -204,14 +277,19 @@ const ContentManagement = () => {
                   Website URL
                 </Label>
                 <Input
-                  value={editingSettings.website || settings.website}
+                  value={editingSettings.website || parsedSettings.website}
                   onChange={(e) => handleInputChange('website', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
-              <Button onClick={handleSaveSettings} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </CardContent>
           </Card>
@@ -229,7 +307,7 @@ const ContentManagement = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(settings.business_hours).map(([day, hours]) => (
+              {Object.entries(parsedSettings.business_hours).map(([day, hours]) => (
                 <div key={day} className="grid grid-cols-2 gap-4">
                   <Label className="text-gray-300 capitalize flex items-center">
                     {day}:
@@ -239,12 +317,17 @@ const ContentManagement = () => {
                     onChange={(e) => handleNestedInputChange('business_hours', day, e.target.value)}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="e.g., 9:00 AM - 5:00 PM or Closed"
+                    disabled={isLoading}
                   />
                 </div>
               ))}
-              <Button onClick={handleSaveSettings} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </CardContent>
           </Card>
@@ -262,7 +345,7 @@ const ContentManagement = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(settings.social_links).map(([platform, url]) => (
+              {Object.entries(parsedSettings.social_links).map(([platform, url]) => (
                 <div key={platform}>
                   <Label className="text-gray-300 capitalize">{platform}</Label>
                   <Input
@@ -270,12 +353,17 @@ const ContentManagement = () => {
                     onChange={(e) => handleNestedInputChange('social_links', platform, e.target.value)}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder={`Enter ${platform} URL`}
+                    disabled={isLoading}
                   />
                 </div>
               ))}
-              <Button onClick={handleSaveSettings} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </CardContent>
           </Card>
@@ -296,32 +384,39 @@ const ContentManagement = () => {
               <div>
                 <Label className="text-gray-300">Meta Title</Label>
                 <Input
-                  value={editingSettings.seo_settings?.meta_title || settings.seo_settings.meta_title}
+                  value={editingSettings.seo_settings?.meta_title || parsedSettings.seo_settings.meta_title}
                   onChange={(e) => handleNestedInputChange('seo_settings', 'meta_title', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <Label className="text-gray-300">Meta Description</Label>
                 <Textarea
-                  value={editingSettings.seo_settings?.meta_description || settings.seo_settings.meta_description}
+                  value={editingSettings.seo_settings?.meta_description || parsedSettings.seo_settings.meta_description}
                   onChange={(e) => handleNestedInputChange('seo_settings', 'meta_description', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
                   rows={3}
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <Label className="text-gray-300">Keywords</Label>
                 <Input
-                  value={editingSettings.seo_settings?.keywords || settings.seo_settings.keywords}
+                  value={editingSettings.seo_settings?.keywords || parsedSettings.seo_settings.keywords}
                   onChange={(e) => handleNestedInputChange('seo_settings', 'keywords', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Comma-separated keywords"
+                  disabled={isLoading}
                 />
               </div>
-              <Button onClick={handleSaveSettings} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </CardContent>
           </Card>
