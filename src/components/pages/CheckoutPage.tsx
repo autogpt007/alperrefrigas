@@ -79,15 +79,7 @@ const CheckoutPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to place an order",
-        variant: "destructive"
-      });
-      return;
-    }
-
+    // Validation - no longer require authentication
     if (!legalAcknowledged) {
       toast({
         title: "Legal acknowledgment required",
@@ -106,11 +98,21 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Validate required fields
+    if (!formData.customerName || !formData.customerEmail || !formData.street || !formData.city || !formData.state || !formData.zipCode) {
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
       const orderData = {
-        user_id: user.id,
+        user_id: user?.id || null, // Include user_id (null for guest orders)
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
         status: 'pending' as const,
@@ -136,7 +138,8 @@ const CheckoutPage = () => {
         }))
       };
 
-      const order = await createOrder(orderData);
+      // Pass isGuest=true if no user is logged in
+      const order = await createOrder(orderData, !user);
       
       if (order) {
         clearCart();

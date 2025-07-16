@@ -18,7 +18,7 @@ export interface OrderItem {
 export interface Order {
   id: string;
   order_number: string;
-  user_id: string;
+  user_id: string | null; // Allow null for guest orders
   customer_name: string;
   customer_email: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'processed' | 'waiting_review' | 'declined';
@@ -38,7 +38,7 @@ interface OrdersContextType {
   loading: boolean;
   error: string | null;
   fetchOrders: () => Promise<void>;
-  createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>) => Promise<Order | null>;
+  createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>, isGuest?: boolean) => Promise<Order | null>;
   updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>;
 }
 
@@ -121,11 +121,12 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>): Promise<Order | null> => {
-    if (!user) {
+  const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>, isGuest?: boolean): Promise<Order | null> => {
+    // Allow both authenticated users and guest checkout
+    if (!user && !isGuest) {
       toast({
-        title: "Authentication required",
-        description: "Please log in to place an order",
+        title: "Authentication required", 
+        description: "Please log in or continue as guest to place an order",
         variant: "destructive"
       });
       return null;
@@ -135,11 +136,11 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      // Create the order
+      // Create the order - user_id can be null for guest orders
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
-          user_id: user.id,
+          user_id: user?.id || null, // Allow null for guest orders
           customer_name: orderData.customer_name,
           customer_email: orderData.customer_email,
           status: orderData.status,
