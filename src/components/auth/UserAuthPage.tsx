@@ -78,7 +78,14 @@ const UserAuthPage = () => {
         setValidationErrors(errors);
       } else {
         console.error('Login failed:', error);
-        setError('An unexpected error occurred. Please try again.');
+        // More specific error handling
+        if (error.message) {
+          setError(error.message);
+        } else if (error.details) {
+          setError(`Login failed: ${error.details}`);
+        } else {
+          setError('Login failed. Please check your credentials and try again.');
+        }
       }
     } finally {
       setIsLoading(false);

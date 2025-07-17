@@ -127,6 +127,23 @@ const CheckoutPage = () => {
           country: formData.country
         },
         notes: formData.notes,
+        payment_method: formData.paymentMethod,
+        payment_details: formData.paymentMethod === 'credit_card' ? {
+          cardholder_name: formData.cardholderName,
+          card_last_four: formData.cardNumber,
+          expiry_date: formData.expiryDate,
+          billing_address: {
+            street: formData.billingStreet || formData.street,
+            city: formData.billingCity || formData.city,
+            state: formData.billingState || formData.state,
+            zipCode: formData.billingZipCode || formData.zipCode,
+            country: formData.billingCountry || formData.country
+          }
+        } : formData.paymentMethod === 'bank_wire' ? {
+          instructions: bankWireDetails?.bank_wire_instructions || 'Wire transfer instructions will be provided'
+        } : formData.paymentMethod === 'check' ? {
+          instructions: 'Please send company check to our business address'
+        } : null,
         items: items.map(item => ({
           product_id: null, // Set to null since we're using custom cart IDs
           product_name: item.name,
