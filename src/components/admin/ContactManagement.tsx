@@ -227,6 +227,7 @@ const ContactManagement = () => {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => window.location.href = `mailto:${submission.email}?subject=Re: ${submission.subject || 'Your Contact Form Submission'}`}
                             className="border-green-500/50 text-green-400 hover:bg-green-500/10"
                           >
                             <Mail className="h-4 w-4 mr-2" />
@@ -235,6 +236,19 @@ const ContactManagement = () => {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => {
+                              // Extract phone number from message if present
+                              const phoneMatch = submission.message.match(/(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/);
+                              if (phoneMatch) {
+                                window.location.href = `tel:${phoneMatch[0]}`;
+                              } else {
+                                toast({
+                                  title: "No phone number found",
+                                  description: "Please check the message for contact details",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
                             className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
                           >
                             <Phone className="h-4 w-4 mr-2" />

@@ -28,6 +28,8 @@ export interface Order {
   shipping_address: any;
   tracking_number?: string;
   notes?: string;
+  payment_method?: string;
+  payment_details?: any;
   created_at: string;
   updated_at: string;
   items: OrderItem[];
@@ -148,7 +150,9 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
           shipping_cost: orderData.shipping_cost,
           tax_amount: orderData.tax_amount,
           shipping_address: orderData.shipping_address,
-          notes: orderData.notes
+          notes: orderData.notes,
+          payment_method: orderData.payment_method || 'credit_card',
+          payment_details: orderData.payment_details
         })
         .select()
         .single();

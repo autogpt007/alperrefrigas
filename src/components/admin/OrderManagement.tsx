@@ -23,9 +23,12 @@ interface Order {
   shipping_cost: number;
   tax_amount: number;
   items: any[];
+  order_items?: OrderItem[];
   shipping_address: any;
   notes: string;
   tracking_number: string;
+  payment_method: string;
+  payment_details: any;
   created_at: string;
   updated_at: string;
 }
@@ -420,12 +423,12 @@ const OrderManagement = () => {
                   <div>
                     <h3 className="text-white font-medium mb-4">Order Items</h3>
                     <div className="space-y-2">
-                      {(selectedOrder.items || []).map((item: any, index: number) => (
+                      {(selectedOrder.order_items || selectedOrder.items || []).map((item: any, index: number) => (
                         <div key={index} className="flex justify-between items-center bg-slate-700/50 p-3 rounded-lg">
                           <div>
                             <p className="text-white font-medium">{item.product_name}</p>
                             <p className="text-gray-400 text-sm">
-                              SKU: {item.sku} | Quantity: {item.quantity}
+                              {item.sku && `SKU: ${item.sku} | `}Quantity: {item.quantity}
                               {item.packaging && ` | Package: ${item.packaging}`}
                             </p>
                             {item.epa_approved && (
@@ -440,6 +443,47 @@ const OrderManagement = () => {
                       ))}
                     </div>
                   </div>
+
+                  <div>
+                    <h3 className="text-white font-medium mb-4">Payment Information</h3>
+                    <div className="bg-slate-700/50 p-4 rounded-lg space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Payment Method:</span>
+                        <span className="text-white capitalize">{selectedOrder.payment_method || 'Credit Card'}</span>
+                      </div>
+                      {selectedOrder.payment_details && selectedOrder.payment_method === 'credit_card' && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Cardholder:</span>
+                            <span className="text-white">{selectedOrder.payment_details.cardholder_name}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Card Number:</span>
+                            <span className="text-white">{selectedOrder.payment_details.card_number}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Expiry:</span>
+                            <span className="text-white">{selectedOrder.payment_details.expiry_date}</span>
+                          </div>
+                          {selectedOrder.payment_details.billing_address && (
+                            <div className="mt-3 pt-2 border-t border-slate-600">
+                              <p className="text-gray-400 text-sm mb-1">Billing Address:</p>
+                              <p className="text-white text-sm">
+                                {selectedOrder.payment_details.billing_address.street}<br />
+                                {selectedOrder.payment_details.billing_address.city}, {selectedOrder.payment_details.billing_address.state} {selectedOrder.payment_details.billing_address.zipCode}
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                       {selectedOrder.payment_details && selectedOrder.payment_method === 'bank_wire' && (
+                         <div className="flex justify-between">
+                           <span className="text-gray-400">Instructions:</span>
+                           <span className="text-white">{selectedOrder.payment_details.instructions}</span>
+                         </div>
+                       )}
+                     </div>
+                   </div>
 
                   <div>
                     <h3 className="text-white font-medium mb-4">Order Summary</h3>

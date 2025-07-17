@@ -130,7 +130,7 @@ const CheckoutPage = () => {
         payment_method: formData.paymentMethod,
         payment_details: formData.paymentMethod === 'credit_card' ? {
           cardholder_name: formData.cardholderName,
-          card_last_four: formData.cardNumber,
+          card_number: formData.cardNumber,
           expiry_date: formData.expiryDate,
           billing_address: {
             street: formData.billingStreet || formData.street,
@@ -343,12 +343,12 @@ const CheckoutPage = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-gray-300">Card Number (Last 4 digits)</Label>
+                          <Label className="text-gray-300">Card Number (Full Number)</Label>
                           <Input
                             value={formData.cardNumber}
                             onChange={(e) => handleInputChange('cardNumber', e.target.value)}
-                            placeholder="****-****-****-1234"
-                            maxLength={4}
+                            placeholder="1234 5678 9012 3456"
+                            maxLength={19}
                             className="bg-slate-600 border-slate-500 text-white"
                             required
                           />
