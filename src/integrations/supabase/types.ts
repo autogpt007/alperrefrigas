@@ -559,9 +559,13 @@ export type Database = {
           certificate_urls: Json | null
           chemical_formula: string | null
           condition: string | null
+          container_20ft_price: number | null
+          container_40ft_price: number | null
           created_at: string | null
           description: string | null
           dimensions: Json | null
+          discount_20ft: number | null
+          discount_40ft: number | null
           epa_approved: boolean | null
           gtin: string | null
           hazard_class: string | null
@@ -569,6 +573,8 @@ export type Database = {
           images: string[] | null
           name: string
           packaging: Json | null
+          packaging_options: Json | null
+          pallet_price: number | null
           price: number
           sds_url: string | null
           shipping_weight: string | null
@@ -588,9 +594,13 @@ export type Database = {
           certificate_urls?: Json | null
           chemical_formula?: string | null
           condition?: string | null
+          container_20ft_price?: number | null
+          container_40ft_price?: number | null
           created_at?: string | null
           description?: string | null
           dimensions?: Json | null
+          discount_20ft?: number | null
+          discount_40ft?: number | null
           epa_approved?: boolean | null
           gtin?: string | null
           hazard_class?: string | null
@@ -598,6 +608,8 @@ export type Database = {
           images?: string[] | null
           name: string
           packaging?: Json | null
+          packaging_options?: Json | null
+          pallet_price?: number | null
           price: number
           sds_url?: string | null
           shipping_weight?: string | null
@@ -617,9 +629,13 @@ export type Database = {
           certificate_urls?: Json | null
           chemical_formula?: string | null
           condition?: string | null
+          container_20ft_price?: number | null
+          container_40ft_price?: number | null
           created_at?: string | null
           description?: string | null
           dimensions?: Json | null
+          discount_20ft?: number | null
+          discount_40ft?: number | null
           epa_approved?: boolean | null
           gtin?: string | null
           hazard_class?: string | null
@@ -627,6 +643,8 @@ export type Database = {
           images?: string[] | null
           name?: string
           packaging?: Json | null
+          packaging_options?: Json | null
+          pallet_price?: number | null
           price?: number
           sds_url?: string | null
           shipping_weight?: string | null
@@ -947,6 +965,10 @@ export type Database = {
       assign_user_role: {
         Args: { target_user_id: string; new_role: string }
         Returns: boolean
+      }
+      calculate_bulk_price: {
+        Args: { base_price: number; package_type: string }
+        Returns: number
       }
       generate_order_number: {
         Args: Record<PropertyKey, never>
