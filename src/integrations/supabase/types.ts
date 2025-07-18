@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      asic_miners: {
+        Row: {
+          available_units: number
+          brand: string
+          created_at: string
+          daily_earnings_btc: number
+          efficiency: number
+          hashrate_th: number
+          id: string
+          image_url: string | null
+          location: string
+          min_purchase_fraction: number
+          model: string
+          noise_level: number | null
+          power_consumption: number
+          price: number
+          roi_months: number
+          status: string
+          temperature: number | null
+          total_units: number
+          updated_at: string
+        }
+        Insert: {
+          available_units?: number
+          brand: string
+          created_at?: string
+          daily_earnings_btc: number
+          efficiency: number
+          hashrate_th: number
+          id?: string
+          image_url?: string | null
+          location?: string
+          min_purchase_fraction?: number
+          model: string
+          noise_level?: number | null
+          power_consumption: number
+          price: number
+          roi_months: number
+          status?: string
+          temperature?: number | null
+          total_units?: number
+          updated_at?: string
+        }
+        Update: {
+          available_units?: number
+          brand?: string
+          created_at?: string
+          daily_earnings_btc?: number
+          efficiency?: number
+          hashrate_th?: number
+          id?: string
+          image_url?: string | null
+          location?: string
+          min_purchase_fraction?: number
+          model?: string
+          noise_level?: number | null
+          power_consumption?: number
+          price?: number
+          roi_months?: number
+          status?: string
+          temperature?: number | null
+          total_units?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_id: string | null
@@ -206,6 +272,141 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      miner_ownerships: {
+        Row: {
+          created_at: string
+          id: string
+          miner_id: string
+          ownership_fraction: number
+          purchase_date: string
+          purchase_price: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          miner_id: string
+          ownership_fraction: number
+          purchase_date?: string
+          purchase_price: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          miner_id?: string
+          ownership_fraction?: number
+          purchase_date?: string
+          purchase_price?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "miner_ownerships_miner_id_fkey"
+            columns: ["miner_id"]
+            isOneToOne: false
+            referencedRelation: "asic_miners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mining_payouts: {
+        Row: {
+          amount_btc: number
+          amount_usd: number
+          btc_price_usd: number
+          created_at: string
+          id: string
+          ownership_id: string
+          payout_date: string
+          status: string
+          transaction_hash: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_btc: number
+          amount_usd: number
+          btc_price_usd: number
+          created_at?: string
+          id?: string
+          ownership_id: string
+          payout_date?: string
+          status?: string
+          transaction_hash?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_btc?: number
+          amount_usd?: number
+          btc_price_usd?: number
+          created_at?: string
+          id?: string
+          ownership_id?: string
+          payout_date?: string
+          status?: string
+          transaction_hash?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mining_payouts_ownership_id_fkey"
+            columns: ["ownership_id"]
+            isOneToOne: false
+            referencedRelation: "miner_ownerships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mining_stats: {
+        Row: {
+          actual_hashrate_th: number
+          btc_mined: number
+          created_at: string
+          date: string
+          id: string
+          maintenance_notes: string | null
+          miner_id: string
+          power_consumption_kwh: number
+          uptime_percentage: number
+        }
+        Insert: {
+          actual_hashrate_th: number
+          btc_mined: number
+          created_at?: string
+          date: string
+          id?: string
+          maintenance_notes?: string | null
+          miner_id: string
+          power_consumption_kwh: number
+          uptime_percentage?: number
+        }
+        Update: {
+          actual_hashrate_th?: number
+          btc_mined?: number
+          created_at?: string
+          date?: string
+          id?: string
+          maintenance_notes?: string | null
+          miner_id?: string
+          power_consumption_kwh?: number
+          uptime_percentage?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mining_stats_miner_id_fkey"
+            columns: ["miner_id"]
+            isOneToOne: false
+            referencedRelation: "asic_miners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_settings: {
         Row: {
@@ -702,6 +903,39 @@ export type Database = {
           position?: string | null
           rating?: number | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_wallets: {
+        Row: {
+          created_at: string
+          id: string
+          is_primary: boolean
+          updated_at: string
+          user_id: string
+          verified: boolean
+          wallet_address: string
+          wallet_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+          wallet_address: string
+          wallet_type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+          wallet_address?: string
+          wallet_type?: string
         }
         Relationships: []
       }
