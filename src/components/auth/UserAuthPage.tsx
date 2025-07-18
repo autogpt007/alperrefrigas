@@ -132,10 +132,10 @@ const UserAuthPage = () => {
         if (errorMessage.includes('already registered') || errorMessage.includes('User already registered')) {
           setError('This email is already registered. Please sign in instead.');
           setActiveTab('signin');
-        } else if (errorMessage.includes('email not confirmed')) {
-          setError('Please check your email and click the confirmation link to complete registration.');
-        } else if (errorMessage.includes('Invalid login credentials')) {
-          setError('Invalid email or password format. Please check your input.');
+        } else if (errorMessage.includes('Password must be at least')) {
+          setError('Password must be at least 6 characters long.');
+        } else if (errorMessage.includes('Invalid email')) {
+          setError('Please enter a valid email address.');
         } else if (errorMessage.includes('Too many requests')) {
           setError('Too many registration attempts. Please wait a moment before trying again.');
         } else {
@@ -143,8 +143,9 @@ const UserAuthPage = () => {
         }
       } else {
         console.log('Registration successful');
-        setError('Account created successfully! Please check your email for a confirmation link.');
-        // Don't navigate immediately, let user confirm email first
+        setError('Account created successfully! You are now signed in.');
+        // Navigate to account page after successful registration
+        navigate('/account');
       }
     } catch (error: any) {
       if (error.errors) {

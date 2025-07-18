@@ -167,9 +167,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         console.error('Registration error details:', error);
+        
+        // Provide specific error messages based on error type
+        let errorMessage = error.message;
+        
+        if (error.message.includes('Password should be at least')) {
+          errorMessage = 'Password must be at least 6 characters long.';
+        } else if (error.message.includes('User already registered')) {
+          errorMessage = 'This email is already registered. Please sign in instead.';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('Signup is disabled')) {
+          errorMessage = 'Registration is currently disabled. Please contact support.';
+        }
+        
         return { 
           error: {
-            message: error.message,
+            message: errorMessage,
             status: error.status,
             statusText: error.status ? `${error.status}` : 'Registration failed'
           }
@@ -178,7 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (authData.user) {
         console.log('Registration successful, user created:', authData.user.id);
-        console.log('User confirmation required:', !authData.user.email_confirmed_at);
+        console.log('User email confirmed:', !!authData.user.email_confirmed_at);
         
         // Wait a moment for the trigger to create the profile
         await new Promise(resolve => setTimeout(resolve, 1000));
