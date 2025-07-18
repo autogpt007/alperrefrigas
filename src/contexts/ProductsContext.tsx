@@ -7,6 +7,12 @@ export interface Product {
   id: string;
   name: string;
   price: number;
+  pallet_price?: number;
+  container_20ft_price?: number;
+  container_40ft_price?: number;
+  discount_20ft?: number;
+  discount_40ft?: number;
+  packaging_options?: string[];
   image: string;
   sku: string;
   epaApproved: boolean;
@@ -96,6 +102,12 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         id: product.id,
         name: product.name,
         price: Number(product.price),
+        pallet_price: product.pallet_price ? Number(product.pallet_price) : undefined,
+        container_20ft_price: product.container_20ft_price ? Number(product.container_20ft_price) : undefined,
+        container_40ft_price: product.container_40ft_price ? Number(product.container_40ft_price) : undefined,
+        discount_20ft: product.discount_20ft ? Number(product.discount_20ft) : undefined,
+        discount_40ft: product.discount_40ft ? Number(product.discount_40ft) : undefined,
+        packaging_options: jsonToStringArray(product.packaging_options),
         image: product.images?.[0] || product.thumbnail_url || '/placeholder.svg',
         images: Array.isArray(product.images) ? product.images.filter(img => typeof img === 'string') : [],
         sku: product.sku || '',

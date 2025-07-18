@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ShoppingCart, Plus, Minus, Check, Zap } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
 
@@ -11,9 +12,20 @@ interface Product {
   id: string;
   name: string;
   price: number;
+  pallet_price?: number;
+  container_20ft_price?: number;
+  container_40ft_price?: number;
+  discount_20ft?: number;
+  discount_40ft?: number;
+  packaging_options?: string[];
   image: string;
   sku: string;
   epaApproved: boolean;
+  category?: string;
+  chemical_formula?: string;
+  applications?: string[];
+  stock_quantity?: number;
+  availability?: string;
 }
 
 interface ProductCardProps {
@@ -25,13 +37,48 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [selectedPackaging, setSelectedPackaging] = useState(
+    product.packaging_options?.[0] || '1 Pallet'
+  );
 
   const existingItem = items.find(item => item.id === product.id);
   const cartQuantity = existingItem?.quantity || 0;
 
+  const calculateBulkPrice = (packageType: string): number => {
+    const basePrice = product.pallet_price || product.price;
+    const discount20ft = product.discount_20ft || 0.30;
+    const discount40ft = product.discount_40ft || 0.45;
+    
+    switch (packageType) {
+      case '1 Pallet':
+        return basePrice;
+      case '20ft Container':
+        return product.container_20ft_price || basePrice * (1 - discount20ft);
+      case '40ft Container':
+        return product.container_40ft_price || basePrice * (1 - discount40ft);
+      default:
+        return basePrice;
+    }
+  };
+
+  const getCurrentPrice = () => calculateBulkPrice(selectedPackaging);
+  const getDiscountPercentage = () => {
+    const discount20ft = product.discount_20ft || 0.30;
+    const discount40ft = product.discount_40ft || 0.45;
+    if (selectedPackaging === '20ft Container') return Math.round(discount20ft * 100);
+    if (selectedPackaging === '40ft Container') return Math.round(discount40ft * 100);
+    return 0;
+  };
+
   const handleAddToCart = () => {
+    const currentPrice = getCurrentPrice();
     for (let i = 0; i < quantity; i++) {
-      addItem(product);
+      addItem({
+        ...product,
+        price: currentPrice,
+        packaging: selectedPackaging,
+        id: `${product.id}-${selectedPackaging}`
+      });
     }
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
@@ -95,11 +142,55 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </h3>
             </Link>
             <p className="text-xs text-gray-400 font-mono">{product.sku}</p>
+            {product.chemical_formula && (
+              <p className="text-xs text-cyan-300 font-mono">{product.chemical_formula}</p>
+            )}
           </div>
 
+          {/* Packaging Selection */}
+          {product.packaging_options && product.packaging_options.length > 1 && (
+            <div className="mb-3">
+              <label className="text-xs text-gray-400 block mb-1">Package Size:</label>
+              <Select value={selectedPackaging} onValueChange={setSelectedPackaging}>
+                <SelectTrigger className="w-full h-8 bg-slate-700/50 border-cyan-500/30 text-white text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {product.packaging_options.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>{option}</span>
+                        {getDiscountPercentage() > 0 && option === selectedPackaging && (
+                          <Badge variant="secondary" className="ml-2 bg-green-500/20 text-green-300 text-xs">
+                            -{getDiscountPercentage()}%
+                          </Badge>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mb-3">
-            <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              ${product.price.toFixed(2)}
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                {getDiscountPercentage() > 0 && (
+                  <span className="text-xs text-gray-500 line-through">
+                    ${(product.pallet_price || product.price).toFixed(2)}
+                  </span>
+                )}
+                <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                  ${getCurrentPrice().toFixed(2)}
+                </div>
+              </div>
+              {getDiscountPercentage() > 0 && (
+                <div className="flex items-center gap-1 text-green-400">
+                  <TrendingUp className="h-3 w-3" />
+                  <span className="text-xs font-medium">Save {getDiscountPercentage()}%!</span>
+                </div>
+              )}
             </div>
             
             {/* Quantity Selector - Smaller */}
