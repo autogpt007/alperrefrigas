@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2 } from 'lucide-react';
+import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2, Truck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { adminSettingsSchema, sanitizeInput, RateLimiter, type AdminSettingsData } from '@/lib/validation';
@@ -40,7 +40,9 @@ const AdminSettings = () => {
     bankName: '',
     bankRoutingNumber: '',
     bankAccountNumber: '',
-    bankSwiftCode: ''
+    bankSwiftCode: '',
+    // Shipping settings
+    freeShippingThreshold: ''
   });
 
   // Rate limiter for form submissions
@@ -78,6 +80,7 @@ const AdminSettings = () => {
       const bankRoutingSetting = siteData?.find((s: any) => s.setting_key === 'bank_routing_number');
       const bankAccountSetting = siteData?.find((s: any) => s.setting_key === 'bank_account_number');
       const bankSwiftSetting = siteData?.find((s: any) => s.setting_key === 'bank_swift_code');
+      const freeShippingSetting = siteData?.find((s: any) => s.setting_key === 'free_shipping_threshold');
 
       setFormData({
         notificationEmail: emailSetting?.setting_value || '',
@@ -87,7 +90,8 @@ const AdminSettings = () => {
         bankName: bankNameSetting?.setting_value || '',
         bankRoutingNumber: bankRoutingSetting?.setting_value || '',
         bankAccountNumber: bankAccountSetting?.setting_value || '',
-        bankSwiftCode: bankSwiftSetting?.setting_value || ''
+        bankSwiftCode: bankSwiftSetting?.setting_value || '',
+        freeShippingThreshold: freeShippingSetting?.setting_value || '500'
       });
     } catch (error: any) {
       console.error('Error fetching settings:', error);
@@ -145,6 +149,7 @@ const AdminSettings = () => {
       await updateSetting('site_settings', 'bank_routing_number', validatedData.bankRoutingNumber);
       await updateSetting('site_settings', 'bank_account_number', validatedData.bankAccountNumber);
       await updateSetting('site_settings', 'bank_swift_code', validatedData.bankSwiftCode);
+      await updateSetting('site_settings', 'free_shipping_threshold', validatedData.freeShippingThreshold);
 
       toast({
         title: 'Settings updated successfully!',
@@ -410,6 +415,30 @@ const AdminSettings = () => {
                   For international wire transfers
                 </p>
               </div>
+            </div>
+            
+            <div>
+              <Label className="text-gray-300 flex items-center gap-2">
+                <Truck className="h-4 w-4" />
+                Free Shipping Threshold ($)
+              </Label>
+              <Input
+                type="number"
+                value={formData.freeShippingThreshold}
+                onChange={(e) => handleInputChange('freeShippingThreshold', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.freeShippingThreshold ? 'border-red-500' : ''
+                }`}
+                placeholder="500"
+                min="0"
+                step="50"
+              />
+              {validationErrors.freeShippingThreshold && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.freeShippingThreshold}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                Minimum order amount for free shipping
+              </p>
             </div>
           </CardContent>
         </Card>

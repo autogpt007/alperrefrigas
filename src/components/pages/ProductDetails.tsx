@@ -30,6 +30,34 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [packaging, setPackaging] = useState('');
   const product = products.find(p => p.id === id);
+
+  // Bulk pricing calculation functions
+  const calculateBulkPrice = (packageType: string): number => {
+    if (!product) return 0;
+    
+    switch (packageType) {
+      case '20ft Container':
+        return product.container_20ft_price || (product.price * (1 - (product.discount_20ft || 0.30)));
+      case '40ft Container':
+        return product.container_40ft_price || (product.price * (1 - (product.discount_40ft || 0.45)));
+      case '1 Pallet':
+      default:
+        return product.pallet_price || product.price;
+    }
+  };
+
+  const getCurrentPrice = (): number => {
+    if (!packaging || !product) return product?.price || 0;
+    return calculateBulkPrice(packaging);
+  };
+
+  const getDiscountPercentage = (): number => {
+    if (!packaging || !product) return 0;
+    
+    const basePrice = product.pallet_price || product.price;
+    const currentPrice = getCurrentPrice();
+    return Math.round(((basePrice - currentPrice) / basePrice) * 100);
+  };
   if (!product) {
     return <div className="container mx-auto px-4 py-8">
         <SEOComponent title="Product Not Found" description="The requested refrigerant product could not be found." canonicalUrl={`/products/${id}`} />
@@ -79,10 +107,10 @@ const ProductDetails = () => {
 
     // Add multiple quantities based on user selection
     for (let i = 0; i < quantity; i++) {
-      addToCart({
+    addToCart({
         id: cartItemId,
         name: product.name,
-        price: product.price,
+        price: getCurrentPrice(),
         image: product.image || '/placeholder.svg',
         sku: product.sku || 'N/A',
         epaApproved: product.epaApproved || false,
@@ -217,9 +245,36 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
-              <p className="text-2xl font-bold text-blue-600 mb-4">
-                ${product.price.toFixed(2)} / cylinder
-              </p>
+              
+              {/* Pricing Display */}
+              <div className="mb-4">
+                {packaging ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-4">
+                      <p className="text-3xl font-bold text-blue-600">
+                        ${getCurrentPrice().toFixed(2)}
+                      </p>
+                      {getDiscountPercentage() > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
+                            {getDiscountPercentage()}% OFF
+                          </span>
+                          <span className="text-lg text-gray-500 line-through">
+                            ${(product.pallet_price || product.price).toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600">per {packaging.toLowerCase()}</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <p className="text-gray-500 text-lg font-medium">Select packaging to see pricing</p>
+                    <p className="text-sm text-gray-400 mt-1">Bulk discounts available</p>
+                  </div>
+                )}
+              </div>
+              
               <p className="text-gray-600 mb-6">{product.description}</p>
               
               {product.sdsUrl && <Button variant="outline" className="mb-6">
@@ -261,9 +316,23 @@ const ProductDetails = () => {
                       <SelectValue placeholder="Select packaging option" />
                     </SelectTrigger>
                     <SelectContent>
-                      {product.packaging?.map(pkg => <SelectItem key={pkg} value={pkg}>
-                          {pkg}
-                        </SelectItem>)}
+                      {(product.packaging_options || product.packaging)?.map(pkg => (
+                        <SelectItem key={pkg} value={pkg}>
+                          <div className="flex justify-between items-center w-full">
+                            <span>{pkg}</span>
+                            <div className="ml-4 text-right">
+                              <span className="font-semibold text-blue-600">
+                                ${calculateBulkPrice(pkg).toFixed(2)}
+                              </span>
+                              {pkg !== '1 Pallet' && (
+                                <div className="text-xs text-green-600">
+                                  {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

@@ -86,7 +86,10 @@ export const adminSettingsSchema = z.object({
   bankSwiftCode: z.string()
     .min(8, 'SWIFT code must be at least 8 characters')
     .max(11, 'SWIFT code must be at most 11 characters')
-    .regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, 'Please enter a valid SWIFT code')
+    .regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, 'Please enter a valid SWIFT code'),
+  freeShippingThreshold: z.string()
+    .min(1, 'Free shipping threshold is required')
+    .regex(/^\d+(\.\d{1,2})?$/, 'Please enter a valid amount')
 });
 
 // Rate limiting utility
