@@ -18,6 +18,12 @@ const ProductForm = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: 0,
+    pallet_price: 0,
+    container_20ft_price: 0,
+    container_40ft_price: 0,
+    discount_20ft: 0.30,
+    discount_40ft: 0.45,
+    packaging_options: ["1 Pallet", "20ft Container", "40ft Container"],
     image: '',
     sku: '',
     epaApproved: false,
@@ -231,6 +237,12 @@ const ProductForm = () => {
     setNewProduct({
       name: '',
       price: 0,
+      pallet_price: 0,
+      container_20ft_price: 0,
+      container_40ft_price: 0,
+      discount_20ft: 0.30,
+      discount_40ft: 0.45,
+      packaging_options: ["1 Pallet", "20ft Container", "40ft Container"],
       image: '',
       sku: '',
       epaApproved: false,
@@ -361,16 +373,6 @@ const ProductForm = () => {
             />
           </div>
           <div>
-            <Label className="text-gray-300">Price ($)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={newProduct.price}
-              onChange={(e) => setNewProduct({...newProduct, price: parseFloat(e.target.value) || 0})}
-              className="bg-slate-700 border-slate-600 text-white"
-            />
-          </div>
-          <div>
             <Label className="text-gray-300">Stock Quantity</Label>
             <Input
               type="number"
@@ -378,6 +380,105 @@ const ProductForm = () => {
               onChange={(e) => setNewProduct({...newProduct, stock: parseInt(e.target.value) || 0})}
               className="bg-slate-700 border-slate-600 text-white"
             />
+          </div>
+        </div>
+
+        {/* Bulk Pricing Section */}
+        <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+          <Label className="text-cyan-400 text-lg font-semibold block mb-4">Bulk Pricing Structure</Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label className="text-gray-300">1 Pallet Price ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={newProduct.pallet_price}
+                onChange={(e) => {
+                  const palletPrice = parseFloat(e.target.value) || 0;
+                  setNewProduct({
+                    ...newProduct, 
+                    price: palletPrice,
+                    pallet_price: palletPrice,
+                    container_20ft_price: palletPrice * (1 - newProduct.discount_20ft),
+                    container_40ft_price: palletPrice * (1 - newProduct.discount_40ft)
+                  });
+                }}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Base price for 1 pallet"
+              />
+              <p className="text-xs text-gray-400 mt-1">Base price - no discount</p>
+            </div>
+            <div>
+              <Label className="text-gray-300">20ft Container Price ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={newProduct.container_20ft_price}
+                onChange={(e) => setNewProduct({...newProduct, container_20ft_price: parseFloat(e.target.value) || 0})}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Auto-calculated with 30% discount"
+                readOnly
+              />
+              <p className="text-xs text-green-400 mt-1">30% discount applied</p>
+            </div>
+            <div>
+              <Label className="text-gray-300">40ft Container Price ($)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={newProduct.container_40ft_price}
+                onChange={(e) => setNewProduct({...newProduct, container_40ft_price: parseFloat(e.target.value) || 0})}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Auto-calculated with 45% discount"
+                readOnly
+              />
+              <p className="text-xs text-green-400 mt-1">45% discount applied</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <Label className="text-gray-300">20ft Container Discount (%)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={newProduct.discount_20ft}
+                onChange={(e) => {
+                  const discount = parseFloat(e.target.value) || 0.30;
+                  setNewProduct({
+                    ...newProduct, 
+                    discount_20ft: discount,
+                    container_20ft_price: newProduct.pallet_price * (1 - discount)
+                  });
+                }}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="0.30"
+              />
+              <p className="text-xs text-gray-400 mt-1">Default: 0.30 (30%)</p>
+            </div>
+            <div>
+              <Label className="text-gray-300">40ft Container Discount (%)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={newProduct.discount_40ft}
+                onChange={(e) => {
+                  const discount = parseFloat(e.target.value) || 0.45;
+                  setNewProduct({
+                    ...newProduct, 
+                    discount_40ft: discount,
+                    container_40ft_price: newProduct.pallet_price * (1 - discount)
+                  });
+                }}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="0.45"
+              />
+              <p className="text-xs text-gray-400 mt-1">Default: 0.45 (45%)</p>
+            </div>
           </div>
         </div>
 

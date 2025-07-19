@@ -25,6 +25,12 @@ const ProductManagement = () => {
     name: '',
     sku: '',
     price: 0,
+    pallet_price: 0,
+    container_20ft_price: 0,
+    container_40ft_price: 0,
+    discount_20ft: 0.30,
+    discount_40ft: 0.45,
+    packaging_options: ["1 Pallet", "20ft Container", "40ft Container"],
     category: 'HFC' as string,
     description: '',
     availability: 'in_stock' as 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder',
@@ -45,6 +51,12 @@ const ProductManagement = () => {
       name: '',
       sku: '',
       price: 0,
+      pallet_price: 0,
+      container_20ft_price: 0,
+      container_40ft_price: 0,
+      discount_20ft: 0.30,
+      discount_40ft: 0.45,
+      packaging_options: ["1 Pallet", "20ft Container", "40ft Container"],
       category: 'HFC',
       description: '',
       availability: 'in_stock',
@@ -96,6 +108,12 @@ const ProductManagement = () => {
       name: product.name || '',
       sku: product.sku || '',
       price: product.price || 0,
+      pallet_price: product.pallet_price || 0,
+      container_20ft_price: product.container_20ft_price || 0,
+      container_40ft_price: product.container_40ft_price || 0,
+      discount_20ft: product.discount_20ft || 0.30,
+      discount_40ft: product.discount_40ft || 0.45,
+      packaging_options: product.packaging_options || ["1 Pallet", "20ft Container", "40ft Container"],
       category: product.category || 'HFC',
       description: product.description || '',
       availability: product.availability || 'in_stock',
@@ -191,28 +209,112 @@ const ProductManagement = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price" className="text-white">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    required
-                  />
+              <div>
+                <Label htmlFor="stock" className="text-white">Stock Quantity</Label>
+                <Input
+                  id="stock"
+                  type="number"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+
+              {/* Bulk Pricing Section */}
+              <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                <Label className="text-cyan-400 text-lg font-semibold block mb-4">Bulk Pricing Structure</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="pallet_price" className="text-white">1 Pallet Price ($)</Label>
+                    <Input
+                      id="pallet_price"
+                      type="number"
+                      step="0.01"
+                      value={formData.pallet_price}
+                      onChange={(e) => {
+                        const palletPrice = parseFloat(e.target.value) || 0;
+                        setFormData({
+                          ...formData, 
+                          price: palletPrice,
+                          pallet_price: palletPrice,
+                          container_20ft_price: palletPrice * (1 - formData.discount_20ft),
+                          container_40ft_price: palletPrice * (1 - formData.discount_40ft)
+                        });
+                      }}
+                      className="bg-slate-700 border-slate-600 text-white"
+                      required
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Base price - no discount</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="container_20ft_price" className="text-white">20ft Container Price ($)</Label>
+                    <Input
+                      id="container_20ft_price"
+                      type="number"
+                      step="0.01"
+                      value={formData.container_20ft_price}
+                      className="bg-slate-700 border-slate-600 text-white"
+                      readOnly
+                    />
+                    <p className="text-xs text-green-400 mt-1">30% discount applied</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="container_40ft_price" className="text-white">40ft Container Price ($)</Label>
+                    <Input
+                      id="container_40ft_price"
+                      type="number"
+                      step="0.01"
+                      value={formData.container_40ft_price}
+                      className="bg-slate-700 border-slate-600 text-white"
+                      readOnly
+                    />
+                    <p className="text-xs text-green-400 mt-1">45% discount applied</p>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="stock" className="text-white">Stock Quantity</Label>
-                  <Input
-                    id="stock"
-                    type="number"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <Label htmlFor="discount_20ft" className="text-white">20ft Container Discount (%)</Label>
+                    <Input
+                      id="discount_20ft"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      value={formData.discount_20ft}
+                      onChange={(e) => {
+                        const discount = parseFloat(e.target.value) || 0.30;
+                        setFormData({
+                          ...formData, 
+                          discount_20ft: discount,
+                          container_20ft_price: formData.pallet_price * (1 - discount)
+                        });
+                      }}
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Default: 0.30 (30%)</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="discount_40ft" className="text-white">40ft Container Discount (%)</Label>
+                    <Input
+                      id="discount_40ft"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      value={formData.discount_40ft}
+                      onChange={(e) => {
+                        const discount = parseFloat(e.target.value) || 0.45;
+                        setFormData({
+                          ...formData, 
+                          discount_40ft: discount,
+                          container_40ft_price: formData.pallet_price * (1 - discount)
+                        });
+                      }}
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Default: 0.45 (45%)</p>
+                  </div>
                 </div>
               </div>
 
@@ -374,7 +476,10 @@ const ProductManagement = () => {
             <CardContent>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-cyan-400">${product.price}</span>
+                  <div>
+                    <span className="text-2xl font-bold text-cyan-400">${product.pallet_price || product.price}</span>
+                    <p className="text-xs text-gray-400">1 Pallet</p>
+                  </div>
                   <Badge 
                     variant={product.availability === 'in_stock' ? 'default' : 'secondary'}
                     className={product.availability === 'in_stock' ? 'bg-green-500' : 'bg-red-500'}
@@ -382,6 +487,18 @@ const ProductManagement = () => {
                     {product.availability?.replace('_', ' ')}
                   </Badge>
                 </div>
+                {product.container_20ft_price && product.container_40ft_price && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">20ft Container:</span>
+                      <span className="text-green-400 font-semibold">${product.container_20ft_price} (-30%)</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">40ft Container:</span>
+                      <span className="text-green-400 font-semibold">${product.container_40ft_price} (-45%)</span>
+                    </div>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Category:</span>
                   <span className="text-white">{product.category}</span>
