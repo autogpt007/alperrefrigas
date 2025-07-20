@@ -35,14 +35,24 @@ const ProductDetails = () => {
   const calculateBulkPrice = (packageType: string): number => {
     if (!product) return 0;
     
+    const cylinderPrice = product.price; // Base price is per cylinder
+    const discount20ft = product.discount_20ft || 0.30;
+    const discount40ft = product.discount_40ft || 0.45;
+    
     switch (packageType) {
-      case '20ft Container':
-        return product.container_20ft_price || (product.price * (1 - (product.discount_20ft || 0.30)));
-      case '40ft Container':
-        return product.container_40ft_price || (product.price * (1 - (product.discount_40ft || 0.45)));
       case '1 Pallet':
+        // 40 cylinders per pallet
+        return product.pallet_price || (cylinderPrice * 40);
+      case '20ft Container':
+        // 1140 cylinders per 20ft container
+        const container20Price = cylinderPrice * 1140;
+        return product.container_20ft_price || (container20Price * (1 - discount20ft));
+      case '40ft Container':
+        // 2280 cylinders per 40ft container
+        const container40Price = cylinderPrice * 2280;
+        return product.container_40ft_price || (container40Price * (1 - discount40ft));
       default:
-        return product.pallet_price || product.price;
+        return cylinderPrice * 40; // Default to pallet pricing
     }
   };
 
@@ -54,9 +64,19 @@ const ProductDetails = () => {
   const getDiscountPercentage = (): number => {
     if (!packaging || !product) return 0;
     
-    const basePrice = product.pallet_price || product.price;
+    const palletPrice = product.pallet_price || (product.price * 40);
     const currentPrice = getCurrentPrice();
-    return Math.round(((basePrice - currentPrice) / basePrice) * 100);
+    
+    // Calculate discount percentage based on equivalent cylinder pricing
+    if (packaging === '20ft Container') {
+      const equivalentPrice = product.price * 1140;
+      return Math.round(((equivalentPrice - currentPrice) / equivalentPrice) * 100);
+    } else if (packaging === '40ft Container') {
+      const equivalentPrice = product.price * 2280;
+      return Math.round(((equivalentPrice - currentPrice) / equivalentPrice) * 100);
+    }
+    
+    return 0; // No discount for pallet
   };
   if (!product) {
     return <div className="container mx-auto px-4 py-8">

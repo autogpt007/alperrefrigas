@@ -45,19 +45,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const cartQuantity = existingItem?.quantity || 0;
 
   const calculateBulkPrice = (packageType: string): number => {
-    const basePrice = product.pallet_price || product.price;
+    const cylinderPrice = product.price; // Base price is per cylinder
     const discount20ft = product.discount_20ft || 0.30;
     const discount40ft = product.discount_40ft || 0.45;
     
     switch (packageType) {
       case '1 Pallet':
-        return basePrice;
+        // 40 cylinders per pallet
+        return product.pallet_price || (cylinderPrice * 40);
       case '20ft Container':
-        return product.container_20ft_price || basePrice * (1 - discount20ft);
+        // 1140 cylinders per 20ft container
+        const container20Price = cylinderPrice * 1140;
+        return product.container_20ft_price || (container20Price * (1 - discount20ft));
       case '40ft Container':
-        return product.container_40ft_price || basePrice * (1 - discount40ft);
+        // 2280 cylinders per 40ft container
+        const container40Price = cylinderPrice * 2280;
+        return product.container_40ft_price || (container40Price * (1 - discount40ft));
       default:
-        return basePrice;
+        return cylinderPrice * 40; // Default to pallet pricing
     }
   };
 
