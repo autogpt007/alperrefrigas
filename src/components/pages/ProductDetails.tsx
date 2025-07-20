@@ -272,7 +272,7 @@ const ProductDetails = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-4">
                       <p className="text-3xl font-bold text-blue-600">
-                        ${getCurrentPrice().toFixed(2)}
+                        ${getCurrentPrice().toLocaleString()}
                       </p>
                       {getDiscountPercentage() > 0 && (
                         <div className="flex items-center gap-2">
@@ -280,12 +280,16 @@ const ProductDetails = () => {
                             {getDiscountPercentage()}% OFF
                           </span>
                           <span className="text-lg text-gray-500 line-through">
-                            ${(product.pallet_price || product.price).toFixed(2)}
+                            ${(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}
                           </span>
                         </div>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600">per {packaging.toLowerCase()}</p>
+                    <div className="text-sm text-gray-600">
+                      {packaging === '1 Pallet' && '40 cylinders per pallet'}
+                      {packaging === '20ft Container' && '1,140 cylinders per container'}  
+                      {packaging === '40ft Container' && '2,280 cylinders per container'}
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">

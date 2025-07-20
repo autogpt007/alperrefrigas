@@ -88,14 +88,14 @@ const CartPage = () => {
                       </Button>
                     </div>
 
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-green-600">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        ${item.price.toFixed(2)} each
-                      </div>
-                    </div>
+                     <div className="text-right">
+                       <div className="text-xl font-bold text-green-600">
+                         ${(item.price * item.quantity).toLocaleString()}
+                       </div>
+                       <div className="text-sm text-gray-500">
+                         ${item.price.toLocaleString()} each
+                       </div>
+                     </div>
 
                     <Button
                       variant="ghost"
@@ -118,26 +118,31 @@ const CartPage = () => {
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="text-green-600">Calculated at checkout</span>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-green-600">${total.toFixed(2)}</span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
-                </div>
+                 <div className="flex justify-between text-sm">
+                   <span className="text-gray-600">Subtotal</span>
+                   <span>${total.toLocaleString()}</span>
+                 </div>
+                 <div className="flex justify-between text-sm">
+                   <span className="text-gray-600">Shipping</span>
+                   <span className="text-green-600">Calculated at checkout</span>
+                 </div>
+                 <div className="border-t pt-4">
+                   <div className="flex justify-between text-lg font-bold">
+                     <span>Total</span>
+                     <span className="text-green-600">${total.toLocaleString()}</span>
+                   </div>
+                   <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
+                 </div>
                 
                 <div className="space-y-3 pt-4">
                   <Link to="/checkout" className="block">
                     <Button size="lg" className="w-full bg-orange-500 hover:bg-orange-600">
                       Proceed to Checkout
+                    </Button>
+                  </Link>
+                  <Link to="/checkout?guest=true" className="block">
+                    <Button variant="outline" size="lg" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
+                      Checkout as Guest
                     </Button>
                   </Link>
                   <Link to="/products" className="block">

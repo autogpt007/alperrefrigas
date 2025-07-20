@@ -183,12 +183,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <div className="flex items-center gap-2">
                 {getDiscountPercentage() > 0 && (
                   <span className="text-xs text-gray-500 line-through">
-                    ${(product.pallet_price || product.price).toFixed(2)}
+                    ${(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}
                   </span>
                 )}
                 <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  ${getCurrentPrice().toFixed(2)}
+                  ${getCurrentPrice().toLocaleString()}
                 </div>
+              </div>
+              <div className="text-xs text-gray-400">
+                {selectedPackaging === '1 Pallet' && '40 cylinders per pallet'}
+                {selectedPackaging === '20ft Container' && '1,140 cylinders per container'}
+                {selectedPackaging === '40ft Container' && '2,280 cylinders per container'}
               </div>
               {getDiscountPercentage() > 0 && (
                 <div className="flex items-center gap-1 text-green-400">
