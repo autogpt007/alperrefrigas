@@ -39,21 +39,40 @@ const ProductDetails = () => {
     const discount20ft = product.discount_20ft || 0.30;
     const discount40ft = product.discount_40ft || 0.45;
     
+    console.log('calculateBulkPrice called:', {
+      packageType,
+      cylinderPrice,
+      discount20ft,
+      discount40ft,
+      productName: product.name
+    });
+    
+    let calculatedPrice = 0;
+    
     switch (packageType) {
       case '1 Pallet':
         // 40 cylinders per pallet - always calculate from cylinder price
-        return cylinderPrice * 40;
+        calculatedPrice = cylinderPrice * 40;
+        console.log('1 Pallet calculation:', cylinderPrice, '* 40 =', calculatedPrice);
+        break;
       case '20ft Container':
         // 1140 cylinders per 20ft container with discount
         const fullPrice20ft = cylinderPrice * 1140;
-        return fullPrice20ft * (1 - discount20ft);
+        calculatedPrice = fullPrice20ft * (1 - discount20ft);
+        console.log('20ft Container calculation:', fullPrice20ft, '* (1 -', discount20ft, ') =', calculatedPrice);
+        break;
       case '40ft Container':
         // 2280 cylinders per 40ft container with discount
         const fullPrice40ft = cylinderPrice * 2280;
-        return fullPrice40ft * (1 - discount40ft);
+        calculatedPrice = fullPrice40ft * (1 - discount40ft);
+        console.log('40ft Container calculation:', fullPrice40ft, '* (1 -', discount40ft, ') =', calculatedPrice);
+        break;
       default:
-        return cylinderPrice * 40; // Default to pallet pricing
+        calculatedPrice = cylinderPrice * 40; // Default to pallet pricing
     }
+    
+    console.log('Final calculated price:', calculatedPrice);
+    return calculatedPrice;
   };
 
   const getCurrentPrice = (): number => {
