@@ -346,7 +346,7 @@ const ProductDetails = () => {
                             <span>{pkg}</span>
                             <div className="ml-4 text-right">
                               <span className="font-semibold text-blue-600">
-                                ${calculateBulkPrice(pkg).toFixed(2)}
+                                ${calculateBulkPrice(pkg).toLocaleString()}
                               </span>
                               {pkg !== '1 Pallet' && (
                                 <div className="text-xs text-green-600">
