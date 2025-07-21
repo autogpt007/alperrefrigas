@@ -190,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   ${getCurrentPrice().toLocaleString()}
                 </div>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-gray-400 leading-tight">
                 {selectedPackaging === '1 Pallet' && '40 cylinders per pallet'}
                 {selectedPackaging === '20ft Container' && '1,140 cylinders per container'}
                 {selectedPackaging === '40ft Container' && '2,280 cylinders per container'}
