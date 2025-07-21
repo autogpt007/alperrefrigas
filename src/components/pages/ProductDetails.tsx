@@ -41,16 +41,16 @@ const ProductDetails = () => {
     
     switch (packageType) {
       case '1 Pallet':
-        // 40 cylinders per pallet
-        return product.pallet_price || (cylinderPrice * 40);
+        // 40 cylinders per pallet - always calculate from cylinder price
+        return cylinderPrice * 40;
       case '20ft Container':
-        // 1140 cylinders per 20ft container
-        const container20Price = cylinderPrice * 1140;
-        return product.container_20ft_price || (container20Price * (1 - discount20ft));
+        // 1140 cylinders per 20ft container with discount
+        const fullPrice20ft = cylinderPrice * 1140;
+        return fullPrice20ft * (1 - discount20ft);
       case '40ft Container':
-        // 2280 cylinders per 40ft container
-        const container40Price = cylinderPrice * 2280;
-        return product.container_40ft_price || (container40Price * (1 - discount40ft));
+        // 2280 cylinders per 40ft container with discount
+        const fullPrice40ft = cylinderPrice * 2280;
+        return fullPrice40ft * (1 - discount40ft);
       default:
         return cylinderPrice * 40; // Default to pallet pricing
     }
