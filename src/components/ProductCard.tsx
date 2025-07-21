@@ -180,7 +180,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="flex items-center justify-between mb-3">
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-baseline gap-2">
                 {getDiscountPercentage() > 0 && (
                   <span className="text-xs text-gray-500 line-through">
                     ${(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}
@@ -198,7 +198,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {getDiscountPercentage() > 0 && (
                 <div className="flex items-center gap-1 text-green-400">
                   <TrendingUp className="h-3 w-3" />
-                  <span className="text-xs font-medium">Save {getDiscountPercentage()}%!</span>
+                  <span className="text-xs font-medium">Save {getDiscountPercentage()}%</span>
                 </div>
               )}
             </div>
