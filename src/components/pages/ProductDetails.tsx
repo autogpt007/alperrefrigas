@@ -76,8 +76,13 @@ const ProductDetails = () => {
   };
 
   const getCurrentPrice = (): number => {
-    if (!packaging || !product) return product?.price || 0;
-    return calculateBulkPrice(packaging);
+    if (!packaging || !product) {
+      console.log('getCurrentPrice: No packaging or product', { packaging, hasProduct: !!product });
+      return product?.price || 0;
+    }
+    const price = calculateBulkPrice(packaging);
+    console.log('getCurrentPrice result:', price, 'for packaging:', packaging);
+    return price;
   };
 
   const getDiscountPercentage = (): number => {
@@ -318,7 +323,13 @@ const ProductDetails = () => {
                 )}
               </div>
               
-              <p className="text-gray-600 mb-6">{product.description}</p>
+              <div className="text-gray-600 mb-6 whitespace-pre-line">
+                {product.description?.split('\n').map((line, index) => (
+                  <p key={index} className="mb-2 last:mb-0">
+                    {line}
+                  </p>
+                ))}
+              </div>
               
               {product.sdsUrl && <Button variant="outline" className="mb-6">
                   <Download className="h-4 w-4 mr-2" />
