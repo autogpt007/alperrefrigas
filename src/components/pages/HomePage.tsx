@@ -10,6 +10,7 @@ import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
 import TestimonialSection from '@/components/ui/TestimonialSection';
 import { supabase } from '@/integrations/supabase/client';
+import { createProductSlug } from '@/lib/slugs';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ const HomePage = () => {
 
         const productList = featuredData?.map(item => ({
           name: item.products?.name || '',
-          href: `/products/${item.products?.id}` // Link to specific product
+          href: `/products/${createProductSlug(item.products?.name || '')}` // Use consistent slug generation
         })) || [];
 
         setHomepageProducts(productList);

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
+import { createProductSlug } from '@/lib/slugs';
 
 interface Product {
   id: string;
@@ -141,7 +142,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Product Info - Condensed */}
         <div className="flex-1 flex flex-col">
           <div className="mb-2">
-            <Link to={`/products/${product.id}`} className="block">
+            <Link to={`/products/${createProductSlug(product.name)}`} className="block">
               <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors duration-300 hover:underline cursor-pointer">
                 {product.name}
               </h3>

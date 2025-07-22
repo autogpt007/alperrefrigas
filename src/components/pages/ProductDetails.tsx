@@ -10,10 +10,9 @@ import { useCart } from '../../contexts/CartContext';
 import { useToast } from '../../hooks/use-toast';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
+import { createProductSlug, findProductBySlug } from '@/lib/slugs';
 const ProductDetails = () => {
-  const {
-    id
-  } = useParams();
+  const { id, productSlug } = useParams();
   const navigate = useNavigate();
   const {
     products
@@ -29,7 +28,26 @@ const ProductDetails = () => {
   } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [packaging, setPackaging] = useState('');
-  const product = products.find(p => p.id === id);
+  // Find product by ID or by slug with better logic
+  const product = React.useMemo(() => {
+    if (id) {
+      // Direct ID lookup (for legacy support)
+      return products.find(p => p.id === id);
+    }
+    if (productSlug) {
+      // Slug-based lookup
+      return findProductBySlug(products, productSlug);
+    }
+    return null;
+  }, [products, id, productSlug]);
+
+  // Redirect to SEO-friendly URL if accessed via ID
+  React.useEffect(() => {
+    if (product && id && !productSlug) {
+      const slug = createProductSlug(product.name);
+      navigate(`/products/${slug}`, { replace: true });
+    }
+  }, [product, id, productSlug, navigate]);
 
   // Bulk pricing calculation functions
   const calculateBulkPrice = (packageType: string): number => {
@@ -102,17 +120,36 @@ const ProductDetails = () => {
     
     return 0; // No discount for pallet
   };
-  if (!product) {
-    return <div className="container mx-auto px-4 py-8">
-        <SEOComponent title="Product Not Found" description="The requested refrigerant product could not be found." canonicalUrl={`/products/${id}`} />
+
+  // Show loading state while products are being fetched
+  if (products.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
+          <div className="text-lg text-gray-600">Loading product details...</div>
+        </div>
+      </div>
+    );
+  }
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-2xl font-bold mb-4">Product Not Found</div>
+          <p className="text-gray-600 mb-4">The product you're looking for doesn't exist or may have been removed.</p>
           <Link to="/products">
-            <Button>Back to Products</Button>
+            <Button>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Products
+            </Button>
           </Link>
         </div>
-      </div>;
+      </div>
+    );
   }
+
+  // Create SEO-friendly canonical URL
+  const canonicalUrl = `/products/${createProductSlug(product.name)}`;
   const handleAddToRFQ = () => {
     if (!packaging) {
       toast({
@@ -173,18 +210,26 @@ const ProductDetails = () => {
     setQuantity(1);
     setPackaging('');
   };
-  return <div className="min-h-screen bg-gray-50">
-      <SEOComponent title={`${product.name} - Professional Grade Refrigerant`} description={`Buy ${product.name} refrigerant in bulk. ${product.description} EPA approved, fast shipping, competitive pricing. SKU: ${product.sku}`} keywords={`${product.name}, refrigerant, ${product.category}, ${product.sku}, HVAC, cooling, ${product.applications?.join(', ')}`} canonicalUrl={`/products/${product.id}`} ogImage={product.image} ogType="product" product={{
-      name: product.name,
-      price: product.price,
-      currency: 'USD',
-      availability: product.availability,
-      brand: product.brand,
-      sku: product.sku,
-      gtin: product.gtin,
-      description: product.description,
-      image: product.image
-    }} />
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <SEOComponent
+        title={`${product.name} - Premium Refrigerant | Professional HVAC Solutions`}
+        description={`${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant.`}
+        keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, ${product.applications?.join(', ') || ''}`}
+        canonicalUrl={canonicalUrl}
+        ogImage={product.thumbnailUrl || product.images?.[0] || product.image}
+        product={{
+          name: product.name,
+          price: getCurrentPrice(),
+          currency: 'USD',
+          availability: product.availability === 'in_stock' ? 'InStock' : 'OutOfStock',
+          brand: product.brand || 'FrigidFlow',
+          sku: product.sku || product.id,
+          gtin: product.gtin,
+          description: product.description || `${product.name} refrigerant for professional HVAC applications`,
+          image: product.thumbnailUrl || product.images?.[0] || product.image || ''
+        }}
+      />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
@@ -445,6 +490,8 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProductDetails;

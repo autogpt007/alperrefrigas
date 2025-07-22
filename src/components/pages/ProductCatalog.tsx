@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
+import { createProductSlug } from '@/lib/slugs';
 
 const ProductCatalog = () => {
   const { t } = useTranslation();
@@ -155,7 +156,7 @@ const ProductCatalog = () => {
         {/* Condensed Product Info */}
         <div className="p-4 flex-1 flex flex-col">
           <div className="mb-2">
-            <Link to={`/products/${product.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim()}`} className="block">
+            <Link to={`/products/${createProductSlug(product.name)}`} className="block">
               <h3 className="text-lg font-bold mb-1 text-gray-900 group-hover:text-blue-600 transition-colors hover:underline cursor-pointer">{product.name}</h3>
             </Link>
             <p className="text-xs text-gray-500">SKU: {product.sku}</p>
@@ -177,7 +178,7 @@ const ProductCatalog = () => {
               <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
             </div>
             
-            <Link to={`/products/${product.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim()}`}>
+            <Link to={`/products/${createProductSlug(product.name)}`}>
               <Button 
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={product.availability !== 'in_stock'}
