@@ -96,6 +96,7 @@ function App() {
                             <Routes>
                               <Route path="/" element={<HomePage />} />
                               <Route path="/products" element={<ProductCatalog />} />
+                              <Route path="/products/:productSlug" element={<ProductDetails />} />
                               <Route path="/products/:id" element={<ProductDetails />} />
                               <Route path="/cart" element={<CartPage />} />
                               <Route path="/rfq" element={<RFQPage />} />

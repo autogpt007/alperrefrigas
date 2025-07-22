@@ -81,12 +81,14 @@ const resources = {
           all: "All Categories",
           hfc: "HFC Refrigerants",
           hfo: "HFO Refrigerants",
+          hcfc: "HCFC Refrigerants",
+          cfc: "CFC Refrigerants",
           natural: "Natural Refrigerants",
           automotive: "Automotive",
           commercial: "Commercial HVAC",
           industrial: "Industrial"
         },
-        sort: {
+        sortOptions: {
           name: "Name A-Z",
           price: "Price Low to High",
           category: "Category"

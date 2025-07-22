@@ -26,6 +26,7 @@ const HomePage = () => {
           .from('featured_products')
           .select(`
             products (
+              id,
               name
             )
           `)
@@ -37,7 +38,7 @@ const HomePage = () => {
 
         const productList = featuredData?.map(item => ({
           name: item.products?.name || '',
-          href: '/products'
+          href: `/products/${item.products?.id}` // Link to specific product
         })) || [];
 
         setHomepageProducts(productList);

@@ -231,7 +231,7 @@ const AdminSettings = () => {
                 <p className="text-red-400 text-sm mt-1">{validationErrors.notificationEmail}</p>
               )}
               <p className="text-sm text-gray-400 mt-1">
-                Email address for receiving contact form submissions and order notifications
+                Email address for receiving contact form submissions and order notifications. This appears in the header.
               </p>
             </div>
 

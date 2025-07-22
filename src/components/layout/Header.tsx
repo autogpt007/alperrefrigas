@@ -23,14 +23,14 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch logo settings
+  // Fetch logo and contact settings
   const { data: logoSettings } = useQuery({
     queryKey: ['logo-settings'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_key, setting_value')
-        .in('setting_key', ['logo_url', 'company_name', 'company_tagline']);
+        .in('setting_key', ['logo_url', 'company_name', 'company_tagline', 'main_phone', 'notification_email']);
 
       if (error) throw error;
 
@@ -42,7 +42,9 @@ const Header = () => {
       return {
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'FrigidFlow',
-        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions'
+        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions',
+        main_phone: settingsMap.main_phone || '1-800-REFRIGERANT',
+        notification_email: settingsMap.notification_email || 'info@frigidflow.com'
       };
     },
   });
@@ -83,8 +85,8 @@ const Header = () => {
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
           <div className="flex items-center space-x-4 text-sm text-gray-600">
-            <span>📞 1-800-REFRIGERANT</span>
-            <span>📧 info@frigidflow.com</span>
+            <span>📞 {logoSettings?.main_phone || '1-800-REFRIGERANT'}</span>
+            <span>📧 {logoSettings?.notification_email || 'info@frigidflow.com'}</span>
           </div>
           <div className="flex items-center space-x-4">
             <LanguageSwitcher />
