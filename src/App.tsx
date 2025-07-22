@@ -14,6 +14,7 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { WhatsAppButton } from "./components/ui/WhatsAppButton";
 import HomePage from "./components/pages/HomePage";
+import ProductCategory from "./components/pages/ProductCategory";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
 import CartPage from "./components/pages/CartPage";
@@ -96,6 +97,7 @@ function App() {
                             <Routes>
                               <Route path="/" element={<HomePage />} />
                               <Route path="/products" element={<ProductCatalog />} />
+                              <Route path="/products/category/:category" element={<ProductCategory />} />
                               <Route path="/products/:productSlug" element={<ProductDetails />} />
                               <Route path="/products/:id" element={<ProductDetails />} />
                               <Route path="/cart" element={<CartPage />} />
