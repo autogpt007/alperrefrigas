@@ -30,7 +30,7 @@ const Header = () => {
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_key, setting_value')
-        .in('setting_key', ['logo_url', 'company_name', 'company_tagline', 'main_phone', 'notification_email']);
+        .in('setting_key', ['logo_url', 'company_name', 'company_tagline', 'main_phone', 'header_email']);
 
       if (error) throw error;
 
@@ -44,7 +44,7 @@ const Header = () => {
         company_name: settingsMap.company_name || 'FrigidFlow',
         company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions',
         main_phone: settingsMap.main_phone || '1-800-REFRIGERANT',
-        notification_email: settingsMap.notification_email || 'info@frigidflow.com'
+        header_email: settingsMap.header_email || 'info@frigidflow.com'
       };
     },
   });
@@ -86,7 +86,7 @@ const Header = () => {
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
           <div className="flex items-center space-x-4 text-sm text-gray-600">
             <span>📞 {logoSettings?.main_phone || '1-800-REFRIGERANT'}</span>
-            <span>📧 {logoSettings?.notification_email || 'info@frigidflow.com'}</span>
+            <span>📧 {logoSettings?.header_email || 'info@frigidflow.com'}</span>
           </div>
           <div className="flex items-center space-x-4">
             <LanguageSwitcher />

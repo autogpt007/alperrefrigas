@@ -57,7 +57,8 @@ const HomePage = () => {
 
     const fetchFeaturedProducts = async () => {
       try {
-        const { data: featuredData, error } = await supabase
+        // Try 'featured' section first, then fall back to 'homepage_inventory'
+        let { data: featuredData, error } = await supabase
           .from('featured_products')
           .select(`
             products (
@@ -85,6 +86,41 @@ const HomePage = () => {
           .eq('is_active', true)
           .order('order_index')
           .limit(3);
+
+        // If no featured products found, get from homepage_inventory instead
+        if (!featuredData || featuredData.length === 0) {
+          const { data: inventoryData, error: inventoryError } = await supabase
+            .from('featured_products')
+            .select(`
+              products (
+                id,
+                name,
+                price,
+                pallet_price,
+                container_20ft_price,
+                container_40ft_price,
+                discount_20ft,
+                discount_40ft,
+                packaging_options,
+                images,
+                thumbnail_url,
+                sku,
+                epa_approved,
+                category,
+                chemical_formula,
+                applications,
+                stock_quantity,
+                availability
+              )
+            `)
+            .eq('section_name', 'homepage_inventory')
+            .eq('is_active', true)
+            .order('order_index')
+            .limit(3);
+          
+          featuredData = inventoryData;
+          error = inventoryError;
+        }
 
         if (error) throw error;
 

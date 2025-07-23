@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2, Truck } from 'lucide-react';
+import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2, Truck, Bell, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { adminSettingsSchema, sanitizeInput, RateLimiter, type AdminSettingsData } from '@/lib/validation';
@@ -33,8 +33,10 @@ const AdminSettings = () => {
 
   const [formData, setFormData] = useState({
     notificationEmail: '',
+    headerEmail: '',
     whatsappNumber: '',
     mainPhone: '',
+    certificateDetails: '',
     // Payment settings
     bankWireInstructions: '',
     bankName: '',
@@ -71,8 +73,10 @@ const AdminSettings = () => {
 
       // Populate form data
       const emailSetting = notifData?.find((s: any) => s.setting_key === 'notification_email');
+      const headerEmailSetting = siteData?.find((s: any) => s.setting_key === 'header_email');
       const whatsappSetting = siteData?.find((s: any) => s.setting_key === 'whatsapp_number');
       const phoneSetting = siteData?.find((s: any) => s.setting_key === 'main_phone');
+      const certificateDetailsSetting = siteData?.find((s: any) => s.setting_key === 'certificate_details');
       
       // Payment settings
       const bankInstructionsSetting = siteData?.find((s: any) => s.setting_key === 'bank_wire_instructions');
@@ -84,8 +88,10 @@ const AdminSettings = () => {
 
       setFormData({
         notificationEmail: emailSetting?.setting_value || '',
+        headerEmail: headerEmailSetting?.setting_value || '',
         whatsappNumber: whatsappSetting?.setting_value || '',
         mainPhone: phoneSetting?.setting_value || '',
+        certificateDetails: certificateDetailsSetting?.setting_value || '',
         bankWireInstructions: bankInstructionsSetting?.setting_value || '',
         bankName: bankNameSetting?.setting_value || '',
         bankRoutingNumber: bankRoutingSetting?.setting_value || '',
@@ -140,8 +146,10 @@ const AdminSettings = () => {
 
       // Update settings
       await updateSetting('notification_settings', 'notification_email', validatedData.notificationEmail);
+      await updateSetting('site_settings', 'header_email', validatedData.headerEmail || validatedData.notificationEmail);
       await updateSetting('site_settings', 'whatsapp_number', validatedData.whatsappNumber);
       await updateSetting('site_settings', 'main_phone', validatedData.mainPhone);
+      await updateSetting('site_settings', 'certificate_details', validatedData.certificateDetails || '');
       
       // Update payment settings
       await updateSetting('site_settings', 'bank_wire_instructions', validatedData.bankWireInstructions);
@@ -276,6 +284,71 @@ const AdminSettings = () => {
               )}
               <p className="text-sm text-gray-400 mt-1">
                 Primary business phone number displayed across the website
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300 flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Header Email
+              </Label>
+              <Input
+                type="email"
+                value={formData.headerEmail || ''}
+                onChange={(e) => handleInputChange('headerEmail', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.headerEmail ? 'border-red-500' : ''
+                }`}
+                placeholder="e.g., info@frigidflow.com"
+              />
+              {validationErrors.headerEmail && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.headerEmail}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                Email address displayed in the website header
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300 flex items-center gap-2">
+                <Bell className="h-4 w-4" />
+                Notification Email
+              </Label>
+              <Input
+                type="email"
+                value={formData.notificationEmail || ''}
+                onChange={(e) => handleInputChange('notificationEmail', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.notificationEmail ? 'border-red-500' : ''
+                }`}
+                placeholder="e.g., admin@frigidflow.com"
+              />
+              {validationErrors.notificationEmail && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.notificationEmail}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                Email address used for sending confirmation emails and notifications
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300 flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Certificate Verification Details
+              </Label>
+              <Textarea
+                value={formData.certificateDetails || ''}
+                onChange={(e) => handleInputChange('certificateDetails', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 min-h-20 ${
+                  validationErrors.certificateDetails ? 'border-red-500' : ''
+                }`}
+                placeholder="Enter details about certificate verification and compliance assurance..."
+              />
+              {validationErrors.certificateDetails && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.certificateDetails}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                Description text under Certificate Verification & Compliance Assurance section
               </p>
             </div>
 

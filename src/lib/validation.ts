@@ -63,12 +63,19 @@ export const adminSettingsSchema = z.object({
   notificationEmail: z.string()
     .email('Please enter a valid email address')
     .max(255, 'Email must be less than 255 characters'),
+  headerEmail: z.string()
+    .email('Please enter a valid email address')
+    .max(255, 'Email must be less than 255 characters')
+    .optional(),
   whatsappNumber: z.string()
     .regex(/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number with country code')
     .max(20, 'Phone number must be less than 20 characters'),
   mainPhone: z.string()
     .min(1, 'Phone number is required')
     .max(20, 'Phone number must be less than 20 characters'),
+  certificateDetails: z.string()
+    .max(1000, 'Certificate details must be less than 1000 characters')
+    .optional(),
   // Payment settings
   bankWireInstructions: z.string()
     .min(10, 'Instructions must be at least 10 characters')
