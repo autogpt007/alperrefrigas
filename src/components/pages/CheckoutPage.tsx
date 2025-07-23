@@ -24,6 +24,7 @@ const CheckoutPage = () => {
   const { createOrder } = useOrders();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(500);
 
   const [formData, setFormData] = useState({
     customerName: user?.user_metadata?.full_name || '',
@@ -48,6 +49,27 @@ const CheckoutPage = () => {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Fetch free shipping threshold
+  useEffect(() => {
+    const fetchShippingSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from('site_settings')
+          .select('setting_value')
+          .eq('setting_key', 'free_shipping_threshold')
+          .single();
+        
+        if (data?.setting_value) {
+          setFreeShippingThreshold(parseFloat(data.setting_value));
+        }
+      } catch (error) {
+        console.error('Error fetching shipping settings:', error);
+      }
+    };
+
+    fetchShippingSettings();
+  }, []);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
 
@@ -68,7 +90,7 @@ const CheckoutPage = () => {
     fetchBankWireDetails();
   }, []);
 
-  const shippingCost = total > 500 ? 0 : 50;
+  const shippingCost = total > freeShippingThreshold ? 0 : 50;
   const taxAmount = total * 0.08; // 8% tax
   const finalTotal = total + shippingCost + taxAmount;
 
@@ -566,7 +588,7 @@ const CheckoutPage = () => {
                   {shippingCost === 0 && (
                     <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
                       <p className="text-green-400 text-sm font-medium">
-                        🎉 Free shipping on orders over $500!
+                        🎉 Free shipping on orders over ${freeShippingThreshold}!
                       </p>
                     </div>
                   )}
