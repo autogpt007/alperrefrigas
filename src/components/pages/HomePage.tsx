@@ -16,9 +16,7 @@ const HomePage = () => {
   const { t } = useTranslation();
   const { products, loading } = useProducts();
   const [homepageProducts, setHomepageProducts] = useState<Array<{name: string, href: string}>>([]);
-  
-  // Get first 3 products for featured section
-  const featuredProducts = products.slice(0, 3);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchHomepageProducts = async () => {
@@ -57,8 +55,70 @@ const HomePage = () => {
       }
     };
 
+    const fetchFeaturedProducts = async () => {
+      try {
+        const { data: featuredData, error } = await supabase
+          .from('featured_products')
+          .select(`
+            products (
+              id,
+              name,
+              price,
+              pallet_price,
+              container_20ft_price,
+              container_40ft_price,
+              discount_20ft,
+              discount_40ft,
+              packaging_options,
+              images,
+              thumbnail_url,
+              sku,
+              epa_approved,
+              category,
+              chemical_formula,
+              applications,
+              stock_quantity,
+              availability
+            )
+          `)
+          .eq('section_name', 'featured')
+          .eq('is_active', true)
+          .order('order_index')
+          .limit(3);
+
+        if (error) throw error;
+
+        const productList = featuredData?.map(item => ({
+          id: item.products?.id || '',
+          name: item.products?.name || '',
+          price: item.products?.price || 0,
+          pallet_price: item.products?.pallet_price,
+          container_20ft_price: item.products?.container_20ft_price,
+          container_40ft_price: item.products?.container_40ft_price,
+          discount_20ft: item.products?.discount_20ft,
+          discount_40ft: item.products?.discount_40ft,
+          packaging_options: item.products?.packaging_options || [],
+          image: item.products?.thumbnail_url || (Array.isArray(item.products?.images) ? item.products?.images[0] : '') || '',
+          sku: item.products?.sku || '',
+          epaApproved: item.products?.epa_approved || false,
+          category: item.products?.category,
+          chemical_formula: item.products?.chemical_formula,
+          applications: item.products?.applications || [],
+          stock_quantity: item.products?.stock_quantity,
+          availability: item.products?.availability
+        })) || [];
+
+        setFeaturedProducts(productList);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        // Fallback to first 3 products from main products list
+        setFeaturedProducts(products.slice(0, 3));
+      }
+    };
+
     fetchHomepageProducts();
-  }, []);
+    fetchFeaturedProducts();
+  }, [products]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section with improved visibility */}
