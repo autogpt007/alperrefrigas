@@ -1,19 +1,29 @@
-
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
-interface WhatsAppButtonProps {
-  phoneNumber: string;
-  message?: string;
-}
+export const WhatsAppButton: React.FC = () => {
+  // Fetch WhatsApp number from database
+  const { data: whatsappNumber } = useQuery({
+    queryKey: ['whatsapp-number'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_key', 'whatsapp_number')
+        .single();
 
-export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ 
-  phoneNumber, 
-  message = "Hello! I'm interested in your refrigerants." 
-}) => {
+      if (error) throw error;
+      return data?.setting_value || '18007347443'; // fallback number
+    },
+  });
+
   const handleWhatsAppClick = () => {
+    if (!whatsappNumber) return;
+    
     // Validate and format phone number for WhatsApp Business API
-    let cleanNumber = phoneNumber.replace(/\D/g, '');
+    let cleanNumber = whatsappNumber.replace(/\D/g, '');
     
     // Ensure proper country code format for international numbers
     if (cleanNumber.startsWith('1') && cleanNumber.length === 11) {
@@ -24,6 +34,8 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
       cleanNumber = '1' + cleanNumber;
     }
     
+    // Default message for WhatsApp
+    const message = "Hello! I'm interested in your refrigerant products. Can you help me?";
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
     
@@ -37,6 +49,9 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
       window.open(`https://web.whatsapp.com/send?phone=${cleanNumber}&text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
     }
   };
+
+  // Don't render button if no phone number is available
+  if (!whatsappNumber) return null;
 
   return (
     <button
