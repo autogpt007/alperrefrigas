@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const WhatsAppButton: React.FC = () => {
-  // Fetch WhatsApp number from database
+  // Fetch WhatsApp number from database with no cache
   const { data: whatsappNumber } = useQuery({
     queryKey: ['whatsapp-number'],
     queryFn: async () => {
@@ -17,6 +17,8 @@ export const WhatsAppButton: React.FC = () => {
       if (error) throw error;
       return data?.setting_value || '18007347443'; // fallback number
     },
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0, // Don't cache (formerly cacheTime)
   });
 
   const handleWhatsAppClick = () => {
