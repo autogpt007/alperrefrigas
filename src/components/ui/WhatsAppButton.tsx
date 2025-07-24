@@ -82,12 +82,19 @@ export const WhatsAppButton: React.FC = () => {
   if (!whatsappNumber) return null;
 
   return (
-    <button
-      onClick={handleWhatsAppClick}
-      className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 transition-all duration-300 hover:scale-110"
-      aria-label="Chat on WhatsApp"
-    >
-      <MessageCircle className="h-6 w-6" />
-    </button>
+    <>
+      {/* Debug info - remove this after fixing */}
+      <div className="fixed bottom-20 right-6 bg-black text-white p-2 text-xs rounded z-50">
+        DB Number: {whatsappNumber}
+      </div>
+      
+      <button
+        onClick={handleWhatsAppClick}
+        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 transition-all duration-300 hover:scale-110"
+        aria-label="Chat on WhatsApp"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </button>
+    </>
   );
 };
