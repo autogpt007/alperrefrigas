@@ -25,8 +25,11 @@ export const WhatsAppButton: React.FC = () => {
     // Validate and format phone number for WhatsApp Business API
     let cleanNumber = whatsappNumber.replace(/\D/g, '');
     
-    // Ensure proper country code format for international numbers
-    if (cleanNumber.startsWith('1') && cleanNumber.length === 11) {
+    // Handle different country code formats
+    if (cleanNumber.startsWith('90') && cleanNumber.length === 12) {
+      // Turkish number starting with 90
+      cleanNumber = cleanNumber;
+    } else if (cleanNumber.startsWith('1') && cleanNumber.length === 11) {
       // US/Canada number starting with 1
       cleanNumber = cleanNumber;
     } else if (cleanNumber.length === 10) {
