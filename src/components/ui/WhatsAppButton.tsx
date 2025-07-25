@@ -4,11 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const WhatsAppButton: React.FC = () => {
-  // Fetch WhatsApp number from database with no cache
-  const { data: whatsappNumber, refetch } = useQuery({
-    queryKey: ['whatsapp-number', Date.now()], // Add timestamp to force fresh query
-    queryFn: async () => {
-      console.log('Fetching WhatsApp number from database...');
+  const [whatsappNumber, setWhatsappNumber] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Fetch WhatsApp number directly without any caching
+  const fetchWhatsAppNumber = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+      console.log('🔄 Fetching WhatsApp number from database...');
+      
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_value')
@@ -16,22 +20,31 @@ export const WhatsAppButton: React.FC = () => {
         .single();
 
       if (error) {
-        console.error('Error fetching WhatsApp number:', error);
-        throw error;
+        console.error('❌ Error fetching WhatsApp number:', error);
+        setWhatsappNumber('905545645337'); // Use Turkish number as fallback
+        return;
       }
-      console.log('Fetched WhatsApp number:', data?.setting_value);
-      return data?.setting_value || '18007347443'; // fallback number
-    },
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 0, // Don't cache (formerly cacheTime)
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-  });
+      
+      const number = data?.setting_value;
+      console.log('✅ Fetched WhatsApp number from DB:', number);
+      setWhatsappNumber(number);
+    } catch (error) {
+      console.error('❌ Exception fetching WhatsApp number:', error);
+      setWhatsappNumber('905545645337'); // Use Turkish number as fallback
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  // Force refetch on component mount
+  // Fetch on mount and set up interval for periodic refresh
   React.useEffect(() => {
-    refetch();
-  }, [refetch]);
+    fetchWhatsAppNumber();
+    
+    // Refresh every 5 seconds to ensure we have the latest number
+    const interval = setInterval(fetchWhatsAppNumber, 5000);
+    
+    return () => clearInterval(interval);
+  }, [fetchWhatsAppNumber]);
 
   const handleWhatsAppClick = () => {
     console.log('WhatsApp button clicked, number from DB:', whatsappNumber);
