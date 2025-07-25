@@ -175,6 +175,45 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_info: {
+        Row: {
+          category: string
+          contact_type: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          label: string
+          order_index: number
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          category: string
+          contact_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          label: string
+          order_index?: number
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          category?: string
+          contact_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string
+          order_index?: number
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string

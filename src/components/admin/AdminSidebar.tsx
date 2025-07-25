@@ -12,7 +12,8 @@ import {
   Award,
   Globe,
   Star,
-  Palette
+  Palette,
+  Phone
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -25,6 +26,7 @@ const AdminSidebar = () => {
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
+    { icon: Phone, label: 'Contact Info', path: '/admin/contact-info' },
     { icon: Users, label: 'Team', path: '/admin/team' },
     { icon: Award, label: 'Certificates', path: '/admin/certificates' },
     { icon: Globe, label: 'Content', path: '/admin/content' },

@@ -44,6 +44,7 @@ import OrderManagement from "./components/admin/OrderManagement";
 import BlogPostManagement from "./components/admin/BlogPostManagement";
 import LogoManagement from "./components/admin/LogoManagement";
 import ContactManagement from "./components/admin/ContactManagement";
+import ContactInfoManagement from "./components/admin/ContactInfoManagement";
 import AdminSettings from "./components/admin/AdminSettings";
 import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
@@ -81,6 +82,7 @@ function App() {
                         <Route path="blog" element={<BlogPostManagement />} />
                         <Route path="logo" element={<LogoManagement />} />
                         <Route path="contacts" element={<ContactManagement />} />
+                        <Route path="contact-info" element={<ContactInfoManagement />} />
                         <Route path="team" element={<TeamManagement />} />
                         <Route path="certificates" element={<CertificationManagement />} />
                         <Route path="content" element={<ContentManagement />} />
