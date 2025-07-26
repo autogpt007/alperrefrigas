@@ -2,11 +2,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Phone, Mail, MapPin, Clock, Award, Shield } from 'lucide-react';
+import { ContactDisplay } from '@/components/ui/ContactDisplay';
+import SocialMediaLinks from '@/components/ui/SocialMediaLinks';
 
 const Footer = () => {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
+
+  // Fetch company info
+  const { data: companyInfo } = useQuery({
+    queryKey: ['company-info'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_key, setting_value')
+        .in('setting_key', ['company_name', 'company_tagline']);
+
+      if (error) throw error;
+
+      const settingsMap = data?.reduce((acc, item) => {
+        acc[item.setting_key] = item.setting_value;
+        return acc;
+      }, {} as Record<string, string>) || {};
+
+      return {
+        company_name: settingsMap.company_name || 'Alper Refrigerants',
+        company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distribution'
+      };
+    },
+  });
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -71,40 +98,9 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h4 className="text-lg font-semibold mb-6">{t('footer.contactInformation')}</h4>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <Phone className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-                <div>
-                  <p className="text-white font-medium">1-800-REFRIGERANT</p>
-                  <p className="text-sm text-gray-400">(1-800-734-7443)</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <Mail className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-                <div>
-                  <p className="text-white">sales@alperrefrigerants.com</p>
-                  <p className="text-sm text-gray-400">support@alperrefrigerants.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <MapPin className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-                <div>
-                  <p className="text-white">{t('footer.distributionCenters')}:</p>
-                  <p className="text-sm text-gray-400">Houston, TX • Atlanta, GA</p>
-                  <p className="text-sm text-gray-400">Los Angeles, CA • Toronto, ON</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <Clock className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
-                <div>
-                  <p className="text-white">{t('footer.businessHours')}:</p>
-                  <p className="text-sm text-gray-400">{t('footer.monFri')}</p>
-                  <p className="text-sm text-gray-400">{t('footer.saturday')}</p>
-                </div>
-              </div>
+            <ContactDisplay category="general" className="text-gray-300 space-y-4" />
+            <div className="mt-6">
+              <SocialMediaLinks className="justify-start" />
             </div>
           </div>
         </div>

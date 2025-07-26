@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
+import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
 
 const UserAuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -393,6 +394,7 @@ const UserAuthPage = () => {
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
+                    <PasswordStrengthIndicator password={registerData.password} />
                   </div>
 
                   <Button

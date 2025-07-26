@@ -12,6 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { contactFormSchema, sanitizeInput, sanitizeHtml, RateLimiter, type ContactFormData } from '@/lib/validation';
 import TestimonialForm from '@/components/ui/TestimonialForm';
+import { ContactDisplay } from '@/components/ui/ContactDisplay';
+import SocialMediaLinks from '@/components/ui/SocialMediaLinks';
 
 const ContactUs = () => {
   const { t } = useTranslation();
@@ -197,21 +199,11 @@ const ContactUs = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {contactInfo.map((info, index) => {
-                    const IconComponent = info.icon;
-                    return (
-                      <div key={index} className="flex items-start space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <IconComponent className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-white">{info.title}</h3>
-                          <p className="text-cyan-400 font-medium">{info.details}</p>
-                          <p className="text-sm text-gray-400">{info.description}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <ContactDisplay category="general" />
+                  <div className="pt-4 border-t border-slate-600">
+                    <h4 className="text-white font-medium mb-3">Follow Us</h4>
+                    <SocialMediaLinks />
+                  </div>
                 </CardContent>
               </Card>
 
