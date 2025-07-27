@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 interface ContactInfo {
   id: string;
@@ -13,15 +14,11 @@ interface ContactInfo {
 }
 
 export const useContactInfo = (category?: string) => {
-  const [contactInfo, setContactInfo] = useState<ContactInfo[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchContactInfo();
-  }, [category]);
-
-  const fetchContactInfo = async () => {
-    try {
+  const queryKey = ['contact_info', category];
+  
+  const { data: contactInfo = [], isLoading: loading, refetch } = useQuery({
+    queryKey,
+    queryFn: async () => {
       let query = supabase
         .from('contact_info')
         .select('*')
@@ -33,15 +30,12 @@ export const useContactInfo = (category?: string) => {
       }
 
       const { data, error } = await query;
-
       if (error) throw error;
-      setContactInfo(data || []);
-    } catch (error) {
-      console.error('Error fetching contact info:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 0, // Always refetch to get latest data
+    refetchOnWindowFocus: true, // Refetch when user comes back to the page
+  });
 
   const getContactByType = (type: string) => {
     return contactInfo.filter(item => item.contact_type === type);
@@ -71,6 +65,6 @@ export const useContactInfo = (category?: string) => {
     getEmergencyContacts,
     getPhoneContacts,
     getEmailContacts,
-    refetch: fetchContactInfo
+    refetch
   };
 };
