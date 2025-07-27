@@ -14,6 +14,7 @@ import { contactFormSchema, sanitizeInput, sanitizeHtml, RateLimiter, type Conta
 import TestimonialForm from '@/components/ui/TestimonialForm';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import SocialMediaLinks from '@/components/ui/SocialMediaLinks';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 const ContactUs = () => {
   const { t } = useTranslation();
@@ -165,13 +166,43 @@ const ContactUs = () => {
     { value: "product-availability", label: "Product Availability" }
   ];
 
+  // Structured data for Contact page
+  const contactPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "FrigidFlow",
+      "alternateName": "Alper Refrigerants",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "sales",
+          "telephone": "+1-210-939-1115",
+          "email": "sales@alperrefrigas.com",
+          "areaServed": "US",
+          "availableLanguage": ["English", "Spanish"]
+        },
+        {
+          "@type": "ContactPoint", 
+          "contactType": "customer service",
+          "telephone": "+1-210-939-1115",
+          "email": "support@alperrefrigas.com",
+          "hoursAvailable": "Mo-Fr 07:00-18:00"
+        }
+      ]
+    }
+  };
+
   return (
     <>
-      <Helmet>
-        <title>Contact Alper Refrigerants | Get Wholesale Refrigerant Pricing Quote</title>
-        <meta name="description" content="Contact EPA-certified refrigerant experts for wholesale pricing on R-410A, R-134a, R-1234yf. Bulk quotes for HVAC contractors with 24/7 emergency support." />
-        <meta name="keywords" content="refrigerant wholesale pricing, bulk refrigerant quote, HVAC contractor pricing, EPA certified refrigerant supplier contact" />
-      </Helmet>
+      <SEOComponent
+        title="Contact FrigidFlow - Get Wholesale Refrigerant Pricing Quote"
+        description="Contact EPA-certified refrigerant experts for wholesale pricing on R-410A, R-134a, R-1234yf. Bulk quotes for HVAC contractors with 24/7 emergency support and fast shipping across North America."
+        keywords="contact refrigerant distributor, wholesale refrigerant pricing, bulk refrigerant quote, HVAC contractor pricing, EPA certified refrigerant supplier contact, emergency refrigerant support"
+        canonicalUrl="/contact"
+        structuredData={contactPageStructuredData}
+      />
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4">

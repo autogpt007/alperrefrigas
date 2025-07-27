@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import TestimonialSection from '@/components/ui/TestimonialSection';
 import TestimonialForm from '@/components/ui/TestimonialForm';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
@@ -103,13 +104,39 @@ const AboutUs = () => {
     fetchData();
   }, []);
 
+  // Structured data for About page
+  const aboutPageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "mainEntity": {
+      "@type": "Organization", 
+      "name": "FrigidFlow",
+      "alternateName": "Alper Refrigerants",
+      "description": "Professional wholesale refrigerant distributor serving HVAC contractors, automotive technicians, and industrial facilities across North America with EPA-certified refrigerants.",
+      "foundingDate": "2010",
+      "numberOfEmployees": "25-50",
+      "naics": "423730",
+      "isicV4": "4661",
+      "specialty": [
+        "HFC Refrigerant Distribution",
+        "HFO Refrigerant Sales", 
+        "Natural Refrigerant Supply",
+        "EPA Section 608 Compliance",
+        "HVAC Technical Support",
+        "Bulk Refrigerant Sales"
+      ]
+    }
+  };
+
   return (
     <>
-      <Helmet>
-        <title>{t('about.pageTitle')}</title>
-        <meta name="description" content={t('about.pageDescription')} />
-        <meta name="keywords" content={t('about.pageKeywords')} />
-      </Helmet>
+      <SEOComponent
+        title="About FrigidFlow - Professional Refrigerant Distribution Company"
+        description="Learn about FrigidFlow's 13+ years of experience as a leading wholesale refrigerant distributor. EPA certified with 99.8% purity guarantee, serving HVAC professionals across North America with competitive bulk pricing."
+        keywords="about refrigerant distributor, professional HVAC supplier, EPA certified refrigerants, wholesale refrigerant company, HVAC contractor supplier, refrigerant distribution services"
+        canonicalUrl="/about"
+        structuredData={aboutPageStructuredData}
+      />
       
       <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}

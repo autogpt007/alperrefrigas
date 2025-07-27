@@ -13,6 +13,7 @@ import { RollingTextBanner } from '@/components/ui/RollingTextBanner';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -158,7 +159,40 @@ const HomePage = () => {
     fetchFeaturedProducts();
   }, [products]);
 
+  // Structured data for homepage
+  const homepageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FrigidFlow - Professional Refrigerant Distributor",
+    "url": "https://frigidflow.com",
+    "description": "Leading wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC professionals, contractors, and industrial facilities.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://frigidflow.com/products?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "FrigidFlow",
+      "alternateName": "Alper Refrigerants",
+      "specialty": ["Refrigerant Distribution", "HVAC Supplies", "EPA Compliance", "Bulk Refrigerants"],
+      "serviceArea": {
+        "@type": "Country",
+        "name": "United States"
+      }
+    }
+  };
+
   return (
+    <>
+      <SEOComponent
+        title="Professional Refrigerant Distributor - Wholesale HFC, HFO & Natural Refrigerants"
+        description="Leading wholesale refrigerant distributor offering competitive prices on HFC, HFO, and natural refrigerants. EPA certified with fast shipping across North America. Get bulk quotes for R-410A, R-134a, R-22 and more."
+        keywords="refrigerant distributor, wholesale refrigerants, HFC refrigerants, HFO refrigerants, natural refrigerants, R-410A, R-134a, R-22, HVAC supplies, EPA certified, bulk refrigerants, commercial refrigeration, automotive refrigerants"
+        canonicalUrl="/"
+        structuredData={homepageStructuredData}
+        ogImage="/placeholder.svg"
+      />
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Rolling Text Banner - Top placement for maximum visibility */}
       <RollingTextBanner 
@@ -838,6 +872,7 @@ const HomePage = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

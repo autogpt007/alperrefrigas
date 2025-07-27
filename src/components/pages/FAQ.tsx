@@ -114,13 +114,30 @@ const FAQ = () => {
     )
   })).filter(category => category.questions.length > 0);
 
+  // Create FAQ structured data for better SEO
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqCategories.flatMap(category =>
+      category.questions.map(qa => ({
+        "@type": "Question",
+        "name": qa.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": qa.answer
+        }
+      }))
+    )
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title="Frequently Asked Questions - Alper Refrigerants"
-        description="Find answers to common questions about refrigerant orders, EPA compliance, shipping, pricing, and more. Get expert help for your HVAC needs."
-        keywords="refrigerant FAQ, EPA 608 certification, refrigerant shipping, HVAC questions, refrigerant compliance"
+        title="Refrigerant FAQ - Professional HVAC & Refrigeration Questions Answered"
+        description="Find answers to common refrigerant questions about EPA certification, HFC/HFO refrigerants, bulk pricing, shipping, and compliance. Expert guidance for HVAC contractors and technicians."
+        keywords="refrigerant FAQ, EPA 608 certification, HFC refrigerants, HFO refrigerants, HVAC contractor questions, refrigerant compliance, bulk refrigerant pricing, hazmat shipping"
         canonicalUrl="/faq"
+        structuredData={faqStructuredData}
       />
 
       {/* Hero Section */}

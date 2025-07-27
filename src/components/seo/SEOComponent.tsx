@@ -34,7 +34,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   product
 }) => {
   const siteUrl = 'https://frigidflow.com';
-  const fullTitle = title.includes('FrigidFlow') ? title : `${title} | FrigidFlow - Professional Refrigerant Distributor`;
+  const fullTitle = title.includes('FrigidFlow') || title.includes('Alper') ? title : `${title} | FrigidFlow - Professional Refrigerant Distributor`;
   
   // Generate product structured data for Google Merchant Center
   const productStructuredData = product ? {
@@ -66,18 +66,34 @@ const SEOComponent: React.FC<SEOProps> = ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "FrigidFlow",
+    "alternateName": "Alper Refrigerants",
     "url": siteUrl,
-    "description": "Professional refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications.",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+1-800-734-7443",
-      "contactType": "customer service",
-      "email": "sales@frigidflow.com"
-    },
+    "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+1-210-939-1115",
+        "contactType": "sales",
+        "email": "sales@alperrefrigas.com",
+        "availableLanguage": ["English", "Spanish"]
+      },
+      {
+        "@type": "ContactPoint", 
+        "telephone": "+1-210-939-1115",
+        "contactType": "customer service",
+        "email": "support@alperrefrigas.com"
+      }
+    ],
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "US"
-    }
+      "addressCountry": "US",
+      "addressRegion": ["TX", "FL", "CA"],
+      "addressLocality": "Multiple Distribution Centers"
+    },
+    "sameAs": [
+      "https://www.facebook.com/frigidflow",
+      "https://www.linkedin.com/company/frigidflow"
+    ]
   };
 
   return (
