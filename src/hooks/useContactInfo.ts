@@ -19,6 +19,7 @@ export const useContactInfo = (category?: string) => {
   const { data: contactInfo = [], isLoading: loading, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
+      console.log('Fetching contact info for category:', category);
       let query = supabase
         .from('contact_info')
         .select('*')
@@ -30,11 +31,17 @@ export const useContactInfo = (category?: string) => {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching contact info:', error);
+        throw error;
+      }
+      console.log('Fetched contact info:', data);
       return data || [];
     },
     staleTime: 0, // Always refetch to get latest data
+    gcTime: 0, // Don't cache the data (previously cacheTime)
     refetchOnWindowFocus: true, // Refetch when user comes back to the page
+    refetchOnMount: true, // Always refetch when component mounts
   });
 
   const getContactByType = (type: string) => {
