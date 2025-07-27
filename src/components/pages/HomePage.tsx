@@ -9,6 +9,8 @@ import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCir
 import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
 import TestimonialSection from '@/components/ui/TestimonialSection';
+import { RollingTextBanner, createDiscountMessage, createInfoMessage } from '@/components/ui/RollingTextBanner';
+import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 
@@ -155,8 +157,25 @@ const HomePage = () => {
     fetchHomepageProducts();
     fetchFeaturedProducts();
   }, [products]);
+
+  // Sample banner messages - these could come from a backend in the future
+  const bannerMessages = [
+    createDiscountMessage('🎉 <strong>Flash Sale!</strong> Save 15% on all R-410A refrigerants this week! Use code: <strong>SAVE15</strong>', true),
+    createInfoMessage('🚚 <strong>Free Shipping</strong> on orders over $500 - Limited time offer!', true),
+    createDiscountMessage('💰 <strong>Bulk Discounts Available!</strong> 20ft containers get 30% off, 40ft containers get 45% off!', false),
+    createInfoMessage('📞 <strong>24/7 Emergency Support</strong> - Call us anytime for urgent refrigerant needs!', false)
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      {/* Rolling Text Banner - Top placement for maximum visibility */}
+      <RollingTextBanner 
+        messages={bannerMessages}
+        autoRotate={true}
+        rotationInterval={6000}
+        className="relative z-50"
+      />
+      
       {/* Hero Section with improved visibility */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
@@ -728,6 +747,69 @@ const HomePage = () => {
 
       {/* Testimonials Section */}
       <TestimonialSection />
+
+      {/* Contact Information Section */}
+      <section className="py-16 bg-slate-800/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">Get In Touch</h2>
+            <p className="text-lg text-gray-300">Multiple ways to reach our expert team</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* General Support */}
+            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300">
+              <CardHeader>
+                <CardTitle className="text-white text-center">General Support</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ContactDisplay 
+                  category="general" 
+                  showIcons={true} 
+                  showDescriptions={true}
+                  linkPhones={true}
+                  linkEmails={true}
+                  className="space-y-3"
+                />
+              </CardContent>
+            </Card>
+
+            {/* Emergency Contact */}
+            <Card className="bg-gradient-to-br from-red-900/50 to-orange-900/50 border-red-500/30 hover:border-red-400/50 transition-all duration-300">
+              <CardHeader>
+                <CardTitle className="text-white text-center">Emergency Support</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ContactDisplay 
+                  category="emergency" 
+                  showIcons={true} 
+                  showDescriptions={true}
+                  linkPhones={true}
+                  linkEmails={true}
+                  className="space-y-3"
+                />
+              </CardContent>
+            </Card>
+
+            {/* Business Hours */}
+            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
+              <CardHeader>
+                <CardTitle className="text-white text-center">Business Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ContactDisplay 
+                  category="business" 
+                  showIcons={true} 
+                  showDescriptions={true}
+                  linkPhones={true}
+                  linkEmails={true}
+                  className="space-y-3"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-cyan-600/20 to-purple-600/20">
