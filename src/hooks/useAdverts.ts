@@ -44,15 +44,11 @@ export const useAdverts = () => {
 
   const getActiveAdverts = () => {
     const now = new Date().toISOString();
-    const activeAdverts = adverts.filter(advert => {
+    return adverts.filter(advert => {
       const isWithinTimeframe = (!advert.start_date || advert.start_date <= now) &&
                                (!advert.end_date || advert.end_date >= now);
-      const isActive = advert.is_active && isWithinTimeframe;
-      console.log(`Advert ${advert.title}: active=${advert.is_active}, timeframe=${isWithinTimeframe}, result=${isActive}`);
-      return isActive;
+      return advert.is_active && isWithinTimeframe;
     });
-    console.log('Total active adverts:', activeAdverts.length);
-    return activeAdverts;
   };
 
   return {

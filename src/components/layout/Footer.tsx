@@ -98,15 +98,35 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h4 className="text-lg font-semibold mb-6">{t('footer.contactInformation')}</h4>
-            <div className="text-gray-300">
-              <ContactDisplay 
-                category="general" 
-                className="space-y-4" 
-                showIcons={true}
-                showDescriptions={false}
-                linkPhones={true}
-                linkEmails={true}
-              />
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <Phone className="h-4 w-4 text-blue-400" />
+                <div>
+                  <div className="font-medium">Sales & Support</div>
+                  <div className="text-sm text-gray-300">1-210-939-1115</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Mail className="h-4 w-4 text-blue-400" />
+                <div>
+                  <div className="font-medium">Email</div>
+                  <div className="text-sm text-gray-300">sales@alperrefrigas.com</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Clock className="h-4 w-4 text-blue-400" />
+                <div>
+                  <div className="font-medium">Business Hours</div>
+                  <div className="text-sm text-gray-300">Monday - Friday: 7:00 AM - 6:00 PM EST</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <MapPin className="h-4 w-4 text-blue-400" />
+                <div>
+                  <div className="font-medium">Distribution Centers</div>
+                  <div className="text-sm text-gray-300">Dallas, TX • Miami, FL • Los Angeles, CA</div>
+                </div>
+              </div>
             </div>
             <div className="mt-6">
               <SocialMediaLinks className="justify-start" />
