@@ -1,30 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAdverts } from '@/hooks/useAdverts';
 
 interface BannerMessage {
   id: string;
   text: string;
-  type: 'info' | 'success' | 'warning' | 'discount';
+  type: 'info' | 'success' | 'warning' | 'discount' | 'emergency';
   isActive: boolean;
   dismissible?: boolean;
 }
 
 interface RollingTextBannerProps {
-  messages: BannerMessage[];
   autoRotate?: boolean;
   rotationInterval?: number;
   className?: string;
 }
 
 export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
-  messages,
   autoRotate = true,
   rotationInterval = 5000,
   className = ""
 }) => {
+  const { getActiveAdverts, loading } = useAdverts();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dismissedMessages, setDismissedMessages] = useState<Set<string>>(new Set());
+  
+  // Get active adverts and convert to banner messages
+  const activeAdverts = getActiveAdverts();
+  const messages: BannerMessage[] = activeAdverts.map(advert => ({
+    id: advert.id,
+    text: `<strong>${advert.title}</strong> ${advert.content}`,
+    type: advert.type as 'info' | 'success' | 'warning' | 'discount' | 'emergency',
+    isActive: advert.is_active,
+    dismissible: advert.dismissible
+  }));
   
   // Filter out dismissed messages and inactive ones
   const activeMessages = messages.filter(msg => 
@@ -49,7 +59,7 @@ export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
     }
   };
 
-  if (activeMessages.length === 0) return null;
+  if (loading || activeMessages.length === 0) return null;
 
   const currentMessage = activeMessages[currentIndex];
   
@@ -61,6 +71,8 @@ export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
         return 'bg-gradient-to-r from-yellow-600 to-orange-600';
       case 'discount':
         return 'bg-gradient-to-r from-purple-600 to-pink-600';
+      case 'emergency':
+        return 'bg-gradient-to-r from-red-600 to-red-700';
       default:
         return 'bg-gradient-to-r from-blue-600 to-cyan-600';
     }

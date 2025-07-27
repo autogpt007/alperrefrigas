@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      adverts: {
+        Row: {
+          content: string
+          created_at: string
+          dismissible: boolean
+          end_date: string | null
+          id: string
+          is_active: boolean
+          order_index: number
+          start_date: string | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          dismissible?: boolean
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          start_date?: string | null
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          dismissible?: boolean
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          start_date?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       asic_miners: {
         Row: {
           available_units: number

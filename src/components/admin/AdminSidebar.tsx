@@ -13,7 +13,8 @@ import {
   Globe,
   Star,
   Palette,
-  Phone
+  Phone,
+  Megaphone
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -25,6 +26,7 @@ const AdminSidebar = () => {
     { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
+    { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
     { icon: Phone, label: 'Contact Info', path: '/admin/contact-info' },
     { icon: Users, label: 'Team', path: '/admin/team' },

@@ -9,7 +9,7 @@ import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCir
 import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
 import TestimonialSection from '@/components/ui/TestimonialSection';
-import { RollingTextBanner, createDiscountMessage, createInfoMessage } from '@/components/ui/RollingTextBanner';
+import { RollingTextBanner } from '@/components/ui/RollingTextBanner';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
@@ -158,19 +158,10 @@ const HomePage = () => {
     fetchFeaturedProducts();
   }, [products]);
 
-  // Sample banner messages - these could come from a backend in the future
-  const bannerMessages = [
-    createDiscountMessage('🎉 <strong>Flash Sale!</strong> Save 15% on all R-410A refrigerants this week! Use code: <strong>SAVE15</strong>', true),
-    createInfoMessage('🚚 <strong>Free Shipping</strong> on orders over $500 - Limited time offer!', true),
-    createDiscountMessage('💰 <strong>Bulk Discounts Available!</strong> 20ft containers get 30% off, 40ft containers get 45% off!', false),
-    createInfoMessage('📞 <strong>24/7 Emergency Support</strong> - Call us anytime for urgent refrigerant needs!', false)
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Rolling Text Banner - Top placement for maximum visibility */}
       <RollingTextBanner 
-        messages={bannerMessages}
         autoRotate={true}
         rotationInterval={6000}
         className="relative z-50"
