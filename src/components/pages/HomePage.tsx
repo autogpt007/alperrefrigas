@@ -168,12 +168,12 @@ const HomePage = () => {
     "description": "Leading wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC professionals, contractors, and industrial facilities.",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://frigidflow.com/products?search={search_term_string}",
+      "target": "https://alperrefrigas.com/products?search={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "mainEntity": {
       "@type": "Organization",
-      "name": "FrigidFlow",
+      "name": "Alper Refrigerant",
       "alternateName": "Alper Refrigerants",
       "specialty": ["Refrigerant Distribution", "HVAC Supplies", "EPA Compliance", "Bulk Refrigerants"],
       "serviceArea": {
@@ -300,7 +300,7 @@ const HomePage = () => {
                     <div>
                       <h3 className="text-2xl font-bold text-white mb-4">Premier Quality & Service Excellence</h3>
                       <p className="text-gray-300 text-lg leading-relaxed">
-                        FrigidFlow stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
+                        Alper Refrigerant stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
                       </p>
                     </div>
                   </div>
@@ -374,7 +374,7 @@ const HomePage = () => {
                     <div>
                       <h3 className="text-2xl font-bold text-white mb-4">Uncompromising Quality Assurance</h3>
                       <p className="text-gray-100 leading-relaxed mb-4">
-                        Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose FrigidFlow refrigerants, you're getting products that perform consistently and reliably in the field.
+                        Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose Alper Refrigerant products, you're getting products that perform consistently and reliably in the field.
                       </p>
                       <p className="text-gray-100 leading-relaxed">
                         We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
@@ -412,7 +412,7 @@ const HomePage = () => {
                     <div>
                       <h3 className="text-3xl font-bold text-white mb-4">24/7 Emergency Support</h3>
                       <p className="text-gray-300 text-lg leading-relaxed">
-                        System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on FrigidFlow to get you back up and running quickly.
+                        System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on Alper Refrigerant to get you back up and running quickly.
                       </p>
                     </div>
                   </div>
@@ -429,7 +429,7 @@ const HomePage = () => {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-4">Innovation & Future-Ready Solutions</h3>
                       <p className="text-gray-700 leading-relaxed text-lg">
-                        Looking ahead, FrigidFlow continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with FrigidFlow, you're not just buying refrigerants - you're gaining a strategic advantage in an evolving industry.
+                        Looking ahead, Alper Refrigerant continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with Alper Refrigerant, you're not just buying refrigerants - you're gaining a strategic advantage in an evolving industry.
                       </p>
                     </div>
                   </div>
@@ -563,7 +563,7 @@ const HomePage = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Why Choose FrigidFlow?</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">Why Choose Alper Refrigerant?</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               We're more than just a supplier - we're your strategic partner in refrigerant solutions. Here's what sets us apart in the industry.
             </p>
@@ -844,7 +844,7 @@ const HomePage = () => {
               Ready to Optimize Your Refrigerant Supply?
             </h2>
             <p className="text-xl text-gray-300 leading-relaxed">
-              Join thousands of HVAC professionals who trust FrigidFlow for their refrigerant needs. 
+              Join thousands of HVAC professionals who trust Alper Refrigerant for their refrigerant needs. 
               Experience the difference that quality products and exceptional service can make for your business.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
