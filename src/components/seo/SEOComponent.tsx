@@ -34,7 +34,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   product
 }) => {
   const siteUrl = 'https://frigidflow.com';
-  const fullTitle = title.includes('FrigidFlow') || title.includes('Alper') ? title : `${title} | FrigidFlow - Professional Refrigerant Distributor`;
+  const fullTitle = title.includes('Alper') ? title : `${title} | Alper Refrigerant - Professional Refrigerant Distributor`;
   
   // Generate product structured data for Google Merchant Center
   const productStructuredData = product ? {
@@ -65,7 +65,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "FrigidFlow",
+    "name": "Alper Refrigerant",
     "alternateName": "Alper Refrigerants",
     "url": siteUrl,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",

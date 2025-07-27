@@ -163,8 +163,8 @@ const HomePage = () => {
   const homepageStructuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "FrigidFlow - Professional Refrigerant Distributor",
-    "url": "https://frigidflow.com",
+    "name": "Alper Refrigerant - Professional Refrigerant Distributor",
+    "url": "https://alperrefrigas.com",
     "description": "Leading wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC professionals, contractors, and industrial facilities.",
     "potentialAction": {
       "@type": "SearchAction",
