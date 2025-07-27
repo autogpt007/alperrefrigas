@@ -45,7 +45,7 @@ export const ContactDisplay: React.FC<ContactDisplayProps> = ({
       return (
         <a 
           href={`tel:${contact.value.replace(/[^\d+]/g, '')}`}
-          className="text-primary hover:text-primary/80 underline decoration-primary/30 hover:decoration-primary/60 transition-colors"
+          className="text-current hover:text-white underline decoration-current/30 hover:decoration-white/60 transition-colors"
         >
           {contact.value}
         </a>
@@ -56,14 +56,14 @@ export const ContactDisplay: React.FC<ContactDisplayProps> = ({
       return (
         <a 
           href={`mailto:${contact.value}`}
-          className="text-primary hover:text-primary/80 underline decoration-primary/30 hover:decoration-primary/60 transition-colors"
+          className="text-current hover:text-white underline decoration-current/30 hover:decoration-white/60 transition-colors"
         >
           {contact.value}
         </a>
       );
     }
 
-    return <span>{contact.value}</span>;
+    return <span className="text-current">{contact.value}</span>;
   };
 
   if (filteredContacts.length === 0) {
@@ -75,17 +75,17 @@ export const ContactDisplay: React.FC<ContactDisplayProps> = ({
       {filteredContacts.map((contact) => (
         <div key={contact.id} className="flex items-start space-x-3">
           {showIcons && (
-            <div className="mt-1 text-muted-foreground">
+            <div className="mt-1 text-current opacity-70">
               {getContactIcon(contact.contact_type)}
             </div>
           )}
           <div className="flex-1">
-            <div className="font-medium text-foreground">{contact.label}</div>
-            <div className="text-sm">
+            <div className="font-medium text-current">{contact.label}</div>
+            <div className="text-sm text-current">
               {formatContactValue(contact)}
             </div>
             {showDescriptions && contact.description && (
-              <div className="text-xs text-muted-foreground mt-1">
+              <div className="text-xs text-current opacity-70 mt-1">
                 {contact.description}
               </div>
             )}

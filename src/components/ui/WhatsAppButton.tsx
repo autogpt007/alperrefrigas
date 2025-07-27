@@ -4,13 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const WhatsAppButton: React.FC = () => {
-  const [whatsappNumber, setWhatsappNumber] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  // Fetch WhatsApp number directly without any caching
-  const fetchWhatsAppNumber = React.useCallback(async () => {
-    try {
-      setIsLoading(true);
+  // Use React Query for proper caching
+  const { data: whatsappNumber, isLoading } = useQuery({
+    queryKey: ['whatsapp-number'],
+    queryFn: async () => {
       console.log('🔄 Fetching WhatsApp number from database...');
       
       const { data, error } = await supabase
@@ -21,30 +18,18 @@ export const WhatsAppButton: React.FC = () => {
 
       if (error) {
         console.error('❌ Error fetching WhatsApp number:', error);
-        setWhatsappNumber('905545645337'); // Use Turkish number as fallback
-        return;
+        return '905545645337'; // Use Turkish number as fallback
       }
       
       const number = data?.setting_value;
       console.log('✅ Fetched WhatsApp number from DB:', number);
-      setWhatsappNumber(number);
-    } catch (error) {
-      console.error('❌ Exception fetching WhatsApp number:', error);
-      setWhatsappNumber('905545645337'); // Use Turkish number as fallback
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Fetch on mount and set up interval for periodic refresh
-  React.useEffect(() => {
-    fetchWhatsAppNumber();
-    
-    // Refresh every 5 seconds to ensure we have the latest number
-    const interval = setInterval(fetchWhatsAppNumber, 5000);
-    
-    return () => clearInterval(interval);
-  }, [fetchWhatsAppNumber]);
+      return number;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes - reasonable cache time
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch on every mount after initial load
+  });
 
   const handleWhatsAppClick = () => {
     console.log('WhatsApp button clicked, number from DB:', whatsappNumber);

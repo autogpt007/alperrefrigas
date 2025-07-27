@@ -98,7 +98,16 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h4 className="text-lg font-semibold mb-6">{t('footer.contactInformation')}</h4>
-            <ContactDisplay category="general" className="text-gray-300 space-y-4" />
+            <div className="text-gray-300">
+              <ContactDisplay 
+                category="general" 
+                className="space-y-4" 
+                showIcons={true}
+                showDescriptions={false}
+                linkPhones={true}
+                linkEmails={true}
+              />
+            </div>
             <div className="mt-6">
               <SocialMediaLinks className="justify-start" />
             </div>
