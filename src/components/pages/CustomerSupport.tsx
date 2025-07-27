@@ -7,6 +7,7 @@ import { Textarea } from '../ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Phone, Mail, MessageCircle, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { ContactDisplay } from '../ui/ContactDisplay';
 import SEOComponent from '../seo/SEOComponent';
 
 const CustomerSupport = () => {
@@ -50,8 +51,13 @@ const CustomerSupport = () => {
               <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Phone Support</h3>
               <p className="text-gray-600 mb-4">Speak with our experts</p>
-              <p className="font-semibold text-lg">1-800-REFRIGERANT</p>
-              <p className="text-sm text-gray-500">(1-800-734-7443)</p>
+              <ContactDisplay 
+                category="general" 
+                types={["phone"]}
+                showIcons={false} 
+                showDescriptions={false}
+                className="text-center space-y-1"
+              />
               <div className="mt-4 p-3 bg-green-50 rounded-lg">
                 <div className="flex items-center justify-center text-green-700">
                   <Clock className="h-4 w-4 mr-2" />
@@ -66,7 +72,13 @@ const CustomerSupport = () => {
               <Mail className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Email Support</h3>
               <p className="text-gray-600 mb-4">Get detailed assistance</p>
-              <p className="font-semibold">support@alperrefrigerants.com</p>
+              <ContactDisplay 
+                category="support" 
+                types={["email"]}
+                showIcons={false} 
+                showDescriptions={false}
+                className="text-center"
+              />
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                 <div className="flex items-center justify-center text-blue-700">
                   <Clock className="h-4 w-4 mr-2" />

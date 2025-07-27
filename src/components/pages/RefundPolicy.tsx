@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Clock, RotateCcw, AlertCircle, CheckCircle } from 'lucide-react';
+import { ContactDisplay } from '@/components/ui/ContactDisplay';
 
 const RefundPolicy = () => {
   return (
@@ -52,9 +53,15 @@ const RefundPolicy = () => {
                   </div>
                   <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
                     <h4 className="font-semibold text-gray-900 mb-2">Immediate Notification Required</h4>
-                    <p className="text-gray-700">
-                      For damaged or defective products, notify us within 48 hours of delivery by calling 1-800-REFRIGERANT or emailing support@alperrefrigerants.com.
-                    </p>
+                    <div className="text-gray-700">
+                      <p className="mb-2">For damaged or defective products, notify us within 48 hours of delivery:</p>
+                      <ContactDisplay 
+                        category="returns" 
+                        showIcons={true} 
+                        showDescriptions={false}
+                        className="text-sm"
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -179,14 +186,22 @@ const RefundPolicy = () => {
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Phone Support</h4>
-                    <p className="text-gray-700">1-800-REFRIGERANT (1-800-734-7443)</p>
-                    <p className="text-sm text-gray-600">Monday - Friday: 7:00 AM - 6:00 PM EST</p>
+                    <h4 className="font-semibold text-gray-900 mb-3">Returns Contact</h4>
+                    <ContactDisplay 
+                      category="returns" 
+                      showIcons={true} 
+                      showDescriptions={true}
+                      className="space-y-2"
+                    />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Email Support</h4>
-                    <p className="text-gray-700">returns@alperrefrigerants.com</p>
-                    <p className="text-sm text-gray-600">Response within 24 hours</p>
+                    <h4 className="font-semibold text-gray-900 mb-3">General Support</h4>
+                    <ContactDisplay 
+                      category="support" 
+                      showIcons={true} 
+                      showDescriptions={true}
+                      className="space-y-2"
+                    />
                   </div>
                 </div>
               </CardContent>

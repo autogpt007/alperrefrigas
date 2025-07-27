@@ -54,11 +54,16 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchShippingSettings = async () => {
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('site_settings')
           .select('setting_value')
           .eq('setting_key', 'free_shipping_threshold')
-          .single();
+          .maybeSingle();
+        
+        if (error) {
+          console.error('Error fetching shipping settings:', error);
+          return;
+        }
         
         if (data?.setting_value) {
           setFreeShippingThreshold(parseFloat(data.setting_value));
