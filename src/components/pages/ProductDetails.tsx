@@ -335,6 +335,15 @@ const ProductDetails = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
               
+              {/* Price per cylinder display */}
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800 mb-1">Starting Price</p>
+                <p className="text-lg font-semibold text-blue-900">
+                  ${product.price}/cylinder
+                </p>
+                <p className="text-xs text-blue-600">Bulk discounts available for containers</p>
+              </div>
+              
               {/* Pricing Display */}
               <div className="mb-4">
                 {packaging ? (
@@ -414,14 +423,21 @@ const ProductDetails = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select packaging option" />
                     </SelectTrigger>
-                     <SelectContent>
+                    <SelectContent>
                       {(product.packaging_options || product.packaging)?.map(pkg => (
                         <SelectItem key={pkg} value={pkg}>
                           <div className="flex justify-between items-center w-full">
                             <span>{pkg}</span>
-                            <span className="text-sm text-gray-500 ml-2">
-                              (${product.price}/cylinder)
-                            </span>
+                            <div className="ml-4 text-right">
+                              <span className="font-semibold text-blue-600">
+                                ${calculateBulkPrice(pkg).toLocaleString()}
+                              </span>
+                              {pkg !== '1 Pallet' && (
+                                <div className="text-xs text-green-600">
+                                  {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </SelectItem>
                       ))}
