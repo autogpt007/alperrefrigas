@@ -8,6 +8,7 @@ import { CheckCircle, Package, Truck, FileText, ArrowRight, Quote } from 'lucide
 import { useOrders } from '../../contexts/OrdersContext';
 import { useQuotes } from '../../contexts/QuotesContext';
 import { supabase } from '@/integrations/supabase/client';
+import SEOComponent from '../seo/SEOComponent';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -118,17 +119,32 @@ const OrderConfirmation = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
+      <>
+        <SEOComponent
+          title="Order Confirmation - Processing Your Order"
+          description="Your refrigerant order is being processed. Track your order status and get updates on delivery."
+          keywords="order confirmation, refrigerant order tracking, HVAC order status, order processing"
+          canonicalUrl="/order-confirmation"
+        />
+        <div className="container mx-auto px-4 py-8 text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading your order details...</h1>
         <p className="text-gray-600">Please wait while we retrieve your information.</p>
       </div>
+      </>
     );
   }
 
   if (!data) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
+      <>
+        <SEOComponent
+          title="Order Confirmation - Thank You for Your Order"
+          description="Your refrigerant order has been confirmed. Thank you for choosing our professional refrigerant distribution services."
+          keywords="order confirmed, refrigerant purchase confirmation, thank you order, HVAC order complete"
+          canonicalUrl="/order-confirmation"
+        />
+        <div className="container mx-auto px-4 py-8 text-center">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           {isQuote ? 'Quote Request Submitted!' : 'Order Confirmed!'}
@@ -151,6 +167,7 @@ const OrderConfirmation = () => {
           </Link>
         </div>
       </div>
+      </>
     );
   }
 
@@ -159,7 +176,14 @@ const OrderConfirmation = () => {
   estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <SEOComponent
+        title={`${isQuote ? 'Quote Request' : 'Order'} Confirmation - ${confirmationNumber}`}
+        description={`${isQuote ? 'Your quote request has been submitted' : 'Your order has been confirmed'}. Track your ${isQuote ? 'quote status' : 'order status'} and get updates.`}
+        keywords={`${isQuote ? 'quote confirmation' : 'order confirmation'}, refrigerant ${isQuote ? 'quote tracking' : 'order tracking'}, HVAC ${isQuote ? 'quote' : 'order'} status`}
+        canonicalUrl="/order-confirmation"
+      />
+      <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         {/* Success Header */}
         <div className="text-center mb-8">
@@ -394,7 +418,8 @@ const OrderConfirmation = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -16,6 +16,7 @@ import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import SEOComponent from '../seo/SEOComponent';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -203,7 +204,14 @@ const CheckoutPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
+      <>
+        <SEOComponent
+          title="Checkout - Complete Your Refrigerant Order"
+          description="Secure checkout for professional refrigerant orders. Multiple payment options including credit card, bank wire, and company check."
+          keywords="checkout, refrigerant payment, secure ordering, professional HVAC checkout, EPA certified ordering"
+          canonicalUrl="/checkout"
+        />
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-md mx-auto bg-slate-800/50 border-cyan-500/20">
             <CardContent className="text-center py-8">
@@ -216,12 +224,20 @@ const CheckoutPage = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
+    <>
+      <SEOComponent
+        title="Checkout - Complete Your Refrigerant Order"
+        description="Secure checkout for professional refrigerant orders. Multiple payment options including credit card, bank wire, and company check."
+        keywords="checkout, refrigerant payment, secure ordering, professional HVAC checkout, EPA certified ordering"
+        canonicalUrl="/checkout"
+      />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
@@ -611,7 +627,8 @@ const CheckoutPage = () => {
           </form>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

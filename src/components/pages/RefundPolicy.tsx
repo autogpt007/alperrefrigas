@@ -2,10 +2,18 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Clock, RotateCcw, AlertCircle, CheckCircle } from 'lucide-react';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
+import SEOComponent from '../seo/SEOComponent';
 
 const RefundPolicy = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12">
+    <>
+      <SEOComponent
+        title="Refund & Return Policy - Customer Protection"
+        description="Comprehensive refund and return policy for refrigerant orders. Learn about our customer protection policies and return procedures."
+        keywords="refund policy, return policy, refrigerant returns, customer protection, money back guarantee, EPA compliance returns"
+        canonicalUrl="/refund-policy"
+      />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -225,7 +233,8 @@ const RefundPolicy = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

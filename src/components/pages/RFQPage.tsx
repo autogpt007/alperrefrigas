@@ -11,6 +11,7 @@ import { useRFQ } from '../../contexts/RFQContext';
 import { useQuotes } from '../../contexts/QuotesContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/use-toast';
+import SEOComponent from '../seo/SEOComponent';
 
 const RFQPage = () => {
   const navigate = useNavigate();
@@ -98,27 +99,42 @@ const RFQPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-        <div className="max-w-2xl mx-auto text-center px-4">
-          <div className="mb-8">
-            <ShoppingCart className="h-24 w-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Your Quote Request is Empty</h1>
-            <p className="text-gray-600 mb-8 text-lg">
-              Start by browsing our products and adding items to build your custom quote.
-            </p>
+      <>
+        <SEOComponent
+          title="Request for Quote - Wholesale Refrigerant Pricing"
+          description="Get custom pricing on bulk refrigerants. Professional wholesale quotes for HVAC contractors, distributors, and commercial customers."
+          keywords="refrigerant quote, wholesale pricing, bulk refrigerant pricing, HVAC contractor pricing, commercial refrigerant quote, RFQ refrigerants"
+          canonicalUrl="/rfq"
+        />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
+          <div className="max-w-2xl mx-auto text-center px-4">
+            <div className="mb-8">
+              <ShoppingCart className="h-24 w-24 text-gray-300 mx-auto mb-6" />
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Your Quote Request is Empty</h1>
+              <p className="text-gray-600 mb-8 text-lg">
+                Start by browsing our products and adding items to build your custom quote.
+              </p>
+            </div>
+            <Link to="/products">
+              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-8 py-4 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                Browse Products
+              </Button>
+            </Link>
           </div>
-          <Link to="/products">
-            <Button size="lg" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-8 py-4 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-              Browse Products
-            </Button>
-          </Link>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
+    <>
+      <SEOComponent
+        title="Request for Quote - Wholesale Refrigerant Pricing"
+        description="Get custom pricing on bulk refrigerants. Professional wholesale quotes for HVAC contractors, distributors, and commercial customers."
+        keywords="refrigerant quote, wholesale pricing, bulk refrigerant pricing, HVAC contractor pricing, commercial refrigerant quote, RFQ refrigerants"
+        canonicalUrl="/rfq"
+      />
+      <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mb-6">
           <Link to="/products" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors">
@@ -311,7 +327,8 @@ const RFQPage = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
