@@ -88,13 +88,13 @@ const ContentManagement = () => {
 
   // Default settings fallback
   const defaultSettings = {
-    company_name: 'FrigidFlow Refrigerants',
+    company_name: 'Alper Refrigerants',
     tagline: 'Premium Refrigerants for Professional HVAC',
     description: 'Leading supplier of high-quality refrigerants and HVAC chemicals for professionals worldwide.',
     phone: '+1 (555) 123-4567',
-    email: 'info@frigidflow.com',
+    email: 'info@alperrefrigas.com',
     address: '123 Industrial Blvd, Houston, TX 77001',
-    website: 'https://frigidflow.com',
+    website: 'https://alperrefrigas.com',
     business_hours: JSON.stringify({
       monday: '8:00 AM - 6:00 PM',
       tuesday: '8:00 AM - 6:00 PM',

@@ -110,7 +110,7 @@ const AboutUs = () => {
     "@type": "AboutPage",
     "mainEntity": {
       "@type": "Organization", 
-      "name": "FrigidFlow",
+      "name": "Alper Refrigerants",
       "alternateName": "Alper Refrigerants",
       "description": "Professional wholesale refrigerant distributor serving HVAC contractors, automotive technicians, and industrial facilities across North America with EPA-certified refrigerants.",
       "foundingDate": "2010",
@@ -131,11 +131,12 @@ const AboutUs = () => {
   return (
     <>
       <SEOComponent
-        title="About FrigidFlow - Professional Refrigerant Distribution Company"
-        description="Learn about FrigidFlow's 13+ years of experience as a leading wholesale refrigerant distributor. EPA certified with 99.8% purity guarantee, serving HVAC professionals across North America with competitive bulk pricing."
-        keywords="about refrigerant distributor, professional HVAC supplier, EPA certified refrigerants, wholesale refrigerant company, HVAC contractor supplier, refrigerant distribution services"
+        title="About Alper Refrigerants - 13+ Years Leading Turkey's Refrigerant Market | EPA Certified"
+        description="⭐ Established 2011. Turkey's most trusted refrigerant distributor with 13+ years experience. 500+ satisfied customers, 99.9% purity guarantee, ISO certified facility. Expert team serving HVAC professionals, contractors & industrial clients nationwide."
+        keywords="about alper refrigerants, refrigerant distributor turkey history, EPA certified company, professional HVAC supplier, wholesale refrigerant company turkey, HVAC contractor supplier, refrigerant distribution services, refrigerant company since 2011"
         canonicalUrl="/about"
         structuredData={aboutPageStructuredData}
+        ogType="article"
       />
       
       <div className="min-h-screen bg-gray-50">

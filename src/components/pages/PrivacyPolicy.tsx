@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Privacy Policy - FrigidFlow Professional Refrigerant Distribution"
+        title="Privacy Policy - Alper Refrigerants Professional Refrigerant Distribution"
         description="Comprehensive privacy policy for FrigidFlow refrigerant distribution services. Learn how we protect your personal information and comply with EPA regulations for refrigerant sales."
         keywords="privacy policy, refrigerant sales, EPA compliance, data protection, HVAC distributor privacy"
         canonicalUrl="/privacy"
@@ -181,7 +181,7 @@ const PrivacyPolicy = () => {
               <p className="text-blue-800">
                 If you have any questions about this Privacy Policy or our data practices, please contact us at:
                 <br />
-                <strong>Email:</strong> privacy@frigidflow.com
+                <strong>Email:</strong> privacy@alperrefrigas.com
                 <br />
                 <strong>Phone:</strong> 1-800-734-7443
                 <br />

@@ -33,7 +33,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   structuredData,
   product
 }) => {
-  const siteUrl = 'https://frigidflow.com';
+  const siteUrl = 'https://alperrefrigas.com';
   const fullTitle = title.includes('Alper') ? title : `${title} | Alper Refrigerant - Professional Refrigerant Distributor`;
   
   // Generate product structured data for Google Merchant Center

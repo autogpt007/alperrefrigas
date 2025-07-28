@@ -202,10 +202,11 @@ const ProductCatalog = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title={`${getCategoryDisplayName()} - Professional Refrigerant Catalog`}
-        description={`Browse our comprehensive selection of ${getCategoryDisplayName().toLowerCase()} including R-410A, R-134a, R-404A, R-1234yf, and more. EPA approved, bulk quantities, fast shipping.`}
-        keywords="refrigerant, HFC, HFO, natural refrigerants, R-410A, R-134a, R-404A, R-407C, R-507A, R-32, R-1234yf, R-290, R-600a, HVAC, automotive, commercial"
+        title={`${getCategoryDisplayName()} Refrigerants - Wholesale Prices | Bulk R-410A, R-134a, R-22 & More`}
+        description={`⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants in Turkey. R-410A, R-134a, R-404A, R-1234yf wholesale. EPA certified, 99.9% purity, same-day shipping. Bulk discounts for contractors & distributors. Get instant quote!`}
+        keywords="refrigerant catalog turkey, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, R-407C price, R-507A wholesale, R-32 refrigerant, R-1234yf price, R-290 wholesale, R-600a price, HVAC refrigerants, automotive refrigerants, commercial refrigerants"
         canonicalUrl="/products"
+        ogType="product.group"
       />
 
       {/* Hero Section */}

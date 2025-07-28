@@ -8,7 +8,7 @@ const CookiePolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Cookie Policy - FrigidFlow Professional Refrigerant Distribution"
+        title="Cookie Policy - Alper Refrigerants Professional Refrigerant Distribution"
         description="Cookie usage policy for FrigidFlow website. Learn about our cookie practices, data collection, and privacy protection for refrigerant industry professionals."
         keywords="cookie policy, website cookies, data privacy, refrigerant distributor website, tracking policy"
         canonicalUrl="/cookies"
@@ -165,11 +165,11 @@ const CookiePolicy = () => {
               <p className="text-blue-800">
                 If you have questions about our use of cookies or need assistance with cookie settings, please contact us at:
                 <br />
-                <strong>Email:</strong> privacy@frigidflow.com
+                <strong>Email:</strong> privacy@alperrefrigas.com
                 <br />
                 <strong>Phone:</strong> 1-800-734-7443
                 <br />
-                <strong>Data Protection Officer:</strong> dpo@frigidflow.com
+                <strong>Data Protection Officer:</strong> dpo@alperrefrigas.com
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 8:00 AM - 6:00 PM EST
               </p>

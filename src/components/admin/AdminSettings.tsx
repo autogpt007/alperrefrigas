@@ -299,7 +299,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.headerEmail ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., info@frigidflow.com"
+                placeholder="e.g., info@alperrefrigas.com"
               />
               {validationErrors.headerEmail && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.headerEmail}</p>
@@ -321,7 +321,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.notificationEmail ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., admin@frigidflow.com"
+                placeholder="e.g., admin@alperrefrigas.com"
               />
               {validationErrors.notificationEmail && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.notificationEmail}</p>

@@ -8,7 +8,7 @@ const TermsOfService = () => {
   return (
     <>
       <SEOComponent
-        title="Terms of Service - FrigidFlow Professional Refrigerant Distribution"
+        title="Terms of Service - Alper Refrigerants Professional Refrigerant Distribution"
         description="Complete terms of service for refrigerant purchases. EPA compliance requirements, shipping terms, and conditions for HFC, HFO, and natural refrigerant sales."
         keywords="terms of service, refrigerant sales terms, EPA compliance, HVAC contractor terms, refrigerant distributor conditions"
         canonicalUrl="/terms"
@@ -190,13 +190,13 @@ const TermsOfService = () => {
               <p className="text-blue-800">
                 For questions about these terms, regulatory compliance, or technical support, contact us at:
                 <br />
-                <strong>Email:</strong> legal@frigidflow.com
+                <strong>Email:</strong> legal@alperrefrigas.com
                 <br />
                 <strong>Phone:</strong> 1-800-734-7443
                 <br />
                 <strong>Emergency:</strong> 1-800-734-HELP (24/7)
                 <br />
-                <strong>EPA Compliance:</strong> compliance@frigidflow.com
+                <strong>EPA Compliance:</strong> compliance@alperrefrigas.com
               </p>
             </div>
           </div>

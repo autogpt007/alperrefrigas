@@ -186,12 +186,13 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="Professional Refrigerant Distributor - Wholesale HFC, HFO & Natural Refrigerants"
-        description="Leading wholesale refrigerant distributor offering competitive prices on HFC, HFO, and natural refrigerants. EPA certified with fast shipping across North America. Get bulk quotes for R-410A, R-134a, R-22 and more."
-        keywords="refrigerant distributor, wholesale refrigerants, HFC refrigerants, HFO refrigerants, natural refrigerants, R-410A, R-134a, R-22, HVAC supplies, EPA certified, bulk refrigerants, commercial refrigeration, automotive refrigerants"
+        title="Alper Refrigerants - #1 Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Prices"
+        description="⭐ Turkey's largest refrigerant distributor since 2011. EPA certified R-410A, R-134a, R-22, R-404A wholesale. 99.9% purity guarantee. Same-day shipping. Get instant bulk quotes for HVAC professionals, contractors & distributors."
+        keywords="alper refrigerants, refrigerant distributor turkey, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies turkey, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
         ogImage="/placeholder.svg"
+        ogType="website"
       />
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Rolling Text Banner - Top placement for maximum visibility */}

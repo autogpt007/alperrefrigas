@@ -379,7 +379,7 @@ const Certifications = () => {
                   For certificate verification or audit requests:
                 </p>
                 <ul className="text-green-800 mt-2 space-y-1">
-                  <li>📧 Email: certifications@frigidflow.com</li>
+                  <li>📧 Email: certifications@alperrefrigas.com</li>
                   <li>📞 Phone: 1-800-734-7443 ext. 3</li>
                   <li>🕒 Available: Monday-Friday, 8AM-6PM EST</li>
                 </ul>

@@ -76,7 +76,7 @@ const Sitemap = () => {
   return (
     <>
       <SEOComponent
-        title="Site Map - FrigidFlow Professional Refrigerant Distribution"
+        title="Site Map - Alper Refrigerants Professional Refrigerant Distribution"
         description="Complete navigation guide for FrigidFlow refrigerant distributor website. Find all pages, products, resources, and tools for HVAC professionals."
         keywords="sitemap, website navigation, refrigerant distributor pages, HVAC resources, EPA compliance tools"
         canonicalUrl="/sitemap"
@@ -193,11 +193,11 @@ const Sitemap = () => {
                     </li>
                     <li className="flex justify-between">
                       <span>EPA Compliance:</span>
-                      <strong>compliance@frigidflow.com</strong>
+                      <strong>compliance@alperrefrigas.com</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>Hazmat Transportation:</span>
-                      <strong>hazmat@frigidflow.com</strong>
+                      <strong>hazmat@alperrefrigas.com</strong>
                     </li>
                   </ul>
                 </div>
@@ -227,12 +227,12 @@ const Sitemap = () => {
             <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-700">
               <div>
                 <strong>General Support:</strong><br />
-                Email: support@frigidflow.com<br />
+                Email: support@alperrefrigas.com<br />
                 Phone: 1-800-734-7443
               </div>
               <div>
                 <strong>Technical Questions:</strong><br />
-                Email: technical@frigidflow.com<br />
+                Email: technical@alperrefrigas.com<br />
                 Live Chat: Available 8 AM - 6 PM EST
               </div>
             </div>

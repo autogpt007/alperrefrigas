@@ -23,4 +23,4 @@ Disallow: /auth
 Disallow: /admin-auth
 
 # Sitemap location
-Sitemap: https://frigidflow.com/sitemap.xml
+Sitemap: https://alperrefrigas.com/sitemap.xml
