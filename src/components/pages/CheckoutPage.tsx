@@ -21,15 +21,21 @@ import SEOComponent from '../seo/SEOComponent';
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, freeShippingThreshold, shippingCost: cartShippingCost, finalTotal: cartFinalTotal } = useCart();
   const { createOrder } = useOrders();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState(500);
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     customerName: user?.user_metadata?.full_name || '',
     customerEmail: user?.email || '',
+    phoneNumber: '', // Add phone number field
     street: '',
     city: '',
     state: '',
@@ -50,35 +56,10 @@ const CheckoutPage = () => {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Fetch free shipping threshold
-  useEffect(() => {
-    const fetchShippingSettings = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('setting_value')
-          .eq('setting_key', 'free_shipping_threshold')
-          .maybeSingle();
-        
-        if (error) {
-          console.error('Error fetching shipping settings:', error);
-          return;
-        }
-        
-        if (data?.setting_value) {
-          setFreeShippingThreshold(parseFloat(data.setting_value));
-        }
-      } catch (error) {
-        console.error('Error fetching shipping settings:', error);
-      }
-    };
-
-    fetchShippingSettings();
-  }, []);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
 
+  // Fetch bank wire details
   useEffect(() => {
     const fetchBankWireDetails = async () => {
       const { data } = await supabase
@@ -96,9 +77,107 @@ const CheckoutPage = () => {
     fetchBankWireDetails();
   }, []);
 
-  const shippingCost = total > freeShippingThreshold ? 0 : 50;
-  const taxAmount = total * 0.08; // 8% tax
-  const finalTotal = total + shippingCost + taxAmount;
+  // Apply coupon function
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast({
+        title: "Please enter a coupon code",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCouponLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .eq('is_active', true)
+        .single();
+
+      if (error || !data) {
+        toast({
+          title: "Invalid coupon code",
+          description: "The coupon code you entered is not valid or has expired.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if coupon is valid (not expired and within usage limits)
+      const now = new Date();
+      const validFrom = new Date(data.start_date);
+      const validTo = new Date(data.end_date);
+
+      if (now < validFrom || now > validTo) {
+        toast({
+          title: "Coupon expired",
+          description: "This coupon is not currently valid.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data.max_uses && data.current_uses >= data.max_uses) {
+        toast({
+          title: "Coupon limit reached",
+          description: "This coupon has reached its usage limit.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data.minimum_order_amount && total < data.minimum_order_amount) {
+        toast({
+          title: "Minimum order amount not met",
+          description: `This coupon requires a minimum order of $${data.minimum_order_amount}.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Calculate discount
+      let discount = 0;
+      if (data.discount_type === 'percentage') {
+        discount = (total * data.discount_value) / 100;
+        // No max_discount_amount field in schema, so remove this check
+      } else {
+        discount = data.discount_value;
+      }
+
+      setAppliedCoupon(data);
+      setCouponDiscount(discount);
+      toast({
+        title: "Coupon applied successfully!",
+        description: `You saved $${discount.toFixed(2)}`,
+      });
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      toast({
+        title: "Error applying coupon",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponDiscount(0);
+    setCouponCode('');
+    toast({
+      title: "Coupon removed",
+    });
+  };
+
+  // Use cart shipping cost, but recalculate with coupon discount
+  const subtotalWithDiscount = total - couponDiscount;
+  const shippingCost = subtotalWithDiscount >= freeShippingThreshold ? 0 : cartShippingCost;
+  const taxAmount = subtotalWithDiscount * 0.08; // 8% tax
+  const finalTotal = subtotalWithDiscount + shippingCost + taxAmount;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -410,7 +489,8 @@ const CheckoutPage = () => {
                           <Label className="text-gray-300">Phone for Card Processing</Label>
                           <Input
                             type="tel"
-                            value={formData.customerEmail}
+                            value={formData.phoneNumber}
+                            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                             placeholder="Phone number"
                             className="bg-slate-600 border-slate-500 text-white"
                             required
@@ -585,12 +665,62 @@ const CheckoutPage = () => {
 
                   <Separator className="bg-slate-600" />
 
+                  {/* Coupon Code Section */}
+                  <div className="space-y-3">
+                    <h4 className="text-white font-medium">Coupon Code</h4>
+                    {!appliedCoupon ? (
+                      <div className="flex gap-2">
+                        <Input
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder="Enter coupon code"
+                          className="bg-slate-700 border-slate-600 text-white text-sm"
+                        />
+                        <Button
+                          type="button"
+                          onClick={applyCoupon}
+                          disabled={isCouponLoading || !couponCode.trim()}
+                          className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                          size="sm"
+                        >
+                          {isCouponLoading ? 'Applying...' : 'Apply'}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="text-green-400 text-sm font-medium">✓ {appliedCoupon.code}</p>
+                            <p className="text-green-300 text-xs">{appliedCoupon.title}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            onClick={removeCoupon}
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-400 hover:text-green-300"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <Separator className="bg-slate-600" />
+
                   {/* Totals */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-gray-300">
                       <span>Subtotal</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
+                    {couponDiscount > 0 && (
+                      <div className="flex justify-between text-green-400">
+                        <span>Coupon Discount</span>
+                        <span>-${couponDiscount.toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-gray-300">
                       <span>Shipping</span>
                       <span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
