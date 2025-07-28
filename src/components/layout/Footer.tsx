@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Phone, Mail, MapPin, Clock, Award, Shield } from 'lucide-react';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import SocialMediaLinks from '@/components/ui/SocialMediaLinks';
+import NewsletterSubscription from '@/components/ui/NewsletterSubscription';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -37,6 +38,19 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
+      {/* Newsletter Section */}
+      <div className="bg-gray-800 border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
+            <p className="text-gray-400">Get the latest refrigerant news and special offers delivered to your inbox.</p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <NewsletterSubscription compact className="[&>div]:bg-gray-700 [&>input]:bg-gray-600 [&>input]:border-gray-500 [&>button]:bg-blue-600 [&>button]:hover:bg-blue-700" />
+          </div>
+        </div>
+      </div>
+      
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">

@@ -11,6 +11,7 @@ import ProductCard from '@/components/ProductCard';
 import TestimonialSection from '@/components/ui/TestimonialSection';
 import { RollingTextBanner } from '@/components/ui/RollingTextBanner';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
+import NewsletterSubscription from '@/components/ui/NewsletterSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
@@ -199,7 +200,7 @@ const HomePage = () => {
       <RollingTextBanner 
         autoRotate={true}
         rotationInterval={6000}
-        className="relative z-50"
+        className="sticky top-[var(--header-height,83px)] z-40"
       />
       
       {/* Hero Section with improved visibility */}
@@ -773,6 +774,13 @@ const HomePage = () => {
 
       {/* Testimonials Section */}
       <TestimonialSection />
+
+      {/* Newsletter Subscription Section */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-2xl">
+          <NewsletterSubscription />
+        </div>
+      </section>
 
 
       {/* CTA Section */}

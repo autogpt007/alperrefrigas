@@ -16,6 +16,7 @@ import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { formatPrice, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
 
 const CheckoutPage = () => {
@@ -150,7 +151,7 @@ const CheckoutPage = () => {
       setCouponDiscount(discount);
       toast({
         title: "Coupon applied successfully!",
-        description: `You saved $${discount.toFixed(2)}`,
+        description: `You saved $${formatPrice(discount)}`,
       });
     } catch (error) {
       console.error('Error applying coupon:', error);
@@ -656,9 +657,9 @@ const CheckoutPage = () => {
                             {item.packaging} × {item.quantity}
                           </p>
                         </div>
-                        <p className="text-cyan-400 font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </p>
+                         <p className="text-cyan-400 font-medium">
+                           ${formatPrice(item.price * item.quantity)}
+                         </p>
                       </div>
                     ))}
                   </div>
@@ -711,36 +712,36 @@ const CheckoutPage = () => {
 
                   {/* Totals */}
                   <div className="space-y-2">
-                    <div className="flex justify-between text-gray-300">
-                      <span>Subtotal</span>
-                      <span>${total.toFixed(2)}</span>
-                    </div>
-                    {couponDiscount > 0 && (
-                      <div className="flex justify-between text-green-400">
-                        <span>Coupon Discount</span>
-                        <span>-${couponDiscount.toFixed(2)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-gray-300">
-                      <span>Shipping</span>
-                      <span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-300">
-                      <span>Tax</span>
-                      <span>${taxAmount.toFixed(2)}</span>
-                    </div>
-                    <Separator className="bg-slate-600" />
-                    <div className="flex justify-between text-white font-bold text-lg">
-                      <span>Total</span>
-                      <span>${finalTotal.toFixed(2)}</span>
-                    </div>
+                     <div className="flex justify-between text-gray-300">
+                       <span>Subtotal</span>
+                       <span>${formatPrice(total)}</span>
+                     </div>
+                     {couponDiscount > 0 && (
+                       <div className="flex justify-between text-green-400">
+                         <span>Coupon Discount</span>
+                         <span>-${formatPrice(couponDiscount)}</span>
+                       </div>
+                     )}
+                     <div className="flex justify-between text-gray-300">
+                       <span>Shipping</span>
+                       <span>{shippingCost === 0 ? 'Free' : `$${formatPrice(shippingCost)}`}</span>
+                     </div>
+                     <div className="flex justify-between text-gray-300">
+                       <span>Tax</span>
+                       <span>${formatPrice(taxAmount)}</span>
+                     </div>
+                     <Separator className="bg-slate-600" />
+                     <div className="flex justify-between text-white font-bold text-lg">
+                       <span>Total</span>
+                       <span>${formatPrice(finalTotal)}</span>
+                     </div>
                   </div>
 
                   {shippingCost === 0 && (
                     <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
-                      <p className="text-green-400 text-sm font-medium">
-                        🎉 Free shipping on orders over ${freeShippingThreshold}!
-                      </p>
+                       <p className="text-green-400 text-sm font-medium">
+                         🎉 Free shipping on orders over ${formatPrice(freeShippingThreshold)}!
+                       </p>
                     </div>
                   )}
 
@@ -749,7 +750,7 @@ const CheckoutPage = () => {
                     disabled={isProcessing || !legalAcknowledged}
                     className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-3"
                   >
-                    {isProcessing ? t('checkout.processing') : `${t('checkout.placeOrder')} - $${finalTotal.toFixed(2)}`}
+                    {isProcessing ? t('checkout.processing') : `${t('checkout.placeOrder')} - $${formatPrice(finalTotal)}`}
                   </Button>
                 </CardContent>
               </Card>
