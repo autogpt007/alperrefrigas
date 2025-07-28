@@ -141,11 +141,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+    console.log('AuthContext login attempt for:', email);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(),
+        password,
+        options: {
+          captchaToken: undefined // Explicitly disable captcha
+        }
+      });
+      
+      console.log('Login response error:', error);
+      return { error };
+    } catch (error) {
+      console.error('Login catch error:', error);
+      return { error };
+    }
   };
 
   const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
@@ -153,9 +164,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('Starting registration for:', data.email);
       
       const { data: authData, error } = await supabase.auth.signUp({
-        email: data.email,
+        email: data.email.toLowerCase().trim(),
         password: data.password,
         options: {
+          captchaToken: undefined, // Explicitly disable captcha
           data: {
             full_name: data.name,
             company: data.company,
