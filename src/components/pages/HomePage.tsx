@@ -774,68 +774,6 @@ const HomePage = () => {
       {/* Testimonials Section */}
       <TestimonialSection />
 
-      {/* Contact Information Section */}
-      <section className="py-16 bg-slate-800/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Get In Touch</h2>
-            <p className="text-lg text-gray-300">Multiple ways to reach our expert team</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* General Support */}
-            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="text-white text-center">General Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ContactDisplay 
-                  category="general" 
-                  showIcons={true} 
-                  showDescriptions={true}
-                  linkPhones={true}
-                  linkEmails={true}
-                  className="space-y-3"
-                />
-              </CardContent>
-            </Card>
-
-            {/* Emergency Contact */}
-            <Card className="bg-gradient-to-br from-red-900/50 to-orange-900/50 border-red-500/30 hover:border-red-400/50 transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="text-white text-center">Emergency Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ContactDisplay 
-                  category="emergency" 
-                  showIcons={true} 
-                  showDescriptions={true}
-                  linkPhones={true}
-                  linkEmails={true}
-                  className="space-y-3"
-                />
-              </CardContent>
-            </Card>
-
-            {/* Business Hours */}
-            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-blue-500/20 hover:border-blue-400/40 transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="text-white text-center">Business Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ContactDisplay 
-                  category="business" 
-                  showIcons={true} 
-                  showDescriptions={true}
-                  linkPhones={true}
-                  linkEmails={true}
-                  className="space-y-3"
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-cyan-600/20 to-purple-600/20">
