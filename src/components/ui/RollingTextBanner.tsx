@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdverts } from '@/hooks/useAdverts';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BannerMessage {
   id: string;
@@ -26,11 +28,26 @@ export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dismissedMessages, setDismissedMessages] = useState<Set<string>>(new Set());
   
+  // Fetch free shipping threshold
+  const { data: shippingThreshold } = useQuery({
+    queryKey: ['free-shipping-threshold'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_key', 'free_shipping_threshold')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data?.setting_value || '500';
+    }
+  });
+  
   // Get active adverts and convert to banner messages
   const activeAdverts = getActiveAdverts();
   const messages: BannerMessage[] = activeAdverts.map(advert => ({
     id: advert.id,
-    text: `<strong>${advert.title}</strong> ${advert.content}`,
+    text: `<strong>${advert.title}</strong> ${advert.content.replace(/\$500/g, `$${shippingThreshold || '500'}`)}`,
     type: advert.type as 'info' | 'success' | 'warning' | 'discount' | 'emergency',
     isActive: advert.is_active,
     dismissible: advert.dismissible

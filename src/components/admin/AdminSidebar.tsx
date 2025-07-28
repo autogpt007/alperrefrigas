@@ -14,7 +14,9 @@ import {
   Star,
   Palette,
   Phone,
-  Megaphone
+  Megaphone,
+  Tag,
+  Mail
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -27,7 +29,9 @@ const AdminSidebar = () => {
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
+    { icon: Tag, label: 'Coupons', path: '/admin/coupons' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
+    { icon: Mail, label: 'Newsletter', path: '/admin/newsletter' },
     { icon: Phone, label: 'Contact Info', path: '/admin/contact-info' },
     { icon: Users, label: 'Team', path: '/admin/team' },
     { icon: Award, label: 'Certificates', path: '/admin/certificates' },

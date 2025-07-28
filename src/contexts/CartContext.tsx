@@ -1,5 +1,7 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface CartItem {
   id: string;
@@ -21,12 +23,34 @@ interface CartContextType {
   total: number;
   itemCount: number;
   getTotalItems: () => number;
+  freeShippingThreshold: number;
+  qualifiesForFreeShipping: boolean;
+  shippingCost: number;
+  finalTotal: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+
+  // Fetch free shipping threshold from settings
+  const { data: shippingSettings } = useQuery({
+    queryKey: ['shipping-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_key', 'free_shipping_threshold')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return parseFloat(data?.setting_value || '500');
+    }
+  });
+
+  const freeShippingThreshold = shippingSettings || 500;
+  const standardShippingCost = 50; // Standard shipping cost
 
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
     console.log('Adding item to cart:', newItem);
@@ -91,8 +115,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const qualifiesForFreeShipping = total >= freeShippingThreshold;
+  const shippingCost = qualifiesForFreeShipping ? 0 : standardShippingCost;
+  const finalTotal = total + shippingCost;
 
-  console.log('Cart state:', { items, total, itemCount });
+  console.log('Cart state:', { 
+    items, 
+    total, 
+    itemCount, 
+    freeShippingThreshold, 
+    qualifiesForFreeShipping, 
+    shippingCost, 
+    finalTotal 
+  });
 
   const value = {
     items,
@@ -103,6 +138,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     total,
     itemCount,
     getTotalItems,
+    freeShippingThreshold,
+    qualifiesForFreeShipping,
+    shippingCost,
+    finalTotal,
   };
 
   return (
