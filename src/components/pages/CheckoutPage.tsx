@@ -16,7 +16,7 @@ import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { formatPrice, formatCurrency } from '@/lib/utils';
+import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
 
 const CheckoutPage = () => {
@@ -740,7 +740,7 @@ const CheckoutPage = () => {
                   {shippingCost === 0 && (
                     <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
                        <p className="text-green-400 text-sm font-medium">
-                         🎉 Free shipping on orders over ${formatPrice(freeShippingThreshold)}!
+                         🎉 Free shipping on orders over ${formatPriceWhole(freeShippingThreshold)}!
                        </p>
                     </div>
                   )}
