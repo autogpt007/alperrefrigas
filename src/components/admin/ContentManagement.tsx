@@ -24,6 +24,8 @@ interface SiteSettings {
   business_hours: any;
   social_links: any;
   seo_settings: any;
+  free_shipping_threshold?: string;
+  free_shipping_message?: string;
 }
 
 const ContentManagement = () => {
@@ -167,6 +169,7 @@ const ContentManagement = () => {
           <TabsTrigger value="hours">Business Hours</TabsTrigger>
           <TabsTrigger value="social">Social Media</TabsTrigger>
           <TabsTrigger value="seo">SEO Settings</TabsTrigger>
+          <TabsTrigger value="shipping">Shipping Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="company">
@@ -407,6 +410,51 @@ const ContentManagement = () => {
                   onChange={(e) => handleNestedInputChange('seo_settings', 'keywords', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="Comma-separated keywords"
+                  disabled={isLoading}
+                />
+              </div>
+              <Button 
+                onClick={handleSaveSettings} 
+                className="bg-cyan-500 hover:bg-cyan-600"
+                disabled={isLoading || saveMutation.isPending}
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {saveMutation.isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="shipping">
+          <Card className="bg-slate-800/50 border-cyan-500/20">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Settings className="h-5 w-5 text-cyan-400" />
+                Shipping Settings
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                Configure shipping thresholds and messaging
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label className="text-gray-300">Free Shipping Threshold ($)</Label>
+                <Input
+                  type="number"
+                  value={editingSettings.free_shipping_threshold || parsedSettings.free_shipping_threshold || '500'}
+                  onChange={(e) => handleInputChange('free_shipping_threshold', e.target.value)}
+                  className="bg-slate-700 border-slate-600 text-white"
+                  placeholder="Minimum order amount for free shipping"
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <Label className="text-gray-300">Free Shipping Message</Label>
+                <Input
+                  value={editingSettings.free_shipping_message || parsedSettings.free_shipping_message || 'Free shipping on orders over $[THRESHOLD]!'}
+                  onChange={(e) => handleInputChange('free_shipping_message', e.target.value)}
+                  className="bg-slate-700 border-slate-600 text-white"
+                  placeholder="Use [THRESHOLD] to insert the threshold amount"
                   disabled={isLoading}
                 />
               </div>
