@@ -54,6 +54,8 @@ import TestimonialsPage from "./components/pages/TestimonialsPage";
 import TestimonialManagement from "./components/admin/TestimonialManagement";
 import HeroImageManagement from "./components/admin/HeroImageManagement";
 import AdvertManagement from "./components/admin/AdvertManagement";
+import CouponManagement from "./components/admin/CouponManagement";
+import NewsletterManagement from "./components/admin/NewsletterManagement";
 import BlogPage from "./components/pages/BlogPage";
 import "./App.css";
 
@@ -82,6 +84,8 @@ function App() {
                         <Route path="orders" element={<OrderManagement />} />
                         <Route path="blog" element={<BlogPostManagement />} />
                         <Route path="adverts" element={<AdvertManagement />} />
+                        <Route path="coupons" element={<CouponManagement />} />
+                        <Route path="newsletter" element={<NewsletterManagement />} />
                         <Route path="logo" element={<LogoManagement />} />
                         <Route path="contacts" element={<ContactManagement />} />
                         <Route path="contact-info" element={<ContactInfoManagement />} />
