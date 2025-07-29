@@ -18,6 +18,7 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { WhatsAppButton } from "./components/ui/WhatsAppButton";
 import HomePage from "./components/pages/HomePage";
+import FreonWholesalePage from "./components/pages/FreonWholesalePage";
 import ProductCategory from "./components/pages/ProductCategory";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
@@ -111,7 +112,8 @@ function App() {
                           <Header />
                           <main className="flex-1">
                             <Routes>
-                              <Route path="/" element={<HomePage />} />
+                          <Route path="/" element={<HomePage />} />
+                          <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
                               <Route path="/products" element={<ProductCatalog />} />
                               <Route path="/products/category/:category" element={<ProductCategory />} />
                               <Route path="/products/:productSlug" element={<ProductDetails />} />

@@ -15,6 +15,7 @@ import NewsletterSubscription from '@/components/ui/NewsletterSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
+import InternalLinkSuggestions from '@/components/seo/InternalLinkSuggestions';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -189,7 +190,7 @@ const HomePage = () => {
       <SEOComponent
         title="Alper Refrigerants - #1 Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Prices"
         description="⭐ Turkey's largest refrigerant distributor since 2011. EPA certified R-410A, R-134a, R-22, R-404A wholesale. 99.9% purity guarantee. Same-day shipping. Get instant bulk quotes for HVAC professionals, contractors & distributors."
-        keywords="alper refrigerants, refrigerant distributor turkey, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies turkey, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales"
+        keywords="alper refrigerants, refrigerant distributor turkey, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies turkey, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, freon wholesale"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
         ogImage="/placeholder.svg"
@@ -282,7 +283,7 @@ const HomePage = () => {
                 <Building2 className="h-10 w-10 text-white" />
               </div>
               <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
-                Leading Refrigerant Wholesale Distributor
+                Leading Freon & Refrigerant Wholesale Distributor
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-6 rounded-full"></div>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -300,9 +301,9 @@ const HomePage = () => {
                       <Award className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Premier Quality & Service Excellence</h3>
+                      <h3 className="text-2xl font-bold text-white mb-4">Premier Freon & Refrigerant Quality Excellence</h3>
                       <p className="text-gray-300 text-lg leading-relaxed">
-                        Alper Refrigerant stands as North America's premier wholesale refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
+                        Alper Refrigerant stands as North America's premier wholesale freon and refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
                       </p>
                     </div>
                   </div>
@@ -317,9 +318,9 @@ const HomePage = () => {
                       <Package className="h-8 w-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-4">Comprehensive Refrigerant Inventory</h3>
+                      <h3 className="text-2xl font-bold text-white mb-4">Comprehensive Freon & Refrigerant Inventory</h3>
                       <p className="text-gray-100 leading-relaxed mb-4">
-                        Our comprehensive inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
+                        Our comprehensive freon and refrigerant inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every freon product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {homepageProducts.map((product) => (
@@ -329,6 +330,43 @@ const HomePage = () => {
                             </Badge>
                           </Link>
                         ))}
+                      </div>
+                      
+                      {/* Internal linking for SEO */}
+                      <div className="bg-slate-800/50 border border-cyan-500/20 rounded-lg p-6 my-8">
+                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <span className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></span>
+                          Related Wholesale Products
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <Link
+                            to="/freon-wholesale"
+                            className="block p-4 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg border border-slate-600/50 hover:border-cyan-400/30 transition-all duration-200 group"
+                          >
+                            <span className="text-cyan-400 font-medium group-hover:text-cyan-300 transition-colors">
+                              freon wholesale
+                            </span>
+                            <p className="text-gray-300 text-sm mt-1">Bulk freon pricing for contractors</p>
+                          </Link>
+                          <Link
+                            to="/products/r-410a"
+                            className="block p-4 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg border border-slate-600/50 hover:border-cyan-400/30 transition-all duration-200 group"
+                          >
+                            <span className="text-cyan-400 font-medium group-hover:text-cyan-300 transition-colors">
+                              R-410A wholesale
+                            </span>
+                            <p className="text-gray-300 text-sm mt-1">R-410A bulk pricing</p>
+                          </Link>
+                          <Link
+                            to="/products/r-134a"
+                            className="block p-4 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg border border-slate-600/50 hover:border-cyan-400/30 transition-all duration-200 group"
+                          >
+                            <span className="text-cyan-400 font-medium group-hover:text-cyan-300 transition-colors">
+                              R-134a freon
+                            </span>
+                            <p className="text-gray-300 text-sm mt-1">Automotive refrigerant wholesale</p>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
