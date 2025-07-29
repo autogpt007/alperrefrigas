@@ -15,7 +15,6 @@ import NewsletterSubscription from '@/components/ui/NewsletterSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
-import InternalLinkSuggestions from '@/components/seo/InternalLinkSuggestions';
 
 const HomePage = () => {
   const { t } = useTranslation();
