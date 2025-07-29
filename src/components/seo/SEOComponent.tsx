@@ -104,9 +104,15 @@ const SEOComponent: React.FC<SEOProps> = ({
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="robots" content="index, follow" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta httpEquiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
+      
+      {/* Preload critical resources */}
+      <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       
       {/* Canonical URL */}
-      {canonicalUrl && <link rel="canonical" href={`${siteUrl}${canonicalUrl}`} />}
+      <link rel="canonical" href={`${siteUrl}${canonicalUrl || ''}`} />
       
       {/* Open Graph Tags */}
       <meta property="og:title" content={fullTitle} />

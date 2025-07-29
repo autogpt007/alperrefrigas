@@ -1,0 +1,21 @@
+# Netlify redirects for URL canonicalization and clean URLs
+
+# Force HTTPS and www
+http://alperrefrigas.com/* https://www.alperrefrigas.com/:splat 301!
+https://alperrefrigas.com/* https://www.alperrefrigas.com/:splat 301!
+
+# Handle SPA routing
+/*    /index.html   200
+
+# Remove trailing slashes
+/*/ /:splat 301!
+
+# Old URL redirects (if any legacy URLs exist)
+/products.html /products 301!
+/about.html /about 301!
+/contact.html /contact 301!
+
+# Redirect common variations
+/home /  301!
+/index /  301!
+/index.html /  301!

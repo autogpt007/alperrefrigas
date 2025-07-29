@@ -43,7 +43,7 @@ const ImageOptimizer: React.FC<OptimizedImageProps> = ({
     return optimizedAlt;
   };
 
-  // Generate srcset for responsive images
+  // Generate srcset for responsive images with WebP support
   const generateSrcSet = (baseSrc: string) => {
     if (!width || !height) return undefined;
     
@@ -57,32 +57,52 @@ const ImageOptimizer: React.FC<OptimizedImageProps> = ({
     return sizes
       .filter(size => size.width <= (width || 1280))
       .map(size => {
-        const optimizedSrc = baseSrc.replace(/\.(jpg|jpeg|png|webp)$/i, `${size.suffix}.$1`);
-        return `${optimizedSrc} ${size.width}w`;
+        // Prefer WebP format for better compression
+        const webpSrc = baseSrc.replace(/\.(jpg|jpeg|png)$/i, `${size.suffix}.webp`);
+        const fallbackSrc = baseSrc.replace(/\.(jpg|jpeg|png|webp)$/i, `${size.suffix}.$1`);
+        return `${webpSrc} ${size.width}w`;
       })
       .join(', ');
   };
 
+  // Generate WebP source element
+  const generateWebPSource = (baseSrc: string) => {
+    const srcSet = generateSrcSet(baseSrc);
+    if (!srcSet) return null;
+    
+    return (
+      <source
+        srcSet={srcSet}
+        sizes="(max-width: 320px) 320px, (max-width: 640px) 640px, (max-width: 960px) 960px, 1280px"
+        type="image/webp"
+      />
+    );
+  };
+
   const optimizedAlt = getOptimizedAlt(alt);
   const srcSet = generateSrcSet(src);
+  const webpSource = generateWebPSource(src);
 
   return (
-    <img
-      src={src}
-      alt={optimizedAlt}
-      title={title || optimizedAlt}
-      className={className}
-      width={width}
-      height={height}
-      loading={priority ? 'eager' : loading}
-      srcSet={srcSet}
-      sizes={srcSet ? "(max-width: 320px) 320px, (max-width: 640px) 640px, (max-width: 960px) 960px, 1280px" : undefined}
-      decoding="async"
-      style={{
-        aspectRatio: width && height ? `${width}/${height}` : undefined,
-        objectFit: 'cover'
-      }}
-    />
+    <picture>
+      {webpSource}
+      <img
+        src={src}
+        alt={optimizedAlt}
+        title={title || optimizedAlt}
+        className={className}
+        width={width}
+        height={height}
+        loading={priority ? 'eager' : loading}
+        srcSet={srcSet}
+        sizes={srcSet ? "(max-width: 320px) 320px, (max-width: 640px) 640px, (max-width: 960px) 960px, 1280px" : undefined}
+        decoding="async"
+        style={{
+          aspectRatio: width && height ? `${width}/${height}` : undefined,
+          objectFit: 'cover'
+        }}
+      />
+    </picture>
   );
 };
 

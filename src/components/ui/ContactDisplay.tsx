@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, Mail, Clock, ExternalLink } from 'lucide-react';
 import { useContactInfo } from '@/hooks/useContactInfo';
+import EmailObfuscator from '@/components/seo/EmailObfuscator';
 
 interface ContactDisplayProps {
   category?: string;
@@ -54,12 +55,12 @@ export const ContactDisplay: React.FC<ContactDisplayProps> = ({
     
     if (contact.contact_type === 'email' && linkEmails) {
       return (
-        <a 
-          href={`mailto:${contact.value}`}
+        <EmailObfuscator 
+          email={contact.value}
           className="text-current hover:text-white underline decoration-current/30 hover:decoration-white/60 transition-colors"
         >
           {contact.value}
-        </a>
+        </EmailObfuscator>
       );
     }
 

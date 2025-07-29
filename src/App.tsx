@@ -3,6 +3,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFavicon } from "./hooks/useFavicon";
+import ResourceOptimizer from '@/components/seo/ResourceOptimizer';
+import CriticalCSS from '@/components/seo/CriticalCSS';
+import MetaRedirects from '@/components/seo/MetaRedirects';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
@@ -65,16 +69,20 @@ function App() {
   useFavicon();
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <ProductsProvider>
-            <CartProvider>
-              <RFQProvider>
-                <QuotesProvider>
-                  <OrdersProvider>
-                  <Toaster />
-                  <BrowserRouter>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AuthProvider>
+            <ProductsProvider>
+              <CartProvider>
+                <RFQProvider>
+                  <QuotesProvider>
+                    <OrdersProvider>
+                      <ResourceOptimizer>
+                        <CriticalCSS />
+                        <Toaster />
+                        <BrowserRouter>
+                          <MetaRedirects />
                     <Routes>
                       {/* Admin Routes */}
                       <Route path="/admin" element={<AdminLayout />}>
@@ -137,15 +145,17 @@ function App() {
                         </div>
                       } />
                     </Routes>
-                  </BrowserRouter>
-                  </OrdersProvider>
-                </QuotesProvider>
-              </RFQProvider>
-            </CartProvider>
-          </ProductsProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+                        </BrowserRouter>
+                      </ResourceOptimizer>
+                    </OrdersProvider>
+                  </QuotesProvider>
+                </RFQProvider>
+              </CartProvider>
+            </ProductsProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
