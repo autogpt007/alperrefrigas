@@ -79,9 +79,10 @@ function App() {
                 <RFQProvider>
                   <QuotesProvider>
                     <OrdersProvider>
-                      <ResourceOptimizer>
-                        <CriticalCSS />
-                        <Toaster />
+                       <ResourceOptimizer>
+                         <SecurityHeaders />
+                         <CriticalCSS />
+                         <Toaster />
                         <BrowserRouter>
                           <MetaRedirects />
                     <Routes>

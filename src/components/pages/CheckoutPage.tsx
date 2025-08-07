@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
@@ -44,10 +44,7 @@ const CheckoutPage = () => {
     country: 'United States',
     paymentMethod: 'credit_card',
     notes: '',
-    // Credit card fields
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
+    // Secure payment - only collect minimal info for phone verification
     cardholderName: '',
     billingStreet: '',
     billingCity: '',
@@ -238,8 +235,7 @@ const CheckoutPage = () => {
         payment_method: formData.paymentMethod,
         payment_details: formData.paymentMethod === 'credit_card' ? {
           cardholder_name: formData.cardholderName,
-          card_number: formData.cardNumber,
-          expiry_date: formData.expiryDate,
+          // Security: Never store sensitive card data
           billing_address: {
             street: formData.billingStreet || formData.street,
             city: formData.billingCity || formData.city,
@@ -448,99 +444,35 @@ const CheckoutPage = () => {
                     </div>
                   </RadioGroup>
                   
-                  {formData.paymentMethod === 'credit_card' && (
-                    <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg">
-                      <h4 className="text-white font-medium">Credit Card Information</h4>
-                      <p className="text-gray-300 text-sm mb-4">
-                        We will call you to process your credit card payment securely over the phone.
-                      </p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-gray-300">Cardholder Name</Label>
-                          <Input
-                            value={formData.cardholderName}
-                            onChange={(e) => handleInputChange('cardholderName', e.target.value)}
-                            placeholder="Full name on card"
-                            className="bg-slate-600 border-slate-500 text-white"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-300">Card Number (Full Number)</Label>
-                          <Input
-                            value={formData.cardNumber}
-                            onChange={(e) => handleInputChange('cardNumber', e.target.value)}
-                            placeholder="1234 5678 9012 3456"
-                            maxLength={19}
-                            className="bg-slate-600 border-slate-500 text-white"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-300">Expiry Date</Label>
-                          <Input
-                            value={formData.expiryDate}
-                            onChange={(e) => handleInputChange('expiryDate', e.target.value)}
-                            placeholder="MM/YY"
-                            className="bg-slate-600 border-slate-500 text-white"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-300">Phone for Card Processing</Label>
-                          <Input
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                            placeholder="Phone number"
-                            className="bg-slate-600 border-slate-500 text-white"
-                            required
-                          />
-                        </div>
-                      </div>
-                      
-                      <Separator className="bg-slate-600" />
-                      
-                      <h4 className="text-white font-medium">Billing Address</h4>
-                      <div className="space-y-4">
-                        <div>
-                          <Label className="text-gray-300">Street Address</Label>
-                          <Input
-                            value={formData.billingStreet}
-                            onChange={(e) => handleInputChange('billingStreet', e.target.value)}
-                            placeholder="Same as shipping"
-                            className="bg-slate-600 border-slate-500 text-white"
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <Label className="text-gray-300">City</Label>
-                            <Input
-                              value={formData.billingCity}
-                              onChange={(e) => handleInputChange('billingCity', e.target.value)}
-                              className="bg-slate-600 border-slate-500 text-white"
-                            />
-                          </div>
-                          <div>
-                            <Label className="text-gray-300">State</Label>
-                            <Input
-                              value={formData.billingState}
-                              onChange={(e) => handleInputChange('billingState', e.target.value)}
-                              className="bg-slate-600 border-slate-500 text-white"
-                            />
-                          </div>
-                          <div>
-                            <Label className="text-gray-300">ZIP Code</Label>
-                            <Input
-                              value={formData.billingZipCode}
-                              onChange={(e) => handleInputChange('billingZipCode', e.target.value)}
-                              className="bg-slate-600 border-slate-500 text-white"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                   {formData.paymentMethod === 'credit_card' && (
+                     <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg border-l-4 border-green-500">
+                       <div className="flex items-center gap-2">
+                         <Shield className="h-5 w-5 text-green-400" />
+                         <h4 className="text-white font-medium">Secure Payment Process</h4>
+                       </div>
+                       <div className="bg-green-900/20 p-4 rounded-lg">
+                         <p className="text-green-300 font-medium mb-2">🔒 PCI Compliant Security</p>
+                         <p className="text-gray-300 text-sm mb-3">
+                           For your security, we process credit card payments over the phone using industry-standard encryption. 
+                           We will contact you within 24 hours to securely collect payment information.
+                         </p>
+                         <p className="text-yellow-300 text-xs">
+                           ⚠️ We never store sensitive payment data on our servers
+                         </p>
+                       </div>
+                       <div>
+                         <Label className="text-gray-300">Cardholder Name</Label>
+                         <Input
+                           value={formData.cardholderName}
+                           onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+                           placeholder="Full name as it appears on card"
+                           className="bg-slate-600 border-slate-500 text-white"
+                           required
+                         />
+                         <p className="text-xs text-gray-400 mt-1">This helps us verify your identity during the phone call</p>
+                       </div>
+                     </div>
+                   )}
 
                   {formData.paymentMethod === 'bank_wire' && bankWireDetails && (
                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
