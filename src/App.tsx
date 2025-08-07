@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,7 +7,6 @@ import { useFavicon } from "./hooks/useFavicon";
 import ResourceOptimizer from '@/components/seo/ResourceOptimizer';
 import CriticalCSS from '@/components/seo/CriticalCSS';
 import MetaRedirects from '@/components/seo/MetaRedirects';
-import SecurityHeaders from '@/components/security/SecurityHeaders';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -79,12 +79,11 @@ function App() {
               <CartProvider>
                 <RFQProvider>
                   <QuotesProvider>
-                    <OrdersProvider>
-                       <ResourceOptimizer>
-                         <SecurityHeaders />
-                         <CriticalCSS />
-                         <Toaster />
-                        <BrowserRouter>
+                     <OrdersProvider>
+                        <ResourceOptimizer>
+                          <CriticalCSS />
+                          <Toaster />
+                         <BrowserRouter>
                           <MetaRedirects />
                     <Routes>
                       {/* Admin Routes */}
