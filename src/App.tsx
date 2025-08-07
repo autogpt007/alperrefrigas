@@ -6,6 +6,7 @@ import { useFavicon } from "./hooks/useFavicon";
 import ResourceOptimizer from '@/components/seo/ResourceOptimizer';
 import CriticalCSS from '@/components/seo/CriticalCSS';
 import MetaRedirects from '@/components/seo/MetaRedirects';
+import SecurityHeaders from '@/components/security/SecurityHeaders';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";

@@ -5,7 +5,6 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Badge } from '../ui/badge';
 import { Shield, AlertTriangle, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface SecurityEvent {
@@ -20,28 +19,61 @@ interface SecurityEvent {
   created_at: string;
 }
 
+// Mock data for demonstration until security_audit_log table is available
+const mockSecurityEvents: SecurityEvent[] = [
+  {
+    id: '1',
+    event_type: 'login_attempt',
+    user_email: 'admin@example.com',
+    ip_address: '192.168.1.100',
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    details: { success: true, method: 'email' },
+    risk_level: 'low',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    event_type: 'admin_action',
+    user_email: 'admin@example.com',
+    ip_address: '192.168.1.100',
+    details: { action: 'product_created', product_id: 'prod_123' },
+    risk_level: 'medium',
+    created_at: new Date(Date.now() - 3600000).toISOString()
+  },
+  {
+    id: '3',
+    event_type: 'payment_attempt',
+    user_email: 'customer@example.com',
+    ip_address: '203.0.113.1',
+    details: { amount: 500, currency: 'USD', success: false, reason: 'insufficient_funds' },
+    risk_level: 'high',
+    created_at: new Date(Date.now() - 7200000).toISOString()
+  }
+];
+
 const SecurityAuditLog = () => {
-  const [events, setEvents] = useState<SecurityEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<SecurityEvent[]>(mockSecurityEvents);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterRisk, setFilterRisk] = useState('all');
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchSecurityEvents();
+    // Initialize with mock data
+    setEvents(mockSecurityEvents);
   }, []);
 
   const fetchSecurityEvents = async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('security_audit_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
-
-      if (error) throw error;
-      setEvents(data || []);
+      // For now, just refresh with mock data
+      // In future, this will connect to the actual security_audit_log table
+      setEvents([...mockSecurityEvents]);
+      toast({
+        title: "Security events refreshed",
+        description: "Displaying mock data until database table is available"
+      });
     } catch (error) {
       console.error('Error fetching security events:', error);
       toast({
@@ -56,11 +88,19 @@ const SecurityAuditLog = () => {
 
   const logSecurityEvent = async (eventData: Omit<SecurityEvent, 'id' | 'created_at'>) => {
     try {
-      const { error } = await supabase
-        .from('security_audit_log')
-        .insert([eventData]);
-
-      if (error) throw error;
+      // For now, just add to local state
+      const newEvent: SecurityEvent = {
+        ...eventData,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString()
+      };
+      
+      setEvents(prev => [newEvent, ...prev]);
+      
+      toast({
+        title: "Security event logged",
+        description: `${eventData.event_type} recorded with ${eventData.risk_level} risk level`
+      });
     } catch (error) {
       console.error('Error logging security event:', error);
     }
@@ -98,12 +138,26 @@ const SecurityAuditLog = () => {
     return matchesSearch && matchesType && matchesRisk;
   });
 
+  // Test security event logging
+  const testSecurityLogging = () => {
+    logSecurityEvent({
+      event_type: 'admin_action',
+      user_email: 'test@example.com',
+      ip_address: '192.168.1.200',
+      details: { action: 'test_security_logging', timestamp: Date.now() },
+      risk_level: 'medium'
+    });
+  };
+
   return (
     <Card className="bg-slate-800/50 border-cyan-500/20">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <Shield className="h-5 w-5 text-cyan-400" />
           Security Audit Log
+          <Badge variant="outline" className="text-xs text-amber-400 border-amber-400/30">
+            Demo Mode
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -187,13 +241,22 @@ const SecurityAuditLog = () => {
           )}
         </div>
 
-        <Button 
-          onClick={fetchSecurityEvents}
-          variant="outline"
-          className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
-        >
-          Refresh Events
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={fetchSecurityEvents}
+            variant="outline"
+            className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
+          >
+            Refresh Events
+          </Button>
+          <Button 
+            onClick={testSecurityLogging}
+            variant="outline"
+            className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+          >
+            Test Logging
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
