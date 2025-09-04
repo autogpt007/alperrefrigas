@@ -215,7 +215,15 @@ const ProductCatalog = () => {
           {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
-              {product.category} Refrigerant
+              {product.product_type === 'accessory' 
+                ? `${product.category} ${product.category === 'gauges' ? 'Equipment' : 
+                    product.category === 'recovery' ? 'Equipment' : 
+                    product.category === 'tools' ? 'Equipment' : 
+                    product.category === 'fittings' ? 'Equipment' : 
+                    product.category === 'safety' ? 'Equipment' : 
+                    product.category === 'valves' ? 'Equipment' : 'Accessory'}`
+                : `${product.category} Refrigerant`
+              }
             </Badge>
           </div>
           
