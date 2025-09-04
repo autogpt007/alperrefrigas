@@ -735,6 +735,7 @@ export type Database = {
           packaging_options: Json | null
           pallet_price: number | null
           price: number
+          product_type: string
           sds_url: string | null
           shipping_weight: string | null
           sku: string | null
@@ -770,6 +771,7 @@ export type Database = {
           packaging_options?: Json | null
           pallet_price?: number | null
           price: number
+          product_type?: string
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null
@@ -805,6 +807,7 @@ export type Database = {
           packaging_options?: Json | null
           pallet_price?: number | null
           price?: number
+          product_type?: string
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null

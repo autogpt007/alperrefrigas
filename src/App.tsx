@@ -46,6 +46,7 @@ import UserAuthPage from "./components/auth/UserAuthPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./components/admin/Dashboard";
 import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
+import AccessoryManagement from "./components/admin/AccessoryManagement";
 import OrderManagement from "./components/admin/OrderManagement";
 import BlogPostManagement from "./components/admin/BlogPostManagement";
 import LogoManagement from "./components/admin/LogoManagement";
@@ -87,25 +88,26 @@ function App() {
                           <MetaRedirects />
                     <Routes>
                       {/* Admin Routes */}
-                      <Route path="/admin" element={<AdminLayout />}>
-                        <Route index element={<Dashboard />} />
-                        <Route path="products" element={<EnhancedProductManagement />} />
-                        <Route path="featured-products" element={<FeaturedProductManagement />} />
-                        <Route path="orders" element={<OrderManagement />} />
-                        <Route path="blog" element={<BlogPostManagement />} />
-                        <Route path="adverts" element={<AdvertManagement />} />
-                        <Route path="coupons" element={<CouponManagement />} />
-                        <Route path="newsletter" element={<NewsletterManagement />} />
-                        <Route path="logo" element={<LogoManagement />} />
-                        <Route path="contacts" element={<ContactManagement />} />
-                        <Route path="contact-info" element={<ContactInfoManagement />} />
-                        <Route path="team" element={<TeamManagement />} />
-                        <Route path="certificates" element={<CertificationManagement />} />
-                        <Route path="content" element={<ContentManagement />} />
-                        <Route path="testimonials" element={<TestimonialManagement />} />
-                        <Route path="hero-images" element={<HeroImageManagement />} />
-                        <Route path="settings" element={<AdminSettings />} />
-                      </Route>
+                       <Route path="/admin" element={<AdminLayout />}>
+                         <Route index element={<Dashboard />} />
+                         <Route path="products" element={<EnhancedProductManagement />} />
+                         <Route path="accessories" element={<AccessoryManagement />} />
+                         <Route path="featured-products" element={<FeaturedProductManagement />} />
+                         <Route path="orders" element={<OrderManagement />} />
+                         <Route path="blog" element={<BlogPostManagement />} />
+                         <Route path="adverts" element={<AdvertManagement />} />
+                         <Route path="coupons" element={<CouponManagement />} />
+                         <Route path="newsletter" element={<NewsletterManagement />} />
+                         <Route path="logo" element={<LogoManagement />} />
+                         <Route path="contacts" element={<ContactManagement />} />
+                         <Route path="contact-info" element={<ContactInfoManagement />} />
+                         <Route path="team" element={<TeamManagement />} />
+                         <Route path="certificates" element={<CertificationManagement />} />
+                         <Route path="content" element={<ContentManagement />} />
+                         <Route path="testimonials" element={<TestimonialManagement />} />
+                         <Route path="hero-images" element={<HeroImageManagement />} />
+                         <Route path="settings" element={<AdminSettings />} />
+                       </Route>
                       
                       {/* Public Routes */}
                       <Route path="/*" element={
@@ -115,10 +117,13 @@ function App() {
                             <Routes>
                           <Route path="/" element={<HomePage />} />
                           <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
-                              <Route path="/products" element={<ProductCatalog />} />
-                              <Route path="/products/category/:category" element={<ProductCategory />} />
-                              <Route path="/products/:productSlug" element={<ProductDetails />} />
-                              <Route path="/products/:id" element={<ProductDetails />} />
+                               <Route path="/products" element={<ProductCatalog />} />
+                               <Route path="/products/refrigerants" element={<ProductCatalog />} />
+                               <Route path="/products/accessories" element={<ProductCatalog />} />
+                               <Route path="/products/category/:category" element={<ProductCategory />} />
+                               <Route path="/products/accessories/:category" element={<ProductCategory />} />
+                               <Route path="/products/:productSlug" element={<ProductDetails />} />
+                               <Route path="/products/:id" element={<ProductDetails />} />
                               <Route path="/cart" element={<CartPage />} />
                               <Route path="/rfq" element={<RFQPage />} />
                               <Route path="/checkout" element={<CheckoutPage />} />

@@ -16,7 +16,8 @@ import {
   Phone,
   Megaphone,
   Tag,
-  Mail
+  Mail,
+  Wrench
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -25,6 +26,7 @@ const AdminSidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
     { icon: Package, label: 'Products', path: '/admin/products' },
+    { icon: Wrench, label: 'Accessories', path: '/admin/accessories' },
     { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },

@@ -5,13 +5,21 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut, FileText } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const { t } = useTranslation();
@@ -70,13 +78,18 @@ const Header = () => {
 
   const navItems = [
     { label: t('nav.home'), path: '/' },
-    { label: t('nav.products'), path: '/products' },
     { label: t('nav.about'), path: '/about' },
     { label: 'Testimonials', path: '/testimonials' },
     { label: t('nav.contact'), path: '/contact' },
     { label: 'Blog', path: '/blog' },
     { label: 'EPA Compliance', path: '/compliance' },
     { label: t('nav.certifications'), path: '/certifications' },
+  ];
+
+  const productMenuItems = [
+    { label: 'All Products', path: '/products' },
+    { label: 'Refrigerants', path: '/products/refrigerants' },
+    { label: 'Accessories', path: '/products/accessories' },
   ];
 
   return (
@@ -211,17 +224,47 @@ const Header = () => {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${
-                isActive(item.path) ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-8">
+              {/* Products Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-gray-700 hover:text-blue-600 font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent focus:bg-transparent">
+                  {t('nav.products')}
+                  <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-white border shadow-lg rounded-md p-4 w-48">
+                  <div className="space-y-2">
+                    {productMenuItems.map((item) => (
+                      <NavigationMenuLink key={item.path} asChild>
+                        <Link
+                          to={item.path}
+                          className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              {/* Regular Navigation Items */}
+              {navItems.map((item) => (
+                <NavigationMenuItem key={item.path}>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to={item.path}
+                      className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${
+                        isActive(item.path) ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </nav>
       </div>
 
@@ -245,6 +288,26 @@ const Header = () => {
 
             {/* Mobile Navigation */}
             <nav className="space-y-2">
+              {/* Products Section */}
+              <div>
+                <div className="py-2 text-gray-700 font-medium">{t('nav.products')}</div>
+                <div className="ml-4 space-y-1">
+                  {productMenuItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`block py-1 text-gray-600 hover:text-blue-600 transition-colors ${
+                        isActive(item.path) ? 'text-blue-600' : ''
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Regular Navigation Items */}
               {navItems.map((item) => (
                 <Link
                   key={item.path}
