@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -86,9 +86,16 @@ const Header = () => {
   ];
 
   const productMenuItems = [
-    { label: 'All Products', path: '/products' },
-    { label: 'Refrigerants', path: '/products/refrigerants' },
-    { label: 'Accessories', path: '/products/accessories' },
+    { 
+      title: 'Refrigerants',
+      href: '/products/refrigerants',
+      description: 'Professional-grade refrigerants for all HVAC applications'
+    },
+    { 
+      title: 'Accessories',
+      href: '/products/accessories', 
+      description: 'Tools, gauges, and equipment for refrigeration work'
+    },
   ];
 
   return (
@@ -244,15 +251,48 @@ const Header = () => {
                 <NavigationMenuTrigger className="text-gray-700 hover:text-blue-600 font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent focus:bg-transparent">
                   {t('nav.products')}
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-white border shadow-lg rounded-md p-4 w-48 z-50">
-                  <div className="space-y-2">
-                    {productMenuItems.map((item) => (
-                      <NavigationMenuLink key={item.path} asChild>
+                <NavigationMenuContent>
+                  <div className="grid gap-4 p-8 md:w-[450px] lg:w-[550px] lg:grid-cols-[1fr_1fr] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border border-white/20 shadow-2xl shadow-primary/10 rounded-xl">
+                    <div className="col-span-2 mb-4">
+                      <NavigationMenuLink asChild>
                         <Link
-                          to={item.path}
-                          className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                          to="/products"
+                          className="group flex h-full w-full select-none flex-col justify-center rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 p-6 no-underline outline-none transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/20 focus:shadow-lg border border-primary/20"
                         >
-                          {item.label}
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                              <Package className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                              All Products
+                            </div>
+                          </div>
+                          <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors">
+                            Browse our complete catalog of refrigerants and accessories
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </div>
+                    {productMenuItems.map((item, index) => (
+                      <NavigationMenuLink key={index} asChild>
+                        <Link
+                          to={item.href}
+                          className="group block select-none rounded-xl p-4 leading-none no-underline outline-none transition-all duration-300 hover:scale-105 hover:bg-gradient-to-br hover:from-accent/10 hover:to-primary/5 hover:shadow-lg hover:shadow-accent/20 border border-transparent hover:border-accent/30 backdrop-blur-sm"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-all duration-300 group-hover:scale-110">
+                              {item.title === 'Refrigerants' ? (
+                                <Snowflake className="h-4 w-4 text-accent" />
+                              ) : (
+                                <Wrench className="h-4 w-4 text-accent" />
+                              )}
+                            </div>
+                            <div className="text-sm font-medium leading-none group-hover:text-primary transition-colors">{item.title}</div>
+                          </div>
+                          <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground group-hover:text-foreground/70 transition-colors">
+                            {item.description}
+                          </p>
                         </Link>
                       </NavigationMenuLink>
                     ))}
@@ -315,16 +355,25 @@ const Header = () => {
               <div>
                 <div className="py-2 text-gray-700 font-medium">{t('nav.products')}</div>
                 <div className="ml-4 space-y-1">
+                  <Link
+                    to="/products"
+                    className={`block py-1 text-gray-600 hover:text-blue-600 transition-colors ${
+                      isActive('/products') ? 'text-blue-600' : ''
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    All Products
+                  </Link>
                   {productMenuItems.map((item) => (
                     <Link
-                      key={item.path}
-                      to={item.path}
+                      key={item.href}
+                      to={item.href}
                       className={`block py-1 text-gray-600 hover:text-blue-600 transition-colors ${
-                        isActive(item.path) ? 'text-blue-600' : ''
+                        isActive(item.href) ? 'text-blue-600' : ''
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      {item.label}
+                      {item.title}
                     </Link>
                   ))}
                 </div>

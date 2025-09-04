@@ -41,7 +41,7 @@ NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName
 const NavigationMenuItem = NavigationMenuPrimitive.Item
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+  "group inline-flex h-10 w-max items-center justify-center rounded-lg bg-background px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-gradient-to-r hover:from-accent/10 hover:to-primary/5 hover:text-primary hover:shadow-md hover:shadow-primary/20 focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gradient-to-r data-[active]:from-primary/10 data-[active]:to-accent/5 data-[active]:text-primary data-[state=open]:bg-gradient-to-r data-[state=open]:from-primary/10 data-[state=open]:to-accent/5 data-[state=open]:text-primary data-[state=open]:shadow-lg data-[state=open]:shadow-primary/20"
 )
 
 const NavigationMenuTrigger = React.forwardRef<
@@ -55,7 +55,7 @@ const NavigationMenuTrigger = React.forwardRef<
   >
     {children}{" "}
     <ChevronDown
-      className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180"
+      className="relative top-[1px] ml-1 h-3 w-3 transition-all duration-300 group-data-[state=open]:rotate-180 group-hover:text-primary"
       aria-hidden="true"
     />
   </NavigationMenuPrimitive.Trigger>
@@ -69,7 +69,7 @@ const NavigationMenuContent = React.forwardRef<
   <NavigationMenuPrimitive.Content
     ref={ref}
     className={cn(
-      "left-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 md:absolute md:w-auto ",
+      "left-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 md:absolute md:w-auto z-50",
       className
     )}
     {...props}
@@ -83,10 +83,10 @@ const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
 >(({ className, ...props }, ref) => (
-  <div className={cn("absolute left-0 top-full flex justify-center")}>
+  <div className={cn("absolute left-0 top-full flex justify-center z-50")}>
     <NavigationMenuPrimitive.Viewport
       className={cn(
-        "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
+        "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-xl border border-white/20 bg-white/80 backdrop-blur-md text-popover-foreground shadow-2xl shadow-primary/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=open]:fade-in-0 md:w-[var(--radix-navigation-menu-viewport-width)] transition-all duration-300",
         className
       )}
       ref={ref}
