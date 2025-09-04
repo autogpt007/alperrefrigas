@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams, useParams } from 'react-router-dom';
+import { Link, useSearchParams, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, Filter, Grid, List, Shield, Truck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -17,10 +17,20 @@ const ProductCatalog = () => {
   const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const { category: urlCategory } = useParams();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Determine product type from URL
+  const getProductTypeFromUrl = () => {
+    if (location.pathname.includes('/refrigerants')) return 'refrigerant';
+    if (location.pathname.includes('/accessories')) return 'accessory';
+    return 'all';
+  };
+
+  const productType = getProductTypeFromUrl();
 
   useEffect(() => {
     const search = searchParams.get('search');
@@ -35,20 +45,48 @@ const ProductCatalog = () => {
     }
   }, [searchParams, urlCategory]);
 
-  const categories = [
-    { value: 'all', label: t('products.categories.all') },
-    { value: 'hfc', label: t('products.categories.hfc') },
-    { value: 'hfo', label: t('products.categories.hfo') },
-    { value: 'hcfc', label: t('products.categories.hcfc') },
-    { value: 'cfc', label: t('products.categories.cfc') },
-    { value: 'natural', label: t('products.categories.natural') },
-    { value: 'automotive', label: t('products.categories.automotive') },
-    { value: 'commercial', label: t('products.categories.commercial') },
-    { value: 'industrial', label: t('products.categories.industrial') }
-  ];
+  // Dynamic categories based on product type
+  const getCategories = () => {
+    if (productType === 'refrigerant') {
+      return [
+        { value: 'all', label: t('products.categories.all') },
+        { value: 'hfc', label: t('products.categories.hfc') },
+        { value: 'hfo', label: t('products.categories.hfo') },
+        { value: 'hcfc', label: t('products.categories.hcfc') },
+        { value: 'cfc', label: t('products.categories.cfc') },
+        { value: 'natural', label: t('products.categories.natural') },
+        { value: 'automotive', label: t('products.categories.automotive') },
+        { value: 'commercial', label: t('products.categories.commercial') },
+        { value: 'industrial', label: t('products.categories.industrial') }
+      ];
+    } else if (productType === 'accessory') {
+      return [
+        { value: 'all', label: 'All Accessories' },
+        { value: 'gauges', label: 'Gauges & Manifolds' },
+        { value: 'recovery', label: 'Recovery Equipment' },
+        { value: 'tools', label: 'Tools & Equipment' },
+        { value: 'fittings', label: 'Fittings & Adapters' },
+        { value: 'safety', label: 'Safety Equipment' },
+        { value: 'valves', label: 'Valves & Controls' }
+      ];
+    } else {
+      return [
+        { value: 'all', label: t('products.categories.all') },
+        { value: 'refrigerant', label: 'Refrigerants' },
+        { value: 'accessory', label: 'Accessories' }
+      ];
+    }
+  };
 
-  // Enhanced filtering logic with improved search capabilities
+  const categories = getCategories();
+
+  // Enhanced filtering logic with product type and category filtering
   const filteredProducts = products.filter(product => {
+    // Filter by product type first
+    if (productType !== 'all' && (product as any).product_type !== productType) {
+      return false;
+    }
+
     // Normalize search query and product text for better matching
     const normalizedQuery = searchQuery.toLowerCase().trim().replace(/[-\s]/g, '');
     
@@ -77,13 +115,18 @@ const ProductCatalog = () => {
       return matchesSearch;
     }
 
+    // For product type filtering in mixed view
+    if (selectedCategory === 'refrigerant' || selectedCategory === 'accessory') {
+      return (product as any).product_type === selectedCategory && matchesSearch;
+    }
+
     // Direct category match
     if (product.category && product.category.toLowerCase() === selectedCategory) {
       return matchesSearch;
     }
 
-    // Application-based category matching
-    if (product.applications && Array.isArray(product.applications)) {
+    // Application-based category matching for refrigerants
+    if (productType === 'refrigerant' && product.applications && Array.isArray(product.applications)) {
       const applicationMatch = product.applications.some(app => {
         const appLower = app.toLowerCase();
         switch (selectedCategory) {
@@ -100,6 +143,13 @@ const ProductCatalog = () => {
       if (applicationMatch) {
         return matchesSearch;
       }
+    }
+
+    // Category matching for accessories
+    if (productType === 'accessory') {
+      const categoryMatch = product.category?.toLowerCase().includes(selectedCategory) || 
+                           product.name.toLowerCase().includes(selectedCategory);
+      return categoryMatch && matchesSearch;
     }
 
     return false;
@@ -192,9 +242,21 @@ const ProductCatalog = () => {
     </Card>
   );
 
-  // Get category display name
+  // Get page title and description based on product type
+  const getPageTitle = () => {
+    if (productType === 'refrigerant') return 'Refrigerants';
+    if (productType === 'accessory') return 'HVAC Accessories & Tools';
+    return 'All Products';
+  };
+
+  const getSearchPlaceholder = () => {
+    if (productType === 'refrigerant') return 'Search refrigerants (R-410A, R-134a, R-32...)';
+    if (productType === 'accessory') return 'Search accessories (gauges, tools, fittings...)';
+    return 'Search products...';
+  };
+
   const getCategoryDisplayName = () => {
-    if (selectedCategory === 'all') return 'All Categories';
+    if (selectedCategory === 'all') return productType === 'accessory' ? 'All Accessories' : productType === 'refrigerant' ? 'All Refrigerants' : 'All Categories';
     const category = categories.find(cat => cat.value === selectedCategory);
     return category ? category.label : selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
   };
@@ -202,10 +264,20 @@ const ProductCatalog = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title={`${getCategoryDisplayName()} Refrigerants - Wholesale Prices | Bulk R-410A, R-134a, R-22 & More`}
-        description={`⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants in Turkey. R-410A, R-134a, R-404A, R-1234yf wholesale. EPA certified, 99.9% purity, same-day shipping. Bulk discounts for contractors & distributors. Get instant quote!`}
-        keywords="refrigerant catalog turkey, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, R-407C price, R-507A wholesale, R-32 refrigerant, R-1234yf price, R-290 wholesale, R-600a price, HVAC refrigerants, automotive refrigerants, commercial refrigerants"
-        canonicalUrl="/products"
+        title={`${getPageTitle()} - ${getCategoryDisplayName()} | Wholesale Prices & Bulk Orders`}
+        description={productType === 'refrigerant' 
+          ? `⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants in Turkey. R-410A, R-134a, R-404A, R-1234yf wholesale. EPA certified, 99.9% purity, same-day shipping. Bulk discounts for contractors & distributors.`
+          : productType === 'accessory'
+          ? `🔧 Professional HVAC accessories & tools. Gauges, manifolds, recovery equipment, fittings & more. Quality brands, competitive prices, fast shipping for contractors & technicians.`
+          : `Complete HVAC product catalog - refrigerants & accessories. Wholesale prices, bulk orders, professional-grade equipment. EPA certified, fast shipping, contractor discounts available.`
+        }
+        keywords={productType === 'refrigerant' 
+          ? "refrigerant catalog turkey, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk"
+          : productType === 'accessory'
+          ? "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, refrigerant fittings, HVAC supplies, contractor tools"
+          : "HVAC products, refrigerants accessories, wholesale HVAC, bulk refrigerant, professional tools"
+        }
+        canonicalUrl={location.pathname}
         ogType="product.group"
       />
 
@@ -214,10 +286,15 @@ const ProductCatalog = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              {t('products.title')}
+              {getPageTitle()}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              {t('products.description')}
+              {productType === 'refrigerant' 
+                ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
+                : productType === 'accessory'
+                ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
+                : t('products.description')
+              }
             </p>
             
             {/* Search Bar */}
@@ -226,7 +303,7 @@ const ProductCatalog = () => {
                 <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
                 <Input
                   type="text"
-                  placeholder={t('products.searchPlaceholder')}
+                  placeholder={getSearchPlaceholder()}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 text-lg bg-white border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-400"

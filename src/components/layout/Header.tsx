@@ -77,7 +77,6 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { label: t('nav.home'), path: '/' },
     { label: t('nav.about'), path: '/about' },
     { label: 'Testimonials', path: '/testimonials' },
     { label: t('nav.contact'), path: '/contact' },
@@ -226,13 +225,26 @@ const Header = () => {
         <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
           <NavigationMenu>
             <NavigationMenuList className="space-x-8">
+              {/* Home */}
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/"
+                    className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${
+                      isActive('/') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
+                    }`}
+                  >
+                    {t('nav.home')}
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
               {/* Products Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-gray-700 hover:text-blue-600 font-medium transition-colors bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent focus:bg-transparent">
                   {t('nav.products')}
-                  <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-white border shadow-lg rounded-md p-4 w-48">
+                <NavigationMenuContent className="bg-white border shadow-lg rounded-md p-4 w-48 z-50">
                   <div className="space-y-2">
                     {productMenuItems.map((item) => (
                       <NavigationMenuLink key={item.path} asChild>
@@ -288,6 +300,17 @@ const Header = () => {
 
             {/* Mobile Navigation */}
             <nav className="space-y-2">
+              {/* Home */}
+              <Link
+                to="/"
+                className={`block py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors ${
+                  isActive('/') ? 'text-blue-600' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('nav.home')}
+              </Link>
+
               {/* Products Section */}
               <div>
                 <div className="py-2 text-gray-700 font-medium">{t('nav.products')}</div>
