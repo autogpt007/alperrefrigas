@@ -148,7 +148,14 @@ const ProductCatalog = () => {
     // Category matching for accessories
     if (productType === 'accessory') {
       const categoryMatch = product.category?.toLowerCase().includes(selectedCategory) || 
-                           product.name.toLowerCase().includes(selectedCategory);
+                           product.name.toLowerCase().includes(selectedCategory) ||
+                           // Direct category mapping for accessories
+                           (selectedCategory === 'gauges' && product.category === 'gauges') ||
+                           (selectedCategory === 'recovery' && product.category === 'recovery') ||
+                           (selectedCategory === 'tools' && product.category === 'tools') ||
+                           (selectedCategory === 'fittings' && product.category === 'fittings') ||
+                           (selectedCategory === 'safety' && product.category === 'safety') ||
+                           (selectedCategory === 'valves' && product.category === 'valves');
       return categoryMatch && matchesSearch;
     }
 
@@ -215,15 +222,7 @@ const ProductCatalog = () => {
           {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
-              {product.product_type === 'accessory' 
-                ? `${product.category} ${product.category === 'gauges' ? 'Equipment' : 
-                    product.category === 'recovery' ? 'Equipment' : 
-                    product.category === 'tools' ? 'Equipment' : 
-                    product.category === 'fittings' ? 'Equipment' : 
-                    product.category === 'safety' ? 'Equipment' : 
-                    product.category === 'valves' ? 'Equipment' : 'Accessory'}`
-                : `${product.category} Refrigerant`
-              }
+              {product.product_type === 'accessory' ? product.category : `${product.category} Refrigerant`}
             </Badge>
           </div>
           
