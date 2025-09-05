@@ -83,7 +83,7 @@ const ProductCatalog = () => {
   // Enhanced filtering logic with product type and category filtering
   const filteredProducts = products.filter(product => {
     // Filter by product type first
-    if (productType !== 'all' && (product as any).product_type !== productType) {
+    if (productType !== 'all' && product.product_type !== productType) {
       return false;
     }
 
@@ -117,7 +117,7 @@ const ProductCatalog = () => {
 
     // For product type filtering in mixed view
     if (selectedCategory === 'refrigerant' || selectedCategory === 'accessory') {
-      return (product as any).product_type === selectedCategory && matchesSearch;
+      return product.product_type === selectedCategory && matchesSearch;
     }
 
     // Direct category match
