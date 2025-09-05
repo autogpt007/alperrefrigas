@@ -10,6 +10,10 @@ interface SEOProps {
   ogImage?: string;
   ogType?: string;
   structuredData?: any;
+  breadcrumbs?: Array<{
+    name: string;
+    url: string;
+  }>;
   product?: {
     name: string;
     price: number;
@@ -20,7 +24,14 @@ interface SEOProps {
     gtin?: string;
     description: string;
     image: string;
+    moq?: number;
+    category?: string;
+    specifications?: Record<string, any>;
   };
+  faq?: Array<{
+    question: string;
+    answer: string;
+  }>;
 }
 
 const SEOComponent: React.FC<SEOProps> = ({
@@ -31,7 +42,9 @@ const SEOComponent: React.FC<SEOProps> = ({
   ogImage = '/placeholder.svg',
   ogType = 'website',
   structuredData,
-  product
+  breadcrumbs,
+  product,
+  faq
 }) => {
   const siteUrl = 'https://alperrefrigas.com';
   const fullTitle = title.includes('Alper') ? title : `${title} | Alper Refrigerant - Professional Refrigerant Distributor`;
@@ -61,39 +74,120 @@ const SEOComponent: React.FC<SEOProps> = ({
     }
   } : null;
 
-  // Organization structured data
+  // Breadcrumb structured data
+  const breadcrumbData = breadcrumbs && breadcrumbs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": crumb.name,
+      "item": `${siteUrl}${crumb.url}`
+    }))
+  } : null;
+
+  // FAQ structured data
+  const faqData = faq && faq.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  } : null;
+
+  // Enhanced Organization structured data with LocalBusiness
   const organizationData = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "LocalBusiness"],
     "name": "Alper Refrigerant",
     "alternateName": "Alper Refrigerants",
     "url": siteUrl,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
+    "foundingDate": "2020",
+    "serviceArea": {
+      "@type": "Country",
+      "name": "United States"
+    },
+    "areaServed": ["Texas", "Florida", "California", "United States"],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Refrigerant Products",
+      "itemListElement": [
+        {
+          "@type": "OfferCatalog",
+          "name": "HFC Refrigerants",
+          "description": "High-performance HFC refrigerants for commercial and industrial applications"
+        },
+        {
+          "@type": "OfferCatalog", 
+          "name": "HFO Refrigerants",
+          "description": "Next-generation low-GWP HFO refrigerants for environmental compliance"
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Natural Refrigerants",
+          "description": "Eco-friendly natural refrigerant solutions"
+        }
+      ]
+    },
     "contactPoint": [
       {
         "@type": "ContactPoint",
         "telephone": "+1-210-939-1115",
         "contactType": "sales",
         "email": "sales@alperrefrigas.com",
-        "availableLanguage": ["English", "Spanish"]
+        "availableLanguage": ["English", "Spanish"],
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "17:00"
+        }
       },
       {
         "@type": "ContactPoint", 
         "telephone": "+1-210-939-1115",
         "contactType": "customer service",
-        "email": "support@alperrefrigas.com"
+        "email": "support@alperrefrigas.com",
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "17:00"
+        }
       }
     ],
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "US",
-      "addressRegion": ["TX", "FL", "CA"],
-      "addressLocality": "Multiple Distribution Centers"
-    },
+    "address": [
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "TX",
+        "addressLocality": "Texas Distribution Center"
+      },
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "FL", 
+        "addressLocality": "Florida Distribution Center"
+      },
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "CA",
+        "addressLocality": "California Distribution Center"
+      }
+    ],
     "sameAs": [
       "https://www.facebook.com/frigidflow",
       "https://www.linkedin.com/company/frigidflow"
-    ]
+    ],
+    "keywords": "refrigerant, wholesale, EPA approved, HVAC, R134a, R410A, R404A, R22, bulk refrigerant, industrial refrigerant, commercial refrigerant",
+    "slogan": "Professional Refrigerant Solutions with Bulk Pricing and Fast Shipping"
   };
 
   return (
@@ -142,6 +236,18 @@ const SEOComponent: React.FC<SEOProps> = ({
       <script type="application/ld+json">
         {JSON.stringify(organizationData)}
       </script>
+      
+      {breadcrumbData && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbData)}
+        </script>
+      )}
+      
+      {faqData && (
+        <script type="application/ld+json">
+          {JSON.stringify(faqData)}
+        </script>
+      )}
       
       {structuredData && (
         <script type="application/ld+json">

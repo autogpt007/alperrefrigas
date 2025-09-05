@@ -210,24 +210,65 @@ const ProductDetails = () => {
     setQuantity(1);
     setPackaging('');
   };
+  // Enhanced product description with MOQ information
+  const enhancedDescription = `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Fast shipping from multiple distribution centers in TX, FL, and CA.`;
+
+  // Product FAQ data for better SEO
+  const productFAQ = [
+    {
+      question: `What is the minimum order quantity for ${product.name}?`,
+      answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet. We also offer 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders) with bulk discounts."
+    },
+    {
+      question: `Is ${product.name} EPA approved?`,
+      answer: product.epaApproved 
+        ? `Yes, ${product.name} is EPA Section 608 compliant and approved for professional HVAC use in the United States.`
+        : `${product.name} meets all applicable EPA regulations for refrigerant use in professional HVAC applications.`
+    },
+    {
+      question: "What are your shipping terms?",
+      answer: "We ship from distribution centers in Texas, Florida, and California. All shipments are DOT certified and include fast, secure delivery with tracking information."
+    },
+    {
+      question: "Do you provide Safety Data Sheets (SDS)?",
+      answer: "Yes, we provide comprehensive Safety Data Sheets for all our refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
-        title={`${product.name} - Premium Refrigerant | Professional HVAC Solutions`}
-        description={`${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant.`}
-        keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, ${product.applications?.join(', ') || ''}`}
+        title={`${product.name} - Premium Refrigerant | MOQ 40 Cylinders | Alper Refrigerants`}
+        description={enhancedDescription}
+        keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`}
         canonicalUrl={canonicalUrl}
         ogImage={product.thumbnailUrl || product.images?.[0] || product.image}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Products", url: "/products" },
+          { name: "Refrigerants", url: "/products/refrigerants" },
+          { name: product.name, url: canonicalUrl }
+        ]}
+        faq={productFAQ}
         product={{
           name: product.name,
           price: getCurrentPrice(),
           currency: 'USD',
           availability: product.availability === 'in_stock' ? 'InStock' : 'OutOfStock',
-          brand: product.brand || 'FrigidFlow',
+          brand: product.brand || 'Alper Refrigerant',
           sku: product.sku || product.id,
           gtin: product.gtin,
-          description: product.description || `${product.name} refrigerant for professional HVAC applications`,
-          image: product.thumbnailUrl || product.images?.[0] || product.image || ''
+          description: enhancedDescription,
+          image: product.thumbnailUrl || product.images?.[0] || product.image || '',
+          moq: 40,
+          category: product.category,
+          specifications: {
+            chemicalFormula: product.chemicalFormula,
+            casNumber: product.casNumber,
+            unNumber: product.unNumber,
+            hazardClass: product.hazardClass,
+            applications: product.applications
+          }
         }}
       />
 
