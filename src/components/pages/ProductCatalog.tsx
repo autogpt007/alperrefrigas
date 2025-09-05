@@ -268,23 +268,87 @@ const ProductCatalog = () => {
     return category ? category.label : selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
   };
 
+  // Generate FAQ data based on product type
+  const generateCatalogFAQ = () => {
+    if (productType === 'refrigerant') {
+      return [
+        {
+          question: "What is the minimum order for refrigerants?",
+          answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet for all refrigerant types. We offer bulk discounts for 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders)."
+        },
+        {
+          question: "Are all refrigerants EPA approved?",
+          answer: "Yes, all our refrigerants are EPA Section 608 compliant and approved for professional HVAC use. We provide certificates of compliance and Safety Data Sheets with every order."
+        },
+        {
+          question: "What refrigerant types are available?",
+          answer: "We carry HFC refrigerants (R-134a, R-410A, R-404A, R-22), HFO refrigerants for environmental compliance, natural refrigerants, and specialty automotive refrigerants. All with 99.9% purity guarantee."
+        },
+        {
+          question: "How fast is refrigerant shipping?",
+          answer: "We offer same-day shipping for in-stock refrigerants from our distribution centers in Texas, Florida, and California. Most orders arrive within 1-3 business days."
+        }
+      ];
+    } else if (productType === 'accessory') {
+      return [
+        {
+          question: "What HVAC accessories do you carry?",
+          answer: "We stock professional HVAC tools including manifold gauges, recovery equipment, leak detectors, fittings, hoses, and specialized refrigeration accessories for contractors and technicians."
+        },
+        {
+          question: "Do you offer bulk pricing on accessories?",
+          answer: "Yes, we provide volume discounts on HVAC accessories for contractors, distributors, and service companies. Contact our sales team for custom pricing on large orders."
+        }
+      ];
+    }
+    return [];
+  };
+
+  // Generate breadcrumbs
+  const generateBreadcrumbs = () => {
+    const breadcrumbs = [
+      { name: "Home", url: "/" },
+      { name: "Products", url: "/products" }
+    ];
+
+    if (productType === 'refrigerant') {
+      breadcrumbs.push({ name: "Refrigerants", url: "/products/refrigerants" });
+    } else if (productType === 'accessory') {
+      breadcrumbs.push({ name: "Accessories", url: "/products/accessories" });
+    }
+
+    if (selectedCategory !== 'all') {
+      const category = categories.find(cat => cat.value === selectedCategory);
+      if (category) {
+        breadcrumbs.push({ 
+          name: category.label, 
+          url: `${location.pathname}?category=${selectedCategory}` 
+        });
+      }
+    }
+
+    return breadcrumbs;
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title={`${getPageTitle()} - ${getCategoryDisplayName()} | Wholesale Prices & Bulk Orders`}
+        title={`${getPageTitle()} - ${getCategoryDisplayName()} | MOQ 40 Cylinders | Wholesale Prices & Bulk Orders | Alper Refrigerants`}
         description={productType === 'refrigerant' 
-          ? `⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants in Turkey. R-410A, R-134a, R-404A, R-1234yf wholesale. EPA certified, 99.9% purity, same-day shipping. Bulk discounts for contractors & distributors.`
+          ? `⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity guarantee. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA. Bulk discounts for contractors & distributors.`
           : productType === 'accessory'
-          ? `🔧 Professional HVAC accessories & tools. Gauges, manifolds, recovery equipment, fittings & more. Quality brands, competitive prices, fast shipping for contractors & technicians.`
-          : `Complete HVAC product catalog - refrigerants & accessories. Wholesale prices, bulk orders, professional-grade equipment. EPA certified, fast shipping, contractor discounts available.`
+          ? `🔧 Professional HVAC accessories & tools. Gauges, manifolds, recovery equipment, fittings & more. Quality brands, competitive prices, fast shipping for contractors & technicians. Bulk pricing available.`
+          : `Complete HVAC product catalog - refrigerants & accessories. Wholesale prices, MOQ 40 cylinders, bulk orders, professional-grade equipment. EPA certified, fast shipping, contractor discounts available.`
         }
         keywords={productType === 'refrigerant' 
-          ? "refrigerant catalog turkey, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk"
+          ? `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, MOQ 40 cylinders, EPA certified, fast shipping, ${getCategoryDisplayName().toLowerCase()}`
           : productType === 'accessory'
-          ? "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, refrigerant fittings, HVAC supplies, contractor tools"
-          : "HVAC products, refrigerants accessories, wholesale HVAC, bulk refrigerant, professional tools"
+          ? "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, leak detectors, professional HVAC tools, contractor supplies, bulk pricing"
+          : "HVAC products, refrigerants accessories, wholesale HVAC, professional refrigeration, contractor supplies, EPA certified, bulk pricing"
         }
         canonicalUrl={location.pathname}
+        breadcrumbs={generateBreadcrumbs()}
+        faq={generateCatalogFAQ()}
         ogType="product.group"
       />
 

@@ -63,6 +63,7 @@ import HeroImageManagement from "./components/admin/HeroImageManagement";
 import AdvertManagement from "./components/admin/AdvertManagement";
 import CouponManagement from "./components/admin/CouponManagement";
 import NewsletterManagement from "./components/admin/NewsletterManagement";
+import SitemapGenerator from "./components/admin/SitemapGenerator";
 import BlogPage from "./components/pages/BlogPage";
 import "./App.css";
 
@@ -104,9 +105,10 @@ function App() {
                          <Route path="team" element={<TeamManagement />} />
                          <Route path="certificates" element={<CertificationManagement />} />
                          <Route path="content" element={<ContentManagement />} />
-                         <Route path="testimonials" element={<TestimonialManagement />} />
-                         <Route path="hero-images" element={<HeroImageManagement />} />
-                         <Route path="settings" element={<AdminSettings />} />
+                          <Route path="testimonials" element={<TestimonialManagement />} />
+                          <Route path="hero-images" element={<HeroImageManagement />} />
+                          <Route path="sitemap" element={<SitemapGenerator />} />
+                          <Route path="settings" element={<AdminSettings />} />
                        </Route>
                       
                       {/* Public Routes */}

@@ -184,14 +184,43 @@ const HomePage = () => {
     }
   };
 
+  // Homepage FAQ for better SEO
+  const homepageFAQ = [
+    {
+      question: "What is the minimum order quantity for refrigerants?",
+      answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet. We offer competitive bulk pricing for larger quantities including 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders)."
+    },
+    {
+      question: "Do you ship refrigerants internationally?",
+      answer: "Yes, we ship refrigerants globally from our distribution centers in Texas, Florida, and California. All shipments are DOT certified and comply with international shipping regulations."
+    },
+    {
+      question: "Are your refrigerants EPA approved?",
+      answer: "Yes, all our refrigerants are EPA Section 608 compliant and approved for professional HVAC use in the United States. We provide certificates of compliance with every order."
+    },
+    {
+      question: "What refrigerant types do you carry?",
+      answer: "We specialize in HFC refrigerants (R-134a, R-410A, R-404A, R-22), HFO refrigerants for environmental compliance, and natural refrigerants. Our inventory includes over 30 different refrigerant types."
+    },
+    {
+      question: "How fast is your shipping?",
+      answer: "We offer same-day shipping for in-stock items from our Texas, Florida, and California distribution centers. Most orders arrive within 1-3 business days depending on location."
+    },
+    {
+      question: "Do you provide Safety Data Sheets?",
+      answer: "Yes, we provide comprehensive Safety Data Sheets (SDS) for all refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
+    }
+  ];
+
   return (
     <>
       <SEOComponent
-        title="Alper Refrigerants - #1 Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Prices"
-        description="⭐ Turkey's largest refrigerant distributor since 2011. EPA certified R-410A, R-134a, R-22, R-404A wholesale. 99.9% purity guarantee. Same-day shipping. Get instant bulk quotes for HVAC professionals, contractors & distributors."
-        keywords="alper refrigerants, refrigerant distributor turkey, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies turkey, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, freon wholesale"
+        title="Alper Refrigerants - #1 Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Prices | MOQ 40 Cylinders"
+        description="⭐ Professional refrigerant distributor since 2020. EPA certified R-410A, R-134a, R-22, R-404A wholesale with 99.9% purity guarantee. MOQ 40 cylinders. Same-day shipping from TX, FL, CA distribution centers. Get instant bulk quotes for HVAC professionals, contractors & distributors. Fast delivery nationwide."
+        keywords="alper refrigerants, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, freon wholesale, MOQ 40 cylinders, fast shipping, distribution centers"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
+        faq={homepageFAQ}
         ogImage="/placeholder.svg"
         ogType="website"
       />

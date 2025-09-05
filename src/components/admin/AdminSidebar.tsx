@@ -17,7 +17,8 @@ import {
   Megaphone,
   Tag,
   Mail,
-  Wrench
+  Wrench,
+  Map
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -41,6 +42,7 @@ const AdminSidebar = () => {
     { icon: MessageSquare, label: 'Testimonials', path: '/admin/testimonials' },
     { icon: Globe, label: 'Hero Images', path: '/admin/hero-images' },
     { icon: Palette, label: 'Logo & Branding', path: '/admin/logo' },
+    { icon: Map, label: 'SEO & Sitemap', path: '/admin/sitemap' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 
