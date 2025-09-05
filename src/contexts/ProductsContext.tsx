@@ -39,6 +39,7 @@ export interface Product {
   hazardClass?: string;
   images?: string[];
   technicalSpecs?: Record<string, any>;
+  product_type: 'refrigerant' | 'accessory';
 }
 
 interface ProductsContextType {
@@ -128,7 +129,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         casNumber: product.cas_number || '',
         unNumber: product.un_number || '',
         hazardClass: product.hazard_class || '',
-        technicalSpecs: jsonToRecord(product.technical_specs)
+        technicalSpecs: jsonToRecord(product.technical_specs),
+        product_type: (product.product_type as 'refrigerant' | 'accessory') || 'refrigerant'
       }));
 
       setProducts(transformedProducts);
@@ -174,7 +176,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         cas_number: productData.casNumber,
         un_number: productData.unNumber,
         hazard_class: productData.hazardClass,
-        technical_specs: productData.technicalSpecs || {}
+        technical_specs: productData.technicalSpecs || {},
+        product_type: productData.product_type
       };
 
       const { data, error } = await supabase
@@ -210,7 +213,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         casNumber: data.cas_number || '',
         unNumber: data.un_number || '',
         hazardClass: data.hazard_class || '',
-        technicalSpecs: jsonToRecord(data.technical_specs)
+        technicalSpecs: jsonToRecord(data.technical_specs),
+        product_type: (data.product_type as 'refrigerant' | 'accessory') || 'refrigerant'
       };
 
       setProducts(prev => [newProduct, ...prev]);
@@ -258,6 +262,7 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       if (updates.unNumber !== undefined) supabaseUpdates.un_number = updates.unNumber;
       if (updates.hazardClass !== undefined) supabaseUpdates.hazard_class = updates.hazardClass;
       if (updates.technicalSpecs !== undefined) supabaseUpdates.technical_specs = updates.technicalSpecs;
+      if (updates.product_type !== undefined) supabaseUpdates.product_type = updates.product_type;
 
       const { error } = await supabase
         .from('products')
