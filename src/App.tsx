@@ -66,6 +66,7 @@ import NewsletterManagement from "./components/admin/NewsletterManagement";
 import SitemapGenerator from "./components/admin/SitemapGenerator";
 import BlogPage from "./components/pages/BlogPage";
 import BlogPostDetail from "./components/pages/BlogPostDetail";
+import BlogPostRedirect from "./components/pages/BlogPostRedirect";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -150,6 +151,7 @@ function App() {
                                <Route path="/admin-auth" element={<AuthPage />} />
                                <Route path="/blog" element={<BlogPage />} />
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />
+                               <Route path="/news/:slug" element={<BlogPostRedirect />} />
                              </Routes>
                           </main>
                           <Footer />

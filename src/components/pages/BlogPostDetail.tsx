@@ -75,8 +75,45 @@ const BlogPostDetail = () => {
     );
   }
 
-  if (error || !post) {
-    return <Navigate to="/blog" replace />;
+  if (error) {
+    console.error('Blog post error:', error);
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-white">
+            <h1 className="text-2xl font-bold mb-4">Error Loading Post</h1>
+            <p className="text-gray-300 mb-4">There was an error loading this blog post.</p>
+            <p className="text-sm text-gray-400 mb-4">Slug: {slug}</p>
+            <button 
+              onClick={() => window.location.href = '/blog'} 
+              className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
+            >
+              Back to Blog
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-white">
+            <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
+            <p className="text-gray-300 mb-4">The blog post you're looking for doesn't exist.</p>
+            <p className="text-sm text-gray-400 mb-4">Slug: {slug}</p>
+            <button 
+              onClick={() => window.location.href = '/blog'} 
+              className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
+            >
+              Back to Blog
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
