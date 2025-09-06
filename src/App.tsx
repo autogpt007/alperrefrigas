@@ -65,6 +65,7 @@ import CouponManagement from "./components/admin/CouponManagement";
 import NewsletterManagement from "./components/admin/NewsletterManagement";
 import SitemapGenerator from "./components/admin/SitemapGenerator";
 import BlogPage from "./components/pages/BlogPage";
+import BlogPostDetail from "./components/pages/BlogPostDetail";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -146,9 +147,10 @@ function App() {
                               <Route path="/support" element={<CustomerSupport />} />
                               <Route path="/account" element={<MyAccount />} />
                               <Route path="/auth" element={<UserAuthPage />} />
-                              <Route path="/admin-auth" element={<AuthPage />} />
-                              <Route path="/blog" element={<BlogPage />} />
-                            </Routes>
+                               <Route path="/admin-auth" element={<AuthPage />} />
+                               <Route path="/blog" element={<BlogPage />} />
+                               <Route path="/blog/:slug" element={<BlogPostDetail />} />
+                             </Routes>
                           </main>
                           <Footer />
                           <WhatsAppButton />

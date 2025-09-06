@@ -174,7 +174,7 @@ const BlogPage = () => {
                       </div>
                     </div>
                     
-                    <Link to={`/news/${post.slug}`}>
+                    <Link to={`/blog/${post.slug}`}>
                       <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
                         Read More
                         <ArrowRight className="h-4 w-4 ml-2" />
