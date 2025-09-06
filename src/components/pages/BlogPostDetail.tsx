@@ -2,11 +2,12 @@ import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Helmet } from 'react-helmet-async';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import BlogContentProcessor from '@/components/blog/BlogContentProcessor';
+import BlogSEO from '@/components/seo/BlogSEO';
 
 interface BlogPost {
   id: string;
@@ -118,22 +119,7 @@ const BlogPostDetail = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{post.title} - North American Refrigerants</title>
-        <meta name="description" content={post.excerpt || post.body?.substring(0, 160)} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt || post.body?.substring(0, 160)} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={window.location.href} />
-        {(post.banner_image_url || post.featured_image_url) && (
-          <meta property="og:image" content={post.banner_image_url || post.featured_image_url} />
-        )}
-        <meta name="article:published_time" content={post.created_at} />
-        <meta name="article:modified_time" content={post.updated_at} />
-        {post.tags && post.tags.map(tag => (
-          <meta key={tag} name="article:tag" content={tag} />
-        ))}
-      </Helmet>
+      <BlogSEO post={post} canonical={window.location.href} />
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -226,11 +212,8 @@ const BlogPostDetail = () => {
           )}
 
           {/* Article Content */}
-          <article className="prose prose-lg prose-invert max-w-none">
-            <div 
-              className="text-gray-300 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.body }}
-            />
+          <article className="max-w-none">
+            <BlogContentProcessor content={post.body} title={post.title} />
           </article>
 
           {/* Article Footer */}
