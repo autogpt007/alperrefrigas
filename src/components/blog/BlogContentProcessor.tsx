@@ -1,4 +1,5 @@
 import React from 'react';
+import { marked } from 'marked';
 
 interface BlogContentProcessorProps {
   content: string;
@@ -7,9 +8,24 @@ interface BlogContentProcessorProps {
 
 const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, title }) => {
   const processContent = (html: string, postTitle: string): string => {
+    let processedContent = html;
+    
+    // Clean up malformed markdown/HTML combinations
+    processedContent = processedContent
+      .replace(/#+\s*<h[1-6][^>]*>/gi, '') // Remove markdown headers before HTML headers
+      .replace(/#+\s*([^<\n]+)/g, (match, text) => `<h2>${text.trim()}</h2>`) // Convert remaining markdown headers
+      .replace(/<\/h[1-6]>\s*#+/gi, '') // Remove markdown syntax after HTML headers
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert bold markdown
+      .replace(/\*(.*?)\*/g, '<em>$1</em>'); // Convert italic markdown
+    
+    // If content looks like pure markdown, convert it
+    if (!processedContent.includes('<') && (processedContent.includes('#') || processedContent.includes('*'))) {
+      processedContent = marked(processedContent) as string;
+    }
+    
     // Create a temporary element to parse HTML
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
+    tempDiv.innerHTML = processedContent;
 
     // Fix heading hierarchy - ensure only one H1 (which should be the title)
     const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
@@ -22,33 +38,33 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       if (currentLevel === 1) {
         const newH2 = document.createElement('h2');
         newH2.innerHTML = heading.innerHTML;
-        newH2.className = 'text-2xl font-bold text-white mb-4 mt-8';
+        newH2.className = 'text-2xl font-bold text-white mb-4 mt-8 drop-shadow-sm';
         heading.parentNode?.replaceChild(newH2, heading);
         h2Counter++;
       } else if (currentLevel === 2) {
-        heading.className = 'text-2xl font-bold text-white mb-4 mt-8';
+        heading.className = 'text-2xl font-bold text-white mb-4 mt-8 drop-shadow-sm';
         h2Counter++;
       } else if (currentLevel === 3) {
-        heading.className = 'text-xl font-semibold text-white mb-3 mt-6';
+        heading.className = 'text-xl font-semibold text-white mb-3 mt-6 drop-shadow-sm';
       } else if (currentLevel === 4) {
-        heading.className = 'text-lg font-semibold text-gray-200 mb-3 mt-4';
+        heading.className = 'text-lg font-semibold text-gray-100 mb-3 mt-4 drop-shadow-sm';
       } else if (currentLevel === 5) {
-        heading.className = 'text-base font-semibold text-gray-300 mb-2 mt-4';
+        heading.className = 'text-base font-semibold text-gray-100 mb-2 mt-4 drop-shadow-sm';
       } else if (currentLevel === 6) {
-        heading.className = 'text-sm font-semibold text-gray-400 mb-2 mt-3';
+        heading.className = 'text-sm font-semibold text-gray-100 mb-2 mt-3 drop-shadow-sm';
       }
     });
 
     // Style paragraphs
     const paragraphs = tempDiv.querySelectorAll('p');
     paragraphs.forEach(p => {
-      p.className = 'text-gray-300 mb-4 leading-relaxed';
+      p.className = 'text-gray-100 mb-4 leading-relaxed drop-shadow-sm';
     });
 
     // Style lists
     const lists = tempDiv.querySelectorAll('ul, ol');
     lists.forEach(list => {
-      list.className = 'text-gray-300 mb-4 ml-6';
+      list.className = 'text-gray-100 mb-4 ml-6 drop-shadow-sm';
       const items = list.querySelectorAll('li');
       items.forEach(item => {
         item.className = 'mb-2';
@@ -58,7 +74,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
     // Style blockquotes
     const blockquotes = tempDiv.querySelectorAll('blockquote');
     blockquotes.forEach(quote => {
-      quote.className = 'border-l-4 border-cyan-500 pl-4 py-2 my-6 bg-slate-800/30 rounded-r text-gray-300 italic';
+      quote.className = 'border-l-4 border-cyan-500 pl-4 py-2 my-6 bg-slate-800/50 rounded-r text-gray-100 italic drop-shadow-sm';
     });
 
     // Style links to be internal refrigerant product links where applicable
@@ -90,8 +106,8 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
     if (!processedContent.includes('contact') && !processedContent.includes('quote')) {
       const ctaSection = `
         <div class="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border border-cyan-500/20 rounded-lg p-6 my-8">
-          <h3 class="text-xl font-semibold text-white mb-3">Need Professional Refrigerant Solutions?</h3>
-          <p class="text-gray-300 mb-4">Contact our expert team for customized refrigerant solutions, bulk pricing, and technical support.</p>
+          <h3 class="text-xl font-semibold text-white mb-3 drop-shadow-sm">Need Professional Refrigerant Solutions?</h3>
+          <p class="text-gray-100 mb-4 drop-shadow-sm">Contact our expert team for customized refrigerant solutions, bulk pricing, and technical support.</p>
           <a href="/contact" class="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-6 py-2 rounded-md font-semibold transition-all duration-300">Get Expert Consultation</a>
         </div>
       `;
