@@ -100,10 +100,10 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
     });
 
     // Add structured content sections for better SEO
-    const processedContent = tempDiv.innerHTML;
+    const finalContent = tempDiv.innerHTML;
     
     // Add call-to-action sections if not present
-    if (!processedContent.includes('contact') && !processedContent.includes('quote')) {
+    if (!finalContent.includes('contact') && !finalContent.includes('quote')) {
       const ctaSection = `
         <div class="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border border-cyan-500/20 rounded-lg p-6 my-8">
           <h3 class="text-xl font-semibold text-white mb-3 drop-shadow-sm">Need Professional Refrigerant Solutions?</h3>
@@ -111,10 +111,10 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
           <a href="/contact" class="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-6 py-2 rounded-md font-semibold transition-all duration-300">Get Expert Consultation</a>
         </div>
       `;
-      return processedContent + ctaSection;
+      return finalContent + ctaSection;
     }
 
-    return processedContent;
+    return finalContent;
   };
 
   const processedHTML = processContent(content, title);
