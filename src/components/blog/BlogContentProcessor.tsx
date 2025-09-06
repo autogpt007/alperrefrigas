@@ -1,5 +1,7 @@
 import React from 'react';
 import { marked } from 'marked';
+import { useProducts } from '@/contexts/ProductsContext';
+import { createProductSlug } from '@/lib/slugs';
 
 interface BlogContentProcessorProps {
   content: string;
@@ -7,6 +9,31 @@ interface BlogContentProcessorProps {
 }
 
 const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, title }) => {
+  const { products } = useProducts();
+
+  // Function to find product by refrigerant type and generate correct slug
+  const findRefrigerantProduct = (refrigerantType: string) => {
+    const normalizedType = refrigerantType.toLowerCase().replace(/[-\s]/g, '');
+    
+    // Find product that matches the refrigerant type
+    const product = products.find(p => {
+      const productName = p.name.toLowerCase();
+      return productName.includes(normalizedType) || 
+             productName.includes(refrigerantType.toLowerCase()) ||
+             (p.chemicalFormula && p.chemicalFormula.toLowerCase().replace(/[-\s]/g, '') === normalizedType);
+    });
+    
+    if (product) {
+      const slug = createProductSlug(product.name);
+      return {
+        slug: `/products/${slug}`,
+        title: `${product.name} - North American Refrigerants`,
+        name: product.name
+      };
+    }
+    
+    return null;
+  };
   const processContent = (html: string, postTitle: string): string => {
     let processedContent = html;
     
@@ -77,7 +104,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       quote.className = 'border-l-4 border-cyan-500 pl-4 py-2 my-6 bg-slate-800/50 rounded-r text-gray-100 italic drop-shadow-sm';
     });
 
-    // Style links to be internal refrigerant product links where applicable
+    // Style links and convert refrigerant mentions to actual product links
     const links = tempDiv.querySelectorAll('a');
     links.forEach(link => {
       const href = link.getAttribute('href');
@@ -86,16 +113,29 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       // Add styling
       link.className = 'text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/50 hover:decoration-cyan-300';
       
-      // Convert refrigerant mentions to product links
-      if (!href && (text.includes('r-410a') || text.includes('r410a'))) {
-        link.setAttribute('href', '/products/r-410a');
-        link.setAttribute('title', 'R-410A Refrigerant - North American Refrigerants');
-      } else if (!href && (text.includes('r-134a') || text.includes('r134a'))) {
-        link.setAttribute('href', '/products/r-134a');
-        link.setAttribute('title', 'R-134A Refrigerant - North American Refrigerants');
-      } else if (!href && (text.includes('r-22') || text.includes('r22'))) {
-        link.setAttribute('href', '/products/r-22');
-        link.setAttribute('title', 'R-22 Refrigerant - North American Refrigerants');
+      // Convert refrigerant mentions to actual product links
+      if (!href) {
+        let productInfo = null;
+        
+        // Check for various refrigerant patterns
+        if (text.includes('r-410a') || text.includes('r410a')) {
+          productInfo = findRefrigerantProduct('R-410A');
+        } else if (text.includes('r-134a') || text.includes('r134a')) {
+          productInfo = findRefrigerantProduct('R-134A');
+        } else if (text.includes('r-22') || text.includes('r22')) {
+          productInfo = findRefrigerantProduct('R-22');
+        } else if (text.includes('r-32') || text.includes('r32')) {
+          productInfo = findRefrigerantProduct('R-32');
+        } else if (text.includes('r-404a') || text.includes('r404a')) {
+          productInfo = findRefrigerantProduct('R-404A');
+        } else if (text.includes('r-407c') || text.includes('r407c')) {
+          productInfo = findRefrigerantProduct('R-407C');
+        }
+        
+        if (productInfo) {
+          link.setAttribute('href', productInfo.slug);
+          link.setAttribute('title', productInfo.title);
+        }
       }
     });
 
