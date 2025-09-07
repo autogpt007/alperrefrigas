@@ -304,7 +304,15 @@ const OrderConfirmation = () => {
                   </div>
                   {data.shipping_address && (
                     <div className="text-sm text-gray-600">
-                      <p>{data.shipping_address}</p>
+                      {typeof data.shipping_address === 'string' ? (
+                        <p>{data.shipping_address}</p>
+                      ) : (
+                        <div>
+                          <p>{data.shipping_address.street}</p>
+                          <p>{data.shipping_address.city}, {data.shipping_address.state} {data.shipping_address.zipCode}</p>
+                          <p>{data.shipping_address.country}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {!isQuote && (
