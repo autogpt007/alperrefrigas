@@ -15,15 +15,27 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
   const findRefrigerantProduct = (refrigerantType: string) => {
     const normalizedType = refrigerantType.toLowerCase().replace(/[-\s]/g, '');
     
-    // Find product that matches the refrigerant type - prioritize main refrigerant products
-    const product = products.find(p => {
+    // Filter out accessories, tools, and equipment
+    const accessoryKeywords = ['gauge', 'pump', 'detector', 'scale', 'adapter', 'analyzer', 'meter', 'manifold', 'recovery', 'vacuum', 'charging', 'leak', 'tool', 'set', 'cfm'];
+    
+    // Find main refrigerant products, excluding accessories
+    const matchingProducts = products.filter(p => {
       const productName = p.name.toLowerCase();
-      // Look for exact refrigerant type match in name, prioritizing main refrigerant products
+      
+      // Exclude products with accessory keywords
+      if (accessoryKeywords.some(keyword => productName.includes(keyword))) {
+        return false;
+      }
+      
+      // Look for refrigerant type match in name or SKU
       return (productName.includes(refrigerantType.toLowerCase()) && 
               (productName.includes('refrigerant') || productName.includes('gas'))) ||
              (p.chemicalFormula && p.chemicalFormula.toLowerCase().replace(/[-\s]/g, '') === normalizedType) ||
              (p.sku && p.sku.toLowerCase().replace(/[-\s]/g, '') === normalizedType);
     });
+    
+    // Prioritize simpler product names (shorter names are typically main products)
+    const product = matchingProducts.sort((a, b) => a.name.length - b.name.length)[0];
     
     if (product) {
       const slug = createProductSlug(product.name);
