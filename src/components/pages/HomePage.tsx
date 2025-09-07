@@ -377,7 +377,7 @@ const HomePage = () => {
                             <p className="text-gray-300 text-sm mt-1">Bulk freon pricing for contractors</p>
                           </Link>
                           <Link
-                            to="/products/r-410a"
+                            to="/products/r-410a-refrigerant-gas-alper-refrigerant-gas"
                             className="block p-4 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg border border-slate-600/50 hover:border-cyan-400/30 transition-all duration-200 group"
                           >
                             <span className="text-cyan-400 font-medium group-hover:text-cyan-300 transition-colors">
