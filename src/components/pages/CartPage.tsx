@@ -7,11 +7,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CartPage = () => {
   const { t } = useTranslation();
   const { items, updateQuantity, removeItem, total, itemCount } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  const handleProceedToCheckout = () => {
+    if (user) {
+      navigate('/checkout');
+    } else {
+      navigate('/auth?returnTo=/checkout');
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -134,12 +144,14 @@ const CartPage = () => {
                    <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
                  </div>
                 
-                <div className="space-y-3 pt-4">
-                  <Link to="/checkout" className="block">
-                    <Button size="lg" className="w-full bg-orange-500 hover:bg-orange-600">
-                      Proceed to Checkout
-                    </Button>
-                  </Link>
+                 <div className="space-y-3 pt-4">
+                   <Button 
+                     size="lg" 
+                     className="w-full bg-orange-500 hover:bg-orange-600"
+                     onClick={handleProceedToCheckout}
+                   >
+                     Proceed to Checkout
+                   </Button>
                   <Link to="/checkout?guest=true" className="block">
                     <Button variant="outline" size="lg" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
                       Checkout as Guest

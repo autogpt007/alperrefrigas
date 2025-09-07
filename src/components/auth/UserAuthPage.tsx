@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +20,8 @@ const UserAuthPage = () => {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
 
   // Rate limiter for authentication attempts
   const rateLimiter = new RateLimiter(5, 900000); // 5 attempts per 15 minutes
@@ -38,9 +40,13 @@ const UserAuthPage = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/account');
+      // Validate returnTo URL for security (only allow internal paths)
+      const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
+        ? returnTo 
+        : '/account';
+      navigate(redirectPath);
     }
-  }, [user, navigate]);
+  }, [user, navigate, returnTo]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,8 +72,11 @@ const UserAuthPage = () => {
         console.error('Login error:', error);
         setError(error.message || 'Login failed. Please check your credentials.');
       } else {
-        console.log('Login successful, redirecting to account');
-        navigate('/account');
+        console.log('Login successful, redirecting');
+        const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
+          ? returnTo 
+          : '/account';
+        navigate(redirectPath);
       }
     } catch (error: any) {
       if (error.errors) {
@@ -145,8 +154,11 @@ const UserAuthPage = () => {
       } else {
         console.log('Registration successful');
         setError('Account created successfully! You are now signed in.');
-        // Navigate to account page after successful registration
-        navigate('/account');
+        // Navigate to appropriate page after successful registration
+        const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
+          ? returnTo 
+          : '/account';
+        navigate(redirectPath);
       }
     } catch (error: any) {
       if (error.errors) {

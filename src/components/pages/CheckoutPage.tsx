@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../../contexts/CartContext';
 import { useOrders } from '../../contexts/OrdersContext';
@@ -27,6 +27,8 @@ const CheckoutPage = () => {
   const { createOrder } = useOrders();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const isGuest = searchParams.get('guest') === 'true';
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('');
@@ -35,15 +37,15 @@ const CheckoutPage = () => {
   const [isCouponLoading, setIsCouponLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    customerName: user?.user_metadata?.full_name || '',
-    customerEmail: user?.email || '',
-    phoneNumber: '', // Add phone number field
+    customerName: '',
+    customerEmail: '',
+    phoneNumber: '',
     street: '',
     city: '',
     state: '',
     zipCode: '',
     country: 'United States',
-    paymentMethod: 'credit_card',
+    paymentMethod: isGuest ? 'bank_wire' : 'credit_card',
     notes: '',
     // Credit card details for offline processing
     cardNumber: '',
@@ -60,6 +62,17 @@ const CheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
+
+  // Auto-fill user data when authenticated
+  useEffect(() => {
+    if (user && !isGuest) {
+      setFormData(prev => ({
+        ...prev,
+        customerName: user.user_metadata?.full_name || '',
+        customerEmail: user.email || ''
+      }));
+    }
+  }, [user, isGuest]);
 
   // Fetch bank wire details
   useEffect(() => {
@@ -219,6 +232,14 @@ const CheckoutPage = () => {
 
     // Validate credit card fields for credit card payment
     if (formData.paymentMethod === 'credit_card') {
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Credit card payments require you to be signed in for security",
+          variant: "destructive"
+        });
+        return;
+      }
       if (!formData.cardNumber || !formData.expiryDate || !formData.cvv || !formData.cardholderName) {
         toast({
           title: "Missing credit card information",
@@ -251,7 +272,6 @@ const CheckoutPage = () => {
         payment_method: formData.paymentMethod,
         payment_details: formData.paymentMethod === 'credit_card' ? {
           cardholder_name: formData.cardholderName,
-          // Security: Never store sensitive card data
           billing_address: {
             street: formData.billingStreet || formData.street,
             city: formData.billingCity || formData.city,
@@ -263,6 +283,13 @@ const CheckoutPage = () => {
           instructions: bankWireDetails?.bank_wire_instructions || 'Wire transfer instructions will be provided'
         } : formData.paymentMethod === 'check' ? {
           instructions: 'Please send company check to our business address'
+        } : formData.paymentMethod.startsWith('crypto_') ? {
+          cryptocurrency: formData.paymentMethod.replace('crypto_', '').toUpperCase(),
+          instructions: `Payment instructions for ${formData.paymentMethod.replace('crypto_', '').toUpperCase()} will be provided after order confirmation`
+        } : formData.paymentMethod === 'cashapp' ? {
+          instructions: 'CashApp payment details will be provided after order confirmation'
+        } : formData.paymentMethod === 'zelle' ? {
+          instructions: 'Zelle payment details will be provided after order confirmation'
         } : null,
         items: items.map(item => ({
           product_id: null, // Set to null since we're using custom cart IDs
@@ -484,21 +511,65 @@ const CheckoutPage = () => {
                     Payment Method
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <RadioGroup value={formData.paymentMethod} onValueChange={(value) => handleInputChange('paymentMethod', value)}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="credit_card" id="credit_card" />
-                      <Label htmlFor="credit_card" className="text-gray-300">Credit Card</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="bank_wire" id="bank_wire" />
-                      <Label htmlFor="bank_wire" className="text-gray-300">Bank Wire Transfer</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="check" id="check" />
-                      <Label htmlFor="check" className="text-gray-300">Company Check</Label>
-                    </div>
-                  </RadioGroup>
+                 <CardContent>
+                   {isGuest && (
+                     <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/20">
+                       <p className="text-blue-300 text-sm">
+                         <span className="font-medium">Guest Checkout:</span> Limited payment options available. 
+                         <button 
+                           onClick={() => navigate('/auth?returnTo=/checkout')}
+                           className="text-cyan-400 hover:text-cyan-300 underline ml-1"
+                         >
+                           Sign in for all payment options
+                         </button>
+                       </p>
+                     </div>
+                   )}
+                   <RadioGroup value={formData.paymentMethod} onValueChange={(value) => handleInputChange('paymentMethod', value)}>
+                     {/* Credit Card - only for authenticated users */}
+                     {!isGuest && (
+                       <div className="flex items-center space-x-2">
+                         <RadioGroupItem value="credit_card" id="credit_card" />
+                         <Label htmlFor="credit_card" className="text-gray-300">Credit Card (Secure Offline Processing)</Label>
+                       </div>
+                     )}
+                     
+                     {/* Bank Wire - available for all */}
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="bank_wire" id="bank_wire" />
+                       <Label htmlFor="bank_wire" className="text-gray-300">Bank Wire Transfer</Label>
+                     </div>
+                     
+                     {/* Company Check - available for all */}
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="check" id="check" />
+                       <Label htmlFor="check" className="text-gray-300">Company Check</Label>
+                     </div>
+                     
+                     {/* Cryptocurrency options - available for all */}
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="crypto_bitcoin" id="crypto_bitcoin" />
+                       <Label htmlFor="crypto_bitcoin" className="text-gray-300">Bitcoin (BTC)</Label>
+                     </div>
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="crypto_usdt" id="crypto_usdt" />
+                       <Label htmlFor="crypto_usdt" className="text-gray-300">Tether (USDT)</Label>
+                     </div>
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="crypto_litecoin" id="crypto_litecoin" />
+                       <Label htmlFor="crypto_litecoin" className="text-gray-300">Litecoin (LTC)</Label>
+                     </div>
+                     
+                     {/* CashApp/Zelle - available for all */}
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="cashapp" id="cashapp" />
+                       <Label htmlFor="cashapp" className="text-gray-300">CashApp</Label>
+                     </div>
+                     <div className="flex items-center space-x-2">
+                       <RadioGroupItem value="zelle" id="zelle" />
+                       <Label htmlFor="zelle" className="text-gray-300">Zelle</Label>
+                     </div>
+                   </RadioGroup>
                   
                     {formData.paymentMethod === 'credit_card' && (
                       <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg border-l-4 border-green-500">
@@ -645,9 +716,46 @@ const CheckoutPage = () => {
                         </p>
                       </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                   )}
+
+                   {formData.paymentMethod === 'check' && (
+                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                       <h4 className="text-white font-medium mb-3">Company Check Payment</h4>
+                       <p className="text-gray-300 text-sm">
+                         Please send your company check to our business address. Include your order number in the memo line. 
+                         Your order will be processed once payment is received and cleared.
+                       </p>
+                     </div>
+                   )}
+
+                   {formData.paymentMethod.startsWith('crypto_') && (
+                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                       <h4 className="text-white font-medium mb-3">Cryptocurrency Payment</h4>
+                       <p className="text-gray-300 text-sm mb-3">
+                         After placing your order, you will receive cryptocurrency payment instructions including our wallet address. 
+                         Payment must be confirmed on the blockchain within 24 hours.
+                       </p>
+                       <div className="bg-yellow-900/20 p-3 rounded border border-yellow-500/20">
+                         <p className="text-yellow-300 text-xs">
+                           ⚠️ Cryptocurrency payments are non-refundable. Please ensure accuracy before sending payment.
+                         </p>
+                       </div>
+                     </div>
+                   )}
+
+                   {(formData.paymentMethod === 'cashapp' || formData.paymentMethod === 'zelle') && (
+                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                       <h4 className="text-white font-medium mb-3">
+                         {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} Payment
+                       </h4>
+                       <p className="text-gray-300 text-sm">
+                         After placing your order, you will receive our {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} details 
+                         to complete payment. Your order will be processed once payment is received.
+                       </p>
+                     </div>
+                   )}
+                 </CardContent>
+               </Card>
 
               {/* Order Notes */}
               <Card className="bg-slate-800/50 border-cyan-500/20">
