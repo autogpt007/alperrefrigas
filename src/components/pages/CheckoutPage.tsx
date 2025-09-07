@@ -18,6 +18,7 @@ import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Sca
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
+import { encryptCardData, formatCardNumber, formatExpiryDate } from '@/utils/cardEncryption';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -44,7 +45,10 @@ const CheckoutPage = () => {
     country: 'United States',
     paymentMethod: 'credit_card',
     notes: '',
-    // Secure payment - only collect minimal info for phone verification
+    // Credit card details for offline processing
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
     cardholderName: '',
     billingStreet: '',
     billingCity: '',
@@ -213,6 +217,18 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Validate credit card fields for credit card payment
+    if (formData.paymentMethod === 'credit_card') {
+      if (!formData.cardNumber || !formData.expiryDate || !formData.cvv || !formData.cardholderName) {
+        toast({
+          title: "Missing credit card information",
+          description: "Please fill in all credit card fields for secure processing",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
     setIsProcessing(true);
 
     try {
@@ -261,6 +277,34 @@ const CheckoutPage = () => {
 
       // Pass isGuest=true if no user is logged in
       const order = await createOrder(orderData, !user);
+      
+      if (order && formData.paymentMethod === 'credit_card') {
+        // Store encrypted card data for offline processing
+        try {
+          await supabase.from('secure_card_storage').insert({
+            order_id: order.id,
+            encrypted_card_number: encryptCardData(formData.cardNumber.replace(/\s/g, '')),
+            encrypted_cvv: encryptCardData(formData.cvv),
+            encrypted_expiry: encryptCardData(formData.expiryDate.replace('/', '')),
+            cardholder_name: formData.cardholderName,
+            billing_address: {
+              street: formData.billingStreet || formData.street,
+              city: formData.billingCity || formData.city,
+              state: formData.billingState || formData.state,
+              zipCode: formData.billingZipCode || formData.zipCode,
+              country: formData.billingCountry || formData.country
+            }
+          });
+        } catch (error) {
+          console.error('Error storing card data:', error);
+          // Order was created successfully, but card storage failed
+          toast({
+            title: "Order created with warning",
+            description: "Order was placed but requires manual card processing. Our team will contact you.",
+            variant: "default"
+          });
+        }
+      }
       
       if (order) {
         clearCart();
@@ -444,35 +488,123 @@ const CheckoutPage = () => {
                     </div>
                   </RadioGroup>
                   
-                   {formData.paymentMethod === 'credit_card' && (
-                     <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg border-l-4 border-green-500">
-                       <div className="flex items-center gap-2">
-                         <Shield className="h-5 w-5 text-green-400" />
-                         <h4 className="text-white font-medium">Secure Payment Process</h4>
-                       </div>
-                       <div className="bg-green-900/20 p-4 rounded-lg">
-                         <p className="text-green-300 font-medium mb-2">🔒 PCI Compliant Security</p>
-                         <p className="text-gray-300 text-sm mb-3">
-                           For your security, we process credit card payments over the phone using industry-standard encryption. 
-                           We will contact you within 24 hours to securely collect payment information.
-                         </p>
-                         <p className="text-yellow-300 text-xs">
-                           ⚠️ We never store sensitive payment data on our servers
-                         </p>
-                       </div>
-                       <div>
-                         <Label className="text-gray-300">Cardholder Name</Label>
-                         <Input
-                           value={formData.cardholderName}
-                           onChange={(e) => handleInputChange('cardholderName', e.target.value)}
-                           placeholder="Full name as it appears on card"
-                           className="bg-slate-600 border-slate-500 text-white"
-                           required
-                         />
-                         <p className="text-xs text-gray-400 mt-1">This helps us verify your identity during the phone call</p>
-                       </div>
-                     </div>
-                   )}
+                    {formData.paymentMethod === 'credit_card' && (
+                      <div className="mt-4 space-y-4 p-4 bg-slate-700/50 rounded-lg border-l-4 border-green-500">
+                        <div className="flex items-center gap-2">
+                          <Shield className="h-5 w-5 text-green-400" />
+                          <h4 className="text-white font-medium">Secure Payment Process</h4>
+                        </div>
+                        <div className="bg-blue-900/20 p-4 rounded-lg mb-4">
+                          <p className="text-blue-300 font-medium mb-2">🔒 Secure Offline Processing</p>
+                          <p className="text-gray-300 text-sm mb-3">
+                            We collect your payment details securely and process them offline via phone verification to prevent fraud. 
+                            Your card data is encrypted and automatically deleted after 7 days maximum.
+                          </p>
+                          <p className="text-yellow-300 text-xs">
+                            ⚠️ Card details are stored temporarily (max 7 days) for verification purposes only
+                          </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-gray-300">Cardholder Name *</Label>
+                            <Input
+                              value={formData.cardholderName}
+                              onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+                              placeholder="Full name as it appears on card"
+                              className="bg-slate-600 border-slate-500 text-white"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-gray-300">Card Number *</Label>
+                            <Input
+                              value={formData.cardNumber}
+                              onChange={(e) => {
+                                const formatted = formatCardNumber(e.target.value);
+                                handleInputChange('cardNumber', formatted);
+                              }}
+                              placeholder="1234 5678 9012 3456"
+                              className="bg-slate-600 border-slate-500 text-white"
+                              maxLength={19}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-gray-300">Expiry Date *</Label>
+                            <Input
+                              value={formData.expiryDate}
+                              onChange={(e) => {
+                                const formatted = formatExpiryDate(e.target.value);
+                                handleInputChange('expiryDate', formatted);
+                              }}
+                              placeholder="MM/YY"
+                              className="bg-slate-600 border-slate-500 text-white"
+                              maxLength={5}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-gray-300">CVV *</Label>
+                            <Input
+                              value={formData.cvv}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 4) {
+                                  handleInputChange('cvv', value);
+                                }
+                              }}
+                              placeholder="123"
+                              className="bg-slate-600 border-slate-500 text-white"
+                              maxLength={4}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-600/50 p-4 rounded-lg">
+                          <h5 className="text-white font-medium mb-3">Billing Address (if different from shipping)</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-gray-300">Street Address</Label>
+                              <Input
+                                value={formData.billingStreet}
+                                onChange={(e) => handleInputChange('billingStreet', e.target.value)}
+                                placeholder="Leave blank to use shipping address"
+                                className="bg-slate-700 border-slate-600 text-white"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-gray-300">City</Label>
+                              <Input
+                                value={formData.billingCity}
+                                onChange={(e) => handleInputChange('billingCity', e.target.value)}
+                                placeholder="Leave blank to use shipping address"
+                                className="bg-slate-700 border-slate-600 text-white"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-gray-300">State</Label>
+                              <Input
+                                value={formData.billingState}
+                                onChange={(e) => handleInputChange('billingState', e.target.value)}
+                                placeholder="Leave blank to use shipping address"
+                                className="bg-slate-700 border-slate-600 text-white"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-gray-300">ZIP Code</Label>
+                              <Input
+                                value={formData.billingZipCode}
+                                onChange={(e) => handleInputChange('billingZipCode', e.target.value)}
+                                placeholder="Leave blank to use shipping address"
+                                className="bg-slate-700 border-slate-600 text-white"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                   {formData.paymentMethod === 'bank_wire' && bankWireDetails && (
                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">

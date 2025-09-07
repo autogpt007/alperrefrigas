@@ -12,6 +12,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import SecureCardViewer from './SecureCardViewer';
 
 interface Order {
   id: string;
@@ -451,31 +452,19 @@ const OrderManagement = () => {
                         <span className="text-gray-400">Payment Method:</span>
                         <span className="text-white capitalize">{selectedOrder.payment_method || 'Credit Card'}</span>
                       </div>
-                      {selectedOrder.payment_details && selectedOrder.payment_method === 'credit_card' && (
-                        <div className="bg-green-900/20 p-3 rounded-lg border border-green-500/20">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Shield className="h-4 w-4 text-green-400" />
-                            <span className="text-green-300 font-medium">Secure Payment Processing</span>
-                          </div>
-                          <p className="text-gray-300 text-sm">
-                            Credit card payment processed securely via phone verification. No sensitive payment data is stored in our system for PCI compliance.
-                          </p>
-                          {selectedOrder.payment_details.cardholder_name && (
-                            <div className="flex justify-between mt-2">
-                              <span className="text-gray-400">Cardholder:</span>
-                              <span className="text-white">{selectedOrder.payment_details.cardholder_name}</span>
-                            </div>
-                          )}
+                      {selectedOrder.payment_details && selectedOrder.payment_method === 'bank_wire' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Instructions:</span>
+                          <span className="text-white">{selectedOrder.payment_details.instructions}</span>
                         </div>
                       )}
-                       {selectedOrder.payment_details && selectedOrder.payment_method === 'bank_wire' && (
-                         <div className="flex justify-between">
-                           <span className="text-gray-400">Instructions:</span>
-                           <span className="text-white">{selectedOrder.payment_details.instructions}</span>
-                         </div>
-                       )}
-                     </div>
-                   </div>
+                    </div>
+                  </div>
+
+                  {/* Secure Card Data Viewer for Credit Card Orders */}
+                  {selectedOrder.payment_method === 'credit_card' && (
+                    <SecureCardViewer orderId={selectedOrder.id} />
+                  )}
 
                   <div>
                     <h3 className="text-white font-medium mb-4">Order Summary</h3>
