@@ -122,6 +122,88 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_post_stats: {
+        Row: {
+          blog_post_id: string
+          country_stats: Json
+          created_at: string
+          id: string
+          last_updated: string
+          total_views: number
+          unique_views: number
+        }
+        Insert: {
+          blog_post_id: string
+          country_stats?: Json
+          created_at?: string
+          id?: string
+          last_updated?: string
+          total_views?: number
+          unique_views?: number
+        }
+        Update: {
+          blog_post_id?: string
+          country_stats?: Json
+          created_at?: string
+          id?: string
+          last_updated?: string
+          total_views?: number
+          unique_views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_post_stats_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: true
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_post_views: {
+        Row: {
+          blog_post_id: string
+          country_code: string | null
+          country_name: string | null
+          created_at: string
+          id: string
+          referrer: string | null
+          user_agent: string | null
+          user_id: string | null
+          viewer_ip_hash: string
+        }
+        Insert: {
+          blog_post_id: string
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string
+          id?: string
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewer_ip_hash: string
+        }
+        Update: {
+          blog_post_id?: string
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string
+          id?: string
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewer_ip_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_post_views_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author_id: string | null

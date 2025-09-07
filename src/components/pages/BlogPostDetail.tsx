@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import BlogContentProcessor from '@/components/blog/BlogContentProcessor';
 import BlogSEO from '@/components/seo/BlogSEO';
+import ViewCounter from '@/components/ui/ViewCounter';
 
 interface BlogPost {
   id: string;
@@ -65,6 +66,30 @@ const BlogPostDetail = () => {
       navigator.clipboard.writeText(window.location.href);
     }
   };
+
+  // Track view when post is loaded
+  useEffect(() => {
+    if (post?.id) {
+      const trackView = async () => {
+        try {
+          await supabase.functions.invoke('track-blog-view', {
+            body: {
+              blogPostId: post.id,
+              userAgent: navigator.userAgent,
+              referrer: document.referrer
+            }
+          });
+        } catch (error) {
+          console.log('View tracking failed:', error);
+          // Fail silently - don't break the user experience
+        }
+      };
+
+      // Debounce the tracking call
+      const timer = setTimeout(trackView, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [post?.id]);
 
   if (isLoading) {
     return (
@@ -186,6 +211,7 @@ const BlogPostDetail = () => {
                   <Clock className="h-4 w-4" />
                   <span>{post.reading_time || 5} min read</span>
                 </div>
+                <ViewCounter blogPostId={post.id} />
               </div>
               
               <Button

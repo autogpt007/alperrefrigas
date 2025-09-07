@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Plus, Edit, Trash2, FileText, Eye, EyeOff, Image, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Editor } from '@tinymce/tinymce-react';
+import BlogAnalytics from './BlogAnalytics';
 
 interface BlogPost {
   id: string;
@@ -296,6 +297,7 @@ const BlogPostManagement = () => {
           <TabsTrigger value="form">
             {editingPost ? 'Edit Post' : 'Create Post'}
           </TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list">
@@ -576,6 +578,10 @@ const BlogPostManagement = () => {
               </form>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <BlogAnalytics />
         </TabsContent>
       </Tabs>
     </div>
