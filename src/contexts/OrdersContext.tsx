@@ -124,6 +124,9 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>, isGuest?: boolean): Promise<Order | null> => {
+    // Debug logging
+    console.log('createOrder called with:', { user: !!user, isGuest, orderData });
+    
     // Allow both authenticated users and guest checkout
     if (!user && !isGuest) {
       toast({
@@ -139,6 +142,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       // Create the order - user_id can be null for guest orders
+      console.log('About to insert order with user_id:', user?.id || null, 'isGuest:', isGuest);
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
