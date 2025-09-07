@@ -417,6 +417,97 @@ const ProductDetails = () => {
                   </div>
                 )}
               </div>
+
+              {/* Purchase Options - Moved up for better UX */}
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Purchase Options
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Packaging Type *
+                    </label>
+                    <Select value={packaging} onValueChange={setPackaging}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select packaging option" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(product.packaging_options || product.packaging)?.map(pkg => (
+                          <SelectItem key={pkg} value={pkg}>
+                            <div className="flex justify-between items-center w-full">
+                              <span>{pkg}</span>
+                              <div className="ml-4 text-right">
+                                <span className="font-semibold text-blue-600">
+                                  ${calculateBulkPrice(pkg).toLocaleString()}
+                                </span>
+                                {pkg !== '1 Pallet' && (
+                                  <div className="text-xs text-green-600">
+                                    {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                        -
+                      </Button>
+                      <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
+                      <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
+                        +
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Add to Cart
+                    </Button>
+
+                    <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add to Quote Request
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to="/cart">
+                      <Button variant="outline" className="w-full">
+                        View Cart
+                      </Button>
+                    </Link>
+                    <Link to="/rfq">
+                      <Button variant="outline" className="w-full">
+                        View Quotes
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 mb-2">Need Help?</h4>
+                    <p className="text-blue-800 text-sm">
+                      Our refrigerant experts are available to help you choose the right product for your application.
+                    </p>
+                    <Button variant="link" className="text-blue-600 p-0 h-auto mt-2">
+                      Contact Technical Support
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
               
               <div className="text-gray-600 mb-6 whitespace-pre-line">
                 {product.description?.split('\n').map((line, index) => (
@@ -446,97 +537,6 @@ const ProductDetails = () => {
                   </ul>
                 </CardContent>
               </Card>}
-
-            {/* Purchase Options */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Purchase Options
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Packaging Type *
-                  </label>
-                  <Select value={packaging} onValueChange={setPackaging}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select packaging option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(product.packaging_options || product.packaging)?.map(pkg => (
-                        <SelectItem key={pkg} value={pkg}>
-                          <div className="flex justify-between items-center w-full">
-                            <span>{pkg}</span>
-                            <div className="ml-4 text-right">
-                              <span className="font-semibold text-blue-600">
-                                ${calculateBulkPrice(pkg).toLocaleString()}
-                              </span>
-                              {pkg !== '1 Pallet' && (
-                                <div className="text-xs text-green-600">
-                                  {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantity
-                  </label>
-                  <div className="flex items-center space-x-3">
-                    <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                      -
-                    </Button>
-                    <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                    <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                      +
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Add to Cart
-                  </Button>
-
-                  <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add to Quote Request
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <Link to="/cart">
-                    <Button variant="outline" className="w-full">
-                      View Cart
-                    </Button>
-                  </Link>
-                  <Link to="/rfq">
-                    <Button variant="outline" className="w-full">
-                      View Quotes
-                    </Button>
-                  </Link>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-blue-900 mb-2">Need Help?</h4>
-                  <p className="text-blue-800 text-sm">
-                    Our refrigerant experts are available to help you choose the right product for your application.
-                  </p>
-                  <Button variant="link" className="text-blue-600 p-0 h-auto mt-2">
-                    Contact Technical Support
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
