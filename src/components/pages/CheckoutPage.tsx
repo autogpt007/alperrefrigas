@@ -208,10 +208,10 @@ const CheckoutPage = () => {
     }
 
     // Validate required fields
-    if (!formData.customerName || !formData.customerEmail || !formData.street || !formData.city || !formData.state || !formData.zipCode) {
+    if (!formData.customerName || !formData.customerEmail || !formData.phoneNumber || !formData.street || !formData.city || !formData.state || !formData.zipCode) {
       toast({
         title: "Missing required fields",
-        description: "Please fill in all required fields",
+        description: "Please fill in all required fields including phone number",
         variant: "destructive"
       });
       return;
@@ -396,6 +396,18 @@ const CheckoutPage = () => {
                         required
                         className="bg-slate-700 border-slate-600 text-white"
                       />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-gray-300">Phone Number *</Label>
+                      <Input
+                        type="tel"
+                        value={formData.phoneNumber}
+                        onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                        placeholder="(555) 123-4567"
+                        required
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">Required for payment verification and order updates</p>
                     </div>
                   </div>
                 </CardContent>
