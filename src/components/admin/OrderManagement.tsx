@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Order {
@@ -452,29 +452,21 @@ const OrderManagement = () => {
                         <span className="text-white capitalize">{selectedOrder.payment_method || 'Credit Card'}</span>
                       </div>
                       {selectedOrder.payment_details && selectedOrder.payment_method === 'credit_card' && (
-                        <>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Cardholder:</span>
-                            <span className="text-white">{selectedOrder.payment_details.cardholder_name}</span>
+                        <div className="bg-green-900/20 p-3 rounded-lg border border-green-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-green-400" />
+                            <span className="text-green-300 font-medium">Secure Payment Processing</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Card Number:</span>
-                            <span className="text-white">{selectedOrder.payment_details.card_number}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Expiry:</span>
-                            <span className="text-white">{selectedOrder.payment_details.expiry_date}</span>
-                          </div>
-                          {selectedOrder.payment_details.billing_address && (
-                            <div className="mt-3 pt-2 border-t border-slate-600">
-                              <p className="text-gray-400 text-sm mb-1">Billing Address:</p>
-                              <p className="text-white text-sm">
-                                {selectedOrder.payment_details.billing_address.street}<br />
-                                {selectedOrder.payment_details.billing_address.city}, {selectedOrder.payment_details.billing_address.state} {selectedOrder.payment_details.billing_address.zipCode}
-                              </p>
+                          <p className="text-gray-300 text-sm">
+                            Credit card payment processed securely via phone verification. No sensitive payment data is stored in our system for PCI compliance.
+                          </p>
+                          {selectedOrder.payment_details.cardholder_name && (
+                            <div className="flex justify-between mt-2">
+                              <span className="text-gray-400">Cardholder:</span>
+                              <span className="text-white">{selectedOrder.payment_details.cardholder_name}</span>
                             </div>
                           )}
-                        </>
+                        </div>
                       )}
                        {selectedOrder.payment_details && selectedOrder.payment_method === 'bank_wire' && (
                          <div className="flex justify-between">
