@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, Clock, CheckCircle, Star, Zap, Users, Building2, Globe, ThermometerSun, ArrowRight, Search, FileText, Package } from 'lucide-react';
+import QuoteTypeSelector from '@/components/ui/QuoteTypeSelector';
 import { useProducts } from '@/contexts/ProductsContext';
 import ProductCard from '@/components/ProductCard';
 import TestimonialSection from '@/components/ui/TestimonialSection';
 import { RollingTextBanner } from '@/components/ui/RollingTextBanner';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
-import NewsletterSubscription from '@/components/ui/NewsletterSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
@@ -260,7 +260,7 @@ const HomePage = () => {
                   {t('home.hero.shopRefrigerants')}
                 </Button>
               </Link>
-              <Link to="/rfq">
+              <Link to="/bulk-pricing">
                 <Button 
                   size="lg" 
                   variant="outline" 
@@ -841,49 +841,6 @@ const HomePage = () => {
       {/* Testimonials Section */}
       <TestimonialSection />
 
-      {/* Newsletter Subscription Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-2xl">
-          <NewsletterSubscription />
-        </div>
-      </section>
-
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-cyan-600/20 to-purple-600/20">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              Ready to Optimize Your Refrigerant Supply?
-            </h2>
-            <p className="text-xl text-gray-300 leading-relaxed">
-              Join thousands of HVAC professionals who trust Alper Refrigerant for their refrigerant needs. 
-              Experience the difference that quality products and exceptional service can make for your business.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link to="/contact">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-cyan-500/25"
-                >
-                  <Phone className="mr-3 h-6 w-6" />
-                  Contact Sales Team
-                </Button>
-              </Link>
-              <Link to="/rfq">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold"
-                >
-                  <Mail className="mr-3 h-6 w-6" />
-                  Request Custom Quote
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
     </>
   );

@@ -26,6 +26,7 @@ import ProductDetails from "./components/pages/ProductDetails";
 import CartPage from "./components/pages/CartPage";
 import RFQPage from "./components/pages/RFQPage";
 import CheckoutPage from "./components/pages/CheckoutPage";
+import BulkPricing from "./pages/BulkPricing";
 import OrderConfirmation from "./components/pages/OrderConfirmation";
 import AboutUs from "./components/pages/AboutUs";
 import ContactUs from "./components/pages/ContactUs";
@@ -122,16 +123,17 @@ function App() {
                           <Header />
                           <main className="flex-1">
                             <Routes>
-                          <Route path="/" element={<HomePage />} />
-                          <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
-                               <Route path="/products" element={<ProductCatalog />} />
-                               <Route path="/products/refrigerants" element={<ProductCatalog />} />
-                               <Route path="/products/accessories" element={<ProductCatalog />} />
-                               <Route path="/products/category/:category" element={<ProductCategory />} />
-                               <Route path="/products/accessories/:category" element={<ProductCategory />} />
-                               <Route path="/products/:productSlug" element={<ProductDetails />} />
-                               <Route path="/products/:id" element={<ProductDetails />} />
-                              <Route path="/cart" element={<CartPage />} />
+                           <Route path="/" element={<HomePage />} />
+                           <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
+                                <Route path="/products" element={<ProductCatalog />} />
+                                <Route path="/products/refrigerants" element={<ProductCatalog />} />
+                                <Route path="/products/accessories" element={<ProductCatalog />} />
+                                <Route path="/products/category/:category" element={<ProductCategory />} />
+                                <Route path="/products/accessories/:category" element={<ProductCategory />} />
+                                <Route path="/products/:productSlug" element={<ProductDetails />} />
+                                <Route path="/products/:id" element={<ProductDetails />} />
+                               <Route path="/cart" element={<CartPage />} />
+                               <Route path="/bulk-pricing" element={<BulkPricing />} />
                               <Route path="/rfq" element={<RFQPage />} />
                                <Route path="/checkout" element={<CheckoutPage />} />
                                <Route path="/crypto-payment/:orderNumber" element={<CryptoPaymentPage />} />

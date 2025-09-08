@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
+import QuoteTypeSelector from '../ui/QuoteTypeSelector';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -185,11 +186,11 @@ const Header = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            <Link to="/rfq">
+            <QuoteTypeSelector>
               <Button className="hidden md:inline-flex bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2">
-                Get Bulk Pricing Quote
+                Request Quote
               </Button>
-            </Link>
+            </QuoteTypeSelector>
             
             {/* Quote Dialog Button */}
             <QuoteDialog>
@@ -392,11 +393,13 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
-              <Link to="/rfq" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
-                  Get Bulk Pricing Quote
-                </Button>
-              </Link>
+              <div className="mt-4">
+                <QuoteTypeSelector>
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
+                    Request Quote
+                  </Button>
+                </QuoteTypeSelector>
+              </div>
             </nav>
           </div>
         </div>

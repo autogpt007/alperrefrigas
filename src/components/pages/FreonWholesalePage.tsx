@@ -130,7 +130,7 @@ const FreonWholesalePage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <Link to="/rfq">
+                <Link to="/bulk-pricing">
                   <Button 
                     size="lg" 
                     className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-green-500/25 transition-all duration-300 transform hover:scale-105"
@@ -312,7 +312,7 @@ const FreonWholesalePage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link to="/rfq">
+                <Link to="/bulk-pricing">
                   <Button 
                     size="lg" 
                     className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 px-8 py-4 text-lg font-semibold"

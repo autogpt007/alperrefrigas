@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -258,10 +259,12 @@ const ContactUs = () => {
                   <p className="text-gray-100 text-sm mb-4">
                     Need bulk refrigerant pricing for your project? Get competitive wholesale quotes with volume discounts for contractors.
                   </p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
-                    <Send className="h-4 w-4 mr-2" />
-                    Get Quote
-                  </Button>
+                  <Link to="/bulk-pricing">
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold">
+                      <Send className="h-4 w-4 mr-2" />
+                      Get Quote
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
