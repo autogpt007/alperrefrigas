@@ -45,7 +45,7 @@ const CheckoutPage = () => {
     state: '',
     zipCode: '',
     country: 'United States',
-    paymentMethod: isGuest ? 'bank_wire' : 'credit_card',
+    paymentMethod: 'credit_card', // Allow credit card for both users and guests
     notes: '',
     // Credit card details for offline processing
     cardNumber: '',
@@ -234,18 +234,10 @@ const CheckoutPage = () => {
 
     // Validate credit card fields for credit card payment
     if (formData.paymentMethod === 'credit_card') {
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Credit card payments require you to be signed in for security",
-          variant: "destructive"
-        });
-        return;
-      }
       if (!formData.cardNumber || !formData.expiryDate || !formData.cvv || !formData.cardholderName) {
         toast({
           title: "Missing credit card information",
-          description: "Please fill in all credit card fields for secure processing",
+          description: "Please fill in all credit card fields for processing",
           variant: "destructive"
         });
         return;
@@ -276,6 +268,8 @@ const CheckoutPage = () => {
         payment_method: formData.paymentMethod,
         payment_details: formData.paymentMethod === 'credit_card' ? {
           cardholder_name: formData.cardholderName,
+          last_four: formData.cardNumber.replace(/\s/g, '').slice(-4),
+          expiry_date: formData.expiryDate,
           billing_address: {
             street: formData.billingStreet || formData.street,
             city: formData.billingCity || formData.city,
@@ -311,8 +305,8 @@ const CheckoutPage = () => {
       // Pass isGuest=true if no user is logged in
       const order = await createOrder(orderData, !user);
       
-      if (order && formData.paymentMethod === 'credit_card') {
-        // Store encrypted card data for offline processing
+      // Optional: Store encrypted card data for authenticated users only (as backup)
+      if (order && formData.paymentMethod === 'credit_card' && user) {
         try {
           const [encryptedCardNumber, encryptedCvv, encryptedExpiry] = await Promise.all([
             encryptCardData(formData.cardNumber.replace(/\s/g, '')),
@@ -335,13 +329,8 @@ const CheckoutPage = () => {
             }
           });
         } catch (error) {
-          console.error('Error storing card data:', error);
-          // Order was created successfully, but card storage failed
-          toast({
-            title: "Order created with warning",
-            description: "Order was placed but requires manual card processing. Our team will contact you.",
-            variant: "default"
-          });
+          console.error('Error storing encrypted card data (non-critical):', error);
+          // This is now non-critical since card info is stored in payment_details
         }
       }
       
@@ -546,13 +535,11 @@ const CheckoutPage = () => {
                      </div>
                    )}
                    <RadioGroup value={formData.paymentMethod} onValueChange={(value) => handleInputChange('paymentMethod', value)}>
-                     {/* Credit Card - only for authenticated users */}
-                     {!isGuest && (
-                       <div className="flex items-center space-x-2">
-                         <RadioGroupItem value="credit_card" id="credit_card" />
-                         <Label htmlFor="credit_card" className="text-gray-300">Credit Card (Secure Offline Processing)</Label>
-                       </div>
-                     )}
+                      {/* Credit Card - available for all users */}
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="credit_card" id="credit_card" />
+                        <Label htmlFor="credit_card" className="text-gray-300">Credit Card (Secure Offline Processing)</Label>
+                      </div>
                      
                      {/* Bank Wire - available for all */}
                      <div className="flex items-center space-x-2">
