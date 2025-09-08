@@ -35,6 +35,7 @@ const Header = () => {
   // Fetch logo and contact settings
   const { data: logoSettings } = useQuery({
     queryKey: ['logo-settings'],
+    staleTime: 0, // Force fresh data to show updated logo
     queryFn: async () => {
       const { data, error } = await supabase
         .from('site_settings')
@@ -163,8 +164,8 @@ const Header = () => {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{logoSettings?.company_name || 'FrigidFlow'}</h1>
-              <p className="text-sm text-gray-600">{logoSettings?.company_tagline || 'Refrigerant Solutions'}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{logoSettings?.company_name || 'Alper Refrigerants'}</h1>
+              <p className="text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
             </div>
           </Link>
 
