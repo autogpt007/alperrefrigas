@@ -50,9 +50,9 @@ const Header = () => {
 
       return {
         logo_url: settingsMap.logo_url || '',
-        company_name: settingsMap.company_name || 'FrigidFlow',
-        company_tagline: settingsMap.company_tagline || 'Refrigerant Solutions',
-        main_phone: settingsMap.main_phone || '1-800-REFRIGERANT',
+        company_name: settingsMap.company_name || 'Alper Refrigerants',
+        company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distributor',
+        main_phone: settingsMap.main_phone || '1-281-400-5969',
         header_email: settingsMap.header_email || 'info@alperrefrigas.com'
       };
     },
