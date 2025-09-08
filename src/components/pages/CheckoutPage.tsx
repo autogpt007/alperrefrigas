@@ -265,6 +265,15 @@ const CheckoutPage = () => {
       return false;
     }
 
+    if (formData.paymentMethod.startsWith('crypto_') && !selectedCryptoWallet) {
+      toast({
+        title: "Missing Crypto Wallet",
+        description: "Please select a crypto wallet for payment",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     if (!legalAcknowledged) {
       toast({
         title: "Legal Acknowledgment Required",
@@ -566,11 +575,12 @@ const CheckoutPage = () => {
                              if (wallet) setSelectedCryptoWallet(wallet.id);
                            }
                          }}
-                         availableMethods={[
-                           'credit_card',
-                           ...getCryptoWallets().map(w => w.payment_type),
-                           ...getTraditionalWallets().map(w => w.payment_type)
-                         ]}
+                          availableMethods={[
+                            'credit_card',
+                            'bank_wire',
+                            ...getCryptoWallets().map(w => `crypto_${w.payment_type}`),
+                            ...getTraditionalWallets().map(w => w.payment_type)
+                          ]}
                        />
                      )}
 
@@ -741,6 +751,26 @@ const CheckoutPage = () => {
                             <p className="text-sm text-gray-500 mt-1">
                               We'll contact you with payment instructions
                             </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bank Wire Details */}
+                      {formData.paymentMethod === 'bank_wire' && (
+                        <div className="space-y-4">
+                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h4 className="font-medium text-blue-900 mb-2">Bank Wire Transfer Instructions</h4>
+                            <div className="text-sm text-blue-800 space-y-1">
+                              <p>Wire transfer details will be provided after order confirmation.</p>
+                              <p className="text-xs opacity-75">Processing time: 1-3 business days</p>
+                              {bankWireDetails && (
+                                <div className="mt-3 space-y-1 font-mono text-xs">
+                                  {bankWireDetails.bank_name && <p><strong>Bank:</strong> {bankWireDetails.bank_name}</p>}
+                                  {bankWireDetails.bank_account_number && <p><strong>Account:</strong> {bankWireDetails.bank_account_number}</p>}
+                                  {bankWireDetails.bank_routing_number && <p><strong>Routing:</strong> {bankWireDetails.bank_routing_number}</p>}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )}

@@ -55,10 +55,10 @@ const paymentMethods: PaymentMethod[] = [
   { id: 'bank_wire', name: 'Bank Wire', icon: <Banknote className="w-5 h-5" />, category: 'traditional', description: 'Direct bank transfer' },
   { id: 'zelle', name: 'Zelle', icon: <Zap className="w-5 h-5" />, category: 'digital', description: 'Send money with Zelle' },
   { id: 'cashapp', name: 'CashApp', icon: <Smartphone className="w-5 h-5" />, category: 'digital', description: 'Pay with Cash App' },
-  { id: 'bitcoin', name: 'Bitcoin (BTC)', icon: <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">₿</div>, category: 'crypto', description: 'Digital currency' },
-  { id: 'usdt', name: 'Tether (USDT)', icon: <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">₮</div>, category: 'crypto', description: 'Stable cryptocurrency' },
-  { id: 'ethereum', name: 'Ethereum (ETH)', icon: <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">Ξ</div>, category: 'crypto', description: 'Smart contract platform' },
-  { id: 'litecoin', name: 'Litecoin (LTC)', icon: <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">Ł</div>, category: 'crypto', description: 'Peer-to-peer cryptocurrency' }
+  { id: 'crypto_bitcoin', name: 'Bitcoin (BTC)', icon: <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">₿</div>, category: 'crypto', description: 'Digital currency' },
+  { id: 'crypto_usdt', name: 'Tether (USDT)', icon: <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">₮</div>, category: 'crypto', description: 'Stable cryptocurrency' },
+  { id: 'crypto_ethereum', name: 'Ethereum (ETH)', icon: <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">Ξ</div>, category: 'crypto', description: 'Smart contract platform' },
+  { id: 'crypto_litecoin', name: 'Litecoin (LTC)', icon: <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">Ł</div>, category: 'crypto', description: 'Peer-to-peer cryptocurrency' }
 ];
 
 export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
