@@ -37,31 +37,31 @@ const SocialMediaLinks: React.FC<{ className?: string }> = ({ className = '' }) 
       key: 'facebook_url',
       icon: Facebook,
       label: 'Facebook',
-      color: 'hover:text-blue-600'
+      color: 'text-blue-600 hover:text-blue-700'
     },
     {
       key: 'twitter_url',
       icon: Twitter,
       label: 'Twitter',
-      color: 'hover:text-sky-500'
+      color: 'text-sky-500 hover:text-sky-600'
     },
     {
       key: 'instagram_url',
       icon: Instagram,
       label: 'Instagram',
-      color: 'hover:text-pink-600'
+      color: 'text-pink-500 hover:text-pink-600'
     },
     {
       key: 'linkedin_url',
       icon: Linkedin,
       label: 'LinkedIn',
-      color: 'hover:text-blue-700'
+      color: 'text-blue-700 hover:text-blue-800'
     },
     {
       key: 'youtube_url',
       icon: Youtube,
       label: 'YouTube',
-      color: 'hover:text-red-600'
+      color: 'text-red-600 hover:text-red-700'
     }
   ];
 
@@ -70,14 +70,14 @@ const SocialMediaLinks: React.FC<{ className?: string }> = ({ className = '' }) 
       key: 'social_media_email',
       icon: Mail,
       label: 'Email',
-      color: 'hover:text-gray-600',
+      color: 'text-gray-400 hover:text-gray-300',
       prefix: 'mailto:'
     },
     {
       key: 'social_media_phone',
       icon: Phone,
       label: 'Phone',
-      color: 'hover:text-green-600',
+      color: 'text-green-500 hover:text-green-400',
       prefix: 'tel:'
     }
   ];
@@ -103,7 +103,7 @@ const SocialMediaLinks: React.FC<{ className?: string }> = ({ className = '' }) 
             key={key}
             variant="ghost"
             size="sm"
-            className={`p-2 text-muted-foreground transition-colors ${color}`}
+            className={`p-2 transition-colors ${color}`}
             asChild
           >
             <a
