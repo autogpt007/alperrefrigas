@@ -18,7 +18,8 @@ import {
   Tag,
   Mail,
   Wrench,
-  Map
+  Map,
+  CreditCard
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -33,6 +34,7 @@ const AdminSidebar = () => {
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
     { icon: Tag, label: 'Coupons', path: '/admin/coupons' },
+    { icon: CreditCard, label: 'Payment Methods', path: '/admin/payment-methods' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
     { icon: Mail, label: 'Newsletter', path: '/admin/newsletter' },
     { icon: Phone, label: 'Contact Info', path: '/admin/contact-info' },

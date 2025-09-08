@@ -39,6 +39,7 @@ import CookiePolicy from "./components/pages/CookiePolicy";
 import RefundPolicy from "./components/pages/RefundPolicy";
 import Sitemap from "./components/pages/Sitemap";
 import CustomerSupport from "./components/pages/CustomerSupport";
+import CryptoPaymentPage from "./components/pages/CryptoPaymentPage";
 import AdminDashboard from "./components/pages/AdminDashboard";
 import MyAccount from "./components/pages/MyAccount";
 import AuthPage from "./components/auth/AuthPage";
@@ -53,6 +54,7 @@ import LogoManagement from "./components/admin/LogoManagement";
 import ContactManagement from "./components/admin/ContactManagement";
 import ContactInfoManagement from "./components/admin/ContactInfoManagement";
 import AdminSettings from "./components/admin/AdminSettings";
+import PaymentManagement from "./components/admin/PaymentManagement";
 import TeamManagement from "./components/admin/TeamManagement";
 import CertificationManagement from "./components/admin/CertificationManagement";
 import ContentManagement from "./components/admin/ContentManagement";
@@ -99,8 +101,9 @@ function App() {
                          <Route path="orders" element={<OrderManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
                          <Route path="adverts" element={<AdvertManagement />} />
-                         <Route path="coupons" element={<CouponManagement />} />
-                         <Route path="newsletter" element={<NewsletterManagement />} />
+                          <Route path="coupons" element={<CouponManagement />} />
+                          <Route path="payment-methods" element={<PaymentManagement />} />
+                          <Route path="newsletter" element={<NewsletterManagement />} />
                          <Route path="logo" element={<LogoManagement />} />
                          <Route path="contacts" element={<ContactManagement />} />
                          <Route path="contact-info" element={<ContactInfoManagement />} />
@@ -130,8 +133,9 @@ function App() {
                                <Route path="/products/:id" element={<ProductDetails />} />
                               <Route path="/cart" element={<CartPage />} />
                               <Route path="/rfq" element={<RFQPage />} />
-                              <Route path="/checkout" element={<CheckoutPage />} />
-                              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                               <Route path="/checkout" element={<CheckoutPage />} />
+                               <Route path="/crypto-payment/:orderNumber" element={<CryptoPaymentPage />} />
+                               <Route path="/order-confirmation" element={<OrderConfirmation />} />
                               <Route path="/quote-confirmation" element={<OrderConfirmation />} />
                         <Route path="/testimonials" element={<TestimonialsPage />} />
                         <Route path="/about" element={<AboutUs />} />

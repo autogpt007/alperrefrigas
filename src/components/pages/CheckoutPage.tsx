@@ -56,7 +56,9 @@ const CheckoutPage = () => {
     billingCity: '',
     billingState: '',
     billingZipCode: '',
-    billingCountry: 'United States'
+    billingCountry: 'United States',
+    cashappTag: '',
+    zelleTag: ''
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -261,6 +263,8 @@ const CheckoutPage = () => {
         total_amount: finalTotal,
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
+        cashapp_tag: formData.cashappTag || null,
+        zelle_tag: formData.zelleTag || null,
         shipping_address: {
           street: formData.street,
           city: formData.city,
@@ -287,9 +291,11 @@ const CheckoutPage = () => {
           cryptocurrency: formData.paymentMethod.replace('crypto_', '').toUpperCase(),
           instructions: `Payment instructions for ${formData.paymentMethod.replace('crypto_', '').toUpperCase()} will be provided after order confirmation`
         } : formData.paymentMethod === 'cashapp' ? {
-          instructions: 'CashApp payment details will be provided after order confirmation'
+          instructions: 'CashApp payment details will be provided after order confirmation',
+          user_cashapp_tag: formData.cashappTag || null
         } : formData.paymentMethod === 'zelle' ? {
-          instructions: 'Zelle payment details will be provided after order confirmation'
+          instructions: 'Zelle payment details will be provided after order confirmation',
+          user_zelle_tag: formData.zelleTag || null
         } : null,
         items: items.map(item => ({
           product_id: null, // Set to null since we're using custom cart IDs
@@ -335,7 +341,15 @@ const CheckoutPage = () => {
       
       if (order) {
         clearCart();
-        navigate(`/order-confirmation?orderNumber=${order.order_number}&type=order`);
+        
+        // Handle different payment method redirects
+        if (['bitcoin', 'ethereum', 'usdt', 'litecoin'].includes(formData.paymentMethod)) {
+          // Redirect to crypto payment page
+          navigate(`/crypto-payment/${order.order_number}`);
+        } else {
+          // For all other methods - go to order confirmation
+          navigate(`/order-confirmation?orderNumber=${order.order_number}&type=order`);
+        }
       }
     } catch (error) {
       console.error('Error placing order:', error);
@@ -743,17 +757,49 @@ const CheckoutPage = () => {
                      </div>
                    )}
 
-                   {(formData.paymentMethod === 'cashapp' || formData.paymentMethod === 'zelle') && (
-                     <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
-                       <h4 className="text-white font-medium mb-3">
-                         {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} Payment
-                       </h4>
-                       <p className="text-gray-300 text-sm">
-                         After placing your order, you will receive our {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} details 
-                         to complete payment. Your order will be processed once payment is received.
-                       </p>
-                     </div>
-                   )}
+                    {(formData.paymentMethod === 'cashapp' || formData.paymentMethod === 'zelle') && (
+                      <div className="mt-4 p-4 bg-slate-700/50 rounded-lg">
+                        <h4 className="text-white font-medium mb-3">
+                          {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} Payment
+                        </h4>
+                        <p className="text-gray-300 text-sm mb-4">
+                          After placing your order, you will receive our {formData.paymentMethod === 'cashapp' ? 'CashApp' : 'Zelle'} details 
+                          to complete payment. Your order will be processed once payment is received.
+                        </p>
+                        
+                        <div className="space-y-3">
+                          {formData.paymentMethod === 'cashapp' && (
+                            <div>
+                              <Label className="text-gray-300">Your CashApp Tag (Optional)</Label>
+                              <Input
+                                value={formData.cashappTag}
+                                onChange={(e) => handleInputChange('cashappTag', e.target.value)}
+                                placeholder="$YourCashAppTag"
+                                className="bg-slate-600 border-slate-500 text-white"
+                              />
+                              <p className="text-xs text-gray-400 mt-1">
+                                Provide your CashApp tag so we can request payment directly
+                              </p>
+                            </div>
+                          )}
+                          
+                          {formData.paymentMethod === 'zelle' && (
+                            <div>
+                              <Label className="text-gray-300">Your Zelle Email/Phone (Optional)</Label>
+                              <Input
+                                value={formData.zelleTag}
+                                onChange={(e) => handleInputChange('zelleTag', e.target.value)}
+                                placeholder="your-email@example.com or phone number"
+                                className="bg-slate-600 border-slate-500 text-white"
+                              />
+                              <p className="text-xs text-gray-400 mt-1">
+                                Provide your Zelle email or phone so we can request payment directly
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                  </CardContent>
                </Card>
 
