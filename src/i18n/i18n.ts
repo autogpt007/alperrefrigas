@@ -73,6 +73,7 @@ const resources = {
       // Products
       products: {
         title: "Professional Refrigerant Catalog",
+        description: "⭐ Complete HVAC product catalog with wholesale refrigerants & professional accessories. EPA-certified R-410A, R-134a, R-404A, R-22 with 99.9% purity guarantee. MOQ 40 cylinders, bulk discounts available. Same-day shipping from TX, FL, CA distribution centers. Trusted by 5,000+ HVAC contractors across North America. Get instant quotes!",
         searchPlaceholder: "Search by refrigerant name, SKU, or application...",
         sortBy: "Sort by",
         viewMode: "View Mode",
@@ -357,6 +358,7 @@ const resources = {
       // Products
       products: {
         title: "Catalogue de Réfrigérants Professionnels",
+        description: "⭐ Catalogue complet de produits CVC avec réfrigérants en gros et accessoires professionnels. R-410A, R-134a, R-404A, R-22 certifiés EPA avec garantie de pureté 99,9%. MOQ 40 cylindres, remises en gros disponibles. Expédition le jour même depuis les centres de distribution TX, FL, CA. Fait confiance par 5 000+ entrepreneurs CVC en Amérique du Nord. Obtenez des devis instantanés!",
         searchPlaceholder: "Rechercher par nom de réfrigérant, SKU ou application...",
         sortBy: "Trier par",
         viewMode: "Mode d'Affichage",
@@ -615,6 +617,7 @@ const resources = {
       // Products
       products: {
         title: "Catálogo de Refrigerantes Profesionales",
+        description: "⭐ Catálogo completo de productos HVAC con refrigerantes al por mayor y accesorios profesionales. R-410A, R-134a, R-404A, R-22 certificados EPA con garantía de pureza 99.9%. MOQ 40 cilindros, descuentos por volumen disponibles. Envío el mismo día desde centros de distribución TX, FL, CA. Confiado por 5,000+ contratistas HVAC en América del Norte. ¡Obtenga cotizaciones instantáneas!",
         searchPlaceholder: "Buscar por nombre de refrigerante, SKU o aplicación...",
         sortBy: "Ordenar por",
         viewMode: "Modo de Vista",
