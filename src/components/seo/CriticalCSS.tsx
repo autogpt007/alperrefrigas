@@ -75,9 +75,7 @@ const CriticalCSS: React.FC = () => {
           target.rel = 'stylesheet';
         }}
       />
-      <noscript>
-        <link rel="stylesheet" href="/src/index.css" />
-      </noscript>
+      <noscript>{`<link rel="stylesheet" href="/src/index.css" />`}</noscript>
     </Helmet>
   );
 };
