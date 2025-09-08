@@ -6,7 +6,7 @@ import { Eye, EyeOff, Trash2, CheckCircle, Clock, AlertTriangle } from 'lucide-r
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { decryptCardData, maskCardNumber } from '@/utils/cardEncryption';
+import { decryptCardData, maskCardNumber } from '@/utils/secureCardEncryption';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SecureCardViewerProps {

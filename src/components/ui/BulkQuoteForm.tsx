@@ -10,7 +10,7 @@ import { Package, Send, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSecureValidation } from '@/hooks/useSecureValidation';
+import { useSecureForm } from '@/hooks/useSecureForm';
 import { sanitizeInput, sanitizeEmail, sanitizeName } from '@/lib/inputValidation';
 
 interface BulkQuoteData {
@@ -29,7 +29,11 @@ const BulkQuoteForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { validateAndSanitize, logSecurityEvent, isValidating } = useSecureValidation();
+  const { handleSecureSubmit, isSubmitting: secureSubmitting, generateCSRFToken, csrfToken } = useSecureForm({
+    maxAttempts: 3,
+    timeWindowMinutes: 10,
+    enableCSRF: true
+  });
   
   const [formData, setFormData] = useState<BulkQuoteData>({
     customerName: '',
@@ -52,6 +56,11 @@ const BulkQuoteForm = () => {
     }));
   };
 
+  // Generate CSRF token on mount
+  React.useEffect(() => {
+    generateCSRFToken();
+  }, [generateCSRFToken]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -64,21 +73,12 @@ const BulkQuoteForm = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    // Add CSRF token to form data
+    const formDataWithCSRF = { ...formData, csrfToken };
 
-    try {
-      // Validate and sanitize input data
-      const validation = await validateAndSanitize(
-        formData, 
-        formData.customerEmail || 'anonymous',
-        'data_access'
-      );
-
-      if (!validation.success) {
-        throw new Error(validation.error || 'Invalid input data');
-      }
-
-      const sanitizedData = validation.data;
+    const result = await handleSecureSubmit(
+      formDataWithCSRF,
+      async (sanitizedData) => {
 
       const quoteData = {
         user_id: user?.id || null,
@@ -134,20 +134,30 @@ Additional Notes: ${sanitizedData.notes}`
         notes: ''
       });
 
+        return newQuote;
+      },
+      formData.customerEmail || 'anonymous'
+    );
+
+    if (result.success) {
+      // Reset form and generate new CSRF token
+      setFormData({
+        customerName: '',
+        customerEmail: '',
+        companyName: '',
+        phone: '',
+        productType: '',
+        quantity: '',
+        containerType: '',
+        shippingAddress: '',
+        notes: ''
+      });
+      generateCSRFToken();
+
       // Navigate to account page to see the quote
       if (user) {
         navigate('/account');
       }
-
-    } catch (error: any) {
-      console.error('Error submitting bulk quote:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit quote request. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -337,7 +347,7 @@ Additional Notes: ${sanitizedData.notes}`
               <div className="flex justify-end pt-6">
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={secureSubmitting}
                   className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 text-lg font-semibold"
                 >
                   <Send className="h-5 w-5 mr-2" />

@@ -18,7 +18,7 @@ import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Sca
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
-import { encryptCardData, formatCardNumber, formatExpiryDate } from '@/utils/cardEncryption';
+import { encryptCardData, formatCardNumber, formatExpiryDate } from '@/utils/secureCardEncryption';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
