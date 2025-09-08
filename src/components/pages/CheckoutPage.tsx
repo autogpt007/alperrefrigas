@@ -379,7 +379,7 @@ const CheckoutPage = () => {
               <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h2 className="text-xl font-semibold text-white mb-2">Your cart is empty</h2>
               <p className="text-gray-400 mb-4">Add some items to your cart before checking out.</p>
-              <Button onClick={() => navigate('/catalog')} className="bg-cyan-500 hover:bg-cyan-600">
+              <Button onClick={() => navigate('/products')} className="bg-cyan-500 hover:bg-cyan-600">
                 Continue Shopping
               </Button>
             </CardContent>
