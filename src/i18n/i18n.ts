@@ -36,8 +36,8 @@ const resources = {
         },
         hero: {
           badge: "EPA Certified & Compliant",
-          title: "Professional Grade<br />Refrigerants",
-          description: "Your trusted partner for wholesale refrigerant distribution. We provide premium quality refrigerants, expert technical support, and reliable delivery to HVAC professionals across North America.",
+          title: "Global Refrigerant Supplier<br />R134a, R410a, R22, R32, R454B & More",
+          description: "AlperRefrigas is a trusted bulk supplier of refrigerants for HVAC professionals worldwide. We specialize in certified distribution of R134a refrigerant, R410a refrigerant (410a refrigerant / R-410a), and R22 refrigerant, serving the USA, Canada, and Europe. As demand grows for eco-friendly gases, we also provide R32 refrigerant, R454B refrigerant, and 1234yf refrigerant (1234yf freon) for new-generation air conditioning systems. Whether you need 134a refrigerant (R-134a / 134a freon) or legacy options like R12 refrigerant, our solutions ensure safe handling, reliable supply, and global logistics for industrial and commercial buyers.",
           shopRefrigerants: "Shop Refrigerants",
           getBulkQuote: "Get Bulk Pricing Quote"
         },
@@ -73,7 +73,7 @@ const resources = {
       // Products
       products: {
         title: "Professional Refrigerant Catalog",
-        description: "⭐ Complete HVAC product catalog with wholesale refrigerants & professional accessories. EPA-certified R-410A, R-134a, R-404A, R-22 with 99.9% purity guarantee. MOQ 40 cylinders, bulk discounts available. Same-day shipping from TX, FL, CA distribution centers. Trusted by 5,000+ HVAC contractors across North America. Get instant quotes!",
+        description: "⭐ Complete HVAC product catalog with wholesale refrigerants & professional accessories. EPA-certified R134a refrigerant, R410a refrigerant (410a refrigerant), R22 refrigerant, R32 refrigerant, R454B refrigerant with 99.9% purity guarantee. MOQ 40 cylinders, bulk discounts available. Same-day shipping from TX, FL, CA distribution centers. Trusted by 5,000+ HVAC contractors across North America. Get instant quotes!",
         searchPlaceholder: "Search by refrigerant name, SKU, or application...",
         sortBy: "Sort by",
         viewMode: "View Mode",
@@ -106,7 +106,33 @@ const resources = {
         heroDescription: "Browse our comprehensive selection of EPA-approved refrigerants. Available in bulk quantities for professional HVAC, automotive, and industrial applications.",
         noProducts: "No products found matching your criteria.",
         clearFilters: "Clear Filters",
-        refrigerant: "Refrigerant"
+        refrigerant: "Refrigerant",
+        faq: {
+          r134a: {
+            question: "Is R134a refrigerant still available for sale?",
+            answer: "Yes, R134a refrigerant (also known as R-134a refrigerant or 134a freon) is available for bulk supply to qualified buyers. We offer R134a in 30lb cylinders and palletized lots."
+          },
+          r410a: {
+            question: "What is the R410a refrigerant price per pound?",
+            answer: "R410a refrigerant prices vary based on quantity. Contact us for current bulk pricing on R410a refrigerant (410a refrigerant / R-410a). We offer wholesale rates for contractors and distributors."
+          },
+          r22: {
+            question: "Is R22 refrigerant being phased out?",
+            answer: "Yes, R22 refrigerant production has been phased out, but existing inventory is still available. We carry R22 replacement refrigerants including R410a refrigerant for retrofits."
+          },
+          r32: {
+            question: "What is R32 refrigerant used for?",
+            answer: "R32 refrigerant is an eco-friendly HFC used in modern air conditioning systems. It has lower global warming potential than traditional refrigerants like R410a."
+          },
+          r454b: {
+            question: "Is R454B refrigerant available for commercial use?",
+            answer: "Yes, R454B refrigerant is available for commercial HVAC applications. This low-GWP refrigerant is designed as an R410a replacement in new equipment."
+          },
+          difference: {
+            question: "What is the difference between R134a and 134a refrigerant?",
+            answer: "R134a and 134a refrigerant refer to the same gas (HFC-134a). Some professionals call it 134a freon or R-134a refrigerant - all are the same product."
+          }
+        }
       },
       // About page
       about: {
@@ -321,8 +347,8 @@ const resources = {
         },
         hero: {
           badge: "Certifié et Conforme EPA",
-          title: "Réfrigérants de<br />Qualité Professionnelle",
-          description: "Votre partenaire de confiance pour la distribution en gros de réfrigérants. Nous fournissons des réfrigérants de qualité supérieure, un support technique expert et une livraison fiable aux professionnels CVC d'Amérique du Nord.",
+          title: "Fournisseur Mondial de Réfrigérants<br />R134a, R410a, R22, R32, R454B et Plus",
+          description: "AlperRefrigas est un fournisseur en gros de confiance de réfrigérants pour les professionnels CVC dans le monde entier. Nous nous spécialisons dans la distribution certifiée de réfrigérant R134a, réfrigérant R410a (réfrigérant 410a / R-410a), et réfrigérant R22, servant les États-Unis, le Canada et l'Europe. Alors que la demande croît pour les gaz écologiques, nous fournissons également réfrigérant R32, réfrigérant R454B, et réfrigérant 1234yf (fréon 1234yf) pour les systèmes de climatisation de nouvelle génération. Que vous ayez besoin de réfrigérant 134a (R-134a / fréon 134a) ou d'options héritées comme le réfrigérant R12, nos solutions assurent une manipulation sûre, un approvisionnement fiable et une logistique mondiale pour les acheteurs industriels et commerciaux.",
           shopRefrigerants: "Acheter des Réfrigérants",
           getBulkQuote: "Obtenir un Devis de Prix en Gros"
         },
@@ -358,7 +384,7 @@ const resources = {
       // Products
       products: {
         title: "Catalogue de Réfrigérants Professionnels",
-        description: "⭐ Catalogue complet de produits CVC avec réfrigérants en gros et accessoires professionnels. R-410A, R-134a, R-404A, R-22 certifiés EPA avec garantie de pureté 99,9%. MOQ 40 cylindres, remises en gros disponibles. Expédition le jour même depuis les centres de distribution TX, FL, CA. Fait confiance par 5 000+ entrepreneurs CVC en Amérique du Nord. Obtenez des devis instantanés!",
+        description: "⭐ Catalogue complet de produits CVC avec réfrigérants en gros et accessoires professionnels. Réfrigérant R134a, réfrigérant R410a (réfrigérant 410a), réfrigérant R22, réfrigérant R32, réfrigérant R454B certifiés EPA avec garantie de pureté 99,9%. MOQ 40 cylindres, remises en gros disponibles. Expédition le jour même depuis les centres de distribution TX, FL, CA. Fait confiance par 5 000+ entrepreneurs CVC en Amérique du Nord. Obtenez des devis instantanés!",
         searchPlaceholder: "Rechercher par nom de réfrigérant, SKU ou application...",
         sortBy: "Trier par",
         viewMode: "Mode d'Affichage",
@@ -388,7 +414,33 @@ const resources = {
         heroDescription: "Parcourez notre sélection complète de réfrigérants approuvés EPA. Disponibles en quantités en gros pour applications professionnelles CVC, automobiles et industrielles.",
         noProducts: "Aucun produit trouvé correspondant à vos critères.",
         clearFilters: "Effacer les Filtres",
-        refrigerant: "Réfrigérant"
+        refrigerant: "Réfrigérant",
+        faq: {
+          r134a: {
+            question: "Le réfrigérant R134a est-il encore disponible à la vente?",
+            answer: "Oui, le réfrigérant R134a (aussi connu sous le nom de réfrigérant R-134a ou fréon 134a) est disponible pour l'approvisionnement en gros aux acheteurs qualifiés. Nous offrons R134a en cylindres de 30lb et lots palettisés."
+          },
+          r410a: {
+            question: "Quel est le prix du réfrigérant R410a par livre?",
+            answer: "Les prix du réfrigérant R410a varient selon la quantité. Contactez-nous pour les prix en gros actuels sur le réfrigérant R410a (réfrigérant 410a / R-410a). Nous offrons des tarifs de gros pour les entrepreneurs et distributeurs."
+          },
+          r22: {
+            question: "Le réfrigérant R22 est-il en cours d'élimination progressive?",
+            answer: "Oui, la production de réfrigérant R22 a été éliminée progressivement, mais l'inventaire existant est encore disponible. Nous transportons des réfrigérants de remplacement R22 incluant le réfrigérant R410a pour les adaptations."
+          },
+          r32: {
+            question: "À quoi sert le réfrigérant R32?",
+            answer: "Le réfrigérant R32 est un HFC écologique utilisé dans les systèmes de climatisation modernes. Il a un potentiel de réchauffement global plus faible que les réfrigérants traditionnels comme R410a."
+          },
+          r454b: {
+            question: "Le réfrigérant R454B est-il disponible pour un usage commercial?",
+            answer: "Oui, le réfrigérant R454B est disponible pour les applications CVC commerciales. Ce réfrigérant à faible GWP est conçu comme un remplacement R410a dans les nouveaux équipements."
+          },
+          difference: {
+            question: "Quelle est la différence entre R134a et le réfrigérant 134a?",
+            answer: "R134a et le réfrigérant 134a font référence au même gaz (HFC-134a). Certains professionnels l'appellent fréon 134a ou réfrigérant R-134a - tous sont le même produit."
+          }
+        }
       },
       // About page
       about: {
@@ -580,8 +632,8 @@ const resources = {
         },
         hero: {
           badge: "Certificado y Cumple EPA",
-          title: "Refrigerantes de<br />Grado Profesional",
-          description: "Su socio de confianza para la distribución al por mayor de refrigerantes. Proporcionamos refrigerantes de calidad premium, soporte técnico experto y entrega confiable a profesionales HVAC en América del Norte.",
+          title: "Proveedor Global de Refrigerantes<br />R134a, R410a, R22, R32, R454B y Más",
+          description: "AlperRefrigas es un proveedor mayorista confiable de refrigerantes para profesionales HVAC en todo el mundo. Nos especializamos en distribución certificada de refrigerante R134a, refrigerante R410a (refrigerante 410a / R-410a), y refrigerante R22, sirviendo a EE.UU., Canadá y Europa. A medida que crece la demanda de gases ecológicos, también proporcionamos refrigerante R32, refrigerante R454B, y refrigerante 1234yf (freón 1234yf) para sistemas de aire acondicionado de nueva generación. Ya sea que necesite refrigerante 134a (R-134a / freón 134a) u opciones heredadas como refrigerante R12, nuestras soluciones aseguran manejo seguro, suministro confiable y logística global para compradores industriales y comerciales.",
           shopRefrigerants: "Comprar Refrigerantes",
           getBulkQuote: "Obtener Cotización de Precios al Por Mayor"
         },
@@ -617,7 +669,7 @@ const resources = {
       // Products
       products: {
         title: "Catálogo de Refrigerantes Profesionales",
-        description: "⭐ Catálogo completo de productos HVAC con refrigerantes al por mayor y accesorios profesionales. R-410A, R-134a, R-404A, R-22 certificados EPA con garantía de pureza 99.9%. MOQ 40 cilindros, descuentos por volumen disponibles. Envío el mismo día desde centros de distribución TX, FL, CA. Confiado por 5,000+ contratistas HVAC en América del Norte. ¡Obtenga cotizaciones instantáneas!",
+        description: "⭐ Catálogo completo de productos HVAC con refrigerantes al por mayor y accesorios profesionales. Refrigerante R134a, refrigerante R410a (refrigerante 410a), refrigerante R22, refrigerante R32, refrigerante R454B certificados EPA con garantía de pureza 99.9%. MOQ 40 cilindros, descuentos por volumen disponibles. Envío el mismo día desde centros de distribución TX, FL, CA. Confiado por 5,000+ contratistas HVAC en América del Norte. ¡Obtenga cotizaciones instantáneas!",
         searchPlaceholder: "Buscar por nombre de refrigerante, SKU o aplicación...",
         sortBy: "Ordenar por",
         viewMode: "Modo de Vista",
@@ -647,7 +699,33 @@ const resources = {
         heroDescription: "Navegue nuestra selección integral de refrigerantes aprobados por EPA. Disponibles en cantidades al por mayor para aplicaciones profesionales HVAC, automotrices e industriales.",
         noProducts: "No se encontraron productos que coincidan con sus criterios.",
         clearFilters: "Limpiar Filtros",
-        refrigerant: "Refrigerante"
+        refrigerant: "Refrigerante",
+        faq: {
+          r134a: {
+            question: "¿Está disponible el refrigerante R134a para la venta?",
+            answer: "Sí, el refrigerante R134a (también conocido como refrigerante R-134a o freón 134a) está disponible para suministro a granel a compradores calificados. Ofrecemos R134a en cilindros de 30lb y lotes paletizados."
+          },
+          r410a: {
+            question: "¿Cuál es el precio del refrigerante R410a por libra?",
+            answer: "Los precios del refrigerante R410a varían según la cantidad. Contáctenos para precios al por mayor actuales en refrigerante R410a (refrigerante 410a / R-410a). Ofrecemos tarifas al por mayor para contratistas y distribuidores."
+          },
+          r22: {
+            question: "¿Se está eliminando gradualmente el refrigerante R22?",
+            answer: "Sí, la producción de refrigerante R22 ha sido eliminada gradualmente, pero el inventario existente aún está disponible. Llevamos refrigerantes de reemplazo R22 incluyendo refrigerante R410a para adaptaciones."
+          },
+          r32: {
+            question: "¿Para qué se usa el refrigerante R32?",
+            answer: "El refrigerante R32 es un HFC ecológico usado en sistemas de aire acondicionado modernos. Tiene menor potencial de calentamiento global que refrigerantes tradicionales como R410a."
+          },
+          r454b: {
+            question: "¿Está disponible el refrigerante R454B para uso comercial?",
+            answer: "Sí, el refrigerante R454B está disponible para aplicaciones HVAC comerciales. Este refrigerante de bajo GWP está diseñado como reemplazo de R410a en equipos nuevos."
+          },
+          difference: {
+            question: "¿Cuál es la diferencia entre R134a y refrigerante 134a?",
+            answer: "R134a y refrigerante 134a se refieren al mismo gas (HFC-134a). Algunos profesionales lo llaman freón 134a o refrigerante R-134a - todos son el mismo producto."
+          }
+        }
       },
       // About page
       about: {
