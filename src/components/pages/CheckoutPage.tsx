@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
+import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
 import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
@@ -548,101 +549,30 @@ const CheckoutPage = () => {
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    {walletsLoading ? (
-                      <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                        <p className="text-sm text-gray-500 mt-2">Loading payment methods...</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        {/* Traditional Payment Methods */}
-                        <div className="space-y-4">
-                          <h4 className="font-medium text-gray-900">Traditional Payments</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div 
-                              className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                                formData.paymentMethod === 'credit_card' 
-                                  ? 'border-primary bg-primary/5' 
-                                  : 'border-gray-200 hover:border-gray-300'
-                              }`}
-                              onClick={() => handleInputChange('paymentMethod', 'credit_card')}
-                            >
-                              <div className="flex flex-col items-center space-y-2">
-                                <CreditCard className="h-8 w-8 text-blue-600" />
-                                <span className="font-medium">Credit Card</span>
-                                <span className="text-sm text-gray-500">Secure payment</span>
-                              </div>
-                            </div>
-
-                            <div 
-                              className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                                formData.paymentMethod === 'zelle' 
-                                  ? 'border-primary bg-primary/5' 
-                                  : 'border-gray-200 hover:border-gray-300'
-                              }`}
-                              onClick={() => handleInputChange('paymentMethod', 'zelle')}
-                            >
-                              <div className="flex flex-col items-center space-y-2">
-                                <Zap className="h-8 w-8 text-purple-600" />
-                                <span className="font-medium">Zelle</span>
-                                <span className="text-sm text-gray-500">Bank transfer</span>
-                              </div>
-                            </div>
-
-                            <div 
-                              className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                                formData.paymentMethod === 'cashapp' 
-                                  ? 'border-primary bg-primary/5' 
-                                  : 'border-gray-200 hover:border-gray-300'
-                              }`}
-                              onClick={() => handleInputChange('paymentMethod', 'cashapp')}
-                            >
-                              <div className="flex flex-col items-center space-y-2">
-                                <Smartphone className="h-8 w-8 text-green-600" />
-                                <span className="font-medium">CashApp</span>
-                                <span className="text-sm text-gray-500">Instant transfer</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Cryptocurrency Payment Methods */}
-                        {getCryptoWallets().length > 0 && (
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-gray-900">Cryptocurrency Payments</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {getCryptoWallets().map((wallet) => (
-                                <div 
-                                  key={wallet.id}
-                                  className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                                    formData.paymentMethod === `crypto_${wallet.payment_type}` 
-                                      ? 'border-primary bg-primary/5' 
-                                      : 'border-gray-200 hover:border-gray-300'
-                                  }`}
-                                  onClick={() => {
-                                    handleInputChange('paymentMethod', `crypto_${wallet.payment_type}`);
-                                    setSelectedCryptoWallet(wallet.id);
-                                  }}
-                                >
-                                  <div className="flex flex-col items-center space-y-2">
-                                    <Bitcoin className="h-8 w-8 text-orange-500" />
-                                    <span className="font-medium">{wallet.payment_type.toUpperCase()}</span>
-                                    {wallet.label && (
-                                      <span className="text-xs text-gray-500">{wallet.label}</span>
-                                    )}
-                                    <Badge variant="outline" className="text-xs">
-                                      <QrCode className="h-3 w-3 mr-1" />
-                                      QR Available
-                                    </Badge>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                   <CardContent className="space-y-6">
+                     {walletsLoading ? (
+                       <div className="text-center py-8">
+                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                         <p className="text-sm text-gray-500 mt-2">Loading payment methods...</p>
+                       </div>
+                     ) : (
+                       <PaymentMethodSelector
+                         selectedMethod={formData.paymentMethod}
+                         onMethodSelect={(method) => {
+                           handleInputChange('paymentMethod', method);
+                           if (method.includes('crypto_')) {
+                             const cryptoType = method.replace('crypto_', '');
+                             const wallet = getCryptoWallets().find(w => w.payment_type === cryptoType);
+                             if (wallet) setSelectedCryptoWallet(wallet.id);
+                           }
+                         }}
+                         availableMethods={[
+                           'credit_card',
+                           ...getCryptoWallets().map(w => w.payment_type),
+                           ...getTraditionalWallets().map(w => w.payment_type)
+                         ]}
+                       />
+                     )}
 
                     {/* Payment Method Details */}
                     <div className="border-t pt-6">
