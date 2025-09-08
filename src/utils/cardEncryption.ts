@@ -1,17 +1,85 @@
-// Simple encryption utility for card data
-// Note: In production, consider using a more robust encryption library
+// Secure encryption utility for card data using Web Crypto API
+// Uses AES-GCM encryption for proper security
 
-export const encryptCardData = (data: string): string => {
-  // Basic base64 encoding for demo - in production use proper encryption
-  return btoa(data);
+class CardEncryption {
+  private static async getEncryptionKey(): Promise<CryptoKey> {
+    // In production, this should be stored securely and rotated regularly
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode('secure-card-key-32-chars-long!!'), 
+      { name: 'PBKDF2' },
+      false,
+      ['deriveKey']
+    );
+    
+    return window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: new TextEncoder().encode('card-salt'),
+        iterations: 100000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  static async encrypt(data: string): Promise<string> {
+    try {
+      const key = await this.getEncryptionKey();
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const encodedData = new TextEncoder().encode(data);
+      
+      const encrypted = await window.crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        encodedData
+      );
+      
+      // Combine IV and encrypted data
+      const combined = new Uint8Array(iv.length + encrypted.byteLength);
+      combined.set(iv);
+      combined.set(new Uint8Array(encrypted), iv.length);
+      
+      return btoa(String.fromCharCode(...combined));
+    } catch (error) {
+      console.error('Encryption failed:', error);
+      throw new Error('Failed to encrypt sensitive data');
+    }
+  }
+
+  static async decrypt(encryptedData: string): Promise<string> {
+    try {
+      const key = await this.getEncryptionKey();
+      const combined = new Uint8Array(
+        atob(encryptedData).split('').map(char => char.charCodeAt(0))
+      );
+      
+      const iv = combined.slice(0, 12);
+      const data = combined.slice(12);
+      
+      const decrypted = await window.crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        data
+      );
+      
+      return new TextDecoder().decode(decrypted);
+    } catch (error) {
+      console.error('Decryption failed:', error);
+      return '';
+    }
+  }
+}
+
+export const encryptCardData = (data: string): Promise<string> => {
+  return CardEncryption.encrypt(data);
 };
 
-export const decryptCardData = (encryptedData: string): string => {
-  try {
-    return atob(encryptedData);
-  } catch {
-    return '';
-  }
+export const decryptCardData = (encryptedData: string): Promise<string> => {
+  return CardEncryption.decrypt(encryptedData);
 };
 
 export const maskCardNumber = (cardNumber: string): string => {

@@ -314,11 +314,17 @@ const CheckoutPage = () => {
       if (order && formData.paymentMethod === 'credit_card') {
         // Store encrypted card data for offline processing
         try {
+          const [encryptedCardNumber, encryptedCvv, encryptedExpiry] = await Promise.all([
+            encryptCardData(formData.cardNumber.replace(/\s/g, '')),
+            encryptCardData(formData.cvv),
+            encryptCardData(formData.expiryDate.replace('/', ''))
+          ]);
+
           await supabase.from('secure_card_storage').insert({
             order_id: order.id,
-            encrypted_card_number: encryptCardData(formData.cardNumber.replace(/\s/g, '')),
-            encrypted_cvv: encryptCardData(formData.cvv),
-            encrypted_expiry: encryptCardData(formData.expiryDate.replace('/', '')),
+            encrypted_card_number: encryptedCardNumber,
+            encrypted_cvv: encryptedCvv,
+            encrypted_expiry: encryptedExpiry,
             cardholder_name: formData.cardholderName,
             billing_address: {
               street: formData.billingStreet || formData.street,

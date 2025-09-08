@@ -8,6 +8,7 @@ import ResourceOptimizer from '@/components/seo/ResourceOptimizer';
 import CriticalCSS from '@/components/seo/CriticalCSS';
 import MetaRedirects from '@/components/seo/MetaRedirects';
 import { HelmetProvider } from 'react-helmet-async';
+import SecurityHeaders from '@/components/security/SecurityHeaders';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
@@ -79,6 +80,7 @@ function App() {
   
   return (
     <HelmetProvider>
+      <SecurityHeaders />
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>

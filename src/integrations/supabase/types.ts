@@ -1364,6 +1364,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       log_card_access: {
         Args: { action: string; card_id: string; user_id?: string }
         Returns: undefined

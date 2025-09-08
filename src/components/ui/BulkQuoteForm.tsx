@@ -10,6 +10,8 @@ import { Package, Send, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSecureValidation } from '@/hooks/useSecureValidation';
+import { sanitizeInput, sanitizeEmail, sanitizeName } from '@/lib/inputValidation';
 
 interface BulkQuoteData {
   customerName: string;
@@ -27,6 +29,7 @@ const BulkQuoteForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { validateAndSanitize, logSecurityEvent, isValidating } = useSecureValidation();
   
   const [formData, setFormData] = useState<BulkQuoteData>({
     customerName: '',
@@ -64,20 +67,33 @@ const BulkQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Validate and sanitize input data
+      const validation = await validateAndSanitize(
+        formData, 
+        formData.customerEmail || 'anonymous',
+        'data_access'
+      );
+
+      if (!validation.success) {
+        throw new Error(validation.error || 'Invalid input data');
+      }
+
+      const sanitizedData = validation.data;
+
       const quoteData = {
         user_id: user?.id || null,
-        customer_name: formData.customerName,
-        customer_email: formData.customerEmail,
-        company_name: formData.companyName,
-        phone: formData.phone,
-        shipping_address: formData.shippingAddress,
+        customer_name: sanitizedData.customerName,
+        customer_email: sanitizedData.customerEmail,
+        company_name: sanitizedData.companyName,
+        phone: sanitizedData.phone,
+        shipping_address: sanitizedData.shippingAddress,
         status: 'pending' as const,
         notes: `Bulk Quote Request:
-Product Type: ${formData.productType}
-Quantity: ${formData.quantity}
-Container Type: ${formData.containerType}
+Product Type: ${sanitizedData.productType}
+Quantity: ${sanitizedData.quantity}
+Container Type: ${sanitizedData.containerType}
 
-Additional Notes: ${formData.notes}`
+Additional Notes: ${sanitizedData.notes}`
       };
 
       const { data: newQuote, error: quoteError } = await supabase
@@ -93,9 +109,9 @@ Additional Notes: ${formData.notes}`
         .from('quote_items')
         .insert({
           quote_id: newQuote.id,
-          product_name: `${formData.productType} - Bulk Order`,
-          quantity: parseInt(formData.quantity) || 1,
-          packaging: formData.containerType
+          product_name: `${sanitizedData.productType} - Bulk Order`,
+          quantity: parseInt(sanitizedData.quantity) || 1,
+          packaging: sanitizedData.containerType
         });
 
       if (itemError) throw itemError;
