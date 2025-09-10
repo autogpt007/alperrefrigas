@@ -189,16 +189,42 @@ const OrderConfirmation = () => {
         <div className="text-center mb-8">
           {isQuote ? (
             <Quote className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+          ) : data.payment_method === 'credit_card' ? (
+            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+          ) : data.payment_method === 'bank_wire' ? (
+            <div className="text-6xl mb-4">🏦</div>
+          ) : data.payment_method?.startsWith('crypto_') ? (
+            <div className="text-6xl mb-4">⏳</div>
+          ) : data.payment_method === 'cashapp' ? (
+            <div className="text-6xl mb-4">💵</div>
+          ) : data.payment_method === 'zelle' ? (
+            <div className="text-6xl mb-4">📧</div>
           ) : (
             <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
           )}
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isQuote ? 'Quote Request Submitted!' : 'Order Confirmed!'}
+            {isQuote ? 'Quote Request Submitted!' 
+             : data.payment_method === 'credit_card' ? '✅ Order Confirmed!'
+             : data.payment_method === 'bank_wire' ? '🏦 Order Received – Awaiting Payment'
+             : data.payment_method?.startsWith('crypto_') ? '⏳ Order Pending Payment'
+             : data.payment_method === 'cashapp' ? '💵 Order Awaiting CashApp Payment'
+             : data.payment_method === 'zelle' ? '📧 Order Awaiting Zelle Payment'
+             : 'Order Confirmed!'}
           </h1>
           <p className="text-xl text-gray-600">
             {isQuote 
               ? "Thank you for your quote request. Our sales team will contact you within one business day with detailed pricing."
-              : "Thank you for your order. We've received your payment and will process your order shortly."
+              : data.payment_method === 'credit_card' 
+                ? "Thank you for your order. You will be contacted within 24h by one of our sales agents and once your payment is confirmed we will process your order immediately."
+              : data.payment_method === 'bank_wire'
+                ? "Thank you for your order. You will receive a proforma invoice with bank wire payment instructions. Your order will be processed as soon as we receive your payment confirmation receipt. Payment should be completed within 48h of order creation."
+              : data.payment_method?.startsWith('crypto_')
+                ? "Please send the exact crypto amount to the address provided. This screen will remain active for 30 minutes. After one network confirmation, your order will be fully confirmed. If payment is not received in time, you will automatically get a proforma invoice with wallet details."
+              : data.payment_method === 'cashapp'
+                ? "Thank you for your order. You will receive a proforma invoice with CashApp payment details. Once you complete the transfer and send us the confirmation screenshot, we'll process your order immediately."
+              : data.payment_method === 'zelle'
+                ? "Thank you for your order. You will receive a proforma invoice with Zelle account details. Please send your payment within 48h and email us your receipt to confirm."
+                : "Thank you for your order. We've received your payment and will process your order shortly."
             }
           </p>
         </div>
@@ -283,7 +309,7 @@ const OrderConfirmation = () => {
               )}
 
               {/* Payment Instructions for Digital Payments */}
-              {!isQuote && data.payment_method && (data.payment_method === 'cashapp' || data.payment_method === 'zelle') && (
+              {!isQuote && data.payment_method && (data.payment_method === 'cashapp' || data.payment_method === 'zelle' || data.payment_method?.startsWith('crypto_')) && (
                 <div className="pt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
                   <h4 className="font-semibold text-orange-900 mb-2">Payment Instructions</h4>
                   {data.payment_method === 'cashapp' && (
@@ -307,6 +333,25 @@ const OrderConfirmation = () => {
                       )}
                       <p className="font-medium">• Please confirm the payment request within 24 hours to secure your order</p>
                       <p>• Your order will be processed once payment is confirmed</p>
+                    </div>
+                  )}
+                  {data.payment_method?.startsWith('crypto_') && (
+                    <div className="text-orange-800 text-sm space-y-3">
+                      <div className="bg-white p-3 rounded border border-orange-300">
+                        <p className="font-semibold mb-2">📍 Payment Address:</p>
+                        <div className="bg-gray-100 p-2 rounded font-mono text-xs break-all">
+                          {data.crypto_wallet_address || 'Wallet address will be provided shortly'}
+                        </div>
+                        <p className="text-xs mt-2 text-orange-700">
+                          <strong>Amount:</strong> ${data.total_amount} USD equivalent in {data.payment_method.replace('crypto_', '').toUpperCase()}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <p>• Send the <strong>exact</strong> crypto amount to the address above</p>
+                        <p>• Payment must be completed within <strong>30 minutes</strong></p>
+                        <p>• Order will be confirmed after 1 network confirmation</p>
+                        <p className="font-medium">• If payment is not received in time, you will receive a proforma invoice by email</p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -392,35 +437,73 @@ const OrderConfirmation = () => {
             <CardTitle>What happens next?</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
+            {isQuote ? (
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-blue-600 font-bold">1</span>
-                </div>
-                <h4 className="font-medium mb-2">Order Processing</h4>
-                <p className="text-sm text-gray-600">
-                  We'll verify your EPA certification and prepare your order for shipment.
+                <p className="text-gray-600">
+                  You will receive an email confirmation shortly. Our team will finalize your quote and update your status.
                 </p>
               </div>
+            ) : data.payment_method === 'credit_card' ? (
               <div className="text-center">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-orange-600 font-bold">2</span>
-                </div>
-                <h4 className="font-medium mb-2">Shipment</h4>
-                <p className="text-sm text-gray-600">
-                  Your order will be carefully packaged and shipped via our certified carrier network.
+                <p className="text-gray-600">
+                  You will receive an email confirmation shortly. Our team will finalize your payment and update your shipping status.
                 </p>
               </div>
+            ) : data.payment_method === 'bank_wire' ? (
               <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-green-600 font-bold">3</span>
-                </div>
-                <h4 className="font-medium mb-2">Delivery</h4>
-                <p className="text-sm text-gray-600">
-                  Receive your refrigerants with all necessary documentation and safety information.
+                <p className="text-gray-600">
+                  Check your inbox for the proforma invoice. Once you send us the transfer receipt, your order status will update to Confirmed.
                 </p>
               </div>
-            </div>
+            ) : data.payment_method?.startsWith('crypto_') ? (
+              <div className="text-center">
+                <p className="text-gray-600">
+                  Complete payment within 30 minutes to confirm. Otherwise, expect a follow-up invoice by email.
+                </p>
+              </div>
+            ) : data.payment_method === 'cashapp' ? (
+              <div className="text-center">
+                <p className="text-gray-600">
+                  Open CashApp, complete the transfer, and reply to the invoice email with your payment proof.
+                </p>
+              </div>
+            ) : data.payment_method === 'zelle' ? (
+              <div className="text-center">
+                <p className="text-gray-600">
+                  Check your inbox for the Zelle invoice. Reply with your payment proof so we can confirm your order quickly.
+                </p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-blue-600 font-bold">1</span>
+                  </div>
+                  <h4 className="font-medium mb-2">Order Processing</h4>
+                  <p className="text-sm text-gray-600">
+                    We'll verify your EPA certification and prepare your order for shipment.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-orange-600 font-bold">2</span>
+                  </div>
+                  <h4 className="font-medium mb-2">Shipment</h4>
+                  <p className="text-sm text-gray-600">
+                    Your order will be carefully packaged and shipped via our certified carrier network.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-green-600 font-bold">3</span>
+                  </div>
+                  <h4 className="font-medium mb-2">Delivery</h4>
+                  <p className="text-sm text-gray-600">
+                    Receive your refrigerants with all necessary documentation and safety information.
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

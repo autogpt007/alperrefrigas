@@ -49,7 +49,7 @@ const CheckoutPage = () => {
     state: '',
     zipCode: '',
     country: 'United States',
-    paymentMethod: 'credit_card', // Allow credit card for both users and guests
+    paymentMethod: '', // No payment method preselected
     notes: '',
     // Credit card details for offline processing
     cardNumber: '',
@@ -221,6 +221,16 @@ const CheckoutPage = () => {
   };
 
   const validateForm = () => {
+    // Check payment method is selected
+    if (!formData.paymentMethod || formData.paymentMethod.trim() === '') {
+      toast({
+        title: "Payment Method Required",
+        description: "Please select a payment method to continue",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'state', 'zipCode'];
     const missing = required.filter(field => !formData[field as keyof typeof formData]);
     
