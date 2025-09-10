@@ -247,22 +247,36 @@ const CheckoutPage = () => {
       }
     }
 
-    if (formData.paymentMethod === 'zelle' && !formData.zelleTag && !formData.zellePhone) {
-      toast({
-        title: "Missing Zelle Information",
-        description: "Please provide either a Zelle email or phone number",
-        variant: "destructive",
-      });
-      return false;
+    if (formData.paymentMethod === 'zelle') {
+      if (!formData.zelleTag || !formData.zelleTag.trim()) {
+        toast({
+          title: "Missing Zelle Information",
+          description: "Please provide your Zelle email address",
+          variant: "destructive",
+        });
+        return false;
+      }
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.zelleTag)) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address for Zelle",
+          variant: "destructive",
+        });
+        return false;
+      }
     }
 
-    if (formData.paymentMethod === 'cashapp' && !formData.cashappTag) {
-      toast({
-        title: "Missing CashApp Information",
-        description: "Please provide your CashApp tag",
-        variant: "destructive",
-      });
-      return false;
+    if (formData.paymentMethod === 'cashapp') {
+      if (!formData.cashappTag || !formData.cashappTag.trim()) {
+        toast({
+          title: "Missing CashApp Information",
+          description: "Please provide your CashApp $cashtag",
+          variant: "destructive",
+        });
+        return false;
+      }
     }
 
     if (formData.paymentMethod.startsWith('crypto_') && !selectedCryptoWallet) {
@@ -728,26 +742,30 @@ const CheckoutPage = () => {
                           )}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="zelle-email">Your Zelle Email</Label>
+                              <Label htmlFor="zelle-email">Your Zelle Email *</Label>
                               <Input
                                 id="zelle-email"
                                 type="email"
-                                placeholder="Enter your Zelle email"
+                                placeholder="email@example.com"
                                 value={formData.zelleTag}
                                 onChange={(e) => handleInputChange('zelleTag', e.target.value)}
+                                required
                               />
                             </div>
                             <div>
-                              <Label htmlFor="zelle-phone">Your Zelle Phone (Alternative)</Label>
+                              <Label htmlFor="zelle-phone">Your Zelle Phone (Optional)</Label>
                               <Input
                                 id="zelle-phone"
                                 type="tel"
-                                placeholder="Enter your phone number"
+                                placeholder="(555) 123-4567"
                                 value={formData.zellePhone}
                                 onChange={(e) => handleInputChange('zellePhone', e.target.value)}
                               />
                             </div>
                           </div>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Provide your Zelle-registered email (required). You'll receive a proforma invoice and payment request within 24 hours.
+                          </p>
                           <p className="text-sm text-gray-500">
                             We'll contact you with payment instructions. Provide either email or phone for Zelle.
                           </p>
@@ -769,16 +787,16 @@ const CheckoutPage = () => {
                             </div>
                           )}
                           <div>
-                            <Label htmlFor="cashapp-tag">Your CashApp Tag</Label>
+                            <Label htmlFor="cashapp-tag">Your CashApp Tag *</Label>
                             <Input
                               id="cashapp-tag"
-                              placeholder="$your-cashtag"
+                              placeholder="$your-cashtag (e.g., $username)"
                               value={formData.cashappTag}
                               onChange={(e) => handleInputChange('cashappTag', e.target.value)}
                               required
                             />
                             <p className="text-sm text-gray-500 mt-1">
-                              We'll contact you with payment instructions
+                              Enter your CashApp $cashtag. You'll receive a proforma invoice and payment request within 24 hours.
                             </p>
                           </div>
                         </div>

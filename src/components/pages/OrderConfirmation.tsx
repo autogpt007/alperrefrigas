@@ -281,6 +281,36 @@ const OrderConfirmation = () => {
                   </p>
                 </div>
               )}
+
+              {/* Payment Instructions for Digital Payments */}
+              {!isQuote && data.payment_method && (data.payment_method === 'cashapp' || data.payment_method === 'zelle') && (
+                <div className="pt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+                  <h4 className="font-semibold text-orange-900 mb-2">Payment Instructions</h4>
+                  {data.payment_method === 'cashapp' && (
+                    <div className="text-orange-800 text-sm space-y-2">
+                      <p>• You will receive a proforma invoice with our CashApp details via email</p>
+                      {data.cashapp_tag && (
+                        <p>• A payment request will be sent to your CashApp tag: <span className="font-mono font-medium">{data.cashapp_tag}</span></p>
+                      )}
+                      <p className="font-medium">• Please confirm the payment request within 24 hours to secure your order</p>
+                      <p>• Your order will be processed once payment is confirmed</p>
+                    </div>
+                  )}
+                  {data.payment_method === 'zelle' && (
+                    <div className="text-orange-800 text-sm space-y-2">
+                      <p>• You will receive a proforma invoice with our Zelle details via email</p>
+                      {data.zelle_tag && (
+                        <p>• Payment request will be sent to: <span className="font-mono font-medium">{data.zelle_tag}</span></p>
+                      )}
+                      {data.zelle_phone && (
+                        <p>• Backup contact: <span className="font-mono font-medium">{data.zelle_phone}</span></p>
+                      )}
+                      <p className="font-medium">• Please confirm the payment request within 24 hours to secure your order</p>
+                      <p>• Your order will be processed once payment is confirmed</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 

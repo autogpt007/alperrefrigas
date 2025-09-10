@@ -144,19 +144,25 @@ const CartPage = () => {
                    <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
                  </div>
                 
-                 <div className="space-y-3 pt-4">
-                   <Button 
-                     size="lg" 
-                     className="w-full bg-orange-500 hover:bg-orange-600"
-                     onClick={handleProceedToCheckout}
-                   >
-                     Proceed to Checkout
-                   </Button>
-                  <Link to="/checkout?guest=true" className="block">
-                    <Button variant="outline" size="lg" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
-                      Checkout as Guest
+                <div className="space-y-3 pt-4">
+                  {user ? (
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      onClick={handleProceedToCheckout}
+                    >
+                      Proceed to Checkout
                     </Button>
-                  </Link>
+                  ) : (
+                    <Link to="/checkout?guest=true" className="block">
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-orange-500 hover:bg-orange-600"
+                      >
+                        Checkout as Guest
+                      </Button>
+                    </Link>
+                  )}
                   <Link to="/products" className="block">
                     <Button variant="outline" size="lg" className="w-full">
                       Continue Shopping
