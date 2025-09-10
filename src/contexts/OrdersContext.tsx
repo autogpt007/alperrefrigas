@@ -130,42 +130,60 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      // Get current session to understand auth state precisely
+      // ENHANCED SESSION VALIDATION
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
-        console.error('Session error:', sessionError);
-        throw new Error('Authentication session error');
+        console.error('[ORDER_ERROR] Session error:', sessionError);
+        throw new Error(`Authentication session error: ${sessionError.message}`);
       }
 
-      const isAuthenticated = !!session?.user?.id;
+      // Re-fetch session if initial fetch returned null but we expect authentication
+      if (!session && !isGuest) {
+        console.warn('[ORDER_WARNING] No session found for non-guest order, attempting refresh...');
+        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.getSession();
+        
+        if (refreshError || !refreshedSession) {
+          console.error('[ORDER_ERROR] Session refresh failed:', refreshError);
+          throw new Error('Authentication required. Please log in and try again.');
+        }
+        
+        console.info('[ORDER_SUCCESS] Session refreshed successfully');
+      }
+
+      const finalSession = session;
+      const isAuthenticated = !!finalSession?.user?.id;
       const isActualGuest = isGuest || !isAuthenticated;
       
       // CRITICAL: Ensure user_id is explicitly null for guests, uuid for authenticated users
-      const finalUserId = isActualGuest ? null : session!.user!.id;
+      const finalUserId = isActualGuest ? null : finalSession?.user?.id || null;
       
-      // Comprehensive logging for debugging
-      console.info('[ORDER_CREATE]', {
-        timestamp: new Date().toISOString(),
-        isGuest: isActualGuest,
-        isAuthenticated,
-        auth_uid: session?.user?.id ?? 'NULL',
-        user_id_to_insert: finalUserId,
-        customer_email: orderData.customer_email,
-        total_amount: orderData.total_amount,
-        payment_method: orderData.payment_method
-      });
-      
-      // Validate that we have proper user_id handling
+      // Enhanced validation with specific error messages
       if (!isActualGuest && !finalUserId) {
-        throw new Error('Invalid user state: authenticated but no user ID');
+        console.error('[ORDER_ERROR] Invalid user state: authenticated but no user ID');
+        throw new Error('Authentication error: User session is invalid. Please log out and log back in.');
       }
       
       if (isActualGuest && finalUserId !== null) {
-        throw new Error('Invalid guest state: guest but user ID provided');
+        console.error('[ORDER_ERROR] Invalid guest state: guest but user ID provided');
+        throw new Error('Checkout error: Mixed guest/authenticated state detected.');
       }
       
-        const { data: newOrder, error: orderError } = await supabase
+      // COMPREHENSIVE PRE-ORDER LOGGING
+      console.info('[ORDER_CREATE_START]', {
+        timestamp: new Date().toISOString(),
+        isGuest: isActualGuest,
+        isAuthenticated,
+        sessionExists: !!finalSession,
+        userId: finalUserId || 'GUEST',
+        customerEmail: orderData.customer_email,
+        totalAmount: orderData.total_amount,
+        paymentMethod: orderData.payment_method,
+        itemCount: orderData.items?.length || 0
+      });
+
+      // TRANSACTION-SAFE ORDER CREATION
+      const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: finalUserId, // null for guests, uuid for authenticated users
@@ -185,16 +203,40 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
         .select()
         .single();
 
-      if (orderError) throw orderError;
+      if (orderError) {
+        console.error('[ORDER_ERROR] Order creation failed:', orderError);
+        
+        // Specific error handling for common RLS issues
+        if (orderError.message?.includes('row-level security')) {
+          throw new Error('Permission denied: Unable to create order. Please refresh the page and try again.');
+        }
+        
+        if (orderError.message?.includes('violates check constraint')) {
+          throw new Error('Invalid order data: Please check all required fields and try again.');
+        }
+        
+        throw new Error(`Order creation failed: ${orderError.message}`);
+      }
 
-      // Create order items with validation
+      if (!newOrder) {
+        console.error('[ORDER_ERROR] Order created but no data returned');
+        throw new Error('Order creation failed: No order data returned');
+      }
+
+      console.info('[ORDER_SUCCESS] Order created successfully:', {
+        orderId: newOrder.id,
+        orderNumber: newOrder.order_number,
+        userId: newOrder.user_id || 'GUEST'
+      });
+
+      // ENHANCED ORDER ITEMS CREATION WITH VALIDATION
       if (orderData.items && orderData.items.length > 0) {
         const orderItems = orderData.items.map(item => {
           // Validate product_id is a proper UUID
           const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item.product_id || '');
           
           if (!isValidUUID) {
-            console.warn(`Invalid product_id format: ${item.product_id}, using null`);
+            console.warn(`[ORDER_WARNING] Invalid product_id format: ${item.product_id}, using null`);
           }
           
           return {
@@ -209,14 +251,35 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
           };
         });
 
+        console.info('[ORDER_ITEMS_CREATE]', {
+          orderId: newOrder.id,
+          itemCount: orderItems.length,
+          items: orderItems.map(item => ({ 
+            productName: item.product_name, 
+            quantity: item.quantity,
+            price: item.price 
+          }))
+        });
+
         const { error: itemsError } = await supabase
           .from('order_items')
           .insert(orderItems);
 
         if (itemsError) {
-          console.error('Order items insertion error:', itemsError);
-          throw itemsError;
+          console.error('[ORDER_ERROR] Order items creation failed:', itemsError);
+          
+          // Try to clean up the order if items failed
+          try {
+            await supabase.from('orders').delete().eq('id', newOrder.id);
+            console.info('[ORDER_CLEANUP] Successfully cleaned up failed order');
+          } catch (cleanupError) {
+            console.error('[ORDER_ERROR] Failed to cleanup order after items error:', cleanupError);
+          }
+          
+          throw new Error(`Order items creation failed: ${itemsError.message}`);
         }
+
+        console.info('[ORDER_ITEMS_SUCCESS] Order items created successfully');
       }
 
       // Fetch the complete order with items

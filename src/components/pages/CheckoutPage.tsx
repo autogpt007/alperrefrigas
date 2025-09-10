@@ -302,6 +302,32 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
+      // ENHANCED SESSION VALIDATION BEFORE ORDER CREATION
+      console.info('[CHECKOUT_START]', {
+        timestamp: new Date().toISOString(),
+        isGuest,
+        isUserAuthenticated: !!user,
+        itemCount: items.length,
+        totalAmount: finalTotal
+      });
+
+      // Double-check authentication state if not guest
+      if (!isGuest && !user) {
+        console.warn('[CHECKOUT_WARNING] Not guest but no user found, checking session...');
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session?.user) {
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to complete your order.",
+            variant: "destructive",
+          });
+          navigate('/auth');
+          return;
+        }
+        
+        console.info('[CHECKOUT_SESSION] Session found, proceeding with order');
+      }
       // CRITICAL: Remove user_id from orderData - let OrdersContext handle it
       const orderData = {
         customer_name: formData.customerName,

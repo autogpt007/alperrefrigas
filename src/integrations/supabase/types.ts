@@ -1292,6 +1292,10 @@ export type Database = {
         Args: { base_price: number; package_type: string }
         Returns: number
       }
+      can_access_order: {
+        Args: { order_user_id: string }
+        Returns: boolean
+      }
       generate_order_number: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1305,6 +1309,10 @@ export type Database = {
         Returns: string
       }
       is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
