@@ -9,6 +9,7 @@ import { useOrders } from '../../contexts/OrdersContext';
 import { useQuotes } from '../../contexts/QuotesContext';
 import { supabase } from '@/integrations/supabase/client';
 import SEOComponent from '../seo/SEOComponent';
+import { CryptoPaymentSection } from '../ui/CryptoPaymentSection';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -335,25 +336,6 @@ const OrderConfirmation = () => {
                       <p>• Your order will be processed once payment is confirmed</p>
                     </div>
                   )}
-                  {data.payment_method?.startsWith('crypto_') && (
-                    <div className="text-orange-800 text-sm space-y-3">
-                      <div className="bg-white p-3 rounded border border-orange-300">
-                        <p className="font-semibold mb-2">📍 Payment Address:</p>
-                        <div className="bg-gray-100 p-2 rounded font-mono text-xs break-all">
-                          {data.crypto_wallet_address || 'Wallet address will be provided shortly'}
-                        </div>
-                        <p className="text-xs mt-2 text-orange-700">
-                          <strong>Amount:</strong> ${data.total_amount} USD equivalent in {data.payment_method.replace('crypto_', '').toUpperCase()}
-                        </p>
-                      </div>
-                      <div className="space-y-1">
-                        <p>• Send the <strong>exact</strong> crypto amount to the address above</p>
-                        <p>• Payment must be completed within <strong>30 minutes</strong></p>
-                        <p>• Order will be confirmed after 1 network confirmation</p>
-                        <p className="font-medium">• If payment is not received in time, you will receive a proforma invoice by email</p>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </CardContent>
@@ -456,11 +438,8 @@ const OrderConfirmation = () => {
                 </p>
               </div>
             ) : data.payment_method?.startsWith('crypto_') ? (
-              <div className="text-center">
-                <p className="text-gray-600">
-                  Complete payment within 30 minutes to confirm. Otherwise, expect a follow-up invoice by email.
-                </p>
-              </div>
+              <CryptoPaymentSection order={data} />
+            
             ) : data.payment_method === 'cashapp' ? (
               <div className="text-center">
                 <p className="text-gray-600">

@@ -833,66 +833,14 @@ const CheckoutPage = () => {
                         </div>
                       )}
 
-                      {/* Cryptocurrency Payment Details */}
-                      {formData.paymentMethod.startsWith('crypto_') && selectedCryptoWallet && (
-                        <div className="space-y-4">
-                          {(() => {
-                            const wallet = wallets.find(w => w.id === selectedCryptoWallet);
-                            if (!wallet) return null;
-                            
-                            return (
-                              <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                                <h4 className="font-medium text-orange-900 mb-4 flex items-center">
-                                  <Bitcoin className="h-5 w-5 mr-2" />
-                                  {wallet.payment_type.toUpperCase()} Payment Instructions
-                                </h4>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <div className="space-y-3">
-                                    <div>
-                                      <Label className="text-sm font-medium text-orange-800">Wallet Address:</Label>
-                                      <div className="mt-1 p-3 bg-white rounded border border-orange-300">
-                                        <code className="text-sm break-all font-mono text-gray-900">
-                                          {wallet.wallet_address}
-                                        </code>
-                                      </div>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mt-2"
-                                        onClick={() => navigator.clipboard.writeText(wallet.wallet_address)}
-                                      >
-                                        Copy Address
-                                      </Button>
-                                    </div>
-                                    
-                                    {wallet.label && (
-                                      <p className="text-sm text-orange-700">{wallet.label}</p>
-                                    )}
-                                  </div>
-                                  
-                                  {wallet.qr_code_url && (
-                                    <div className="flex flex-col items-center">
-                                      <Label className="text-sm font-medium text-orange-800 mb-2">Scan QR Code:</Label>
-                                      <img
-                                        src={wallet.qr_code_url}
-                                        alt={`${wallet.payment_type.toUpperCase()} QR Code`}
-                                        className="w-32 h-32 border border-orange-300 rounded"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                                
-                                <Alert className="mt-4 border-orange-300 bg-orange-50">
-                                  <AlertCircle className="h-4 w-4 text-orange-600" />
-                                  <AlertDescription className="text-orange-800">
-                                    Please send the exact order amount to the address above. After payment, our team will verify the transaction and process your order.
-                                  </AlertDescription>
-                                </Alert>
-                              </div>
-                            );
-                          })()}
-                        </div>
+                      {/* Cryptocurrency Payment Information */}
+                      {formData.paymentMethod.startsWith('crypto_') && (
+                        <Alert className="border-orange-300 bg-orange-50">
+                          <Bitcoin className="h-4 w-4 text-orange-600" />
+                          <AlertDescription className="text-orange-800">
+                            Payment details will be provided after order confirmation. You'll have 30 minutes to complete the cryptocurrency payment.
+                          </AlertDescription>
+                        </Alert>
                       )}
                     </div>
                   </CardContent>
