@@ -19,7 +19,7 @@ import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Sca
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
-import { encryptCardData, formatCardNumber, formatExpiryDate } from '@/utils/secureCardEncryption';
+// Removed secure card encryption import
 import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -307,15 +307,20 @@ const CheckoutPage = () => {
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
         total_amount: finalTotal,
-        items: items.map(item => ({
-          product_id: item.id,
-          product_name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          packaging: item.packaging,
-          sku: item.sku,
-          epa_approved: item.epaApproved
-        })),
+        items: items.map(item => {
+          // Extract clean product ID - remove packaging suffix if present
+          const cleanProductId = item.id.includes('-') ? item.id.split('-')[0] : item.id;
+          
+          return {
+            product_id: cleanProductId,
+            product_name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            packaging: item.packaging,
+            sku: item.sku,
+            epa_approved: item.epaApproved
+          };
+        }),
         status: 'pending' as const,
         shipping_address: {
           street: formData.street,
@@ -371,31 +376,7 @@ const CheckoutPage = () => {
         customerEmail: formData.customerEmail
       });
 
-      // Handle encrypted credit card storage for authenticated users only
-      if (formData.paymentMethod === 'credit_card' && user && !isGuest) {
-        try {
-          const cardDataToEncrypt = `${formData.cardNumber}|${formData.cvv}|${formData.expiryDate}|${formData.cardholderName}`;
-          const encryptedCardData = await encryptCardData(cardDataToEncrypt);
-
-          await supabase.from('secure_card_storage').insert({
-            order_id: order.id,
-            encrypted_card_number: formData.cardNumber.slice(-4),
-            encrypted_cvv: 'XXX',
-            encrypted_expiry: formData.expiryDate,
-            cardholder_name: formData.cardholderName,
-            billing_address: {
-              street: formData.billingStreet,
-              city: formData.billingCity,
-              state: formData.billingState,
-              zipCode: formData.billingZipCode,
-              country: formData.billingCountry
-            }
-          });
-        } catch (cardError) {
-          console.error('Error storing encrypted card data:', cardError);
-          // Don't fail the order creation, just log the error
-        }
-      }
+      // Secure card storage removed - payment details stored in order payment_details field
 
       // Update coupon usage
       if (appliedCoupon) {
@@ -619,7 +600,7 @@ const CheckoutPage = () => {
                                 id="cardNumber"
                                 type="text"
                                 placeholder="1234 5678 9012 3456"
-                                value={formatCardNumber(formData.cardNumber)}
+                                value={formData.cardNumber}
                                 onChange={(e) => handleInputChange('cardNumber', e.target.value.replace(/\s/g, ''))}
                                 maxLength={19}
                                 required
@@ -631,7 +612,7 @@ const CheckoutPage = () => {
                                 id="expiryDate"
                                 type="text"
                                 placeholder="MM/YY"
-                                value={formatExpiryDate(formData.expiryDate)}
+                                value={formData.expiryDate}
                                 onChange={(e) => handleInputChange('expiryDate', e.target.value.replace(/\D/g, ''))}
                                 maxLength={5}
                                 required

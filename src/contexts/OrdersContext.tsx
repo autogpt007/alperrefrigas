@@ -30,6 +30,8 @@ export interface Order {
   notes?: string;
   payment_method?: string;
   payment_details?: any;
+  cashapp_tag?: string;
+  zelle_tag?: string;
   created_at: string;
   updated_at: string;
   items: OrderItem[];
@@ -163,7 +165,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
         throw new Error('Invalid guest state: guest but user ID provided');
       }
       
-      const { data: newOrder, error: orderError } = await supabase
+        const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: finalUserId, // null for guests, uuid for authenticated users
@@ -171,36 +173,50 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
           customer_email: orderData.customer_email,
           status: orderData.status,
           total_amount: orderData.total_amount,
-          shipping_cost: orderData.shipping_cost,
-          tax_amount: orderData.tax_amount,
+          shipping_cost: orderData.shipping_cost || 0,
+          tax_amount: orderData.tax_amount || 0,
           shipping_address: orderData.shipping_address,
           notes: orderData.notes,
           payment_method: orderData.payment_method || 'credit_card',
-          payment_details: orderData.payment_details
+          payment_details: orderData.payment_details,
+          cashapp_tag: orderData.cashapp_tag,
+          zelle_tag: orderData.zelle_tag
         })
         .select()
         .single();
 
       if (orderError) throw orderError;
 
-      // Create order items
+      // Create order items with validation
       if (orderData.items && orderData.items.length > 0) {
-        const orderItems = orderData.items.map(item => ({
-          order_id: newOrder.id,
-          product_id: item.product_id,
-          product_name: item.product_name,
-          quantity: item.quantity,
-          price: item.price,
-          sku: item.sku,
-          packaging: item.packaging,
-          epa_approved: item.epa_approved
-        }));
+        const orderItems = orderData.items.map(item => {
+          // Validate product_id is a proper UUID
+          const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item.product_id || '');
+          
+          if (!isValidUUID) {
+            console.warn(`Invalid product_id format: ${item.product_id}, using null`);
+          }
+          
+          return {
+            order_id: newOrder.id,
+            product_id: isValidUUID ? item.product_id : null,
+            product_name: item.product_name,
+            quantity: item.quantity,
+            price: item.price,
+            sku: item.sku || null,
+            packaging: item.packaging || null,
+            epa_approved: item.epa_approved || false
+          };
+        });
 
         const { error: itemsError } = await supabase
           .from('order_items')
           .insert(orderItems);
 
-        if (itemsError) throw itemsError;
+        if (itemsError) {
+          console.error('Order items insertion error:', itemsError);
+          throw itemsError;
+        }
       }
 
       // Fetch the complete order with items

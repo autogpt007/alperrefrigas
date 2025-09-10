@@ -12,7 +12,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import SecureCardViewer from './SecureCardViewer';
+// Removed SecureCardViewer import
 
 interface Order {
   id: string;
@@ -461,9 +461,21 @@ const OrderManagement = () => {
                     </div>
                   </div>
 
-                  {/* Secure Card Data Viewer for Credit Card Orders */}
-                  {selectedOrder.payment_method === 'credit_card' && (
-                    <SecureCardViewer orderId={selectedOrder.id} />
+                  {/* Credit Card Payment Information */}
+                  {selectedOrder.payment_method === 'credit_card' && selectedOrder.payment_details && (
+                    <div className="bg-slate-700/50 p-4 rounded-lg">
+                      <h4 className="text-white font-medium mb-2">Payment Information</h4>
+                      <div className="text-sm space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Card ending in:</span>
+                          <span className="text-white">****{selectedOrder.payment_details.last_four}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Expiry:</span>
+                          <span className="text-white">{selectedOrder.payment_details.expiry_date}</span>
+                        </div>
+                      </div>
+                    </div>
                   )}
 
                   <div>

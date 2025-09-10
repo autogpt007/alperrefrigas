@@ -1057,62 +1057,6 @@ export type Database = {
         }
         Relationships: []
       }
-      secure_card_storage: {
-        Row: {
-          access_log: Json | null
-          billing_address: Json
-          cardholder_name: string
-          created_at: string
-          encrypted_card_number: string
-          encrypted_cvv: string
-          encrypted_expiry: string
-          expires_at: string
-          id: string
-          order_id: string
-          processed: boolean
-          processed_at: string | null
-          processed_by: string | null
-        }
-        Insert: {
-          access_log?: Json | null
-          billing_address: Json
-          cardholder_name: string
-          created_at?: string
-          encrypted_card_number: string
-          encrypted_cvv: string
-          encrypted_expiry: string
-          expires_at?: string
-          id?: string
-          order_id: string
-          processed?: boolean
-          processed_at?: string | null
-          processed_by?: string | null
-        }
-        Update: {
-          access_log?: Json | null
-          billing_address?: Json
-          cardholder_name?: string
-          created_at?: string
-          encrypted_card_number?: string
-          encrypted_cvv?: string
-          encrypted_expiry?: string
-          expires_at?: string
-          id?: string
-          order_id?: string
-          processed?: boolean
-          processed_at?: string | null
-          processed_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "secure_card_storage_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       security_audit: {
         Row: {
           action: string
@@ -1348,10 +1292,6 @@ export type Database = {
         Args: { base_price: number; package_type: string }
         Returns: number
       }
-      cleanup_expired_cards: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
       generate_order_number: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1367,10 +1307,6 @@ export type Database = {
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
-      }
-      log_card_access: {
-        Args: { action: string; card_id: string; user_id?: string }
-        Returns: undefined
       }
     }
     Enums: {
