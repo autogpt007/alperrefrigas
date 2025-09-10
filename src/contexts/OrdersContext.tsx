@@ -40,7 +40,7 @@ interface OrdersContextType {
   loading: boolean;
   error: string | null;
   fetchOrders: () => Promise<void>;
-  createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>, isGuest?: boolean) => Promise<Order | null>;
+  createOrder: (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'user_id'>, isGuest?: boolean) => Promise<Order | null>;
   updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>;
 }
 
@@ -123,46 +123,50 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at'>, isGuest?: boolean): Promise<Order | null> => {
-    // Debug logging
-    console.log('createOrder called with:', { 
-      user: !!user, 
-      userId: user?.id,
-      isGuest, 
-      orderData: {
-        ...orderData,
-        user_id: user?.id || null
-      }
-    });
-    
-    // Allow both authenticated users and guest checkout
-    if (!user && !isGuest) {
-      toast({
-        title: "Authentication required", 
-        description: "Please log in or continue as guest to place an order",
-        variant: "destructive"
-      });
-      return null;
-    }
-
+  const createOrder = async (orderData: Omit<Order, 'id' | 'order_number' | 'created_at' | 'updated_at' | 'user_id'>, isGuest?: boolean): Promise<Order | null> => {
     setLoading(true);
     setError(null);
 
     try {
-      // For guest orders, ensure user_id is explicitly null
-      const finalUserId = isGuest ? null : (user?.id || null);
+      // Get current session to understand auth state precisely
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      console.log('About to insert order with:', { 
-        finalUserId, 
-        isGuest, 
-        userExists: !!user,
-        authUid: 'checking...'
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw new Error('Authentication session error');
+      }
+
+      const isAuthenticated = !!session?.user?.id;
+      const isActualGuest = isGuest || !isAuthenticated;
+      
+      // CRITICAL: Ensure user_id is explicitly null for guests, uuid for authenticated users
+      const finalUserId = isActualGuest ? null : session!.user!.id;
+      
+      // Comprehensive logging for debugging
+      console.info('[ORDER_CREATE]', {
+        timestamp: new Date().toISOString(),
+        isGuest: isActualGuest,
+        isAuthenticated,
+        auth_uid: session?.user?.id ?? 'NULL',
+        user_id_to_insert: finalUserId,
+        customer_email: orderData.customer_email,
+        total_amount: orderData.total_amount,
+        payment_method: orderData.payment_method
       });
+      
+      // Validate that we have proper user_id handling
+      if (!isActualGuest && !finalUserId) {
+        throw new Error('Invalid user state: authenticated but no user ID');
+      }
+      
+      if (isActualGuest && finalUserId !== null) {
+        throw new Error('Invalid guest state: guest but user ID provided');
+      }
       
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
-          user_id: finalUserId,
+          user_id: finalUserId, // null for guests, uuid for authenticated users
           customer_name: orderData.customer_name,
           customer_email: orderData.customer_email,
           status: orderData.status,

@@ -302,6 +302,7 @@ const CheckoutPage = () => {
     setIsProcessing(true);
 
     try {
+      // CRITICAL: Remove user_id from orderData - let OrdersContext handle it
       const orderData = {
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
@@ -330,7 +331,7 @@ const CheckoutPage = () => {
         tax_amount: 0,
         zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
         cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
-        user_id: user?.id || null,
+        // user_id intentionally removed - OrdersContext will handle it based on auth state
         payment_details: formData.paymentMethod === 'credit_card' ? {
           last_four: formData.cardNumber.slice(-4),
           expiry_date: formData.expiryDate,
@@ -347,8 +348,29 @@ const CheckoutPage = () => {
         } : null,
       };
 
+      // Log checkout attempt for debugging
+      console.info('[CHECKOUT_ATTEMPT]', {
+        timestamp: new Date().toISOString(),
+        isGuest,
+        userExists: !!user,
+        customerEmail: formData.customerEmail,
+        paymentMethod: formData.paymentMethod,
+        totalAmount: finalTotal
+      });
+
       const order = await createOrder(orderData, isGuest);
       
+      // Ensure order was created successfully before proceeding
+      if (!order) {
+        throw new Error('Order creation failed - no order returned');
+      }
+
+      console.info('[ORDER_SUCCESS]', {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        customerEmail: formData.customerEmail
+      });
+
       // Handle encrypted credit card storage for authenticated users only
       if (formData.paymentMethod === 'credit_card' && user && !isGuest) {
         try {
