@@ -15,12 +15,100 @@ import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
+import { useCart } from '@/contexts/CartContext';
+import { useOrders } from '@/contexts/OrdersContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const HomePage = () => {
   const { t } = useTranslation();
   const { products, loading } = useProducts();
   const [homepageProducts, setHomepageProducts] = useState<Array<{name: string, href: string}>>([]);
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const { addItem, clearCart, items } = useCart();
+  const { createOrder, loading: orderLoading } = useOrders();
+  const { user } = useAuth();
+
+  // Test function to create sample orders
+  const createTestOrders = async () => {
+    try {
+      // Add test products to cart
+      const testProducts = [
+        {
+          id: 'afdbacdc-c03d-4562-8ab7-ace51a7d7272',
+          name: 'R-134a Refrigerant',
+          price: 95.00,
+          image: 'https://ohfkcxwwvksrjymkgloo.supabase.co/storage/v1/object/public/product-images/uploads/1751744423177-wmt0nwzrer.png',
+          sku: 'RF-134A',
+          epaApproved: true,
+          packaging: '1 Pallet'
+        },
+        {
+          id: '6476ad09-2184-42ff-918d-298e535e05fe',
+          name: 'R-410A Refrigerant Gas',
+          price: 75.00,
+          image: 'https://ohfkcxwwvksrjymkgloo.supabase.co/storage/v1/object/public/product-images/uploads/1752423154354-3ext88qtfcf.png',
+          sku: 'R-410A',
+          epaApproved: true,
+          packaging: '1 Pallet'
+        }
+      ];
+
+      // Clear cart first
+      clearCart();
+      
+      // Add products to cart
+      testProducts.forEach(product => addItem(product));
+      
+      // Wait a moment for cart to update
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Create test order
+      const orderData = {
+        customer_name: user ? `${user.email} (Authenticated)` : 'Test Guest User',
+        customer_email: user ? user.email : 'guest@test.com',
+        shipping_address: {
+          street: '123 Test Street',
+          city: 'Test City',
+          state: 'TX',
+          zip: '12345',
+          country: 'US'
+        },
+        payment_method: 'bank_wire',
+        payment_details: {
+          reference: 'TEST-REF-' + Date.now()
+        },
+        notes: `Test order created at ${new Date().toISOString()} - User type: ${user ? 'Authenticated' : 'Guest'}`,
+        total_amount: testProducts.reduce((sum, p) => sum + p.price, 0),
+        shipping_cost: 50,
+        tax_amount: 0,
+        status: 'pending' as const,
+        items: testProducts.map(p => ({
+          product_id: p.id,
+          product_name: p.name,
+          quantity: 1,
+          price: p.price,
+          sku: p.sku,
+          packaging: p.packaging,
+          epa_approved: p.epaApproved
+        }))
+      };
+
+      console.log('Creating test order with data:', orderData);
+      const result = await createOrder(orderData, !user);
+      
+      if (result) {
+        toast.success(`Test order created successfully! Order #${result.order_number}`);
+        console.log('Order created:', result);
+      } else {
+        toast.error('Failed to create order');
+        console.error('Order creation failed');
+      }
+    } catch (error) {
+      console.error('Error creating test order:', error);
+      toast.error('Error creating test order');
+    }
+  };
 
   useEffect(() => {
     const fetchHomepageProducts = async () => {
@@ -840,6 +928,22 @@ const HomePage = () => {
 
       {/* Testimonials Section */}
       <TestimonialSection />
+
+      {/* Test Order Button - Remove after testing */}
+      <section className="py-8 border-t border-gray-800">
+        <div className="container mx-auto px-4 text-center">
+          <Button 
+            onClick={createTestOrders}
+            disabled={orderLoading}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            {orderLoading ? 'Creating Test Order...' : `Create Test Order (${user ? 'Authenticated' : 'Guest'} User)`}
+          </Button>
+          <p className="text-sm text-gray-400 mt-2">
+            Cart items: {items.length} | User: {user ? user.email : 'Not logged in'}
+          </p>
+        </div>
+      </section>
 
     </div>
     </>
