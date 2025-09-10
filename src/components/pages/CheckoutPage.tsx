@@ -618,12 +618,13 @@ const CheckoutPage = () => {
                              if (wallet) setSelectedCryptoWallet(wallet.id);
                            }
                          }}
-                          availableMethods={[
-                            'credit_card',
-                            'bank_wire',
-                            ...getCryptoWallets().map(w => `crypto_${w.payment_type}`),
-                            ...getTraditionalWallets().map(w => w.payment_type)
-                          ]}
+                           availableMethods={[
+                             'credit_card',
+                             'bank_wire',
+                             'zelle',
+                             'cashapp',
+                             ...getCryptoWallets().map(w => `crypto_${w.payment_type}`)
+                           ]}
                        />
                      )}
 
