@@ -23,20 +23,21 @@ export const NewsletterSubscription: React.FC<NewsletterSubscriptionProps> = ({
 
   const subscribeMutation = useMutation({
     mutationFn: async ({ email, name }: { email: string; name?: string }) => {
-      const { error } = await supabase
-        .from('newsletter_subscribers')
-        .insert([{
+      // Submit via secure edge function instead of direct database access
+      const { data, error } = await supabase.functions.invoke('submit-contact', {
+        body: {
           email: email.toLowerCase().trim(),
-          name: name || null,
-          source: 'website'
-        }]);
+          name: name || '',
+          type: 'newsletter'
+        }
+      });
 
       if (error) {
-        // Check if it's a duplicate email error
-        if (error.code === '23505') {
-          throw new Error('This email is already subscribed to our newsletter.');
-        }
-        throw error;
+        throw new Error(error.message || 'Failed to subscribe to newsletter');
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
       }
     },
     onSuccess: () => {

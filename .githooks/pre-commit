@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Git pre-commit hook for security scanning
+# This hook scans for potential secrets and security issues before commits
+
+echo "🔍 Running security pre-commit checks..."
+
+# Define patterns to search for
+secret_patterns=(
+    "BEGIN RSA PRIVATE KEY"
+    "BEGIN DSA PRIVATE KEY" 
+    "BEGIN EC PRIVATE KEY"
+    "BEGIN OPENSSH PRIVATE KEY"
+    "BEGIN PGP PRIVATE KEY"
+    "sk_live_"
+    "sk_test_"
+    "AKIA[0-9A-Z]{16}"
+    "password\s*=\s*['\"][^'\"]+['\"]"
+    "secret\s*=\s*['\"][^'\"]+['\"]"
+    "api_key\s*=\s*['\"][^'\"]+['\"]"
+    "access_token\s*=\s*['\"][^'\"]+['\"]"
+    "eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+"
+    "xoxp-[0-9]+-[0-9]+-[0-9]+-[a-f0-9]{32}"
+    "ghp_[A-Za-z0-9]{36}"
+    "github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}"
+)
+
+# Get list of files to be committed
+files=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Flag for issues found
+issues_found=false
+
+echo "📁 Scanning staged files for secrets..."
+
+for file in $files; do
+    if [ -f "$file" ]; then
+        echo "  Scanning: $file"
+        
+        for pattern in "${secret_patterns[@]}"; do
+            if grep -E -i "$pattern" "$file" > /dev/null; then
+                echo "❌ SECURITY ISSUE: Potential secret found in $file"
+                echo "   Pattern: $pattern"
+                grep -E -i -n "$pattern" "$file" | head -3
+                issues_found=true
+            fi
+        done
+    fi
+done
+
+# Check for common risky files
+risky_files=(
+    ".env"
+    ".env.local"
+    ".env.production"
+    "id_rsa"
+    "id_dsa"
+    "id_ecdsa"
+    "id_ed25519"
+    "*.pem"
+    "*.key"
+    "*.p12"
+    "*.pfx"
+)
+
+echo "🔒 Checking for risky files..."
+
+for pattern in "${risky_files[@]}"; do
+    if echo "$files" | grep -q "$pattern"; then
+        echo "❌ SECURITY ISSUE: Risky file detected: $pattern"
+        issues_found=true
+    fi
+done
+
+# Check for hardcoded URLs and keys in code
+echo "🔍 Scanning for hardcoded credentials..."
+
+for file in $files; do
+    if [[ "$file" =~ \.(js|ts|jsx|tsx|py|rb|php|java|go|rs)$ ]]; then
+        # Check for Supabase URLs and keys hardcoded in files
+        if grep -E "(supabase\.co|eyJ[A-Za-z0-9_-]+)" "$file" > /dev/null; then
+            echo "⚠️  WARNING: Potential hardcoded Supabase credentials in $file"
+            echo "   Please ensure all secrets are properly configured in environment variables"
+        fi
+        
+        # Check for other common credential patterns
+        if grep -E "(password|secret|token|key).*[:=].*['\"][a-zA-Z0-9+/=]{20,}['\"]" "$file" > /dev/null; then
+            echo "⚠️  WARNING: Potential hardcoded credential in $file"
+        fi
+    fi
+done
+
+# Final result
+if [ "$issues_found" = true ]; then
+    echo ""
+    echo "❌ COMMIT BLOCKED: Security issues detected!"
+    echo "   Please review and fix the issues above before committing."
+    echo "   If these are false positives, you can skip this check with:"
+    echo "   git commit --no-verify"
+    echo ""
+    exit 1
+else
+    echo ""
+    echo "✅ Security scan passed! No issues detected."
+    echo ""
+    exit 0
+fi

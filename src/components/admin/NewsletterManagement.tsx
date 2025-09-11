@@ -23,14 +23,19 @@ const NewsletterManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch newsletter subscribers
+  // Fetch newsletter subscribers using secure admin endpoint
   const { data: subscribers = [], isLoading } = useQuery({
     queryKey: ['newsletter-subscribers'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('newsletter_subscribers')
-        .select('*')
-        .order('subscribed_at', { ascending: false });
+      // Verify user is authenticated
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        throw new Error('Authentication required');
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-data-access', {
+        body: { table: 'newsletter_subscribers' }
+      });
 
       if (error) throw error;
       return data as Subscriber[];

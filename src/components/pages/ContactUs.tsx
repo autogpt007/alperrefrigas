@@ -63,12 +63,15 @@ const ContactUs = () => {
         message: sanitizeHtml(validatedData.message)
       };
 
-      // Insert contact submission into database
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert([sanitizedData]);
+      // Submit via secure edge function instead of direct database access
+      const { data: submitData, error: submitError } = await supabase.functions.invoke('submit-contact', {
+        body: {
+          ...sanitizedData,
+          type: 'contact'
+        }
+      });
 
-      if (dbError) throw dbError;
+      if (submitError) throw submitError;
 
       // Send notification email - DISABLED for now to prevent blocking
       // try {

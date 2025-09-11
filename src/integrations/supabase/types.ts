@@ -1310,6 +1310,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_db_health: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean

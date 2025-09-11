@@ -2,3 +2,9 @@ project_id = "ohfkcxwwvksrjymkgloo"
 
 [functions.track-blog-view]
 verify_jwt = false
+
+[functions.submit-contact]
+verify_jwt = false
+
+[functions.admin-data-access]
+verify_jwt = true

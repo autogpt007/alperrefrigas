@@ -28,6 +28,7 @@ import CartPage from "./components/pages/CartPage";
 import RFQPage from "./components/pages/RFQPage";
 import CheckoutPage from "./components/pages/CheckoutPage";
 import BulkPricing from "./pages/BulkPricing";
+import Health from "./pages/Health";
 import OrderConfirmation from "./components/pages/OrderConfirmation";
 import AboutUs from "./components/pages/AboutUs";
 import ContactUs from "./components/pages/ContactUs";
@@ -153,9 +154,10 @@ function App() {
                               <Route path="/refund-policy" element={<RefundPolicy />} />
                               <Route path="/cookies" element={<CookiePolicy />} />
                               <Route path="/sitemap" element={<Sitemap />} />
-                              <Route path="/support" element={<CustomerSupport />} />
-                              <Route path="/account" element={<MyAccount />} />
-                              <Route path="/auth" element={<UserAuthPage />} />
+                               <Route path="/support" element={<CustomerSupport />} />
+                               <Route path="/health" element={<Health />} />
+                               <Route path="/account" element={<MyAccount />} />
+                               <Route path="/auth" element={<UserAuthPage />} />
                                <Route path="/admin-auth" element={<AuthPage />} />
                                <Route path="/blog" element={<BlogPage />} />
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />

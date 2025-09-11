@@ -34,10 +34,15 @@ const ContactManagement = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Use secure admin edge function instead of direct database access
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        throw new Error('Authentication required');
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-data-access', {
+        body: { table: 'contact_submissions' }
+      });
 
       if (error) throw error;
       setSubmissions(data || []);
