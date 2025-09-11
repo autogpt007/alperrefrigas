@@ -6,13 +6,10 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/contexts/ProductsContext';
 
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
-
 interface Certificate {
   id: string;
   name: string;
-  type: 'epa' | 'distributor' | 'quality' | 'safety' | 'iso' | 'product';
+  type: string;
   description: string;
   pdf_url: string;
   image_url?: string;
@@ -42,18 +39,15 @@ const Certifications = () => {
 
   const fetchCertificates = async () => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/certificates?is_active=eq.true&order=type.asc,order_index.asc`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const { data, error } = await supabase
+        .from('certificates')
+        .select('*')
+        .eq('is_active', true)
+        .order('type', { ascending: true })
+        .order('order_index', { ascending: true });
 
-      if (response.ok) {
-        const data = await response.json();
-        setCertificates(data || []);
-      }
+      if (error) throw error;
+      setCertificates(data || []);
     } catch (error) {
       console.error('Error fetching certificates:', error);
     } finally {

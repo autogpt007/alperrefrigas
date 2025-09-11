@@ -497,7 +497,7 @@ const BlogPostManagement = () => {
                   </Label>
                   <div className="bg-white rounded-lg">
                     <Editor
-                      apiKey="qnbiekj6zcaybsw1089kpgw32gfsk6lbisotyiqzktixxl4w"
+                      apiKey="no-api-key"
                       value={formData.body}
                       onEditorChange={(content) => setFormData({ ...formData, body: content })}
                       init={{

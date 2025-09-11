@@ -9,9 +9,6 @@ import TestimonialSection from '@/components/ui/TestimonialSection';
 import TestimonialForm from '@/components/ui/TestimonialForm';
 import SEOComponent from '@/components/seo/SEOComponent';
 
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
-
 interface TeamMember {
   id: string;
   name: string;

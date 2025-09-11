@@ -55,18 +55,20 @@ const ContactManagement = () => {
 
   const fetchNotificationEmail = async () => {
     try {
-      // Use fetch API to work around type issues
-      const response = await fetch(`https://ohfkcxwwvksrjymkgloo.supabase.co/rest/v1/notification_settings?setting_key=eq.notification_email&select=setting_value`, {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY`
-        }
-      });
+      const { data, error } = await supabase
+        .from('notification_settings')
+        .select('setting_value')
+        .eq('setting_key', 'notification_email')
+        .single();
       
-      const data = await response.json();
+      if (error) {
+        console.error('Error fetching notification email:', error);
+        setNotificationEmail('eddy3597@gmail.com');
+        return;
+      }
       
-      if (data && data.length > 0) {
-        setNotificationEmail(data[0].setting_value);
+      if (data && data.setting_value) {
+        setNotificationEmail(data.setting_value);
       } else {
         setNotificationEmail('eddy3597@gmail.com');
       }
@@ -105,23 +107,17 @@ const ContactManagement = () => {
 
   const updateNotificationEmail = async () => {
     try {
-      // Use fetch API to work around type issues
-      const response = await fetch(`https://ohfkcxwwvksrjymkgloo.supabase.co/rest/v1/notification_settings`, {
-        method: 'POST',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY`,
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({
+      const { error } = await supabase
+        .from('notification_settings')
+        .upsert({
           setting_key: 'notification_email',
           setting_value: notificationEmail,
-          description: 'Email address for receiving form submissions and order notifications'
-        })
-      });
+          description: 'Email address for order notifications'
+        });
 
-      if (!response.ok) throw new Error('Failed to update notification email');
+      if (error) {
+        throw error;
+      }
 
       toast({
         title: "Settings Updated",

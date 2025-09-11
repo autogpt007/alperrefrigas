@@ -10,13 +10,10 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ImageUpload } from '../ui/image-upload';
 
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
-
 interface Certificate {
   id?: string;
   name: string;
-  type: 'epa' | 'distributor' | 'quality' | 'safety';
+  type: string;
   description: string;
   pdf_url: string;
   image_url?: string;
@@ -47,16 +44,13 @@ const CertificationManagement = () => {
 
   const fetchCertificates = async () => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/certificates?order=type.asc,order_index.asc`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const { data, error } = await supabase
+        .from('certificates')
+        .select('*')
+        .order('type', { ascending: true })
+        .order('order_index', { ascending: true });
 
-      if (!response.ok) throw new Error('Failed to fetch certificates');
-      const data = await response.json();
+      if (error) throw error;
       setCertificates(data || []);
     } catch (error: any) {
       console.error('Error fetching certificates:', error);
@@ -81,22 +75,22 @@ const CertificationManagement = () => {
         return;
       }
 
-      const method = editingCert?.id ? 'PATCH' : 'POST';
-      const url = editingCert?.id 
-        ? `${SUPABASE_URL}/rest/v1/certificates?id=eq.${editingCert.id}`
-        : `${SUPABASE_URL}/rest/v1/certificates`;
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(editingCert?.id ? formData : { ...formData, order_index: certificates.length })
-      });
-
-      if (!response.ok) throw new Error('Failed to save certificate');
+      const certData = editingCert?.id ? formData : { ...formData, order_index: certificates.length };
+      
+      if (editingCert?.id) {
+        const { error } = await supabase
+          .from('certificates')
+          .update(certData)
+          .eq('id', editingCert.id);
+        
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('certificates')
+          .insert([certData]);
+        
+        if (error) throw error;
+      }
 
       toast({ 
         title: editingCert ? 'Certificate updated successfully!' : 'Certificate added successfully!' 
@@ -118,15 +112,12 @@ const CertificationManagement = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/certificates?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        }
-      });
+      const { error } = await supabase
+        .from('certificates')
+        .delete()
+        .eq('id', id);
 
-      if (!response.ok) throw new Error('Failed to delete certificate');
+      if (error) throw error;
       toast({ title: 'Certificate deleted successfully!' });
       fetchCertificates();
     } catch (error: any) {
