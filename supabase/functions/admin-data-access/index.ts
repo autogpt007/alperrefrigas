@@ -1,0 +1,108 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const url = new URL(req.url);
+    const table = url.searchParams.get('table') ?? 'contact_submissions';
+
+    // Simple allowlist for sensitive tables
+    if (!['contact_submissions', 'newsletter_subscribers', 'quotes'].includes(table)) {
+      console.error(`Forbidden table access attempt: ${table}`);
+      return new Response(
+        JSON.stringify({ error: 'Table not allowed' }), 
+        { 
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Validate admin JWT from request
+    const auth = req.headers.get('Authorization') ?? '';
+    const token = auth.replace(/^Bearer\s+/i, '');
+    
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization token required' }),
+        { 
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.role !== 'admin') {
+        console.error(`Non-admin access attempt by user: ${payload.sub}`);
+        throw new Error('Insufficient privileges');
+      }
+    } catch (error) {
+      console.error('JWT validation failed:', error);
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { 
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Initialize Supabase with service role key to bypass RLS
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    console.log(`Admin accessing ${table} data`);
+
+    // Fetch data using Supabase client
+    const { data, error } = await supabaseClient
+      .from(table)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(`Error fetching ${table}:`, error);
+      return new Response(
+        JSON.stringify({ error: `Failed to fetch ${table} data` }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    return new Response(
+      JSON.stringify(data),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
+
+  } catch (error) {
+    console.error('Admin data access error:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: 'Internal server error',
+        message: error.message 
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
+  }
+});
