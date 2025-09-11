@@ -1293,7 +1293,9 @@ export type Database = {
         Returns: number
       }
       can_access_order: {
-        Args: { order_user_id: string }
+        Args:
+          | { order_num?: string; order_user_id: string }
+          | { order_user_id: string }
         Returns: boolean
       }
       generate_order_number: {
