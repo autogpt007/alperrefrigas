@@ -53,66 +53,46 @@ const OrderManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch orders
+  // Fetch orders using secure edge function
   const { data: orders = [], isLoading, error } = useQuery({
     queryKey: ['admin-orders', statusFilter],
     queryFn: async () => {
       console.log('Fetching orders with filter:', statusFilter);
       
-      let query = supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            id,
-            product_name,
-            quantity,
-            price,
-            sku,
-            packaging,
-            epa_approved
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
-      }
-
-      const { data, error } = await query;
+      const { data, error } = await supabase.functions.invoke('admin-orders-access', {
+        body: { action: 'list' }
+      });
       
       if (error) {
         console.error('Error fetching orders:', error);
         throw error;
       }
       
-      console.log('Orders fetched:', data);
-      return data as Order[];
+      let filteredData = data || [];
+      if (statusFilter !== 'all') {
+        filteredData = filteredData.filter((order: any) => order.status === statusFilter);
+      }
+      
+      console.log('Orders fetched:', filteredData);
+      return filteredData as Order[];
     },
     retry: 3,
     retryDelay: 1000,
   });
 
-  // Update order status mutation
+  // Update order status mutation using secure edge function
   const updateOrderMutation = useMutation({
     mutationFn: async ({ orderId, status, trackingNumber }: { orderId: string; status: string; trackingNumber?: string }) => {
       console.log('Updating order:', orderId, 'to status:', status);
       
-      const updateData: any = {
-        status,
-        updated_at: new Date().toISOString()
-      };
-
-      if (trackingNumber) {
-        updateData.tracking_number = trackingNumber;
-      }
-
-      const { data, error } = await supabase
-        .from('orders')
-        .update(updateData)
-        .eq('id', orderId)
-        .select()
-        .single();
+      const { data, error } = await supabase.functions.invoke('admin-orders-access', {
+        body: { 
+          action: 'update',
+          orderId,
+          status,
+          trackingNumber
+        }
+      });
       
       if (error) {
         console.error('Error updating order:', error);
@@ -131,20 +111,18 @@ const OrderManagement = () => {
     }
   });
 
-  // Add notes to order mutation
+  // Add notes to order mutation using secure edge function
   const addNotesMutation = useMutation({
     mutationFn: async ({ orderId, notes }: { orderId: string; notes: string }) => {
       console.log('Adding notes to order:', orderId);
       
-      const { data, error } = await supabase
-        .from('orders')
-        .update({ 
-          notes,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', orderId)
-        .select()
-        .single();
+      const { data, error } = await supabase.functions.invoke('admin-orders-access', {
+        body: { 
+          action: 'add-notes',
+          orderId,
+          notes
+        }
+      });
       
       if (error) {
         console.error('Error adding notes:', error);

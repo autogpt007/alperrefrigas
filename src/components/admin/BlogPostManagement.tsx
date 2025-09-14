@@ -497,7 +497,7 @@ const BlogPostManagement = () => {
                   </Label>
                   <div className="bg-white rounded-lg">
                     <Editor
-                      apiKey="no-api-key"
+                      apiKey={import.meta.env.VITE_TINYMCE_API_KEY || "no-api-key"}
                       value={formData.body}
                       onEditorChange={(content) => setFormData({ ...formData, body: content })}
                       init={{
