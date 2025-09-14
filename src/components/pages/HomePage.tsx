@@ -303,9 +303,9 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="Alper Refrigerants - #1 Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Prices | MOQ 40 Cylinders"
-        description="⭐ Professional refrigerant distributor since 2020. EPA certified R-410A, R-134a, R-22, R-404A wholesale with 99.9% purity guarantee. MOQ 40 cylinders. Same-day shipping from TX, FL, CA distribution centers. Get instant bulk quotes for HVAC professionals, contractors & distributors. Fast delivery nationwide."
-        keywords="alper refrigerants, wholesale refrigerants, bulk refrigerant prices, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, freon wholesale, MOQ 40 cylinders, fast shipping, distribution centers"
+        title="Alper Refrigerants - Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Supplier | EPA Certified"
+        description="⭐ Leading wholesale refrigerant distributor since 2020. EPA certified bulk supplier of R-410A, R-134a, R-22, R-404A with 99.9% purity guarantee. MOQ 40 cylinders. Same-day shipping from TX, FL, CA distribution centers. Professional HVAC supply partner for contractors & distributors nationwide."
+        keywords="alper refrigerants, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, MOQ 40 cylinders, fast shipping, distribution centers, professional HVAC supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
         faq={homepageFAQ}
@@ -339,25 +339,25 @@ const HomePage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link to="/products">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105"
-                >
-                  <ShoppingCart className="mr-3 h-6 w-6" />
-                  {t('home.hero.shopRefrigerants')}
-                </Button>
-              </Link>
-              <Link to="/bulk-pricing">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <Quote className="mr-3 h-6 w-6" />
-                  {t('home.hero.getBulkQuote')}
-                </Button>
-              </Link>
+                  <Link to="/products">
+                    <Button 
+                      size="lg" 
+                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 px-8 py-4 text-lg font-semibold shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105"
+                    >
+                      <ShoppingCart className="mr-3 h-6 w-6" />
+                      {t('home.hero.shopRefrigerants')}
+                    </Button>
+                  </Link>
+                  <Link to="/freon-wholesale">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 px-8 py-4 text-lg font-semibold shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      <Quote className="mr-3 h-6 w-6" />
+                      Contractor Bulk Freon Quotes
+                    </Button>
+                  </Link>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
@@ -399,7 +399,7 @@ const HomePage = () => {
                 <Building2 className="h-10 w-10 text-white" />
               </div>
               <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
-                Leading Freon & Refrigerant Wholesale Distributor
+                Professional Wholesale Refrigerant Distributor
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-6 rounded-full"></div>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
