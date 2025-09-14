@@ -9,67 +9,118 @@ import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import EmailObfuscator from '@/components/seo/EmailObfuscator';
 
 const FreonWholesalePage = () => {
-  // Structured data optimized for freon wholesale
-  const wholesaleStructuredData = {
+  // Enhanced structured data for better SEO
+  const enhancedStructuredData = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
-    "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
-    "url": "https://alperrefrigas.com/freon-wholesale",
-    "telephone": "+1-210-939-1115",
-    "email": "wholesale@alperrefrigas.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "US",
-      "addressRegion": "TX"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": "29.4241",
-      "longitude": "-98.4936"
-    },
-    "openingHours": "Mo-Fr 08:00-18:00",
-    "priceRange": "$$",
-    "serviceArea": {
-      "@type": "Country",
-      "name": "United States"
-    },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Contractor Freon Wholesale Program",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Product",
-              "name": "R-22 Bulk Freon for Contractors",
-              "description": "Commercial wholesale R-22 freon with contractor volume discounts"
-            }
-          },
-          {
-            "@type": "Offer", 
-            "itemOffered": {
-              "@type": "Product",
-              "name": "R-410A Contractor Bulk Pricing",
-              "description": "R-410A refrigerant bulk pricing for HVAC contractors"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Product", 
-              "name": "R-134a Commercial Wholesale",
-              "description": "R-134a commercial and automotive freon contractor pricing"
-            }
-          }
-        ]
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://alperrefrigas.com/#business",
+        "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
+        "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
+        "url": "https://alperrefrigas.com/freon-wholesale",
+        "telephone": "+1-210-939-1115",
+        "email": "wholesale@alperrefrigas.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "US",
+          "addressRegion": "TX"
+        },
+        "geo": {
+          "@type": "GeoCoordinates", 
+          "latitude": "29.4241",
+          "longitude": "-98.4936"
+        },
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "priceRange": "$$",
+        "serviceArea": {
+          "@type": "Country",
+          "name": "United States"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "247"
+        }
       },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "247"
-    }
+      {
+        "@type": "Organization",
+        "@id": "https://alperrefrigas.com/#organization", 
+        "name": "Alper Refrigerants",
+        "url": "https://alperrefrigas.com",
+        "logo": "https://alperrefrigas.com/logo.svg",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+1-210-939-1115",
+          "contactType": "wholesale sales",
+          "email": "wholesale@alperrefrigas.com"
+        }
+      }
+    ]
   };
+
+  // Product schemas for each freon type
+  const productSchemas = [
+    {
+      "@type": "Product",
+      "name": "R-22 Bulk Freon for Contractors",
+      "description": "Legacy HCFC refrigerant for existing systems with contractor volume pricing",
+      "category": "Refrigerant",
+      "brand": "Alper Refrigerants",
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "description": "Bulk wholesale pricing available"
+        }
+      }
+    },
+    {
+      "@type": "Product", 
+      "name": "R-410A Contractor Bulk Pricing",
+      "description": "HFC refrigerant blend for modern HVAC systems with volume discounts",
+      "category": "Refrigerant",
+      "brand": "Alper Refrigerants",
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "description": "Volume discounts for contractors"
+        }
+      }
+    }
+  ];
+
+  // FAQ schema for contractor questions
+  const contractorFAQs = [
+    {
+      question: "What volume discounts do you offer for HVAC contractors?",
+      answer: "We offer tiered pricing from 5% off for starter contractors (1-10 pallets/year) up to 25% off for master contractors (50+ pallets/year). Our contractor wholesale program is designed to help HVAC professionals save on bulk freon purchases."
+    },
+    {
+      question: "How quickly can you deliver bulk freon orders?",
+      answer: "We offer same-day shipping on in-stock freon products with emergency delivery available for urgent contractor needs. Most orders are processed within 24 hours of quote approval."
+    },
+    {
+      question: "Do you provide EPA certified freon with purity guarantees?",
+      answer: "Yes, all our freon products are EPA certified with guaranteed purity levels exceeding industry standards. We provide certificates of analysis with every shipment."
+    },
+    {
+      question: "What packaging options are available for bulk freon orders?",
+      answer: "We offer flexible packaging including cylinders, pallets, and container loads customized to your project needs. Our team helps determine the most cost-effective option for your volume requirements."
+    }
+  ];
+
+  // Breadcrumb navigation schema
+  const breadcrumbs = [
+    { name: "Home", url: "https://alperrefrigas.com" },
+    { name: "Wholesale", url: "https://alperrefrigas.com/bulk-pricing" },
+    { name: "Freon Wholesale", url: "https://alperrefrigas.com/freon-wholesale" }
+  ];
 
   const freonProducts = [
     {
@@ -103,11 +154,17 @@ const FreonWholesalePage = () => {
       <SEOComponent
         title="Bulk Freon Distributor Contractors - R-22 R-410A R-134a Commercial Wholesale Pricing | Alper Refrigerants"
         description="🔥 HVAC contractor specialists! Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%, same-day shipping, EPA certified. Contractor quotes in 24hrs!"
-        keywords="bulk freon distributor contractors, commercial freon wholesale pricing, R-22 R-410A R-134a wholesale distributor, HVAC contractor bulk pricing, commercial refrigerant wholesale, contractor freon quotes, volume discounts freon, EPA certified bulk freon, commercial HVAC supplies, contractor wholesale program"
+        keywords="bulk freon distributor contractors, R-22 R-410A R-134a wholesale, commercial refrigerant wholesale, HVAC contractor pricing, EPA certified bulk freon"
         canonicalUrl="/freon-wholesale"
-        structuredData={wholesaleStructuredData}
+        structuredData={enhancedStructuredData}
         ogImage="/freon-wholesale-og.jpg"
         ogType="website"
+        robotsContent="index,follow,max-snippet:-1,max-image-preview:large"
+        themeColor="#0ea5e9"
+        author="Alper Refrigerants"
+        faqData={contractorFAQs}
+        breadcrumbData={breadcrumbs}
+        productData={productSchemas}
       />
       
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -121,11 +178,11 @@ const FreonWholesalePage = () => {
                   <DollarSign className="h-5 w-5 mr-2" />
                   Wholesale Pricing Available
                 </Badge>
-                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
+                 <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
                   Bulk Freon Distributor for HVAC Contractors
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a freon for HVAC contractors. Volume discounts up to 25%, EPA certified with same-day shipping nationwide.
+                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA certified with same-day shipping nationwide.
                 </p>
               </div>
 
@@ -181,7 +238,7 @@ const FreonWholesalePage = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Commercial Freon Wholesale for Contractors
+                Commercial Refrigerant Distributor for HVAC Contractors
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 Specialized contractor pricing on R-22, R-410A, R-134a with volume discounts, technical support and guaranteed purity
@@ -241,8 +298,8 @@ const FreonWholesalePage = () => {
                       <DollarSign className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">Volume Discounts</h3>
-                    <p className="text-gray-300 leading-relaxed">
-                      Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk freon orders.
+                     <p className="text-gray-300 leading-relaxed">
+                      Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk refrigerant orders.
                     </p>
                   </CardContent>
                 </Card>
@@ -253,8 +310,8 @@ const FreonWholesalePage = () => {
                       <Truck className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">Fast Delivery</h3>
-                    <p className="text-gray-300 leading-relaxed">
-                      Same-day shipping on in-stock freon. Emergency delivery available for urgent contractor needs.
+                     <p className="text-gray-300 leading-relaxed">
+                      Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
                     </p>
                   </CardContent>
                 </Card>
@@ -265,8 +322,8 @@ const FreonWholesalePage = () => {
                       <Shield className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">EPA Certified</h3>
-                    <p className="text-gray-300 leading-relaxed">
-                      All freon products are EPA certified with guaranteed purity levels exceeding industry standards.
+                     <p className="text-gray-300 leading-relaxed">
+                      All refrigerant products are EPA certified with guaranteed purity levels exceeding industry standards.
                     </p>
                   </CardContent>
                 </Card>
@@ -370,6 +427,75 @@ const FreonWholesalePage = () => {
                     </Link>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* EPA Compliance Section */}
+        <section className="py-20 bg-gradient-to-b from-slate-800/50 to-slate-900">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  EPA Certified & Compliant Refrigerant Solutions
+                </h3>
+                <p className="text-xl text-gray-300">
+                  Full EPA compliance certification and technical support for HVAC contractors
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-8">
+                <Card className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 border-green-400/30">
+                  <CardContent className="p-8 text-center">
+                    <Shield className="h-16 w-16 text-green-400 mx-auto mb-6" />
+                    <h4 className="text-2xl font-bold text-white mb-4">EPA Section 608 Certified</h4>
+                    <p className="text-gray-300">All refrigerants meet strict EPA purity standards with certificates of analysis</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border-blue-400/30">
+                  <CardContent className="p-8 text-center">
+                    <CheckCircle className="h-16 w-16 text-blue-400 mx-auto mb-6" />
+                    <h4 className="text-2xl font-bold text-white mb-4">Purity Guaranteed</h4>
+                    <p className="text-gray-300">99.9%+ purity levels with detailed lab testing documentation</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-400/30">
+                  <CardContent className="p-8 text-center">
+                    <Award className="h-16 w-16 text-purple-400 mx-auto mb-6" />
+                    <h4 className="text-2xl font-bold text-white mb-4">Technical Support</h4>
+                    <p className="text-gray-300">Expert guidance on refrigerant selection and EPA compliance requirements</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-20 bg-gradient-to-b from-slate-900 to-slate-800/50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Frequently Asked Questions
+                </h3>
+                <p className="text-xl text-gray-300">
+                  Common questions about our contractor wholesale program
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {contractorFAQs.map((faq, index) => (
+                  <Card key={index} className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20">
+                    <CardContent className="p-8">
+                      <h4 className="text-xl font-bold text-white mb-4">{faq.question}</h4>
+                      <p className="text-gray-300 leading-relaxed">{faq.answer}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </div>

@@ -10,7 +10,14 @@ interface SEOProps {
   ogImage?: string;
   ogType?: string;
   structuredData?: any;
+  robotsContent?: string;
+  themeColor?: string;
+  author?: string;
   breadcrumbs?: Array<{
+    name: string;
+    url: string;
+  }>;
+  breadcrumbData?: Array<{
     name: string;
     url: string;
   }>;
@@ -32,6 +39,18 @@ interface SEOProps {
     question: string;
     answer: string;
   }>;
+  faqData?: Array<{
+    question: string;
+    answer: string;
+  }>;
+  productData?: Array<{
+    "@type": string;
+    name: string;
+    description: string;
+    category?: string;
+    brand?: string;
+    offers?: any;
+  }>;
 }
 
 const SEOComponent: React.FC<SEOProps> = ({
@@ -42,9 +61,15 @@ const SEOComponent: React.FC<SEOProps> = ({
   ogImage = '/placeholder.svg',
   ogType = 'website',
   structuredData,
+  robotsContent,
+  themeColor,
+  author,
   breadcrumbs,
+  breadcrumbData,
   product,
-  faq
+  faq,
+  faqData,
+  productData
 }) => {
   const siteUrl = 'https://alperrefrigas.com';
   const fullTitle = title.includes('Alper') ? title : `${title} | Alper Refrigerant - Professional Refrigerant Distributor`;
@@ -75,10 +100,10 @@ const SEOComponent: React.FC<SEOProps> = ({
   } : null;
 
   // Breadcrumb structured data
-  const breadcrumbData = breadcrumbs && breadcrumbs.length > 0 ? {
+  const breadcrumbStructuredData = (breadcrumbs || breadcrumbData) && (breadcrumbs || breadcrumbData)!.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": breadcrumbs.map((crumb, index) => ({
+    "itemListElement": (breadcrumbs || breadcrumbData)!.map((crumb, index) => ({
       "@type": "ListItem",
       "position": index + 1,
       "name": crumb.name,
@@ -87,10 +112,10 @@ const SEOComponent: React.FC<SEOProps> = ({
   } : null;
 
   // FAQ structured data
-  const faqData = faq && faq.length > 0 ? {
+  const faqStructuredData = (faq || faqData) && (faq || faqData)!.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faq.map(item => ({
+    "mainEntity": (faq || faqData)!.map(item => ({
       "@type": "Question",
       "name": item.question,
       "acceptedAnswer": {
@@ -196,8 +221,10 @@ const SEOComponent: React.FC<SEOProps> = ({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={robotsContent || "index, follow"} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      {themeColor && <meta name="theme-color" content={themeColor} />}
+      {author && <meta name="author" content={author} />}
       <meta httpEquiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
       
       {/* Preload critical resources */}
@@ -237,15 +264,25 @@ const SEOComponent: React.FC<SEOProps> = ({
         {JSON.stringify(organizationData)}
       </script>
       
-      {breadcrumbData && (
+      {breadcrumbStructuredData && (
         <script type="application/ld+json">
-          {JSON.stringify(breadcrumbData)}
+          {JSON.stringify(breadcrumbStructuredData)}
         </script>
       )}
       
-      {faqData && (
+      {faqStructuredData && (
         <script type="application/ld+json">
-          {JSON.stringify(faqData)}
+          {JSON.stringify(faqStructuredData)}
+        </script>
+      )}
+      
+      {/* Product Data */}
+      {productData && productData.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": productData
+          })}
         </script>
       )}
       
