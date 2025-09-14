@@ -334,25 +334,25 @@ const FreonWholesalePage = () => {
                 </div>
 
                 <div className="space-y-6">
-                  <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-blue-400/30">
+                  <Card className="bg-gradient-to-br from-blue-600/40 to-purple-600/40 border-blue-400/50">
                     <CardContent className="p-8">
                       <h3 className="text-2xl font-bold text-white mb-6 text-center">Contractor Pricing Tiers</h3>
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center py-3 border-b border-white/10">
-                          <span className="text-gray-300">Starter (1-10 pallets/year)</span>
-                          <Badge className="bg-green-500/20 text-green-300">5% off</Badge>
+                        <div className="flex justify-between items-center py-3 border-b border-white/20">
+                          <span className="text-white">Starter (1-10 pallets/year)</span>
+                          <Badge className="bg-green-600 text-white">5% off</Badge>
                         </div>
-                        <div className="flex justify-between items-center py-3 border-b border-white/10">
-                          <span className="text-gray-300">Professional (11-25 pallets/year)</span>
-                          <Badge className="bg-blue-500/20 text-blue-300">12% off</Badge>
+                        <div className="flex justify-between items-center py-3 border-b border-white/20">
+                          <span className="text-white">Professional (11-25 pallets/year)</span>
+                          <Badge className="bg-blue-600 text-white">12% off</Badge>
                         </div>
-                        <div className="flex justify-between items-center py-3 border-b border-white/10">
-                          <span className="text-gray-300">Elite (26-50 pallets/year)</span>
-                          <Badge className="bg-purple-500/20 text-purple-300">18% off</Badge>
+                        <div className="flex justify-between items-center py-3 border-b border-white/20">
+                          <span className="text-white">Elite (26-50 pallets/year)</span>
+                          <Badge className="bg-purple-600 text-white">18% off</Badge>
                         </div>
                         <div className="flex justify-between items-center py-3">
-                          <span className="text-gray-300">Master (50+ pallets/year)</span>
-                          <Badge className="bg-yellow-500/20 text-yellow-300">25% off</Badge>
+                          <span className="text-white">Master (50+ pallets/year)</span>
+                          <Badge className="bg-yellow-600 text-white">25% off</Badge>
                         </div>
                       </div>
                     </CardContent>
