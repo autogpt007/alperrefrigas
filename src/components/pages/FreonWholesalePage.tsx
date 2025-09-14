@@ -386,26 +386,17 @@ const FreonWholesalePage = () => {
                 Get contractor-specific quotes on bulk freon orders with dedicated account management and technical support
               </p>
               
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20">
-                  <CardContent className="p-8">
-                    <Phone className="h-12 w-12 text-cyan-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">Call Wholesale Direct</h3>
-                    <ContactDisplay 
-                      className="text-cyan-400 text-lg font-semibold"
-                    />
-                    <p className="text-gray-300 text-sm mt-2">Mon-Fri 8AM-6PM CT</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-green-500/20">
+              <div className="flex justify-center mb-12">
+                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-green-500/20 max-w-md">
                   <CardContent className="p-8">
                     <Mail className="h-12 w-12 text-green-400 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-white mb-2">Email Wholesale Team</h3>
                     <EmailObfuscator 
                       email="wholesale@alperrefrigas.com"
                       className="text-green-400 text-lg font-semibold hover:text-green-300"
-                    />
+                    >
+                      wholesale@alperrefrigas.com
+                    </EmailObfuscator>
                     <p className="text-gray-300 text-sm mt-2">24-hour response guaranteed</p>
                   </CardContent>
                 </Card>
@@ -424,8 +415,7 @@ const FreonWholesalePage = () => {
                 <Link to="/products">
                   <Button 
                     size="lg" 
-                    variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold"
+                    className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white border-0 px-8 py-4 text-lg font-semibold"
                   >
                     <Package className="mr-3 h-6 w-6" />
                     View All Products
