@@ -11,17 +11,20 @@ interface QuoteTypeSelectorProps {
 
 const QuoteTypeSelector: React.FC<QuoteTypeSelectorProps> = ({ children }) => {
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
 
   const handleBulkQuote = () => {
+    setOpen(false);
     navigate('/bulk-pricing');
   };
 
   const handleProductQuote = () => {
+    setOpen(false);
     navigate('/products');
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
