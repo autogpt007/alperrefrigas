@@ -192,7 +192,7 @@ const AccessoryManagement = () => {
       thumbnail_url: accessory?.thumbnail_url || '',
       technical_specs: accessory?.technical_specs || {},
       applications: accessory?.applications || [],
-      packaging_options: accessory?.packaging_options || ['Individual'],
+      packaging_options: accessory?.packaging_options || ['Individual', '5-Pack', '10-Pack'],
     });
 
     const handleSubmit = (e: React.FormEvent) => {

@@ -12,6 +12,7 @@ export interface CartItem {
   sku: string;
   epaApproved: boolean;
   packaging?: string;
+  product_type?: string;
 }
 
 interface CartContextType {

@@ -870,28 +870,48 @@ const CheckoutPage = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2">Important EPA Compliance Notice</h4>
-                      <div className="text-sm text-gray-700 space-y-2">
-                        <p>• EPA Section 608 certification required for refrigerant purchases</p>
-                        <p>• All refrigerant sales are for professional HVAC use only</p>
-                        <p>• Proper handling and disposal regulations must be followed</p>
-                        <p>• False certification claims are subject to federal penalties</p>
-                      </div>
-                    </div>
+                    {/* Show EPA compliance only if cart contains refrigerants */}
+                    {items.some(item => item.product_type !== 'accessory') && (
+                      <>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-2">Important EPA Compliance Notice</h4>
+                          <div className="text-sm text-gray-700 space-y-2">
+                            <p>• EPA Section 608 certification required for refrigerant purchases</p>
+                            <p>• All refrigerant sales are for professional HVAC use only</p>
+                            <p>• Proper handling and disposal regulations must be followed</p>
+                            <p>• False certification claims are subject to federal penalties</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="legal-acknowledgment"
+                            checked={legalAcknowledged}
+                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                          />
+                          <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
+                            I acknowledge that I am EPA Section 608 certified and authorized to purchase refrigerants.
+                            I understand that these products are for professional HVAC use only and agree to comply
+                            with all applicable environmental regulations.
+                          </Label>
+                        </div>
+                      </>
+                    )}
                     
-                    <div className="flex items-start space-x-2">
-                      <Checkbox
-                        id="legal-acknowledgment"
-                        checked={legalAcknowledged}
-                        onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
-                      />
-                      <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
-                        I acknowledge that I am EPA Section 608 certified and authorized to purchase refrigerants.
-                        I understand that these products are for professional HVAC use only and agree to comply
-                        with all applicable environmental regulations.
-                      </Label>
-                    </div>
+                    {/* Show general terms for accessories only */}
+                    {items.every(item => item.product_type === 'accessory') && (
+                      <div className="flex items-start space-x-2">
+                        <Checkbox
+                          id="legal-acknowledgment"
+                          checked={legalAcknowledged}
+                          onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                        />
+                        <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
+                          I acknowledge that I understand the terms of purchase and agree to use these products
+                          in accordance with manufacturer specifications and safety guidelines.
+                        </Label>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </form>

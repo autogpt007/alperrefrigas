@@ -27,6 +27,7 @@ interface Product {
   applications?: string[];
   stock_quantity?: number;
   availability?: string;
+  product_type?: string;
 }
 
 interface ProductCardProps {
@@ -39,13 +40,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [selectedPackaging, setSelectedPackaging] = useState(
-    product.packaging_options?.[0] || '1 Pallet'
+    product.packaging_options?.[0] || (product.product_type === 'accessory' ? 'Individual' : '1 Pallet')
   );
 
   const existingItem = items.find(item => item.id === product.id);
   const cartQuantity = existingItem?.quantity || 0;
 
   const calculateBulkPrice = (packageType: string): number => {
+    // Handle accessories differently
+    if (product.product_type === 'accessory') {
+      const basePrice = product.price;
+      switch (packageType) {
+        case 'Individual':
+          return basePrice;
+        case '5-Pack':
+          return basePrice * 5 * 0.95; // 5% discount for 5 units
+        case '10-Pack':
+          return basePrice * 10 * 0.85; // 15% discount for 10+ units
+        default:
+          return basePrice;
+      }
+    }
+    
+    // Original refrigerant logic
     const cylinderPrice = product.price; // Base price is per cylinder
     const discount20ft = product.discount_20ft || 0.30;
     const discount40ft = product.discount_40ft || 0.45;
@@ -69,6 +86,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const getCurrentPrice = () => calculateBulkPrice(selectedPackaging);
   const getDiscountPercentage = () => {
+    // Handle accessories differently
+    if (product.product_type === 'accessory') {
+      if (selectedPackaging === '5-Pack') return 5;
+      if (selectedPackaging === '10-Pack') return 15;
+      return 0;
+    }
+    
+    // Original refrigerant logic
     const discount20ft = product.discount_20ft || 0.30;
     const discount40ft = product.discount_40ft || 0.45;
     if (selectedPackaging === '20ft Container') return Math.round(discount20ft * 100);
@@ -184,7 +209,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <div className="flex items-baseline gap-2">
                 {getDiscountPercentage() > 0 && (
                   <span className="text-xs text-gray-500 line-through">
-                    ${(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}
+                    {product.product_type === 'accessory' ? (
+                      selectedPackaging === '5-Pack' ? `$${(product.price * 5).toFixed(2)}` :
+                      selectedPackaging === '10-Pack' ? `$${(product.price * 10).toFixed(2)}` : 
+                      `$${product.price.toFixed(2)}`
+                    ) : (
+                      `$${(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}`
+                    )}
                   </span>
                 )}
                 <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
@@ -192,9 +223,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
               </div>
               <div className="text-xs text-gray-400 leading-tight">
-                {selectedPackaging === '1 Pallet' && '40 cylinders per pallet'}
-                {selectedPackaging === '20ft Container' && '1,140 cylinders per container'}
-                {selectedPackaging === '40ft Container' && '2,280 cylinders per container'}
+                {product.product_type === 'accessory' ? (
+                  selectedPackaging === 'Individual' ? 'Per piece' :
+                  selectedPackaging === '5-Pack' ? '5 pieces' :
+                  selectedPackaging === '10-Pack' ? '10 pieces' : 'Per piece'
+                ) : (
+                  selectedPackaging === '1 Pallet' ? '40 cylinders per pallet' :
+                  selectedPackaging === '20ft Container' ? '1,140 cylinders per container' :
+                  selectedPackaging === '40ft Container' ? '2,280 cylinders per container' : '40 cylinders per pallet'
+                )}
               </div>
               {getDiscountPercentage() > 0 && (
                 <div className="flex items-center gap-1 text-green-400">
