@@ -195,7 +195,8 @@ const ProductDetails = () => {
         image: product.image || '/placeholder.svg',
         sku: product.sku || 'N/A',
         epaApproved: product.epaApproved || false,
-        packaging
+        packaging,
+        product_type: product.product_type || 'refrigerant'
       });
     }
     toast({

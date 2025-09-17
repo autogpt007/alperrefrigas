@@ -108,6 +108,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         ...product,
         price: currentPrice,
         packaging: selectedPackaging,
+        product_type: product.product_type || 'refrigerant',
         id: `${product.id}-${selectedPackaging}`
       });
     }
