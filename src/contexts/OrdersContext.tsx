@@ -182,11 +182,9 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
         itemCount: orderData.items?.length || 0
       });
 
-      // TRANSACTION-SAFE ORDER CREATION
-      const { data: newOrder, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: finalUserId, // null for guests, uuid for authenticated users
+      // Use Edge Function to create order (works for guests and authenticated users)
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('create-order', {
+        body: {
           customer_name: orderData.customer_name,
           customer_email: orderData.customer_email,
           status: orderData.status,
@@ -198,114 +196,25 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
           payment_method: orderData.payment_method || 'credit_card',
           payment_details: orderData.payment_details,
           cashapp_tag: orderData.cashapp_tag,
-          zelle_tag: orderData.zelle_tag
-        })
-        .select()
-        .single();
+          zelle_tag: orderData.zelle_tag,
+          items: orderData.items || []
+        },
+      });
 
-      if (orderError) {
-        console.error('[ORDER_ERROR] Order creation failed:', orderError);
-        
-        // Specific error handling for common RLS issues
-        if (orderError.message?.includes('row-level security')) {
-          throw new Error('Permission denied: Unable to create order. Please refresh the page and try again.');
-        }
-        
-        if (orderError.message?.includes('violates check constraint')) {
-          throw new Error('Invalid order data: Please check all required fields and try again.');
-        }
-        
-        throw new Error(`Order creation failed: ${orderError.message}`);
+      if (fnError) {
+        console.error('[ORDER_ERROR] Edge function create-order failed:', fnError);
+        throw new Error(`Order creation failed: ${fnError.message || 'Unknown error'}`);
       }
 
-      if (!newOrder) {
-        console.error('[ORDER_ERROR] Order created but no data returned');
+      const completeOrder = (fnData as any)?.order;
+      if (!completeOrder) {
+        console.error('[ORDER_ERROR] Edge function returned no order data');
         throw new Error('Order creation failed: No order data returned');
       }
 
-      console.info('[ORDER_SUCCESS] Order created successfully:', {
-        orderId: newOrder.id,
-        orderNumber: newOrder.order_number,
-        userId: newOrder.user_id || 'GUEST'
-      });
-
-      // ENHANCED ORDER ITEMS CREATION WITH VALIDATION
-      if (orderData.items && orderData.items.length > 0) {
-        const orderItems = orderData.items.map(item => {
-          // Validate product_id is a proper UUID
-          const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item.product_id || '');
-          
-          if (!isValidUUID) {
-            console.warn(`[ORDER_WARNING] Invalid product_id format: ${item.product_id}, using null`);
-          }
-          
-          return {
-            order_id: newOrder.id,
-            product_id: isValidUUID ? item.product_id : null,
-            product_name: item.product_name,
-            quantity: item.quantity,
-            price: item.price,
-            sku: item.sku || null,
-            packaging: item.packaging || null,
-            epa_approved: item.epa_approved || false
-          };
-        });
-
-        console.info('[ORDER_ITEMS_CREATE]', {
-          orderId: newOrder.id,
-          itemCount: orderItems.length,
-          items: orderItems.map(item => ({ 
-            productName: item.product_name, 
-            quantity: item.quantity,
-            price: item.price 
-          }))
-        });
-
-        const { error: itemsError } = await supabase
-          .from('order_items')
-          .insert(orderItems);
-
-        if (itemsError) {
-          console.error('[ORDER_ERROR] Order items creation failed:', itemsError);
-          
-          // Try to clean up the order if items failed
-          try {
-            await supabase.from('orders').delete().eq('id', newOrder.id);
-            console.info('[ORDER_CLEANUP] Successfully cleaned up failed order');
-          } catch (cleanupError) {
-            console.error('[ORDER_ERROR] Failed to cleanup order after items error:', cleanupError);
-          }
-          
-          throw new Error(`Order items creation failed: ${itemsError.message}`);
-        }
-
-        console.info('[ORDER_ITEMS_SUCCESS] Order items created successfully');
-      }
-
-      // Fetch the complete order with items
-      const { data: completeOrder, error: fetchError } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            id,
-            product_id,
-            product_name,
-            quantity,
-            price,
-            sku,
-            packaging,
-            epa_approved
-          )
-        `)
-        .eq('id', newOrder.id)
-        .single();
-
-      if (fetchError) throw fetchError;
-
       const formattedOrder: Order = {
         ...completeOrder,
-        status: completeOrder.status as Order['status'], // Type cast the status
+        status: completeOrder.status as Order['status'],
         items: completeOrder.order_items || []
       };
 
@@ -315,8 +224,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       await sendOrderNotification(formattedOrder);
 
       toast({
-        title: "Order placed successfully!",
-        description: `Order ${formattedOrder.order_number} has been created.`
+        title: 'Order placed successfully!',
+        description: `Order ${formattedOrder.order_number} has been created.`,
       });
 
       return formattedOrder;
