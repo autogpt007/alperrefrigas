@@ -52,7 +52,19 @@ const ProductDetails = () => {
   // Bulk pricing calculation functions
   const calculateBulkPrice = (packageType: string): number => {
     if (!product) return 0;
+
+    // Accessory pricing: per piece with quantity discounts
+    if (product.product_type === 'accessory') {
+      const basePrice = product.price;
+      let price = basePrice;
+      if (packageType === '5-Pack') price = basePrice * 5 * 0.95; // 5% off
+      else if (packageType === '10-Pack') price = basePrice * 10 * 0.85; // 15% off
+      else price = basePrice; // Individual
+      console.log('Accessory calculateBulkPrice:', { packageType, basePrice, price, productName: product.name });
+      return price;
+    }
     
+    // Refrigerant pricing: pallet/container logic
     const cylinderPrice = product.price; // Base price is per cylinder
     const discount20ft = product.discount_20ft || 0.30;
     const discount40ft = product.discount_40ft || 0.45;
@@ -105,10 +117,15 @@ const ProductDetails = () => {
 
   const getDiscountPercentage = (): number => {
     if (!packaging || !product) return 0;
+
+    // Accessory discount percentages
+    if (product.product_type === 'accessory') {
+      if (packaging === '5-Pack') return 5;
+      if (packaging === '10-Pack') return 15;
+      return 0;
+    }
     
-    const palletPrice = product.pallet_price || (product.price * 40);
     const currentPrice = getCurrentPrice();
-    
     // Calculate discount percentage based on equivalent cylinder pricing
     if (packaging === '20ft Container') {
       const equivalentPrice = product.price * 1140;
@@ -377,13 +394,15 @@ const ProductDetails = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
               
-              {/* Price per cylinder display */}
+              {/* Starting Price display */}
               <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-800 mb-1">Starting Price</p>
                 <p className="text-lg font-semibold text-blue-900">
-                  ${product.price}/cylinder
+                  ${product.price}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
                 </p>
-                <p className="text-xs text-blue-600">Bulk discounts available for containers</p>
+                <p className="text-xs text-blue-600">
+                  {product.product_type === 'accessory' ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' : 'Bulk discounts available for containers'}
+                </p>
               </div>
               
               {/* Pricing Display */}
@@ -400,7 +419,12 @@ const ProductDetails = () => {
                             {getDiscountPercentage()}% OFF
                           </span>
                           <span className="text-lg text-gray-500 line-through">
-                            ${(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}
+                            {product.product_type === 'accessory' ? (
+                              packaging === '5-Pack' ? `$${(product.price * 5).toFixed(2)}` :
+                              packaging === '10-Pack' ? `$${(product.price * 10).toFixed(2)}` : `$${product.price.toFixed(2)}`
+                            ) : (
+                              `$${(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}`
+                            )}
                           </span>
                         </div>
                       )}
@@ -445,10 +469,15 @@ const ProductDetails = () => {
                                 <span className="font-semibold text-blue-600">
                                   ${calculateBulkPrice(pkg).toLocaleString()}
                                 </span>
-                                {pkg !== '1 Pallet' && (
-                                  <div className="text-xs text-green-600">
-                                    {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
-                                  </div>
+                                {product.product_type === 'accessory' ? (
+                                  pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
+                                  pkg === '10-Pack' ? <div className="text-xs text-green-600">15% OFF</div> : null
+                                ) : (
+                                  pkg !== '1 Pallet' && (
+                                    <div className="text-xs text-green-600">
+                                      {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
+                                    </div>
+                                  )
                                 )}
                               </div>
                             </div>
