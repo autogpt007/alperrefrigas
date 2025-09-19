@@ -254,7 +254,7 @@ const HomePage = () => {
               <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
                   dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
                 {t('home.hero.description')}
               </p>
             </div>
@@ -281,24 +281,24 @@ const HomePage = () => {
                   </Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-400">500+</div>
-                <div className="text-gray-300">Products Available</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-cyan-400 text-shadow-md">500+</div>
+                  <div className="text-enhanced-secondary font-medium">Products Available</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-400 text-shadow-md">24/7</div>
+                  <div className="text-enhanced-secondary font-medium">Customer Support</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-400 text-shadow-md">48hr</div>
+                  <div className="text-enhanced-secondary font-medium">Fast Shipping</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-400 text-shadow-md">EPA</div>
+                  <div className="text-enhanced-secondary font-medium">Certified</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">24/7</div>
-                <div className="text-gray-300">Customer Support</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400">48hr</div>
-                <div className="text-gray-300">Fast Shipping</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-400">EPA</div>
-                <div className="text-gray-300">Certified</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -323,7 +323,7 @@ const HomePage = () => {
                 Professional Wholesale Refrigerant Distributor
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-6 rounded-full"></div>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              <p className="text-xl text-enhanced-secondary max-w-3xl mx-auto">
                 Trusted by thousands of HVAC professionals across North America
               </p>
             </div>
@@ -337,12 +337,12 @@ const HomePage = () => {
                     <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
                       <Award className="h-8 w-8 text-white" />
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Premier Freon & Refrigerant Quality Excellence</h3>
-                      <p className="text-gray-300 text-lg leading-relaxed">
-                        Alper Refrigerant stands as North America's premier wholesale freon and refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
-                      </p>
-                    </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Premier Freon & Refrigerant Quality Excellence</h3>
+                          <p className="text-enhanced-secondary text-lg leading-relaxed">
+                            Alper Refrigerant stands as North America's premier wholesale freon and refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
+                          </p>
+                        </div>
                   </div>
                 </CardContent>
               </Card>
@@ -355,8 +355,8 @@ const HomePage = () => {
                       <Package className="h-8 w-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-4">Comprehensive Freon & Refrigerant Inventory</h3>
-                      <p className="text-gray-100 leading-relaxed mb-4">
+                      <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Comprehensive Freon & Refrigerant Inventory</h3>
+                      <p className="text-enhanced-secondary leading-relaxed mb-4">
                         Our comprehensive freon and refrigerant inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every freon product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -383,7 +383,7 @@ const HomePage = () => {
                             <span className="text-cyan-400 font-medium group-hover:text-cyan-300 transition-colors">
                               freon wholesale distributor
                             </span>
-                            <p className="text-gray-300 text-sm mt-1">Bulk freon pricing for contractors</p>
+                            <p className="text-enhanced-muted text-sm mt-1">Bulk freon pricing for contractors</p>
                           </Link>
                           <Link
                             to="/products/r-410a-refrigerant-gas-alper-refrigerant-gas"

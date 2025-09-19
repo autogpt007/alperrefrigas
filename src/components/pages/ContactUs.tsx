@@ -246,7 +246,7 @@ const ContactUs = () => {
               <Card className="bg-red-900/30 border-red-500/30 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <h3 className="text-white font-semibold mb-2 text-lg">Emergency Refrigerant Support</h3>
-                  <p className="text-gray-100 text-sm mb-4">
+                  <p className="text-enhanced-secondary text-sm mb-4 leading-relaxed">
                     Critical HVAC system failure? Our emergency hotline provides 24/7 access to refrigerant supply and technical support.
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold">
@@ -259,7 +259,7 @@ const ContactUs = () => {
               <Card className="bg-green-900/30 border-green-500/30 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <h3 className="text-white font-semibold mb-2 text-lg">Get Wholesale Pricing</h3>
-                  <p className="text-gray-100 text-sm mb-4">
+                  <p className="text-enhanced-secondary text-sm mb-4 leading-relaxed">
                     Need bulk refrigerant pricing for your project? Get competitive wholesale quotes with volume discounts for contractors.
                   </p>
                   <Link to="/bulk-pricing">
@@ -380,15 +380,15 @@ const ContactUs = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <h4 className="font-semibold text-white mb-2">Do you offer bulk pricing for contractors?</h4>
-                    <p className="text-gray-300 text-sm">Yes, we provide competitive wholesale pricing with volume discounts. Bulk orders of R-410A, R-134a, and R-1234yf qualify for contractor pricing.</p>
+                    <p className="text-enhanced-secondary text-sm leading-relaxed">Yes, we provide competitive wholesale pricing with volume discounts. Bulk orders of R-410A, R-134a, and R-1234yf qualify for contractor pricing.</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-white mb-2">Are your refrigerants EPA-compliant?</h4>
-                    <p className="text-gray-300 text-sm">All our refrigerants are EPA Section 608 compliant with 99.8% purity certification. Complete documentation provided for regulatory compliance.</p>
+                    <p className="text-enhanced-secondary text-sm leading-relaxed">All our refrigerants are EPA Section 608 compliant with 99.8% purity certification. Complete documentation provided for regulatory compliance.</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-white mb-2">What's your typical shipping timeframe?</h4>
-                    <p className="text-gray-300 text-sm">Most bulk orders ship within 24 hours via temperature-controlled transport. We offer ground, expedited, and emergency delivery across North America.</p>
+                    <p className="text-enhanced-secondary text-sm leading-relaxed">Most bulk orders ship within 24 hours via temperature-controlled transport. We offer ground, expedited, and emergency delivery across North America.</p>
                   </div>
                 </CardContent>
               </Card>

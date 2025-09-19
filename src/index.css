@@ -36,20 +36,25 @@
 
     --radius: 0.5rem;
 
+    /* Enhanced color palette for better contrast */
+    --text-primary: 0 0% 100%;
+    --text-secondary: 210 20% 85%;
+    --text-muted: 210 15% 75%;
+    --text-accent: 210 100% 85%;
+    
+    /* Background variations for better contrast */
+    --card-dark: 222 30% 12%;
+    --card-darker: 222 35% 8%;
+    --overlay-light: 0 0% 100% / 0.95;
+    --overlay-dark: 0 0% 0% / 0.7;
+
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -81,6 +86,19 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
+    /* Enhanced dark mode text colors for better contrast */
+    --text-primary: 0 0% 98%;
+    --text-secondary: 210 20% 90%;
+    --text-muted: 210 15% 80%;
+    --text-accent: 210 100% 90%;
+    
+    /* Enhanced card backgrounds for better contrast */
+    --card-dark: 222 30% 15%;
+    --card-darker: 222 35% 10%;
+    --overlay-light: 0 0% 100% / 0.1;
+    --overlay-dark: 0 0% 0% / 0.8;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -99,5 +117,45 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Utility classes for improved text visibility */
+@layer utilities {
+  .text-enhanced-primary {
+    color: hsl(var(--text-primary));
+  }
+  
+  .text-enhanced-secondary {
+    color: hsl(var(--text-secondary));
+  }
+  
+  .text-enhanced-muted {
+    color: hsl(var(--text-muted));
+  }
+  
+  .text-enhanced-accent {
+    color: hsl(var(--text-accent));
+  }
+  
+  .bg-card-enhanced {
+    background-color: hsl(var(--card-dark));
+  }
+  
+  .bg-card-enhanced-darker {
+    background-color: hsl(var(--card-darker));
+  }
+
+  /* Text shadows for better readability on gradients */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
   }
 }

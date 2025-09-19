@@ -181,7 +181,7 @@ const FreonWholesalePage = () => {
                  <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
                   Bulk Freon Distributor for HVAC Contractors
                 </h1>
-                <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-xl md:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
                   Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA certified with same-day shipping nationwide.
                 </p>
               </div>
@@ -213,20 +213,20 @@ const FreonWholesalePage = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-400">25%</div>
-                  <div className="text-gray-300">Bulk Savings</div>
+                  <div className="text-3xl font-bold text-green-400 text-shadow-md">25%</div>
+                  <div className="text-enhanced-secondary font-medium">Bulk Savings</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400">24hr</div>
-                  <div className="text-gray-300">Quote Response</div>
+                  <div className="text-3xl font-bold text-blue-400 text-shadow-md">24hr</div>
+                  <div className="text-enhanced-secondary font-medium">Quote Response</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-400">500+</div>
-                  <div className="text-gray-300">Contractors Served</div>
+                  <div className="text-3xl font-bold text-purple-400 text-shadow-md">500+</div>
+                  <div className="text-enhanced-secondary font-medium">Contractors Served</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-400">EPA</div>
-                  <div className="text-gray-300">Certified</div>
+                  <div className="text-3xl font-bold text-cyan-400 text-shadow-md">EPA</div>
+                  <div className="text-enhanced-secondary font-medium">Certified</div>
                 </div>
               </div>
             </div>
@@ -240,7 +240,7 @@ const FreonWholesalePage = () => {
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Commercial Refrigerant Distributor for HVAC Contractors
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              <p className="text-xl text-enhanced-secondary max-w-3xl mx-auto">
                 Specialized contractor pricing on R-22, R-410A, R-134a with volume discounts, technical support and guaranteed purity
               </p>
             </div>
@@ -250,7 +250,7 @@ const FreonWholesalePage = () => {
                 <Card key={index} className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 transform hover:scale-105">
                   <CardHeader>
                     <CardTitle className="text-white text-xl">{product.name}</CardTitle>
-                    <CardDescription className="text-gray-300">{product.description}</CardDescription>
+                    <CardDescription className="text-enhanced-secondary">{product.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -258,7 +258,7 @@ const FreonWholesalePage = () => {
                         <h4 className="text-cyan-400 font-semibold mb-2">Applications:</h4>
                         <ul className="space-y-1">
                           {product.applications.map((app, appIndex) => (
-                            <li key={appIndex} className="text-gray-300 text-sm flex items-center">
+                            <li key={appIndex} className="text-enhanced-secondary text-sm flex items-center">
                               <CheckCircle className="h-4 w-4 text-green-400 mr-2 flex-shrink-0" />
                               {app}
                             </li>
@@ -298,9 +298,9 @@ const FreonWholesalePage = () => {
                       <DollarSign className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">Volume Discounts</h3>
-                     <p className="text-gray-300 leading-relaxed">
-                      Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk refrigerant orders.
-                    </p>
+                     <p className="text-enhanced-secondary leading-relaxed">
+                       Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk refrigerant orders.
+                     </p>
                   </CardContent>
                 </Card>
 
@@ -310,9 +310,9 @@ const FreonWholesalePage = () => {
                       <Truck className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">Fast Delivery</h3>
-                     <p className="text-gray-300 leading-relaxed">
-                      Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
-                    </p>
+                     <p className="text-enhanced-secondary leading-relaxed">
+                       Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
+                     </p>
                   </CardContent>
                 </Card>
 
@@ -322,9 +322,9 @@ const FreonWholesalePage = () => {
                       <Shield className="h-8 w-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">EPA Certified</h3>
-                     <p className="text-gray-300 leading-relaxed">
-                      All refrigerant products are EPA certified with guaranteed purity levels exceeding industry standards.
-                    </p>
+                     <p className="text-enhanced-secondary leading-relaxed">
+                       All refrigerant products are EPA certified with guaranteed purity levels exceeding industry standards.
+                     </p>
                   </CardContent>
                 </Card>
               </div>
@@ -355,7 +355,7 @@ const FreonWholesalePage = () => {
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-white mb-2">Tiered Volume Pricing</h3>
-                          <p className="text-gray-300">Progressive discounts from 5% to 25% based on annual volume commitments</p>
+                          <p className="text-enhanced-secondary">Progressive discounts from 5% to 25% based on annual volume commitments</p>
                         </div>
                       </div>
                     </CardContent>
@@ -432,41 +432,41 @@ const FreonWholesalePage = () => {
           </div>
         </section>
 
-        {/* EPA Compliance Section */}
+        {/* EPA Compliance Section - Enhanced Visibility */}
         <section className="py-20 bg-gradient-to-b from-slate-800/50 to-slate-900">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                <h3 className="text-4xl md:text-5xl font-bold text-white text-shadow-md mb-4">
                   EPA Certified & Compliant Refrigerant Solutions
                 </h3>
-                <p className="text-xl text-gray-300">
+                <p className="text-xl text-enhanced-secondary text-shadow-sm">
                   Full EPA compliance certification and technical support for HVAC contractors
                 </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 border-green-400/30">
+                <Card className="bg-gradient-to-br from-green-600/30 to-emerald-600/30 border-green-400/50 backdrop-blur-sm hover:border-green-400/70 transition-all duration-300">
                   <CardContent className="p-8 text-center">
-                    <Shield className="h-16 w-16 text-green-400 mx-auto mb-6" />
-                    <h4 className="text-2xl font-bold text-white mb-4">EPA Section 608 Certified</h4>
-                    <p className="text-gray-300">All refrigerants meet strict EPA purity standards with certificates of analysis</p>
+                    <Shield className="h-16 w-16 text-green-400 mx-auto mb-6 drop-shadow-lg" />
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">EPA Section 608 Certified</h4>
+                    <p className="text-enhanced-secondary text-lg leading-relaxed">All refrigerants meet strict EPA purity standards with certificates of analysis</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border-blue-400/30">
+                <Card className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 border-blue-400/50 backdrop-blur-sm hover:border-blue-400/70 transition-all duration-300">
                   <CardContent className="p-8 text-center">
-                    <CheckCircle className="h-16 w-16 text-blue-400 mx-auto mb-6" />
-                    <h4 className="text-2xl font-bold text-white mb-4">Purity Guaranteed</h4>
-                    <p className="text-gray-300">99.9%+ purity levels with detailed lab testing documentation</p>
+                    <CheckCircle className="h-16 w-16 text-blue-400 mx-auto mb-6 drop-shadow-lg" />
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Purity Guaranteed</h4>
+                    <p className="text-enhanced-secondary text-lg leading-relaxed">99.9%+ purity levels with detailed lab testing documentation</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-400/30">
+                <Card className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 border-purple-400/50 backdrop-blur-sm hover:border-purple-400/70 transition-all duration-300">
                   <CardContent className="p-8 text-center">
-                    <Award className="h-16 w-16 text-purple-400 mx-auto mb-6" />
-                    <h4 className="text-2xl font-bold text-white mb-4">Technical Support</h4>
-                    <p className="text-gray-300">Expert guidance on refrigerant selection and EPA compliance requirements</p>
+                    <Award className="h-16 w-16 text-purple-400 mx-auto mb-6 drop-shadow-lg" />
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Technical Support</h4>
+                    <p className="text-enhanced-secondary text-lg leading-relaxed">Expert guidance on refrigerant selection and EPA compliance requirements</p>
                   </CardContent>
                 </Card>
               </div>
