@@ -3,18 +3,26 @@ import React, { useEffect } from 'react';
 declare global {
   interface Window {
     Tawk_API?: any;
+    Tawk_LoadStart?: Date;
   }
 }
 
 export const TawkToChat: React.FC = () => {
   useEffect(() => {
-    // Only load if script hasn't been loaded already
-    if (window.Tawk_API) {
+    console.log('🔄 TawkToChat component mounted, checking if script already loaded...');
+    
+    // Check if script is already loaded
+    const existingScript = document.querySelector('script[src*="embed.tawk.to"]');
+    if (existingScript || window.Tawk_API) {
+      console.log('✅ Tawk.to script already loaded');
       return;
     }
 
-    // Initialize Tawk_API
+    console.log('🚀 Loading Tawk.to script...');
+
+    // Initialize Tawk_API and Tawk_LoadStart (required by Tawk.to)
     window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_LoadStart = new Date();
     
     // Create and inject the Tawk.to script
     const script = document.createElement('script');
@@ -23,23 +31,36 @@ export const TawkToChat: React.FC = () => {
     script.charset = 'UTF-8';
     script.setAttribute('crossorigin', '*');
     
-    // Insert script into head
-    const firstScript = document.getElementsByTagName('script')[0];
-    if (firstScript && firstScript.parentNode) {
-      firstScript.parentNode.insertBefore(script, firstScript);
-    }
+    // Add load event listener
+    script.onload = () => {
+      console.log('✅ Tawk.to script loaded successfully');
+    };
+    
+    script.onerror = (error) => {
+      console.error('❌ Failed to load Tawk.to script:', error);
+    };
+    
+    // Insert script into head (more reliable than using first script)
+    document.head.appendChild(script);
+    
+    console.log('📝 Tawk.to script added to document head');
 
     // Cleanup function
     return () => {
-      // Remove script if component unmounts
-      const existingScript = document.querySelector('script[src*="embed.tawk.to"]');
-      if (existingScript) {
-        existingScript.remove();
+      console.log('🧹 Cleaning up Tawk.to script...');
+      const scriptToRemove = document.querySelector('script[src*="embed.tawk.to"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+      // Reset globals
+      if (window.Tawk_API) {
+        delete window.Tawk_API;
+      }
+      if (window.Tawk_LoadStart) {
+        delete window.Tawk_LoadStart;
       }
     };
   }, []);
 
-  // This component doesn't render anything visible - Tawk.to handles its own UI
-  // The chat widget will appear automatically once the script loads
   return null;
 };
