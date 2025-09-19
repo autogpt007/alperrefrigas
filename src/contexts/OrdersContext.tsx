@@ -130,30 +130,15 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      // ENHANCED SESSION VALIDATION
+      // Guest-friendly session detection (no forced refresh)
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
       if (sessionError) {
-        console.error('[ORDER_ERROR] Session error:', sessionError);
-        throw new Error(`Authentication session error: ${sessionError.message}`);
+        console.warn('[ORDER_WARNING] getSession error, proceeding as guest:', sessionError.message);
       }
 
-      // Re-fetch session if initial fetch returned null but we expect authentication
-      if (!session && !isGuest) {
-        console.warn('[ORDER_WARNING] No session found for non-guest order, attempting refresh...');
-        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.getSession();
-        
-        if (refreshError || !refreshedSession) {
-          console.error('[ORDER_ERROR] Session refresh failed:', refreshError);
-          throw new Error('Authentication required. Please log in and try again.');
-        }
-        
-        console.info('[ORDER_SUCCESS] Session refreshed successfully');
-      }
-
-      const finalSession = session;
+      const finalSession = session ?? null;
       const isAuthenticated = !!finalSession?.user?.id;
-      const isActualGuest = isGuest || !isAuthenticated;
+      const isActualGuest = (isGuest === true) || !isAuthenticated;
       
       // CRITICAL: Ensure user_id is explicitly null for guests, uuid for authenticated users
       const finalUserId = isActualGuest ? null : finalSession?.user?.id || null;
