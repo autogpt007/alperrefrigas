@@ -358,11 +358,14 @@ const CheckoutPage = () => {
         customer_email: formData.customerEmail,
         total_amount: finalTotal,
         items: items.map(item => {
-          // Extract clean product ID - remove packaging suffix if present
-          const cleanProductId = item.id.includes('-') ? item.id.split('-')[0] : item.id;
+          // Safely extract a UUID from item.id if present; otherwise send null to avoid DB casting errors
+          const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+          const productIdStr = typeof item.id === 'string' ? item.id : '';
+          const uuidMatch = productIdStr.match(uuidRegex);
+          const productIdForOrder = uuidMatch ? uuidMatch[0] : null;
           
           return {
-            product_id: cleanProductId,
+            product_id: productIdForOrder,
             product_name: item.name,
             quantity: item.quantity,
             price: item.price,
