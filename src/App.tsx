@@ -19,6 +19,7 @@ import { QuotesProvider } from "./contexts/QuotesContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { WhatsAppButton } from "./components/ui/WhatsAppButton";
+import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
 import FreonWholesalePage from "./components/pages/FreonWholesalePage";
 import ProductCategory from "./components/pages/ProductCategory";
@@ -164,8 +165,9 @@ function App() {
                                <Route path="/news/:slug" element={<BlogPostRedirect />} />
                              </Routes>
                           </main>
-                          <Footer />
-                          <WhatsAppButton />
+                           <Footer />
+                           <WhatsAppButton />
+                           <TawkToChat />
                         </div>
                       } />
                     </Routes>
