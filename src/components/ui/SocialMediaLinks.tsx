@@ -82,34 +82,72 @@ const SocialMediaLinks: React.FC<{ className?: string }> = ({ className = '' }) 
     }
   ];
 
-  if (!socialSettings) return null;
+  // Fallback social media links if no database settings
+  const fallbackLinks = [
+    {
+      url: 'https://facebook.com/alperrefrigerants',
+      icon: Facebook,
+      label: 'Facebook',
+      color: 'text-blue-600 hover:text-blue-700'
+    },
+    {
+      url: 'https://twitter.com/alperrefrigas',
+      icon: Twitter,
+      label: 'Twitter',
+      color: 'text-sky-500 hover:text-sky-600'
+    },
+    {
+      url: 'https://instagram.com/alperrefrigerants',
+      icon: Instagram,
+      label: 'Instagram',
+      color: 'text-pink-500 hover:text-pink-600'
+    },
+    {
+      url: 'https://linkedin.com/company/alper-refrigerants',
+      icon: Linkedin,
+      label: 'LinkedIn',
+      color: 'text-blue-700 hover:text-blue-800'
+    },
+    {
+      url: 'https://youtube.com/@alperrefrigerants',
+      icon: Youtube,
+      label: 'YouTube',
+      color: 'text-red-600 hover:text-red-700'
+    }
+  ];
 
-  const allLinks = [...socialLinks, ...contactLinks].filter(
-    link => socialSettings[link.key] && socialSettings[link.key].trim()
-  );
-
-  if (allLinks.length === 0) return null;
+  // Use database settings if available, otherwise use fallback
+  let linksToShow;
+  if (socialSettings) {
+    const dbLinks = [...socialLinks, ...contactLinks].filter(
+      link => socialSettings[link.key] && socialSettings[link.key].trim()
+    );
+    linksToShow = dbLinks.length > 0 ? dbLinks.map(link => ({
+      ...link,
+      url: ('prefix' in link ? link.prefix : '') + socialSettings[link.key]
+    })) : fallbackLinks;
+  } else {
+    linksToShow = fallbackLinks;
+  }
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      {allLinks.map((link) => {
-        const { key, icon: Icon, label, color } = link;
-        const prefix = 'prefix' in link ? link.prefix : '';
-        const url = socialSettings[key];
-        const href = prefix ? `${prefix}${url}` : url;
+      {linksToShow.map((link, index) => {
+        const { icon: Icon, label, color, url } = link;
+        const key = 'key' in link ? link.key : `fallback-${index}`;
         
         return (
           <Button
             key={key}
             variant="ghost"
             size="sm"
-            className={`p-2 transition-colors ${color}`}
+            className={`p-2 transition-colors ${color} hover:bg-white/10`}
             asChild
           >
             <a
-              href={href}
-              target={prefix ? '_self' : '_blank'}
-              rel={prefix ? undefined : 'noopener noreferrer'}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label={label}
               title={label}
             >
