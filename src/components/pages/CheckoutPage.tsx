@@ -356,7 +356,7 @@ const CheckoutPage = () => {
       const orderData = {
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
-        total_amount: finalTotal,
+        total_amount: Number(finalTotal) || 0, // Ensure numeric total
         items: items.map(item => {
           // Safely extract a UUID from item.id if present; otherwise send null to avoid DB casting errors
           const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
@@ -367,8 +367,8 @@ const CheckoutPage = () => {
           return {
             product_id: productIdForOrder,
             product_name: item.name,
-            quantity: item.quantity,
-            price: item.price,
+            quantity: Number(item.quantity) || 1, // Ensure numeric quantity
+            price: Number(item.price) || 0, // Ensure numeric price
             packaging: item.packaging,
             sku: item.sku,
             epa_approved: item.epaApproved

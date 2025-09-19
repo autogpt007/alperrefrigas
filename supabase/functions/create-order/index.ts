@@ -44,12 +44,56 @@ serve(async (req: Request) => {
       items = [],
     } = await req.json();
 
-    // Basic validation
-    if (!customer_name || !customer_email || !total_amount || !Array.isArray(items) || items.length === 0) {
+    // Enhanced validation with clearer error messages
+    if (!customer_name?.trim()) {
       return new Response(
-        JSON.stringify({ error: "Invalid payload: missing required fields" }),
+        JSON.stringify({ error: "Customer name is required" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
+    }
+    
+    if (!customer_email?.trim() || !customer_email.includes('@')) {
+      return new Response(
+        JSON.stringify({ error: "Valid customer email is required" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
+    if (typeof total_amount !== 'number' || total_amount < 0) {
+      return new Response(
+        JSON.stringify({ error: "Total amount must be a valid positive number" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Order must contain at least one item" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
+    // Validate each order item
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (!item.product_name?.trim()) {
+        return new Response(
+          JSON.stringify({ error: `Item ${i + 1}: Product name is required` }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+        );
+      }
+      if (typeof item.price !== 'number' || item.price < 0) {
+        return new Response(
+          JSON.stringify({ error: `Item ${i + 1}: Price must be a valid positive number` }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+        );
+      }
+      if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+        return new Response(
+          JSON.stringify({ error: `Item ${i + 1}: Quantity must be a positive integer` }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+        );
+      }
     }
 
     // Determine user_id from token if available
@@ -78,9 +122,17 @@ serve(async (req: Request) => {
       .single();
 
     if (orderError || !orderInsert) {
-      console.error("[EDGE:create-order] Order insert failed", orderError);
+      console.error("[EDGE:create-order] Order insert failed:", {
+        error: orderError,
+        customer_email: customer_email,
+        user_id: user_id,
+        total_amount: total_amount,
+        items_count: items.length
+      });
       return new Response(
-        JSON.stringify({ error: orderError?.message ?? "Order insert failed" }),
+        JSON.stringify({ 
+          error: orderError?.message ?? "Failed to create order. Please check your information and try again." 
+        }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
@@ -103,9 +155,15 @@ serve(async (req: Request) => {
     if (itemsError) {
       // Attempt cleanup to avoid orphan orders
       await supabaseAdmin.from("orders").delete().eq("id", orderId);
-      console.error("[EDGE:create-order] Order items insert failed", itemsError);
+      console.error("[EDGE:create-order] Order items insert failed:", {
+        error: itemsError,
+        order_id: orderId,
+        items_payload: itemsPayload
+      });
       return new Response(
-        JSON.stringify({ error: itemsError.message }),
+        JSON.stringify({ 
+          error: "Failed to add items to order. Please check your cart items and try again." 
+        }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
