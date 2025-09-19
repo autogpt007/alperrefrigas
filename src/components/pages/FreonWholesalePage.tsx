@@ -7,6 +7,7 @@ import { ShoppingCart, Quote, Award, Truck, Shield, Phone, Mail, CheckCircle, St
 import SEOComponent from '@/components/seo/SEOComponent';
 import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import EmailObfuscator from '@/components/seo/EmailObfuscator';
+import { createProductSlug } from '@/lib/slugs';
 
 const FreonWholesalePage = () => {
   // Enhanced structured data for better SEO
@@ -125,24 +126,28 @@ const FreonWholesalePage = () => {
   const freonProducts = [
     {
       name: "R-22 Freon",
+      productName: "R-22 Refrigerant Gas | Alper Refrigerant Gas",
       description: "Legacy HCFC refrigerant for existing systems",
       applications: ["Residential HVAC", "Commercial AC", "Heat Pumps"],
       pricing: "Bulk wholesale pricing available"
     },
     {
       name: "R-410A Freon", 
+      productName: "R-410A Refrigerant Gas | Alper Refrigerant Gas",
       description: "HFC refrigerant blend for modern HVAC systems",
       applications: ["New HVAC Systems", "Commercial Refrigeration", "Heat Pumps"],
       pricing: "Volume discounts for contractors"
     },
     {
       name: "R-134a Freon",
+      productName: "R-134a Refrigerant",
       description: "Automotive and commercial refrigerant",
       applications: ["Automotive AC", "Commercial Chillers", "Refrigeration"],
       pricing: "Competitive wholesale rates"
     },
     {
       name: "R-404A Freon",
+      productName: "R-404A Refrigerant Gas | Alper Refrigerant Gas",
       description: "Commercial refrigeration refrigerant",
       applications: ["Supermarket Systems", "Cold Storage", "Food Processing"],
       pricing: "Pallet and container pricing"
@@ -249,7 +254,14 @@ const FreonWholesalePage = () => {
               {freonProducts.map((product, index) => (
                 <Card key={index} className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 transform hover:scale-105">
                   <CardHeader>
-                    <CardTitle className="text-white text-xl">{product.name}</CardTitle>
+                    <CardTitle className="text-white text-xl">
+                      <Link 
+                        to={`/products/${createProductSlug(product.productName)}`}
+                        className="hover:text-cyan-400 transition-colors duration-200 cursor-pointer"
+                      >
+                        {product.name}
+                      </Link>
+                    </CardTitle>
                     <CardDescription className="text-enhanced-secondary">{product.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
