@@ -488,7 +488,7 @@ const HomePage = () => {
                     </div>
                     <div>
                       <h3 className="text-3xl font-bold text-white mb-4">24/7 Emergency Support</h3>
-                      <p className="text-gray-300 text-lg leading-relaxed">
+                      <p className="text-white text-lg leading-relaxed font-medium text-shadow-sm">
                         System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on Alper Refrigerant to get you back up and running quickly.
                       </p>
                     </div>
@@ -522,7 +522,7 @@ const HomePage = () => {
                       <Package className="h-10 w-10 text-white" />
                     </div>
                     <h3 className="text-3xl font-bold text-white mb-4">How to Order</h3>
-                    <p className="text-gray-300 text-lg">
+                    <p className="text-white text-lg font-medium text-shadow-sm">
                       Simple steps to get your refrigerants delivered fast
                     </p>
                   </div>
@@ -652,7 +652,7 @@ const HomePage = () => {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">EPA Certified Excellence</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 All our refrigerants meet strict EPA standards and regulations. We maintain comprehensive documentation and certifications for complete regulatory compliance.
               </p>
             </div>
@@ -662,7 +662,7 @@ const HomePage = () => {
                 <Truck className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Lightning Fast Delivery</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Same-day processing and 48-hour delivery to most locations. Our nationwide distribution network ensures your projects stay on schedule.
               </p>
             </div>
@@ -672,7 +672,7 @@ const HomePage = () => {
                 <Users className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Expert Technical Support</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Our certified technicians provide 24/7 support for product selection, compatibility, and technical guidance for your specific applications.
               </p>
             </div>
@@ -682,7 +682,7 @@ const HomePage = () => {
                 <Star className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Premium Quality Guarantee</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Every product undergoes rigorous quality testing. We guarantee purity levels and offer full replacement warranty for any quality issues.
               </p>
             </div>
@@ -692,7 +692,7 @@ const HomePage = () => {
                 <Building2 className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Industry Partnerships</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Authorized distributor for leading manufacturers. Direct relationships ensure authentic products and competitive wholesale pricing.
               </p>
             </div>
@@ -702,7 +702,7 @@ const HomePage = () => {
                 <Globe className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Environmental Responsibility</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Committed to sustainable practices with proper recycling programs and eco-friendly refrigerant solutions for a greener future.
               </p>
             </div>
@@ -778,7 +778,7 @@ const HomePage = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Browse & Search</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Explore our comprehensive catalog of EPA-approved refrigerants. Use our advanced search filters to find exactly what you need.
               </p>
             </div>
@@ -794,7 +794,7 @@ const HomePage = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Request Quote</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Submit your requirements for bulk orders. Our team provides competitive pricing and customized solutions within 24 hours.
               </p>
             </div>
@@ -810,7 +810,7 @@ const HomePage = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Order & Documentation</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Place your order with complete EPA documentation, certifications, and compliance paperwork handled automatically.
               </p>
             </div>
@@ -826,7 +826,7 @@ const HomePage = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Fast Delivery</h3>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-white leading-relaxed font-medium text-shadow-sm">
                 Receive your refrigerants with our 48-hour delivery guarantee. Real-time tracking and signature confirmation included.
               </p>
             </div>

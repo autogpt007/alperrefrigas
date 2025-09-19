@@ -292,39 +292,45 @@ const FreonWholesalePage = () => {
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-green-500/20">
+                <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-green-500/40 shadow-lg hover:border-green-500/60 transition-all duration-300">
                   <CardContent className="p-8 text-center">
                     <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
                       <DollarSign className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">Volume Discounts</h3>
-                     <p className="text-enhanced-secondary leading-relaxed">
-                       Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk refrigerant orders.
-                     </p>
+                    <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Volume Discounts</h3>
+                    <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3">
+                      <p className="text-white text-lg leading-relaxed font-medium">
+                        Save up to 25% with our tiered wholesale pricing. The more you buy, the more you save on bulk refrigerant orders.
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-blue-500/20">
+                <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-blue-500/40 shadow-lg hover:border-blue-500/60 transition-all duration-300">
                   <CardContent className="p-8 text-center">
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Truck className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">Fast Delivery</h3>
-                     <p className="text-enhanced-secondary leading-relaxed">
-                       Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
-                     </p>
+                    <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Fast Delivery</h3>
+                    <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3">
+                      <p className="text-white text-lg leading-relaxed font-medium">
+                        Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-purple-500/20">
+                <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-purple-500/40 shadow-lg hover:border-purple-500/60 transition-all duration-300">
                   <CardContent className="p-8 text-center">
                     <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Shield className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">EPA Certified</h3>
-                     <p className="text-enhanced-secondary leading-relaxed">
-                       All refrigerant products are EPA certified with guaranteed purity levels exceeding industry standards.
-                     </p>
+                    <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">EPA Certified</h3>
+                    <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3">
+                      <p className="text-white text-lg leading-relaxed font-medium">
+                        All refrigerant products are EPA certified with guaranteed purity levels exceeding industry standards.
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -446,27 +452,33 @@ const FreonWholesalePage = () => {
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="bg-gradient-to-br from-green-600/30 to-emerald-600/30 border-green-400/50 backdrop-blur-sm hover:border-green-400/70 transition-all duration-300">
+                <Card className="bg-gradient-to-br from-green-600/40 to-emerald-600/40 border-green-400/60 backdrop-blur-sm hover:border-green-400/80 transition-all duration-300 shadow-lg">
                   <CardContent className="p-8 text-center">
                     <Shield className="h-16 w-16 text-green-400 mx-auto mb-6 drop-shadow-lg" />
-                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">EPA Section 608 Certified</h4>
-                    <p className="text-enhanced-secondary text-lg leading-relaxed">All refrigerants meet strict EPA purity standards with certificates of analysis</p>
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-md">EPA Section 608 Certified</h4>
+                    <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4">
+                      <p className="text-white text-lg leading-relaxed font-medium text-shadow-sm">All refrigerants meet strict EPA purity standards with certificates of analysis</p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 border-blue-400/50 backdrop-blur-sm hover:border-blue-400/70 transition-all duration-300">
+                <Card className="bg-gradient-to-br from-blue-600/40 to-cyan-600/40 border-blue-400/60 backdrop-blur-sm hover:border-blue-400/80 transition-all duration-300 shadow-lg">
                   <CardContent className="p-8 text-center">
                     <CheckCircle className="h-16 w-16 text-blue-400 mx-auto mb-6 drop-shadow-lg" />
-                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Purity Guaranteed</h4>
-                    <p className="text-enhanced-secondary text-lg leading-relaxed">99.9%+ purity levels with detailed lab testing documentation</p>
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-md">Purity Guaranteed</h4>
+                    <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4">
+                      <p className="text-white text-lg leading-relaxed font-medium text-shadow-sm">99.9%+ purity levels with detailed lab testing documentation</p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 border-purple-400/50 backdrop-blur-sm hover:border-purple-400/70 transition-all duration-300">
+                <Card className="bg-gradient-to-br from-purple-600/40 to-pink-600/40 border-purple-400/60 backdrop-blur-sm hover:border-purple-400/80 transition-all duration-300 shadow-lg">
                   <CardContent className="p-8 text-center">
                     <Award className="h-16 w-16 text-purple-400 mx-auto mb-6 drop-shadow-lg" />
-                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Technical Support</h4>
-                    <p className="text-enhanced-secondary text-lg leading-relaxed">Expert guidance on refrigerant selection and EPA compliance requirements</p>
+                    <h4 className="text-2xl font-bold text-white mb-4 text-shadow-md">Technical Support</h4>
+                    <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4">
+                      <p className="text-white text-lg leading-relaxed font-medium text-shadow-sm">Expert guidance on refrigerant selection and EPA compliance requirements</p>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
