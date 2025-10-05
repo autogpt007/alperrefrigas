@@ -17,39 +17,51 @@ serve(async (req) => {
     const orderId = url.searchParams.get('orderId');
     const status = url.searchParams.get('status');
 
-    // Validate admin JWT from request
-    const auth = req.headers.get('Authorization') ?? '';
-    const token = auth.replace(/^Bearer\s+/i, '');
-    
-    if (!token) {
-      return new Response(
-        JSON.stringify({ error: 'Authorization token required' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
-    }
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role !== 'admin') {
-        console.error(`Non-admin order access attempt by user: ${payload.sub}`);
-        throw new Error('Insufficient privileges');
-      }
-    } catch (error) {
-      console.error('JWT validation failed:', error);
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
-    }
-
-    // Initialize Supabase with service role key to bypass RLS
+    // Initialize Supabase client
     const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { 
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Verify user has admin role from profiles table
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile || profile.role !== 'admin') {
+      console.error(`Non-admin order access attempt by user: ${user.id}, role: ${profile?.role}`);
+      return new Response(
+        JSON.stringify({ error: 'Insufficient privileges. Admin access required.' }),
+        { 
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Initialize service role client for data access
+    const serviceClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
@@ -58,8 +70,8 @@ serve(async (req) => {
     console.log(`Admin performing order action: ${action}`);
 
     if (action === 'list') {
-      // Fetch all orders with items
-      const { data, error } = await supabaseClient
+      // Fetch all orders with items using service client
+      const { data, error } = await serviceClient
         .from('orders')
         .select(`
           *,
@@ -96,8 +108,8 @@ serve(async (req) => {
     }
 
     if (action === 'update' && orderId && status) {
-      // Update order status
-      const { data, error } = await supabaseClient
+      // Update order status using service client
+      const { data, error } = await serviceClient
         .from('orders')
         .update({ 
           status, 
@@ -131,7 +143,7 @@ serve(async (req) => {
       const requestData = await req.json();
       const notes = requestData.notes;
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await serviceClient
         .from('orders')
         .update({ 
           notes,
