@@ -12,8 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const table = url.searchParams.get('table') ?? 'contact_submissions';
+    const { table } = await req.json();
 
     // Simple allowlist for sensitive tables
     if (!['contact_submissions', 'newsletter_subscribers', 'quotes'].includes(table)) {
@@ -27,39 +26,51 @@ serve(async (req) => {
       );
     }
 
-    // Validate admin JWT from request
-    const auth = req.headers.get('Authorization') ?? '';
-    const token = auth.replace(/^Bearer\s+/i, '');
-    
-    if (!token) {
-      return new Response(
-        JSON.stringify({ error: 'Authorization token required' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
-    }
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role !== 'admin') {
-        console.error(`Non-admin access attempt by user: ${payload.sub}`);
-        throw new Error('Insufficient privileges');
-      }
-    } catch (error) {
-      console.error('JWT validation failed:', error);
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
-    }
-
-    // Initialize Supabase with service role key to bypass RLS
+    // Initialize Supabase client
     const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { 
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Verify user has admin role from profiles table
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile || profile.role !== 'admin') {
+      console.error(`Non-admin access attempt by user: ${user.id}, role: ${profile?.role}`);
+      return new Response(
+        JSON.stringify({ error: 'Insufficient privileges. Admin access required.' }),
+        { 
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    // Initialize service role client for data access
+    const serviceClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
@@ -67,8 +78,8 @@ serve(async (req) => {
 
     console.log(`Admin accessing ${table} data`);
 
-    // Fetch data using Supabase client
-    const { data, error } = await supabaseClient
+    // Fetch data using service client
+    const { data, error } = await serviceClient
       .from(table)
       .select('*')
       .order('created_at', { ascending: false });
