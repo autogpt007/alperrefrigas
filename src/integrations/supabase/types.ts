@@ -1063,7 +1063,7 @@ export type Database = {
           created_at: string | null
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           target_user_id: string | null
           user_agent: string | null
           user_id: string | null
@@ -1073,7 +1073,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_user_id?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -1083,7 +1083,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_user_id?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -1292,36 +1292,18 @@ export type Database = {
         Args: { base_price: number; package_type: string }
         Returns: number
       }
-      can_access_order: {
-        Args:
-          | { order_num?: string; order_user_id: string }
-          | { order_user_id: string }
-        Returns: boolean
-      }
-      generate_order_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_quote_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_db_health: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      can_access_order:
+        | { Args: { order_user_id: string }; Returns: boolean }
+        | {
+            Args: { order_num?: string; order_user_id: string }
+            Returns: boolean
+          }
+      generate_order_number: { Args: never; Returns: string }
+      generate_quote_number: { Args: never; Returns: string }
+      get_current_user_role: { Args: never; Returns: string }
+      get_db_health: { Args: never; Returns: Json }
+      is_admin: { Args: never; Returns: boolean }
+      is_admin_user: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
