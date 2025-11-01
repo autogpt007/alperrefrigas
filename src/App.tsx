@@ -18,7 +18,7 @@ import { OrdersProvider } from "./contexts/OrdersContext";
 import { QuotesProvider } from "./contexts/QuotesContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import { WhatsAppButton } from "./components/ui/WhatsAppButton";
+import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
 import FreonWholesalePage from "./components/pages/FreonWholesalePage";
@@ -166,7 +166,7 @@ function App() {
                              </Routes>
                           </main>
                            <Footer />
-                           <WhatsAppButton />
+                           <ChatToggle />
                            <TawkToChat />
                         </div>
                       } />

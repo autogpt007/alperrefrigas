@@ -63,21 +63,23 @@ export const TawkToChat: React.FC = () => {
     window.Tawk_LoadStart = new Date();
     
     // Create and inject the Tawk.to script with dynamic IDs
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://embed.tawk.to/${tawkConfig.propertyId}/${tawkConfig.widgetId}`;
-    script.charset = 'UTF-8';
-    script.setAttribute('crossorigin', '*');
+    // Match official embed: insert before first script tag
+    const s1 = document.createElement('script');
+    const s0 = document.getElementsByTagName('script')[0];
+    s1.async = true;
+    s1.src = `https://embed.tawk.to/${tawkConfig.propertyId}/${tawkConfig.widgetId}`;
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
     
-    script.onload = () => {
+    s1.onload = () => {
       console.log('✅ Tawk.to chat loaded successfully');
     };
     
-    script.onerror = (error) => {
+    s1.onerror = (error) => {
       console.error('❌ Failed to load Tawk.to script:', error);
     };
     
-    document.head.appendChild(script);
+    s0.parentNode?.insertBefore(s1, s0);
 
     // Cleanup function
     return () => {
