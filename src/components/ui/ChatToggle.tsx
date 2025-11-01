@@ -34,6 +34,7 @@ export const ChatToggle: React.FC = () => {
   useEffect(() => {
     // If Tawk_API is already available
     if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
+      try { window.Tawk_API.hideWidget?.(); } catch {}
       setTawkReady(true);
       return;
     }
@@ -41,7 +42,10 @@ export const ChatToggle: React.FC = () => {
     // Some versions support onLoad callback
     if (window.Tawk_API) {
       try {
-        window.Tawk_API.onLoad = () => setTawkReady(true);
+        window.Tawk_API.onLoad = () => {
+          try { window.Tawk_API.hideWidget?.(); } catch {}
+          setTawkReady(true);
+        };
       } catch (_) {
         // ignore
       }
@@ -82,6 +86,7 @@ export const ChatToggle: React.FC = () => {
   const handleLiveChatClick = () => {
     if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
       try {
+        window.Tawk_API.showWidget?.();
         window.Tawk_API.maximize();
       } catch (e) {
         console.error('❌ Failed to open Tawk chat:', e);
