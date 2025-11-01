@@ -13,6 +13,7 @@ export const TawkToChat: React.FC = () => {
     propertyId: string;
     widgetId: string;
     enabled: boolean;
+    snippet?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export const TawkToChat: React.FC = () => {
         const { data, error } = await supabase
           .from('site_settings')
           .select('setting_key, setting_value')
-          .in('setting_key', ['tawk_property_id', 'tawk_widget_id', 'tawk_enabled']);
+          .in('setting_key', ['tawk_property_id', 'tawk_widget_id', 'tawk_enabled', 'tawk_snippet']);
 
         if (error) throw error;
 
@@ -36,6 +37,7 @@ export const TawkToChat: React.FC = () => {
             propertyId: config.tawk_property_id || '',
             widgetId: config.tawk_widget_id || '',
             enabled: config.tawk_enabled === 'true',
+            snippet: config.tawk_snippet || ''
           });
         }
       } catch (error) {
@@ -47,53 +49,85 @@ export const TawkToChat: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Only load Tawk.to if enabled and configured
-    if (!tawkConfig?.enabled || !tawkConfig.propertyId || !tawkConfig.widgetId) {
+    if (!tawkConfig?.enabled) {
       return;
     }
 
-    // Check if script is already loaded
+    // Avoid duplicate loads
     const existingScript = document.querySelector('script[src*="embed.tawk.to"]');
     if (existingScript || window.Tawk_API) {
       return;
     }
 
-    // Initialize Tawk_API and Tawk_LoadStart (required by Tawk.to)
+    // Initialize required globals
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
-    
-    // Create and inject the Tawk.to script with dynamic IDs
-    // Match official embed: insert before first script tag
-    const s1 = document.createElement('script');
-    const s0 = document.getElementsByTagName('script')[0];
-    s1.async = true;
-    s1.src = `https://embed.tawk.to/${tawkConfig.propertyId}/${tawkConfig.widgetId}`;
-    s1.charset = 'UTF-8';
-    s1.setAttribute('crossorigin', '*');
-    
-    s1.onload = () => {
-      console.log('✅ Tawk.to chat loaded successfully');
-    };
-    
-    s1.onerror = (error) => {
-      console.error('❌ Failed to load Tawk.to script:', error);
-    };
-    
-    s0.parentNode?.insertBefore(s1, s0);
 
-    // Cleanup function
-    return () => {
-      const scriptToRemove = document.querySelector('script[src*="embed.tawk.to"]');
-      if (scriptToRemove) {
-        scriptToRemove.remove();
-      }
-      if (window.Tawk_API) {
-        delete window.Tawk_API;
-      }
-      if (window.Tawk_LoadStart) {
-        delete window.Tawk_LoadStart;
-      }
+    const injectFromSnippet = (snippet: string) => {
+      const match = snippet.match(/<script[^>]*>([\s\S]*?)<\\\/script>/i);
+      const js = match ? match[1] : snippet;
+      const inline = document.createElement('script');
+      inline.type = 'text/javascript';
+      inline.text = js;
+      // Place before </body>
+      document.body.appendChild(inline);
+      return inline;
     };
+
+    let cleanupNodes: HTMLElement[] = [];
+
+    try {
+      if (tawkConfig.snippet) {
+        const inline = injectFromSnippet(tawkConfig.snippet);
+        cleanupNodes.push(inline);
+      } else if (tawkConfig.propertyId && tawkConfig.widgetId) {
+        // Fallback: create external script like official embed
+        const s1 = document.createElement('script');
+        const s0 = document.getElementsByTagName('script')[0];
+        s1.async = true;
+        s1.src = `https://embed.tawk.to/${tawkConfig.propertyId}/${tawkConfig.widgetId}`;
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s1.onload = () => console.log('✅ Tawk.to chat loaded successfully');
+        s1.onerror = (error) => console.error('❌ Failed to load Tawk.to script:', error);
+        s0.parentNode?.insertBefore(s1, s0);
+      }
+    } catch (e) {
+      console.error('❌ Error injecting Tawk.to snippet:', e);
+    }
+
+    return () => {
+      // Remove external embed if present
+      const scriptToRemove = document.querySelector('script[src*="embed.tawk.to"]');
+      if (scriptToRemove) (scriptToRemove as HTMLElement).remove();
+      cleanupNodes.forEach((n) => n.remove());
+      if (window.Tawk_API) delete window.Tawk_API;
+      if (window.Tawk_LoadStart) delete window.Tawk_LoadStart;
+    };
+  }, [tawkConfig]);
+
+  // React to enable/disable: show/hide widget once API is ready
+  useEffect(() => {
+    if (tawkConfig == null) return;
+
+    let tries = 0;
+    const maxTries = 20; // ~10s
+    const interval = setInterval(() => {
+      if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
+        try {
+          if (tawkConfig.enabled) {
+            window.Tawk_API.showWidget?.();
+          } else {
+            window.Tawk_API.hideWidget?.();
+          }
+        } catch {}
+        clearInterval(interval);
+      } else if (++tries >= maxTries) {
+        clearInterval(interval);
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
   }, [tawkConfig]);
 
   return null;

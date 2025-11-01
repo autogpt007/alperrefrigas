@@ -51,6 +51,16 @@ const AdminSettings = () => {
     tawkWidgetId: '',
     tawkEnabled: false
   });
+  
+  const [tawkSnippet, setTawkSnippet] = useState('');
+  
+  const extractTawkIds = (snippet: string): { propertyId: string; widgetId: string } | null => {
+    const m = snippet.match(/embed\.tawk\.to\/([^/]+)\/([^'"\s]+)/i);
+    if (m && m[1] && m[2]) {
+      return { propertyId: m[1], widgetId: m[2] };
+    }
+    return null;
+  };
 
   // Rate limiter for form submissions
   const rateLimiter = new RateLimiter(3, 60000); // 3 attempts per minute
@@ -95,6 +105,7 @@ const AdminSettings = () => {
       const tawkPropertySetting = siteData?.find((s: any) => s.setting_key === 'tawk_property_id');
       const tawkWidgetSetting = siteData?.find((s: any) => s.setting_key === 'tawk_widget_id');
       const tawkEnabledSetting = siteData?.find((s: any) => s.setting_key === 'tawk_enabled');
+      const tawkSnippetSetting = siteData?.find((s: any) => s.setting_key === 'tawk_snippet');
 
       setFormData({
         notificationEmail: emailSetting?.setting_value || '',
@@ -112,6 +123,8 @@ const AdminSettings = () => {
         tawkWidgetId: tawkWidgetSetting?.setting_value || '',
         tawkEnabled: tawkEnabledSetting?.setting_value === 'true'
       });
+
+      setTawkSnippet(tawkSnippetSetting?.setting_value || '');
     } catch (error: any) {
       console.error('Error fetching settings:', error);
       toast({
@@ -124,15 +137,13 @@ const AdminSettings = () => {
     }
   };
 
-  const updateSetting = async (table: 'notification_settings' | 'site_settings', key: string, value: string) => {
+  const updateSetting = async (table: 'notification_settings' | 'site_settings', key: string, value: string, options?: { raw?: boolean }) => {
     try {
-      const sanitizedValue = sanitizeInput(value);
-      
+      const sanitizedValue = options?.raw ? value : sanitizeInput(value);
       const { error } = await supabase
         .from(table)
-        .update({ setting_value: sanitizedValue })
-        .eq('setting_key', key);
-
+        .upsert({ setting_key: key, setting_value: sanitizedValue }, { onConflict: 'setting_key' })
+        .select();
       if (error) throw error;
     } catch (error) {
       console.error(`Error updating ${key}:`, error);
