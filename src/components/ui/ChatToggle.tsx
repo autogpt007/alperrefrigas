@@ -3,11 +3,9 @@ import { MessageCircle, MessageSquare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-// A compact floating chat control with WhatsApp + Live Chat (Tawk.to)
+// A compact floating chat control with only WhatsApp
 export const ChatToggle: React.FC = () => {
-  const [tawkReady, setTawkReady] = useState(false);
-
-  // Fetch WhatsApp number (same logic as WhatsAppButton)
+  // Fetch WhatsApp number
   const { data: whatsappNumber } = useQuery({
     queryKey: ['whatsapp-number'],
     queryFn: async () => {
@@ -24,60 +22,9 @@ export const ChatToggle: React.FC = () => {
         return '905545645337';
       }
     },
-    staleTime: 30000, // 30 seconds
-    refetchOnWindowFocus: true,
-  });
-
-  const { data: tawkEnabled } = useQuery({
-    queryKey: ['tawk-enabled'],
-    queryFn: async () => {
-      try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('setting_value')
-          .eq('setting_key', 'tawk_enabled')
-          .single();
-        if (error) throw error;
-        return data?.setting_value === 'true';
-      } catch (error) {
-        return false;
-      }
-    },
     staleTime: 30000,
     refetchOnWindowFocus: true,
   });
-
-  // Detect when Tawk widget API is ready
-  useEffect(() => {
-    // If Tawk_API is already available
-    if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
-      try { window.Tawk_API.hideWidget?.(); } catch {}
-      setTawkReady(true);
-      return;
-    }
-
-    // Some versions support onLoad callback
-    if (window.Tawk_API) {
-      try {
-        window.Tawk_API.onLoad = () => {
-          try { window.Tawk_API.hideWidget?.(); } catch {}
-          setTawkReady(true);
-        };
-      } catch (_) {
-        // ignore
-      }
-    }
-
-    // Fallback: poll briefly for API readiness
-    const interval = setInterval(() => {
-      if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
-        setTawkReady(true);
-        clearInterval(interval);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleWhatsAppClick = () => {
     if (!whatsappNumber) return;
@@ -100,47 +47,19 @@ export const ChatToggle: React.FC = () => {
     }
   };
 
-  const handleLiveChatClick = () => {
-    if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
-      try {
-        window.Tawk_API.showWidget?.();
-        window.Tawk_API.maximize();
-      } catch (e) {
-        console.error('❌ Failed to open Tawk chat:', e);
-      }
-    } else {
-      console.warn('Tawk chat is not ready yet.');
-    }
-  };
-
-  // If neither option is available, render nothing
-  if (!whatsappNumber && !tawkReady) return null;
+  if (!whatsappNumber) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 flex flex-col gap-3">
+    <div className="fixed bottom-24 right-6 z-50">
       {/* WhatsApp */}
-      {whatsappNumber && (
-        <button
-          onClick={handleWhatsAppClick}
-          className="rounded-full shadow-lg transition-all duration-300 p-4 hover:scale-110 border border-border bg-green-500 hover:bg-green-600 text-white"
-          aria-label="Chat on WhatsApp"
-          title="WhatsApp"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </button>
-      )}
-
-      {/* Live Chat (Tawk) - only if enabled */}
-      {tawkEnabled && tawkReady && (
-        <button
-          onClick={handleLiveChatClick}
-          className="rounded-full shadow-lg transition-all duration-300 p-4 hover:scale-110 border border-border bg-primary text-primary-foreground"
-          aria-label="Live Chat"
-          title="Live Chat"
-        >
-          <MessageSquare className="h-6 w-6" />
-        </button>
-      )}
+      <button
+        onClick={handleWhatsAppClick}
+        className="rounded-full shadow-lg transition-all duration-300 p-4 hover:scale-110 border border-border bg-green-500 hover:bg-green-600 text-white"
+        aria-label="Chat on WhatsApp"
+        title="WhatsApp"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </button>
     </div>
   );
 };

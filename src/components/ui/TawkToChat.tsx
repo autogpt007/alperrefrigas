@@ -94,31 +94,14 @@ export const TawkToChat: React.FC = () => {
 
       console.log('Loading Tawk.to with IDs:', { propertyId, widgetId });
 
-      // Initialize globals
+      // Initialize globals - Let Tawk.to widget show by default
       window.Tawk_API = window.Tawk_API || {};
       window.Tawk_LoadStart = new Date();
-      
-      // Hide widget immediately and on load
-      window.Tawk_API.hideWidget = window.Tawk_API.hideWidget || (() => {});
-      
       window.Tawk_API.onLoad = () => {
         console.log('✅ Tawk.to API loaded successfully');
-        // Hide the default Tawk widget - we use custom ChatToggle buttons
-        try {
-          window.Tawk_API.hideWidget();
-        } catch (e) {
-          console.warn('Could not hide Tawk widget:', e);
-        }
         setReady(true);
         window.dispatchEvent(new CustomEvent('tawk-ready'));
       };
-      
-      // Also try to hide before load
-      try {
-        window.Tawk_API.hideWidget();
-      } catch (e) {
-        // Not ready yet
-      }
 
       // Inject script
       const s1 = document.createElement('script');
@@ -127,17 +110,7 @@ export const TawkToChat: React.FC = () => {
       s1.src = src;
       s1.charset = 'UTF-8';
       s1.setAttribute('crossorigin', '*');
-      s1.onload = () => {
-        console.log('✅ Tawk.to script loaded');
-        // Try hiding again after script loads
-        setTimeout(() => {
-          try {
-            window.Tawk_API?.hideWidget();
-          } catch (e) {
-            console.warn('Could not hide widget after load:', e);
-          }
-        }, 100);
-      };
+      s1.onload = () => console.log('✅ Tawk.to script loaded');
       s1.onerror = (error) => console.error('❌ Failed to load Tawk.to script:', error);
 
       const s0 = document.getElementsByTagName('script')[0];
