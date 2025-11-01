@@ -46,16 +46,18 @@ export const TawkToChat: React.FC = () => {
     };
 
     fetchTawkConfig();
+
+    // Listen for admin settings updates and refetch
+    const onSettingsUpdated = () => fetchTawkConfig();
+    window.addEventListener('site-settings-updated', onSettingsUpdated);
+
+    return () => {
+      window.removeEventListener('site-settings-updated', onSettingsUpdated);
+    };
   }, []);
 
   useEffect(() => {
-    if (!tawkConfig?.enabled) {
-      return;
-    }
-
-    // Avoid duplicate loads
-    const existingScript = document.querySelector('script[src*="embed.tawk.to"]');
-    if (existingScript || window.Tawk_API) {
+    if (!tawkConfig) {
       return;
     }
 
@@ -82,8 +84,31 @@ export const TawkToChat: React.FC = () => {
         widgetId = extracted.widgetId || widgetId;
       }
 
+      // If disabled, ensure widget is removed/hidden
+      if (!tawkConfig.enabled) {
+        const scriptToRemove = document.querySelector('script[src*="embed.tawk.to"]') as HTMLScriptElement | null;
+        scriptToRemove?.remove();
+        try { window.Tawk_API?.hideWidget?.(); } catch {}
+        return;
+      }
+
       // Load external script if we have both IDs
       if (propertyId && widgetId) {
+        const existingScript = document.querySelector('script[src*="embed.tawk.to"]') as HTMLScriptElement | null;
+        if (existingScript) {
+          const src = existingScript.getAttribute('src') || '';
+          const match = src.match(/embed\.tawk\.to\/([^/'"]+)\/([^/'"]+)/i);
+          const existingPid = match?.[1];
+          const existingWid = match?.[2];
+          if (existingPid !== propertyId || existingWid !== widgetId) {
+            existingScript.remove();
+            if (window.Tawk_API) delete window.Tawk_API;
+          } else {
+            // Already loaded with correct IDs
+            return;
+          }
+        }
+
         const s1 = document.createElement('script');
         const s0 = document.getElementsByTagName('script')[0];
         s1.async = true;
