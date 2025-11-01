@@ -117,22 +117,7 @@ export const ChatToggle: React.FC = () => {
   if (!whatsappNumber && !tawkReady) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-      {/* Live Chat (Tawk) - only if enabled */}
-      {tawkEnabled && (
-        <button
-          onClick={handleLiveChatClick}
-          disabled={!tawkReady}
-          className={`rounded-full shadow-lg transition-all duration-300 p-4 hover:scale-110 border border-border bg-primary text-primary-foreground ${
-            tawkReady ? 'opacity-100' : 'opacity-60 cursor-not-allowed'
-          }`}
-          aria-label="Live Chat"
-          title={tawkReady ? 'Live Chat' : 'Live Chat loading...'}
-        >
-          <MessageSquare className="h-6 w-6" />
-        </button>
-      )}
-
+    <div className="fixed bottom-6 right-6 z-50 flex flex-row gap-3">
       {/* WhatsApp */}
       {whatsappNumber && (
         <button
@@ -142,6 +127,18 @@ export const ChatToggle: React.FC = () => {
           title="WhatsApp"
         >
           <MessageCircle className="h-6 w-6" />
+        </button>
+      )}
+
+      {/* Live Chat (Tawk) - only if enabled */}
+      {tawkEnabled && tawkReady && (
+        <button
+          onClick={handleLiveChatClick}
+          className="rounded-full shadow-lg transition-all duration-300 p-4 hover:scale-110 border border-border bg-primary text-primary-foreground"
+          aria-label="Live Chat"
+          title="Live Chat"
+        >
+          <MessageSquare className="h-6 w-6" />
         </button>
       )}
     </div>

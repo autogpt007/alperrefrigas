@@ -99,6 +99,12 @@ export const TawkToChat: React.FC = () => {
       window.Tawk_LoadStart = new Date();
       window.Tawk_API.onLoad = () => {
         console.log('✅ Tawk.to API loaded successfully');
+        // Hide the default Tawk widget - we use custom ChatToggle buttons
+        try {
+          window.Tawk_API.hideWidget();
+        } catch (e) {
+          console.warn('Could not hide Tawk widget:', e);
+        }
         setReady(true);
         window.dispatchEvent(new CustomEvent('tawk-ready'));
       };
