@@ -63,6 +63,10 @@ export const TawkToChat: React.FC = () => {
 
     // Initialize required globals
     window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_API.onLoad = window.Tawk_API.onLoad || (() => {
+      console.log('✅ Tawk.to API loaded');
+      window.dispatchEvent(new CustomEvent('tawk-ready'));
+    });
     window.Tawk_LoadStart = new Date();
 
     const extractIdsFromSnippet = (snippet: string): { propertyId?: string; widgetId?: string } => {
@@ -109,10 +113,12 @@ export const TawkToChat: React.FC = () => {
           }
         }
 
+        console.log('Loading Tawk.to with IDs', { propertyId, widgetId });
         const s1 = document.createElement('script');
         const s0 = document.getElementsByTagName('script')[0];
         s1.async = true;
         s1.src = `https://embed.tawk.to/${propertyId}/${widgetId}`;
+        console.log('Tawk.to script URL:', s1.src);
         s1.charset = 'UTF-8';
         s1.setAttribute('crossorigin', '*');
         s1.onload = () => console.log('✅ Tawk.to chat loaded successfully');
