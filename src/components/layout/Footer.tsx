@@ -14,13 +14,15 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   // Fetch company info
-  const { data: companyInfo } = useQuery({
+  const { data: companyInfo, refetch } = useQuery({
     queryKey: ['company-info'],
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_key, setting_value')
-        .in('setting_key', ['company_name', 'company_tagline']);
+        .in('setting_key', ['company_name', 'company_tagline', 'main_phone']);
 
       if (error) throw error;
 
@@ -31,10 +33,18 @@ const Footer = () => {
 
       return {
         company_name: settingsMap.company_name || 'Alper Refrigerants',
-        company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distribution'
+        company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distribution',
+        main_phone: settingsMap.main_phone || '1-409-995-3623'
       };
     },
   });
+
+  // Listen for settings update event
+  React.useEffect(() => {
+    const handleSettingsUpdate = () => refetch();
+    window.addEventListener('site-settings-updated', handleSettingsUpdate);
+    return () => window.removeEventListener('site-settings-updated', handleSettingsUpdate);
+  }, [refetch]);
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -117,7 +127,7 @@ const Footer = () => {
                 <Phone className="h-4 w-4 text-blue-400" />
                 <div>
                   <div className="font-medium">Sales & Support</div>
-                  <div className="text-sm text-gray-300">1-210-939-1115</div>
+                  <div className="text-sm text-gray-300">{companyInfo?.main_phone || '1-409-995-3623'}</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">

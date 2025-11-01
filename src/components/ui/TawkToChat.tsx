@@ -63,29 +63,31 @@ export const TawkToChat: React.FC = () => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
 
-    const injectFromSnippet = (snippet: string) => {
-      const match = snippet.match(/<script[^>]*>([\s\S]*?)<\\\/script>/i);
-      const js = match ? match[1] : snippet;
-      const inline = document.createElement('script');
-      inline.type = 'text/javascript';
-      inline.text = js;
-      // Place before </body>
-      document.body.appendChild(inline);
-      return inline;
+    const extractIdsFromSnippet = (snippet: string): { propertyId?: string; widgetId?: string } => {
+      const match = snippet.match(/embed\.tawk\.to\/([^/'"]+)\/([^/'"]+)/i);
+      if (match) {
+        return { propertyId: match[1], widgetId: match[2] };
+      }
+      return {};
     };
 
-    let cleanupNodes: HTMLElement[] = [];
-
     try {
+      let propertyId = tawkConfig.propertyId;
+      let widgetId = tawkConfig.widgetId;
+
+      // If snippet is present, extract IDs from it
       if (tawkConfig.snippet) {
-        const inline = injectFromSnippet(tawkConfig.snippet);
-        cleanupNodes.push(inline);
-      } else if (tawkConfig.propertyId && tawkConfig.widgetId) {
-        // Fallback: create external script like official embed
+        const extracted = extractIdsFromSnippet(tawkConfig.snippet);
+        propertyId = extracted.propertyId || propertyId;
+        widgetId = extracted.widgetId || widgetId;
+      }
+
+      // Load external script if we have both IDs
+      if (propertyId && widgetId) {
         const s1 = document.createElement('script');
         const s0 = document.getElementsByTagName('script')[0];
         s1.async = true;
-        s1.src = `https://embed.tawk.to/${tawkConfig.propertyId}/${tawkConfig.widgetId}`;
+        s1.src = `https://embed.tawk.to/${propertyId}/${widgetId}`;
         s1.charset = 'UTF-8';
         s1.setAttribute('crossorigin', '*');
         s1.onload = () => console.log('✅ Tawk.to chat loaded successfully');
@@ -93,14 +95,12 @@ export const TawkToChat: React.FC = () => {
         s0.parentNode?.insertBefore(s1, s0);
       }
     } catch (e) {
-      console.error('❌ Error injecting Tawk.to snippet:', e);
+      console.error('❌ Error loading Tawk.to:', e);
     }
 
     return () => {
-      // Remove external embed if present
       const scriptToRemove = document.querySelector('script[src*="embed.tawk.to"]');
       if (scriptToRemove) (scriptToRemove as HTMLElement).remove();
-      cleanupNodes.forEach((n) => n.remove());
       if (window.Tawk_API) delete window.Tawk_API;
       if (window.Tawk_LoadStart) delete window.Tawk_LoadStart;
     };

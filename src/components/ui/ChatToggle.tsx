@@ -24,10 +24,27 @@ export const ChatToggle: React.FC = () => {
         return '905545645337';
       }
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 30000, // 30 seconds
+    refetchOnWindowFocus: true,
+  });
+
+  const { data: tawkEnabled } = useQuery({
+    queryKey: ['tawk-enabled'],
+    queryFn: async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('setting_value')
+          .eq('setting_key', 'tawk_enabled')
+          .single();
+        if (error) throw error;
+        return data?.setting_value === 'true';
+      } catch (error) {
+        return false;
+      }
+    },
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
   });
 
   // Detect when Tawk widget API is ready
@@ -101,8 +118,8 @@ export const ChatToggle: React.FC = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-      {/* Live Chat (Tawk) */}
-      {(
+      {/* Live Chat (Tawk) - only if enabled */}
+      {tawkEnabled && (
         <button
           onClick={handleLiveChatClick}
           disabled={!tawkReady}

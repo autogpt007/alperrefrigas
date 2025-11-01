@@ -33,9 +33,10 @@ const Header = () => {
   const location = useLocation();
 
   // Fetch logo and contact settings
-  const { data: logoSettings } = useQuery({
+  const { data: logoSettings, refetch } = useQuery({
     queryKey: ['logo-settings'],
-    staleTime: 0, // Force fresh data to show updated logo
+    staleTime: 30000, // 30 seconds
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('site_settings')
@@ -53,11 +54,18 @@ const Header = () => {
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distributor',
-        main_phone: settingsMap.main_phone || '1-281-400-5969',
+        main_phone: settingsMap.main_phone || '1-409-995-3623',
         header_email: settingsMap.header_email || 'info@alperrefrigas.com'
       };
     },
   });
+
+  // Listen for settings update event
+  React.useEffect(() => {
+    const handleSettingsUpdate = () => refetch();
+    window.addEventListener('site-settings-updated', handleSettingsUpdate);
+    return () => window.removeEventListener('site-settings-updated', handleSettingsUpdate);
+  }, [refetch]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
