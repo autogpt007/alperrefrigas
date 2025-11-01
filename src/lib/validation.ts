@@ -96,7 +96,15 @@ export const adminSettingsSchema = z.object({
     .regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, 'Please enter a valid SWIFT code'),
   freeShippingThreshold: z.string()
     .min(1, 'Free shipping threshold is required')
-    .regex(/^\d+(\.\d{1,2})?$/, 'Please enter a valid amount')
+    .regex(/^\d+(\.\d{1,2})?$/, 'Please enter a valid amount'),
+  // Tawk.to live chat settings
+  tawkPropertyId: z.string()
+    .max(100, 'Property ID must be less than 100 characters')
+    .optional(),
+  tawkWidgetId: z.string()
+    .max(100, 'Widget ID must be less than 100 characters')
+    .optional(),
+  tawkEnabled: z.boolean().optional()
 });
 
 // Rate limiting utility

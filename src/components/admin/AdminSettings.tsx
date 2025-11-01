@@ -4,7 +4,8 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2, Truck, Bell, Shield } from 'lucide-react';
+import { Switch } from '../ui/switch';
+import { Settings, Save, Phone, Mail, MessageCircle, CreditCard, Building2, Truck, Bell, Shield, MessagesSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { adminSettingsSchema, sanitizeInput, RateLimiter, type AdminSettingsData } from '@/lib/validation';
@@ -44,7 +45,11 @@ const AdminSettings = () => {
     bankAccountNumber: '',
     bankSwiftCode: '',
     // Shipping settings
-    freeShippingThreshold: ''
+    freeShippingThreshold: '',
+    // Tawk.to settings
+    tawkPropertyId: '',
+    tawkWidgetId: '',
+    tawkEnabled: false
   });
 
   // Rate limiter for form submissions
@@ -85,6 +90,11 @@ const AdminSettings = () => {
       const bankAccountSetting = siteData?.find((s: any) => s.setting_key === 'bank_account_number');
       const bankSwiftSetting = siteData?.find((s: any) => s.setting_key === 'bank_swift_code');
       const freeShippingSetting = siteData?.find((s: any) => s.setting_key === 'free_shipping_threshold');
+      
+      // Tawk.to settings
+      const tawkPropertySetting = siteData?.find((s: any) => s.setting_key === 'tawk_property_id');
+      const tawkWidgetSetting = siteData?.find((s: any) => s.setting_key === 'tawk_widget_id');
+      const tawkEnabledSetting = siteData?.find((s: any) => s.setting_key === 'tawk_enabled');
 
       setFormData({
         notificationEmail: emailSetting?.setting_value || '',
@@ -97,7 +107,10 @@ const AdminSettings = () => {
         bankRoutingNumber: bankRoutingSetting?.setting_value || '',
         bankAccountNumber: bankAccountSetting?.setting_value || '',
         bankSwiftCode: bankSwiftSetting?.setting_value || '',
-        freeShippingThreshold: freeShippingSetting?.setting_value || '500'
+        freeShippingThreshold: freeShippingSetting?.setting_value || '500',
+        tawkPropertyId: tawkPropertySetting?.setting_value || '',
+        tawkWidgetId: tawkWidgetSetting?.setting_value || '',
+        tawkEnabled: tawkEnabledSetting?.setting_value === 'true'
       });
     } catch (error: any) {
       console.error('Error fetching settings:', error);
@@ -158,6 +171,11 @@ const AdminSettings = () => {
       await updateSetting('site_settings', 'bank_account_number', validatedData.bankAccountNumber);
       await updateSetting('site_settings', 'bank_swift_code', validatedData.bankSwiftCode);
       await updateSetting('site_settings', 'free_shipping_threshold', validatedData.freeShippingThreshold);
+      
+      // Update Tawk.to settings
+      await updateSetting('site_settings', 'tawk_property_id', validatedData.tawkPropertyId || '');
+      await updateSetting('site_settings', 'tawk_widget_id', validatedData.tawkWidgetId || '');
+      await updateSetting('site_settings', 'tawk_enabled', validatedData.tawkEnabled ? 'true' : 'false');
 
       toast({
         title: 'Settings updated successfully!',
@@ -184,7 +202,7 @@ const AdminSettings = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     // Clear validation error when user starts typing
     if (validationErrors[field]) {
       setValidationErrors(prev => ({
@@ -511,6 +529,79 @@ const AdminSettings = () => {
               )}
               <p className="text-sm text-gray-400 mt-1">
                 Minimum order amount for free shipping
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Live Chat Settings */}
+        <Card className="bg-slate-800/50 border-cyan-500/20">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <MessagesSquare className="h-5 w-5" />
+              Live Chat Settings (Tawk.to)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg">
+              <div className="space-y-1">
+                <Label className="text-white text-base">Enable Live Chat Widget</Label>
+                <p className="text-sm text-gray-400">
+                  Toggle the Tawk.to chat widget on/off across your entire website
+                </p>
+              </div>
+              <Switch
+                checked={formData.tawkEnabled}
+                onCheckedChange={(checked) => handleInputChange('tawkEnabled', checked)}
+              />
+            </div>
+
+            <div>
+              <Label className="text-gray-300">
+                Tawk.to Property ID
+              </Label>
+              <Input
+                type="text"
+                value={formData.tawkPropertyId}
+                onChange={(e) => handleInputChange('tawkPropertyId', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.tawkPropertyId ? 'border-red-500' : ''
+                }`}
+                placeholder="e.g., 68cdc5888fb9c3192a667d13"
+              />
+              {validationErrors.tawkPropertyId && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.tawkPropertyId}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                Find this in your Tawk.to dashboard → Administration → Property Settings → Widget Code
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300">
+                Tawk.to Widget ID
+              </Label>
+              <Input
+                type="text"
+                value={formData.tawkWidgetId}
+                onChange={(e) => handleInputChange('tawkWidgetId', e.target.value)}
+                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
+                  validationErrors.tawkWidgetId ? 'border-red-500' : ''
+                }`}
+                placeholder="e.g., 1j5hsn7sj"
+              />
+              {validationErrors.tawkWidgetId && (
+                <p className="text-red-400 text-sm mt-1">{validationErrors.tawkWidgetId}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-1">
+                The widget ID from your Tawk.to embed code (second part after the property ID)
+              </p>
+            </div>
+
+            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+              <p className="text-blue-300 text-sm">
+                <strong>How to find your IDs:</strong> Go to Tawk.to dashboard → Administration → Channels → Chat Widget. 
+                Your embed code looks like: <code className="bg-slate-700 px-1 rounded">https://embed.tawk.to/PROPERTY_ID/WIDGET_ID</code>
               </p>
             </div>
           </CardContent>
