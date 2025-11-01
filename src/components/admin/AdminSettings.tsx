@@ -187,6 +187,10 @@ const AdminSettings = () => {
       await updateSetting('site_settings', 'tawk_property_id', validatedData.tawkPropertyId || '');
       await updateSetting('site_settings', 'tawk_widget_id', validatedData.tawkWidgetId || '');
       await updateSetting('site_settings', 'tawk_enabled', validatedData.tawkEnabled ? 'true' : 'false');
+      await updateSetting('site_settings', 'tawk_snippet', tawkSnippet, { raw: true });
+
+      // Dispatch event so Header/Footer refetch immediately
+      window.dispatchEvent(new Event('site-settings-updated'));
 
       toast({
         title: 'Settings updated successfully!',
@@ -227,6 +231,20 @@ const AdminSettings = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleTawkSnippetChange = (value: string) => {
+    setTawkSnippet(value);
+    
+    // Auto-extract IDs from snippet
+    const extracted = extractTawkIds(value);
+    if (extracted) {
+      setFormData(prev => ({
+        ...prev,
+        tawkPropertyId: extracted.propertyId,
+        tawkWidgetId: extracted.widgetId
+      }));
+    }
   };
 
   if (loading) {
@@ -569,37 +587,48 @@ const AdminSettings = () => {
 
             <div>
               <Label className="text-gray-300">
-                Tawk.to Property ID
+                Full Tawk.to Embed Code
               </Label>
-              <Input
-                type="text"
-                value={formData.tawkPropertyId}
-                onChange={(e) => handleInputChange('tawkPropertyId', e.target.value)}
-                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
-                  validationErrors.tawkPropertyId ? 'border-red-500' : ''
-                }`}
-                placeholder="e.g., 68cdc5888fb9c3192a667d13"
+              <Textarea
+                value={tawkSnippet}
+                onChange={(e) => handleTawkSnippetChange(e.target.value)}
+                className="bg-slate-700 border-slate-600 text-white mt-2 font-mono text-xs"
+                placeholder="Paste your full Tawk.to snippet here (e.g., <!--Start of Tawk.to Script-->...)"
+                rows={6}
               />
-              {validationErrors.tawkPropertyId && (
-                <p className="text-red-400 text-sm mt-1">{validationErrors.tawkPropertyId}</p>
-              )}
               <p className="text-sm text-gray-400 mt-1">
-                Find this in your Tawk.to dashboard → Administration → Property Settings → Widget Code
+                Paste the exact snippet from Tawk.to (Administration → Channels → Chat Widget). We'll extract the Property ID and Widget ID automatically.
               </p>
             </div>
 
             <div>
               <Label className="text-gray-300">
-                Tawk.to Widget ID
+                Tawk.to Property ID (auto-filled)
+              </Label>
+              <Input
+                type="text"
+                value={formData.tawkPropertyId}
+                onChange={(e) => handleInputChange('tawkPropertyId', e.target.value)}
+                className="bg-slate-700 border-slate-600 text-white mt-2 opacity-75"
+                placeholder="e.g., 68cdc5888fb9c3192a667d13"
+                disabled
+              />
+              <p className="text-sm text-gray-400 mt-1">
+                Automatically extracted from the snippet above
+              </p>
+            </div>
+
+            <div>
+              <Label className="text-gray-300">
+                Tawk.to Widget ID (auto-filled)
               </Label>
               <Input
                 type="text"
                 value={formData.tawkWidgetId}
                 onChange={(e) => handleInputChange('tawkWidgetId', e.target.value)}
-                className={`bg-slate-700 border-slate-600 text-white mt-2 ${
-                  validationErrors.tawkWidgetId ? 'border-red-500' : ''
-                }`}
+                className="bg-slate-700 border-slate-600 text-white mt-2 opacity-75"
                 placeholder="e.g., 1j5hsn7sj"
+                disabled
               />
               {validationErrors.tawkWidgetId && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.tawkWidgetId}</p>
