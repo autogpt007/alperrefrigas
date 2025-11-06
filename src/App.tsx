@@ -9,6 +9,7 @@ import CriticalCSS from '@/components/seo/CriticalCSS';
 import MetaRedirects from '@/components/seo/MetaRedirects';
 import { HelmetProvider } from 'react-helmet-async';
 import SecurityHeaders from '@/components/security/SecurityHeaders';
+import SecurityMonitor from '@/components/security/SecurityMonitor';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
@@ -83,6 +84,7 @@ function App() {
   return (
     <HelmetProvider>
       <SecurityHeaders />
+      <SecurityMonitor />
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
