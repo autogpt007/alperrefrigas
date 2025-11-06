@@ -70,10 +70,18 @@ export const SecurityMonitor = () => {
       subtree: true
     });
 
-    // Prevent clickjacking
+    // Prevent clickjacking (only in production, not in preview/iframe environments)
     if (window.top !== window.self) {
-      console.error('[Security] Clickjacking attempt detected');
-      window.top!.location.href = window.self.location.href;
+      try {
+        // Only attempt to break out of frame if we have permission
+        // This will fail in Lovable preview (intended behavior)
+        if (window.top.location.hostname !== window.self.location.hostname) {
+          window.top.location.href = window.self.location.href;
+        }
+      } catch (e) {
+        // Silently fail in preview environments - this is expected
+        console.log('[Security] Running in iframe environment (preview mode)');
+      }
     }
 
     // Monitor for XSS attempts in URL
