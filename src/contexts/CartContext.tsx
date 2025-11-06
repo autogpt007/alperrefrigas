@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { trackAddToCart, trackRemoveFromCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 
 export interface CartItem {
   id: string;
@@ -69,12 +70,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           quantity: updatedItems[existingItemIndex].quantity + 1
         };
         console.log('Updated existing item, new cart:', updatedItems);
+        
+        // Track add to cart in GA4
+        trackAddToCart(cartItemToGA4Item({ ...updatedItems[existingItemIndex], quantity: 1 }));
+        
         return updatedItems;
       }
       
       // Add new item
       const newCart = [...currentItems, { ...newItem, quantity: 1 }];
       console.log('Added new item, new cart:', newCart);
+      
+      // Track add to cart in GA4
+      trackAddToCart(cartItemToGA4Item({ ...newItem, quantity: 1 }));
+      
       return newCart;
     });
   };
@@ -82,6 +91,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem = (id: string) => {
     console.log('Removing item from cart:', id);
     setItems(currentItems => {
+      // Find the item being removed for GA4 tracking
+      const removedItem = currentItems.find(item => item.id === id);
+      if (removedItem) {
+        trackRemoveFromCart(cartItemToGA4Item(removedItem));
+      }
+      
       const newItems = currentItems.filter(item => item.id !== id);
       console.log('Cart after removal:', newItems);
       return newItems;

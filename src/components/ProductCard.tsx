@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp } from 'lucide-react'
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { createProductSlug } from '@/lib/slugs';
+import { trackSelectItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 
 interface Product {
   id: string;
@@ -116,6 +117,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setTimeout(() => setIsAdded(false), 2000);
   };
 
+  const handleProductClick = () => {
+    // Track product click for GA4
+    trackSelectItem(productToGA4Item(product), 'Product Catalog');
+  };
+
   const incrementQuantity = () => {
     setQuantity(prev => prev + 1);
   };
@@ -168,7 +174,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Product Info - Condensed */}
         <div className="flex-1 flex flex-col">
           <div className="mb-2">
-            <Link to={`/products/${createProductSlug(product.name)}`} className="block">
+            <Link 
+              to={`/products/${createProductSlug(product.name)}`} 
+              className="block"
+              onClick={handleProductClick}
+            >
               <h3 className="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors duration-300 hover:underline cursor-pointer">
                 {product.name}
               </h3>

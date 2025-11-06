@@ -23,6 +23,7 @@ import SEOComponent from '../seo/SEOComponent';
 import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -100,6 +101,14 @@ const CheckoutPage = () => {
     
     fetchBankWireDetails();
   }, []);
+
+  // Track begin_checkout event when user lands on checkout page
+  useEffect(() => {
+    if (items.length > 0) {
+      const ga4Items = items.map(cartItemToGA4Item);
+      trackBeginCheckout(ga4Items, finalTotal, appliedCoupon?.code);
+    }
+  }, []); // Only track on initial load
 
   // Apply coupon function
   const applyCoupon = async () => {
@@ -218,6 +227,12 @@ const CheckoutPage = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Track payment info when payment method is selected
+    if (field === 'paymentMethod' && value && items.length > 0) {
+      const ga4Items = items.map(cartItemToGA4Item);
+      trackAddPaymentInfo(ga4Items, finalTotal, value, appliedCoupon?.code);
+    }
   };
 
   const validateForm = () => {
@@ -438,6 +453,17 @@ const CheckoutPage = () => {
           .update({ current_uses: (appliedCoupon.current_uses || 0) + 1 })
           .eq('id', appliedCoupon.id);
       }
+
+      // Track purchase in GA4
+      const ga4Items = items.map(cartItemToGA4Item);
+      trackPurchase(
+        order.order_number,
+        ga4Items,
+        finalTotal,
+        0, // tax
+        shippingCost,
+        appliedCoupon?.code
+      );
 
       clearCart();
       navigate(`/order-confirmation?orderNumber=${order.order_number}`);

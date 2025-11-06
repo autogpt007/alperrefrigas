@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
 import { createProductSlug } from '@/lib/slugs';
+import { trackViewItemList, productToGA4Item } from '@/utils/ga4Ecommerce';
 
 const ProductCatalog = () => {
   const { t } = useTranslation();
@@ -174,6 +175,21 @@ const ProductCatalog = () => {
         return a.name.localeCompare(b.name);
     }
   });
+
+  // Track view_item_list when products are displayed
+  useEffect(() => {
+    if (sortedProducts.length > 0) {
+      const ga4Items = sortedProducts.map((product, index) => ({
+        ...productToGA4Item(product),
+        index: index,
+        item_list_name: productType === 'refrigerant' ? 'Refrigerants' : 
+                        productType === 'accessory' ? 'Accessories' : 'All Products'
+      }));
+      const listName = productType === 'refrigerant' ? 'Refrigerants' : 
+                       productType === 'accessory' ? 'Accessories' : 'All Products';
+      trackViewItemList(ga4Items, listName);
+    }
+  }, [sortedProducts.length, productType]); // Track when products change
 
   const ProductCard = ({ product }: { product: any }) => (
     <Card className="group transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl border-0 shadow-lg overflow-hidden h-full flex flex-col">

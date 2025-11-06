@@ -11,6 +11,7 @@ import { useToast } from '../../hooks/use-toast';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
 import { createProductSlug, findProductBySlug } from '@/lib/slugs';
+import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
   const navigate = useNavigate();
@@ -48,6 +49,14 @@ const ProductDetails = () => {
       navigate(`/products/${slug}`, { replace: true });
     }
   }, [product, id, productSlug, navigate]);
+
+  // Track product view for GA4
+  React.useEffect(() => {
+    if (product && !id) {
+      // Only track when using slug (not during redirect from ID)
+      trackViewItem(productToGA4Item(product));
+    }
+  }, [product, id]);
 
   // Bulk pricing calculation functions
   const calculateBulkPrice = (packageType: string): number => {

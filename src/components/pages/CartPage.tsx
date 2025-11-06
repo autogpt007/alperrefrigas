@@ -8,12 +8,21 @@ import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 
 const CartPage = () => {
   const { t } = useTranslation();
   const { items, updateQuantity, removeItem, total, itemCount } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Track view cart event
+  React.useEffect(() => {
+    if (items.length > 0) {
+      const ga4Items = items.map(cartItemToGA4Item);
+      trackViewCart(ga4Items, total);
+    }
+  }, []); // Only track on initial load
 
   const handleProceedToCheckout = () => {
     if (user) {
