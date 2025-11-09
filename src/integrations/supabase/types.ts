@@ -742,6 +742,7 @@ export type Database = {
           order_number: string | null
           payment_details: Json | null
           payment_method: string | null
+          phone: string | null
           shipping_address: Json | null
           shipping_cost: number | null
           status: string | null
@@ -763,6 +764,7 @@ export type Database = {
           order_number?: string | null
           payment_details?: Json | null
           payment_method?: string | null
+          phone?: string | null
           shipping_address?: Json | null
           shipping_cost?: number | null
           status?: string | null
@@ -784,6 +786,7 @@ export type Database = {
           order_number?: string | null
           payment_details?: Json | null
           payment_method?: string | null
+          phone?: string | null
           shipping_address?: Json | null
           shipping_cost?: number | null
           status?: string | null

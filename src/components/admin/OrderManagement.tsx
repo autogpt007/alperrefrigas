@@ -19,6 +19,7 @@ interface Order {
   order_number: string;
   customer_name: string;
   customer_email: string;
+  phone?: string;
   status: string;
   total_amount: number;
   shipping_cost: number;
@@ -363,6 +364,11 @@ const OrderManagement = () => {
                         <p className="text-gray-300">
                           <span className="text-gray-400">Email:</span> {selectedOrder.customer_email}
                         </p>
+                        {selectedOrder.phone && (
+                          <p className="text-gray-300">
+                            <span className="text-gray-400">Phone:</span> {selectedOrder.phone}
+                          </p>
+                        )}
                         <p className="text-gray-300">
                           <span className="text-gray-400">Order Date:</span> {new Date(selectedOrder.created_at).toLocaleDateString()}
                         </p>
