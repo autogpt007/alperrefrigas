@@ -23,6 +23,20 @@ export const contactFormSchema = z.object({
   email: z.string()
     .email('Please enter a valid email address')
     .max(255, 'Email must be less than 255 characters'),
+  companyName: z.string()
+    .min(1, 'Company name is required')
+    .max(200, 'Company name must be less than 200 characters')
+    .trim(),
+  phone: z.string()
+    .min(1, 'Phone number is required')
+    .regex(/^[\d\s\-\+\(\)]+$/, 'Please enter a valid phone number')
+    .max(20, 'Phone number must be less than 20 characters'),
+  phoneAvailableOnWhatsApp: z.boolean().default(true),
+  whatsappPhone: z.string()
+    .regex(/^[\d\s\-\+\(\)]*$/, 'Please enter a valid phone number')
+    .max(20, 'Phone number must be less than 20 characters')
+    .optional()
+    .or(z.literal('')),
   subject: z.string()
     .min(1, 'Please select a subject')
     .max(200, 'Subject must be less than 200 characters'),

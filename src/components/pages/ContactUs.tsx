@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +23,10 @@ const ContactUs = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    companyName: '',
+    phone: '',
+    phoneAvailableOnWhatsApp: true,
+    whatsappPhone: '',
     subject: '',
     message: ''
   });
@@ -59,6 +64,11 @@ const ContactUs = () => {
       const sanitizedData = {
         name: sanitizeHtml(validatedData.name),
         email: validatedData.email.toLowerCase().trim(),
+        company_name: sanitizeHtml(validatedData.companyName),
+        phone: sanitizeHtml(validatedData.phone),
+        whatsapp_phone: validatedData.phoneAvailableOnWhatsApp 
+          ? validatedData.phone 
+          : (validatedData.whatsappPhone ? sanitizeHtml(validatedData.whatsappPhone) : ''),
         subject: sanitizeHtml(validatedData.subject),
         message: sanitizeHtml(validatedData.message)
       };
@@ -95,6 +105,10 @@ const ContactUs = () => {
       setFormData({
         name: '',
         email: '',
+        companyName: '',
+        phone: '',
+        phoneAvailableOnWhatsApp: true,
+        whatsappPhone: '',
         subject: '',
         message: ''
       });
@@ -119,7 +133,7 @@ const ContactUs = () => {
     }
   };
 
-  const handleInputChange = (field: keyof ContactFormData, value: string) => {
+  const handleInputChange = (field: keyof typeof formData, value: string | boolean) => {
     // Clear validation error when user starts typing
     if (validationErrors[field]) {
       setValidationErrors(prev => ({
@@ -131,7 +145,7 @@ const ContactUs = () => {
     // Don't sanitize during typing - only sanitize on submit to preserve natural typing flow
     setFormData(prev => ({
       ...prev,
-      [field]: field === 'email' ? value.toLowerCase().trim() : value
+      [field]: field === 'email' && typeof value === 'string' ? value.toLowerCase().trim() : value
     }));
   };
 
@@ -227,7 +241,7 @@ const ContactUs = () => {
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <MessageSquare className="h-5 w-5 mr-2 text-cyan-400" />
-                    Get In Touch
+                    <span className="text-white">Get In Touch</span>
                   </CardTitle>
                   <CardDescription className="text-gray-300">
                     Choose the best way to reach us
@@ -315,6 +329,78 @@ const ContactUs = () => {
                           <p className="text-red-400 text-sm mt-1">{validationErrors.email}</p>
                         )}
                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="companyName" className="text-white">Company Name *</Label>
+                        <Input
+                          id="companyName"
+                          value={formData.companyName}
+                          onChange={(e) => handleInputChange('companyName', e.target.value)}
+                          className={`bg-slate-700 border-slate-600 text-white ${
+                            validationErrors.companyName ? 'border-red-500' : ''
+                          }`}
+                          required
+                        />
+                        {validationErrors.companyName && (
+                          <p className="text-red-400 text-sm mt-1">{validationErrors.companyName}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="phone" className="text-white">Phone Number *</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => handleInputChange('phone', e.target.value)}
+                          className={`bg-slate-700 border-slate-600 text-white ${
+                            validationErrors.phone ? 'border-red-500' : ''
+                          }`}
+                          placeholder="+1 234 567 8900"
+                          required
+                        />
+                        {validationErrors.phone && (
+                          <p className="text-red-400 text-sm mt-1">{validationErrors.phone}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="phoneAvailableOnWhatsApp"
+                          checked={formData.phoneAvailableOnWhatsApp}
+                          onCheckedChange={(checked) => 
+                            handleInputChange('phoneAvailableOnWhatsApp', checked === true)
+                          }
+                          className="border-slate-600"
+                        />
+                        <Label htmlFor="phoneAvailableOnWhatsApp" className="text-white text-sm cursor-pointer">
+                          This number is available on WhatsApp
+                        </Label>
+                      </div>
+
+                      {!formData.phoneAvailableOnWhatsApp && (
+                        <div>
+                          <Label htmlFor="whatsappPhone" className="text-white">
+                            WhatsApp Number (Optional)
+                          </Label>
+                          <Input
+                            id="whatsappPhone"
+                            type="tel"
+                            value={formData.whatsappPhone}
+                            onChange={(e) => handleInputChange('whatsappPhone', e.target.value)}
+                            className={`bg-slate-700 border-slate-600 text-white ${
+                              validationErrors.whatsappPhone ? 'border-red-500' : ''
+                            }`}
+                            placeholder="+1 234 567 8900"
+                          />
+                          {validationErrors.whatsappPhone && (
+                            <p className="text-red-400 text-sm mt-1">{validationErrors.whatsappPhone}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <div>

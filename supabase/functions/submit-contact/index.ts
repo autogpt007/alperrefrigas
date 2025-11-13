@@ -13,6 +13,7 @@ interface SubmissionData {
   message?: string;
   phone?: string;
   company_name?: string;
+  whatsapp_phone?: string;
   shipping_address?: string;
   notes?: string;
   type: 'contact' | 'newsletter' | 'quote';
@@ -108,6 +109,7 @@ serve(async (req) => {
       message: submissionData.message ? sanitizeInput(submissionData.message) : null,
       phone: submissionData.phone ? sanitizeInput(submissionData.phone) : null,
       company_name: submissionData.company_name ? sanitizeInput(submissionData.company_name) : null,
+      whatsapp_phone: submissionData.whatsapp_phone ? sanitizeInput(submissionData.whatsapp_phone) : null,
       shipping_address: submissionData.shipping_address ? sanitizeInput(submissionData.shipping_address) : null,
       notes: submissionData.notes ? sanitizeInput(submissionData.notes) : null,
     };
