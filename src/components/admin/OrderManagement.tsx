@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 // Removed SecureCardViewer import
 
@@ -141,6 +141,36 @@ const OrderManagement = () => {
     }
   });
 
+  // Delete order mutation using secure edge function
+  const deleteOrderMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      console.log('Deleting order:', orderId);
+      
+      const { data, error } = await supabase.functions.invoke('admin-orders-access', {
+        body: { 
+          action: 'delete',
+          orderId
+        }
+      });
+      
+      if (error) {
+        console.error('Error deleting order:', error);
+        throw error;
+      }
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      toast({ title: 'Order deleted successfully!' });
+      setActiveTab('list');
+      setSelectedOrder(null);
+    },
+    onError: (error: any) => {
+      console.error('Delete order error:', error);
+      toast({ title: 'Error deleting order', description: error.message, variant: 'destructive' });
+    }
+  });
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
@@ -191,6 +221,12 @@ const OrderManagement = () => {
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
     setActiveTab('details');
+  };
+
+  const handleDeleteOrder = (orderId: string, orderNumber: string) => {
+    if (confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) {
+      deleteOrderMutation.mutate(orderId);
+    }
   };
 
   if (error) {
@@ -306,6 +342,14 @@ const OrderManagement = () => {
                                 <SelectItem value="cancelled">Cancelled</SelectItem>
                               </SelectContent>
                             </Select>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteOrder(order.id, order.order_number)}
+                              className="bg-red-600/20 hover:bg-red-600/40 text-red-400 border-red-600/50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                         
@@ -348,10 +392,23 @@ const OrderManagement = () => {
             <div className="space-y-6">
               <Card className="bg-slate-800/50 border-cyan-500/20">
                 <CardHeader>
-                  <CardTitle className="text-white">Order #{selectedOrder.order_number}</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Order details and management
-                  </CardDescription>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-white">Order #{selectedOrder.order_number}</CardTitle>
+                      <CardDescription className="text-gray-300">
+                        Order details and management
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeleteOrder(selectedOrder.id, selectedOrder.order_number)}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete Order
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
