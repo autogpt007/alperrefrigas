@@ -248,7 +248,7 @@ const ContactUs = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <ContactDisplay category="general" />
+                  <ContactDisplay category="general" className="text-white" />
                   <div className="pt-4 border-t border-slate-600">
                     <h4 className="text-white font-medium mb-3">Follow Us</h4>
                     <SocialMediaLinks />
