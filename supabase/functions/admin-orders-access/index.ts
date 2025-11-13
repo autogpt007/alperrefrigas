@@ -173,6 +173,51 @@ serve(async (req) => {
       );
     }
 
+    if (action === 'delete' && orderId) {
+      // First delete all order items
+      const { error: itemsError } = await serviceClient
+        .from('order_items')
+        .delete()
+        .eq('order_id', orderId);
+
+      if (itemsError) {
+        console.error(`Error deleting order items for ${orderId}:`, itemsError);
+        return new Response(
+          JSON.stringify({ error: 'Failed to delete order items' }),
+          { 
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          }
+        );
+      }
+
+      // Then delete the order
+      const { error } = await serviceClient
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+
+      if (error) {
+        console.error(`Error deleting order ${orderId}:`, error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to delete order' }),
+          { 
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" }
+          }
+        );
+      }
+
+      console.log(`Order ${orderId} deleted successfully`);
+      return new Response(
+        JSON.stringify({ success: true, message: 'Order deleted successfully' }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
+
     return new Response(
       JSON.stringify({ error: 'Invalid action' }),
       { 
