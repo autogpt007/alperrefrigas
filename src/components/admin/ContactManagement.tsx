@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mail, Phone, Clock, Settings, Save } from 'lucide-react';
+import { Mail, Phone, Clock, Settings, Save, Trash2 } from 'lucide-react';
 
 interface ContactSubmission {
   id: string;
@@ -105,6 +105,35 @@ const ContactManagement = () => {
       toast({
         title: "Error",
         description: "Failed to update status.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteSubmission = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this contact submission? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setSubmissions(prev => prev.filter(sub => sub.id !== id));
+
+      toast({
+        title: "Submission Deleted",
+        description: "Contact submission deleted successfully.",
+      });
+    } catch (error: any) {
+      console.error('Error deleting submission:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete submission.",
         variant: "destructive",
       });
     }
@@ -211,6 +240,14 @@ const ContactManagement = () => {
                                 <SelectItem value="closed">Closed</SelectItem>
                               </SelectContent>
                             </Select>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteSubmission(submission.id)}
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                         
