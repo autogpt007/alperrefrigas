@@ -102,7 +102,7 @@ const OrderManagement = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'], refetchType: 'all' });
       toast({ title: 'Order updated successfully!' });
       setTrackingNumber('');
     },
@@ -132,7 +132,7 @@ const OrderManagement = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'], refetchType: 'all' });
       toast({ title: 'Notes added successfully!' });
     },
     onError: (error: any) => {
@@ -160,7 +160,7 @@ const OrderManagement = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'], refetchType: 'all' });
       toast({ title: 'Order deleted successfully!' });
       setActiveTab('list');
       setSelectedOrder(null);
