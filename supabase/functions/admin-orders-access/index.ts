@@ -13,9 +13,22 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const action = url.searchParams.get('action') ?? 'list';
-    const orderId = url.searchParams.get('orderId');
-    const status = url.searchParams.get('status');
+
+    // Parse JSON body if provided (prefer body over query params)
+    let body: any = {};
+    if (req.method !== 'GET') {
+      try {
+        body = await req.json();
+      } catch (_) {
+        body = {};
+      }
+    }
+
+    const action = body.action ?? url.searchParams.get('action') ?? 'list';
+    const orderId = body.orderId ?? url.searchParams.get('orderId');
+    const status = body.status ?? url.searchParams.get('status');
+    const notes = body.notes ?? url.searchParams.get('notes');
+    const trackingNumber = body.trackingNumber ?? url.searchParams.get('trackingNumber');
 
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -108,13 +121,18 @@ serve(async (req) => {
     }
 
     if (action === 'update' && orderId && status) {
-      // Update order status using service client
+      // Update order status (and tracking number if provided) using service client
+      const updatePayload: Record<string, any> = {
+        status,
+        updated_at: new Date().toISOString(),
+      };
+      if (trackingNumber) {
+        updatePayload.tracking_number = trackingNumber;
+      }
+
       const { data, error } = await serviceClient
         .from('orders')
-        .update({ 
-          status, 
-          updated_at: new Date().toISOString() 
-        })
+        .update(updatePayload)
         .eq('id', orderId)
         .select()
         .single();
@@ -140,9 +158,6 @@ serve(async (req) => {
     }
 
     if (action === 'add-notes' && orderId) {
-      const requestData = await req.json();
-      const notes = requestData.notes;
-
       const { data, error } = await serviceClient
         .from('orders')
         .update({ 
