@@ -69,6 +69,9 @@ export const registerSchema = z.object({
     .max(128, 'Password must be less than 128 characters'),
   company: z.string()
     .max(200, 'Company name must be less than 200 characters')
+    .optional(),
+  epaLicense: z.string()
+    .max(100, 'EPA license must be less than 100 characters')
     .optional()
 });
 
