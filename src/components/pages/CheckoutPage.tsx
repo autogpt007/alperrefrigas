@@ -371,6 +371,7 @@ const CheckoutPage = () => {
       const orderData = {
         customer_name: formData.customerName,
         customer_email: formData.customerEmail,
+        phone: formData.phoneNumber,
         total_amount: Number(finalTotal) || 0, // Ensure numeric total
         items: items.map(item => {
           // Safely extract a UUID from item.id if present; otherwise send null to avoid DB casting errors

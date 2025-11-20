@@ -340,6 +340,7 @@ export type Database = {
       }
       contact_submissions: {
         Row: {
+          company_name: string | null
           created_at: string
           email: string
           id: string
@@ -347,8 +348,10 @@ export type Database = {
           name: string
           status: string | null
           subject: string | null
+          whatsapp_phone: string | null
         }
         Insert: {
+          company_name?: string | null
           created_at?: string
           email: string
           id?: string
@@ -356,8 +359,10 @@ export type Database = {
           name: string
           status?: string | null
           subject?: string | null
+          whatsapp_phone?: string | null
         }
         Update: {
+          company_name?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -365,6 +370,7 @@ export type Database = {
           name?: string
           status?: string | null
           subject?: string | null
+          whatsapp_phone?: string | null
         }
         Relationships: []
       }

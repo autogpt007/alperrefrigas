@@ -31,6 +31,7 @@ serve(async (req: Request) => {
     const {
       customer_name,
       customer_email,
+      phone = null,
       status = "pending",
       total_amount,
       shipping_cost = 0,
@@ -107,6 +108,7 @@ serve(async (req: Request) => {
         user_id,
         customer_name,
         customer_email,
+        phone,
         status,
         total_amount,
         shipping_cost,
