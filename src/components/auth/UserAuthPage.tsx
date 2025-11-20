@@ -35,7 +35,8 @@ const UserAuthPage = () => {
     name: '',
     email: '',
     password: '',
-    company: ''
+    company: '',
+    epaLicense: ''
   });
 
   useEffect(() => {
@@ -125,7 +126,8 @@ const UserAuthPage = () => {
         name: sanitizeInput(validatedData.name),
         email: validatedData.email.toLowerCase().trim(),
         password: validatedData.password,
-        company: validatedData.company ? sanitizeInput(validatedData.company) : undefined
+        company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
+        epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
       });
       
       if (error) {
@@ -374,6 +376,24 @@ const UserAuthPage = () => {
                     />
                     {validationErrors.company && (
                       <p className="text-red-600 text-sm mt-1">{validationErrors.company}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Building className="h-4 w-4 text-blue-500" />
+                      EPA License (Optional)
+                    </Label>
+                    <Input
+                      type="text"
+                      value={registerData.epaLicense}
+                      onChange={(e) => handleInputChange('register', 'epaLicense', e.target.value)}
+                      placeholder="Your EPA License Number"
+                      className={validationErrors.epaLicense ? 'border-red-500' : ''}
+                      disabled={isLoading}
+                    />
+                    {validationErrors.epaLicense && (
+                      <p className="text-red-600 text-sm mt-1">{validationErrors.epaLicense}</p>
                     )}
                   </div>
 
