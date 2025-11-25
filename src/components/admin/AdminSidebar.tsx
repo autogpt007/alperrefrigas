@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Package, 
@@ -19,11 +19,28 @@ import {
   Mail,
   Wrench,
   Map,
-  CreditCard
+  CreditCard,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const AdminSidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to logout');
+    }
+  };
   
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -75,6 +92,17 @@ const AdminSidebar = () => {
           );
         })}
       </nav>
+
+      <div className="mt-auto pt-4 border-t border-slate-700">
+        <Button
+          onClick={handleLogout}
+          variant="ghost"
+          className="w-full justify-start text-gray-300 hover:bg-slate-800 hover:text-white"
+        >
+          <LogOut className="h-5 w-5 mr-3" />
+          <span>Logout</span>
+        </Button>
+      </div>
     </div>
   );
 };
