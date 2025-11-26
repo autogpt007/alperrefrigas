@@ -71,6 +71,7 @@ import AdvertManagement from "./components/admin/AdvertManagement";
 import CouponManagement from "./components/admin/CouponManagement";
 import NewsletterManagement from "./components/admin/NewsletterManagement";
 import SitemapGenerator from "./components/admin/SitemapGenerator";
+import PageContentManagement from "./components/admin/PageContentManagement";
 import BlogPage from "./components/pages/BlogPage";
 import BlogPostDetail from "./components/pages/BlogPostDetail";
 import BlogPostRedirect from "./components/pages/BlogPostRedirect";
@@ -119,6 +120,7 @@ function App() {
                          <Route path="content" element={<ContentManagement />} />
                           <Route path="testimonials" element={<TestimonialManagement />} />
                           <Route path="hero-images" element={<HeroImageManagement />} />
+                          <Route path="page-content" element={<PageContentManagement />} />
                           <Route path="sitemap" element={<SitemapGenerator />} />
                           <Route path="settings" element={<AdminSettings />} />
                        </Route>

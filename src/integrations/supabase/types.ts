@@ -805,6 +805,42 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content_blocks: {
+        Row: {
+          block_type: string
+          content: Json
+          created_at: string
+          id: string
+          is_active: boolean
+          order_index: number
+          page_slug: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          block_type: string
+          content?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          page_slug: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          block_type?: string
+          content?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          page_slug?: string
+          section_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_wallet_addresses: {
         Row: {
           created_at: string
