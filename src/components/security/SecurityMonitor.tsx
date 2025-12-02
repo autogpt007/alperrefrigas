@@ -50,13 +50,25 @@ export const SecurityMonitor = () => {
           // Detect suspicious iframes
           if (node.nodeName === 'IFRAME') {
             const iframeElement = node as HTMLIFrameElement;
+            const iframeSrc = iframeElement.src || '';
+            
+            // Allow blank/empty iframes (used by many legitimate scripts)
+            if (!iframeSrc || iframeSrc === 'about:blank' || iframeSrc.startsWith('javascript:')) {
+              return;
+            }
+            
             const allowedIframes = [
               'embed.tawk.to',
+              'tawk.to',
+              'googletagmanager.com',
+              'youtube.com',
+              'google.com',
+              'stripe.com',
               window.location.hostname
             ];
             
-            if (iframeElement.src && !allowedIframes.some(allowed => iframeElement.src.includes(allowed))) {
-              console.error('[Security] Unauthorized iframe detected:', iframeElement.src);
+            if (!allowedIframes.some(allowed => iframeSrc.includes(allowed))) {
+              console.error('[Security] Unauthorized iframe detected:', iframeSrc);
               iframeElement.remove();
             }
           }
