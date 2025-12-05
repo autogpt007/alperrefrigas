@@ -9,7 +9,7 @@ const PrivacyPolicy = () => {
     <>
       <SEOComponent
         title="Privacy Policy - Alper Refrigerants Professional Refrigerant Distribution"
-        description="Comprehensive privacy policy for FrigidFlow refrigerant distribution services. Learn how we protect your personal information and comply with EPA regulations for refrigerant sales."
+        description="Comprehensive privacy policy for Alper Chemical Group refrigerant distribution services. Learn how we protect your personal information and comply with EPA regulations for refrigerant sales."
         keywords="privacy policy, refrigerant sales, EPA compliance, data protection, HVAC distributor privacy"
         canonicalUrl="/privacy"
       />
@@ -18,9 +18,19 @@ const PrivacyPolicy = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-            <p className="text-gray-600">Last updated: January 2024</p>
+            <p className="text-gray-600">Last updated: December 2024</p>
             <p className="text-sm text-gray-500 mt-2">
               This policy applies to all refrigerant sales and EPA-regulated transactions
+            </p>
+          </div>
+
+          {/* Business Identity */}
+          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6">
+            <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
+            <p className="text-blue-800 text-sm">
+              382 NE 191st St, Miami, FL 33179, United States<br />
+              Tel: +1-409-995-3623 | Email: privacy@alperrefrigas.com<br />
+              <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
 
@@ -183,11 +193,11 @@ const PrivacyPolicy = () => {
                 <br />
                 <strong>Email:</strong> privacy@alperrefrigas.com
                 <br />
-                <strong>Phone:</strong> 1-800-734-7443
+                <strong>Phone:</strong> +1-409-995-3623
                 <br />
-                <strong>Address:</strong> FrigidFlow Privacy Officer, [Address]
+                <strong>Address:</strong> Alper Chemical Group, 382 NE 191st St, Miami, FL 33179, United States
                 <br />
-                <strong>Business Hours:</strong> Monday-Friday, 8:00 AM - 6:00 PM EST
+                <strong>Business Hours:</strong> Monday-Friday, 7:00 AM - 6:00 PM EST
               </p>
             </div>
           </div>

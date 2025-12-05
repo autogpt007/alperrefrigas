@@ -42,6 +42,8 @@ import PrivacyPolicy from "./components/pages/PrivacyPolicy";
 import TermsOfService from "./components/pages/TermsOfService";
 import CookiePolicy from "./components/pages/CookiePolicy";
 import RefundPolicy from "./components/pages/RefundPolicy";
+import ShippingPolicy from "./components/pages/ShippingPolicy";
+import PaymentInformation from "./components/pages/PaymentInformation";
 import Sitemap from "./components/pages/Sitemap";
 import CustomerSupport from "./components/pages/CustomerSupport";
 import CryptoPaymentPage from "./components/pages/CryptoPaymentPage";
@@ -157,6 +159,8 @@ function App() {
                               <Route path="/privacy" element={<PrivacyPolicy />} />
                               <Route path="/terms" element={<TermsOfService />} />
                               <Route path="/refund-policy" element={<RefundPolicy />} />
+                              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                              <Route path="/payment-info" element={<PaymentInformation />} />
                               <Route path="/cookies" element={<CookiePolicy />} />
                               <Route path="/sitemap" element={<Sitemap />} />
                                <Route path="/support" element={<CustomerSupport />} />

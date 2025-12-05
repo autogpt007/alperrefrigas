@@ -168,14 +168,28 @@
 
   <url>
     <loc>https://alperrefrigas.com/refund-policy</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2025-12-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
+    <loc>https://alperrefrigas.com/shipping-policy</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://alperrefrigas.com/payment-info</loc>
+    <lastmod>2025-12-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://alperrefrigas.com/cookies</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2025-12-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -18,9 +18,19 @@ const TermsOfService = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Terms of Service</h1>
-            <p className="text-gray-600">Last updated: January 2024</p>
+            <p className="text-gray-600">Last updated: December 2024</p>
             <p className="text-sm text-gray-500 mt-2">
               Professional Refrigerant Distribution Terms & EPA Compliance Requirements
+            </p>
+          </div>
+
+          {/* Business Identity */}
+          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6">
+            <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
+            <p className="text-blue-800 text-sm">
+              382 NE 191st St, Miami, FL 33179, United States<br />
+              Tel: +1-409-995-3623 | Email: legal@alperrefrigas.com<br />
+              <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
 
@@ -33,7 +43,8 @@ const TermsOfService = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p>By accessing and using FrigidFlow's services, you accept and agree to be bound by these Terms of Service and all applicable EPA regulations. If you do not agree to these terms or cannot comply with EPA requirements, please do not use our services.</p>
+                <p>By accessing and using Alper Chemical Group's services (operating as Alper Refrigerants), you accept and agree to be bound by these Terms of Service and all applicable EPA regulations. If you do not agree to these terms or cannot comply with EPA requirements, please do not use our services.</p>
+                <p><strong>B2B Professional Sales Only:</strong> All products sold through this website are intended for licensed HVAC professionals, contractors, and commercial businesses only. We do not sell to residential consumers.</p>
                 <p><strong>EPA Compliance Acknowledgment:</strong> By purchasing refrigerants, you acknowledge that you understand and will comply with all applicable EPA Section 608 regulations governing refrigerant handling, recovery, and disposal.</p>
               </CardContent>
             </Card>
@@ -169,7 +180,7 @@ const TermsOfService = () => {
             <div className="bg-red-50 p-6 rounded-lg border border-red-200">
               <h3 className="font-semibold text-red-900 mb-2">Limitation of Liability</h3>
               <p className="text-red-800">
-                FrigidFlow's liability is limited to the purchase price of the products sold. 
+                Alper Chemical Group's liability is limited to the purchase price of the products sold. 
                 We are not liable for consequential, incidental, or special damages arising from refrigerant use, 
                 environmental compliance issues, or regulatory violations. Customers assume full responsibility 
                 for proper handling, compliance, and environmental stewardship.
@@ -181,7 +192,7 @@ const TermsOfService = () => {
               <p className="text-yellow-800">
                 In case of refrigerant leaks, spills, or emergencies, immediately contact your local emergency 
                 services and follow proper safety procedures. Emergency response information is provided with 
-                all shipments. For technical assistance, contact our 24/7 emergency hotline at 1-800-734-HELP.
+                all shipments. Material Safety Data Sheets (MSDS) available upon request.
               </p>
             </div>
 
@@ -192,9 +203,9 @@ const TermsOfService = () => {
                 <br />
                 <strong>Email:</strong> legal@alperrefrigas.com
                 <br />
-                <strong>Phone:</strong> 1-800-734-7443
+                <strong>Phone:</strong> +1-409-995-3623
                 <br />
-                <strong>Emergency:</strong> 1-800-734-HELP (24/7)
+                <strong>Address:</strong> 382 NE 191st St, Miami, FL 33179, United States
                 <br />
                 <strong>EPA Compliance:</strong> compliance@alperrefrigas.com
               </p>

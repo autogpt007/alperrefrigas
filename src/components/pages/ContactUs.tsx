@@ -190,13 +190,21 @@ const ContactUs = () => {
     "@type": "ContactPage",
     "mainEntity": {
       "@type": "Organization",
-      "name": "FrigidFlow",
+      "name": "Alper Chemical Group",
       "alternateName": "Alper Refrigerants",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "382 NE 191st St",
+        "addressLocality": "Miami",
+        "addressRegion": "FL",
+        "postalCode": "33179",
+        "addressCountry": "US"
+      },
       "contactPoint": [
         {
           "@type": "ContactPoint",
           "contactType": "sales",
-          "telephone": "+1-210-939-1115",
+          "telephone": "+1-409-995-3623",
           "email": "sales@alperrefrigas.com",
           "areaServed": "US",
           "availableLanguage": ["English", "Spanish"]
@@ -204,7 +212,7 @@ const ContactUs = () => {
         {
           "@type": "ContactPoint", 
           "contactType": "customer service",
-          "telephone": "+1-210-939-1115",
+          "telephone": "+1-409-995-3623",
           "email": "support@alperrefrigas.com",
           "hoursAvailable": "Mo-Fr 07:00-18:00"
         }
@@ -224,6 +232,20 @@ const ContactUs = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4">
+          {/* Business Identity Banner */}
+          <div className="bg-blue-900/50 border border-blue-700 rounded-lg p-4 mb-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-white mb-2">Alper Chemical Group</h2>
+              <p className="text-blue-200 text-sm">
+                382 NE 191st St, Miami, FL 33179, United States<br />
+                Tel: +1-409-995-3623 | Email: sales@alperrefrigas.com
+              </p>
+              <p className="text-cyan-400 text-xs mt-2 font-medium">
+                B2B Supplier – Sales to EPA-certified HVAC professionals only
+              </p>
+            </div>
+          </div>
+
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">

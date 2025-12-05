@@ -144,13 +144,22 @@ const Footer = () => {
                   <div className="text-sm text-gray-300">Monday - Friday: 7:00 AM - 6:00 PM EST</div>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-4 w-4 text-blue-400" />
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-4 w-4 text-blue-400 mt-1" />
                 <div>
-                  <div className="font-medium">Distribution Centers</div>
-                  <div className="text-sm text-gray-300">Dallas, TX • Miami, FL • Los Angeles, CA</div>
+                  <div className="font-medium">Alper Chemical Group</div>
+                  <div className="text-sm text-gray-300">
+                    382 NE 191st St<br />
+                    Miami, FL 33179<br />
+                    United States
+                  </div>
                 </div>
               </div>
+            </div>
+            <div className="mt-4 p-3 bg-blue-900/30 rounded-lg border border-blue-800">
+              <p className="text-xs text-blue-200 font-medium">
+                B2B Supplier – Sales to EPA-certified HVAC professionals only
+              </p>
             </div>
             <div className="mt-6">
               <SocialMediaLinks className="justify-start" />
@@ -196,13 +205,14 @@ const Footer = () => {
             <div className="text-sm text-gray-400 mb-4 md:mb-0">
               {t('footer.copyright', { year: currentYear })}
             </div>
-            <div className="flex space-x-6 text-sm">
+            <div className="flex flex-wrap gap-4 text-sm">
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link>
               <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.termsOfService')}</Link>
               <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund & Return Policy</Link>
+              <Link to="/shipping-policy" className="text-gray-400 hover:text-white transition-colors">Shipping Policy</Link>
+              <Link to="/payment-info" className="text-gray-400 hover:text-white transition-colors">Payment Information</Link>
               <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">{t('footer.cookiePolicy')}</Link>
               <Link to="/sitemap" className="text-gray-400 hover:text-white transition-colors">{t('footer.sitemap')}</Link>
-              <Link to="/faq" className="text-gray-400 hover:text-white transition-colors">{t('footer.faq')}</Link>
             </div>
           </div>
         </div>
