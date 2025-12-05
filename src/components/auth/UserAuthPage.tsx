@@ -1,6 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,7 @@ import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft } from 'lucide-react
 import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
+import HCaptchaWrapper from '@/components/ui/HCaptcha';
 
 const UserAuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +20,8 @@ const UserAuthPage = () => {
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -49,8 +53,34 @@ const UserAuthPage = () => {
     }
   }, [user, navigate, returnTo]);
 
+  const handleCaptchaVerify = (token: string) => {
+    setCaptchaToken(token);
+    setError('');
+  };
+
+  const handleCaptchaExpire = () => {
+    setCaptchaToken(null);
+    setError('Captcha expired. Please verify again.');
+  };
+
+  const handleCaptchaError = () => {
+    setCaptchaToken(null);
+    setError('Captcha error. Please try again.');
+  };
+
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check captcha
+    if (!captchaToken) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
     
     // Check rate limiting
     const userIP = 'login-user'; // In a real app, you'd get the user's IP
@@ -68,7 +98,9 @@ const UserAuthPage = () => {
       setError('');
       
       console.log('Attempting login for:', validatedData.email);
-      const { error } = await login(validatedData.email, validatedData.password);
+      const { error } = await login(validatedData.email, validatedData.password, captchaToken);
+      resetCaptcha();
+      
       if (error) {
         console.error('Login error:', error);
         setError(error.message || 'Login failed. Please check your credentials.');
@@ -80,6 +112,7 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
+      resetCaptcha();
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -106,6 +139,12 @@ const UserAuthPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check captcha
+    if (!captchaToken) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
+    
     // Check rate limiting
     const userIP = 'register-user'; // In a real app, you'd get the user's IP
     if (!rateLimiter.canAttempt(userIP)) {
@@ -128,7 +167,9 @@ const UserAuthPage = () => {
         password: validatedData.password,
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
-      });
+      }, captchaToken);
+      
+      resetCaptcha();
       
       if (error) {
         console.error('Registration error:', error);
@@ -163,6 +204,7 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
+      resetCaptcha();
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -304,10 +346,19 @@ const UserAuthPage = () => {
                     </div>
                   </div>
 
+                  <div className="py-2">
+                    <HCaptchaWrapper
+                      ref={captchaRef}
+                      onVerify={handleCaptchaVerify}
+                      onExpire={handleCaptchaExpire}
+                      onError={handleCaptchaError}
+                    />
+                  </div>
+
                   <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    disabled={isLoading || !captchaToken}
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
@@ -429,10 +480,19 @@ const UserAuthPage = () => {
                     <PasswordStrengthIndicator password={registerData.password} />
                   </div>
 
+                  <div className="py-2">
+                    <HCaptchaWrapper
+                      ref={captchaRef}
+                      onVerify={handleCaptchaVerify}
+                      onExpire={handleCaptchaExpire}
+                      onError={handleCaptchaError}
+                    />
+                  </div>
+
                   <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    disabled={isLoading || !captchaToken}
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
@@ -446,12 +506,6 @@ const UserAuthPage = () => {
                 </form>
               </TabsContent>
             </Tabs>
-
-            <div className="mt-6 pt-4 border-t">
-              <p className="text-center text-sm text-gray-600">
-                Continue as guest during checkout - no account required
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>

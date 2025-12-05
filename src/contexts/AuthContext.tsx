@@ -17,8 +17,8 @@ interface AuthContextType {
   isAdmin: boolean;
   isLoading: boolean;
   signOut: () => Promise<void>;
-  login: (email: string, password: string) => Promise<{ error: any }>;
-  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any }>;
+  login: (email: string, password: string, captchaToken?: string) => Promise<{ error: any }>;
+  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => Promise<{ error: any }>;
   logout: () => Promise<void>;
 }
 
@@ -140,14 +140,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, captchaToken?: string) => {
     console.log('AuthContext login attempt for:', email);
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase().trim(),
         password,
         options: {
-          captchaToken: undefined // Explicitly disable captcha
+          captchaToken
         }
       });
       
@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
+  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => {
     try {
       console.log('Starting registration for:', data.email);
       
@@ -167,7 +167,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: data.email.toLowerCase().trim(),
         password: data.password,
         options: {
-          captchaToken: undefined, // Explicitly disable captcha
+          captchaToken,
           data: {
             full_name: data.name,
             company: data.company,
