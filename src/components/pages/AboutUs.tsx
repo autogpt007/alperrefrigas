@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Award, Shield, CheckCircle, Target, Eye, Heart } from 'lucide-react';
+import { Users, Award, Shield, CheckCircle, Target, Eye, Heart, MapPin, Phone, Mail, Building2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
@@ -107,13 +107,24 @@ const AboutUs = () => {
     "@type": "AboutPage",
     "mainEntity": {
       "@type": "Organization", 
-      "name": "Alper Refrigerants",
+      "name": "Alper Chemical Group",
+      "legalName": "Alper Chemical Group",
       "alternateName": "Alper Refrigerants",
-      "description": "Professional wholesale refrigerant distributor serving HVAC contractors, automotive technicians, and industrial facilities across North America with EPA-certified refrigerants.",
-      "foundingDate": "2010",
+      "description": "B2B professional wholesale refrigerant distributor serving EPA-certified HVAC contractors, licensed technicians, and industrial facilities across North America.",
+      "foundingDate": "2011",
       "numberOfEmployees": "25-50",
       "naics": "423730",
       "isicV4": "4661",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "382 NE 191st St",
+        "addressLocality": "Miami",
+        "addressRegion": "FL",
+        "postalCode": "33179",
+        "addressCountry": "US"
+      },
+      "telephone": "+1-409-995-3623",
+      "email": "sales@alperrefrigas.com",
       "specialty": [
         "HFC Refrigerant Distribution",
         "HFO Refrigerant Sales", 
@@ -165,6 +176,43 @@ const AboutUs = () => {
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {t('about.isoCertified')}
               </Badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Business Identity Banner */}
+      <div className="bg-blue-900 text-white py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="flex items-start gap-4">
+              <Building2 className="h-8 w-8 text-blue-300 flex-shrink-0 mt-1" />
+              <div>
+                <h2 className="text-xl font-bold mb-2">Alper Chemical Group</h2>
+                <div className="flex items-start gap-2 text-blue-200 mb-1">
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1" />
+                  <span>382 NE 191st St, Miami, FL 33179, United States</span>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200 mb-1">
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <a href="tel:+14099953623" className="hover:text-white transition-colors">+1-409-995-3623</a>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200">
+                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <a href="mailto:sales@alperrefrigas.com" className="hover:text-white transition-colors">sales@alperrefrigas.com</a>
+                </div>
+              </div>
+            </div>
+            <div className="bg-amber-500 text-amber-950 p-4 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Shield className="h-6 w-6 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-sm uppercase tracking-wide mb-1">B2B Professional Supplier</p>
+                  <p className="text-sm">
+                    Sales restricted to EPA Section 608 certified HVAC professionals, licensed contractors, and authorized industrial buyers only.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
