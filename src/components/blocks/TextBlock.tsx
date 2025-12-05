@@ -1,6 +1,13 @@
 import React from 'react';
-import DOMPurify from 'dompurify';
 import { TextBlockContent } from '@/types/page-blocks';
+
+// Simple HTML sanitizer
+const sanitizeHTML = (html: string): string => {
+  return html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/javascript:/gi, '');
+};
 
 interface TextBlockProps {
   content: TextBlockContent;
@@ -14,10 +21,7 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
   };
 
   // Sanitize HTML content to prevent XSS attacks
-  const sanitizedContent = DOMPurify.sanitize(content.content, {
-    ADD_ATTR: ['target', 'rel', 'class', 'style'],
-    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
-  });
+  const sanitizedContent = sanitizeHTML(content.content);
 
   return (
     <section className="py-12 bg-background">
