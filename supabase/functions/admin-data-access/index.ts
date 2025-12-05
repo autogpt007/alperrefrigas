@@ -51,15 +51,16 @@ serve(async (req) => {
       );
     }
 
-    // Verify user has admin role from profiles table
-    const { data: profile, error: profileError } = await supabaseClient
-      .from('profiles')
+    // Verify user has admin role from user_roles table (secure role storage)
+    const { data: roleData, error: roleError } = await supabaseClient
+      .from('user_roles')
       .select('role')
-      .eq('id', user.id)
-      .single();
+      .eq('user_id', user.id)
+      .eq('role', 'admin')
+      .maybeSingle();
 
-    if (profileError || !profile || profile.role !== 'admin') {
-      console.error(`Non-admin access attempt by user: ${user.id}, role: ${profile?.role}`);
+    if (roleError || !roleData) {
+      console.error(`Non-admin access attempt by user: ${user.id}`);
       return new Response(
         JSON.stringify({ error: 'Insufficient privileges. Admin access required.' }),
         { 
