@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { TextBlockContent } from '@/types/page-blocks';
 
 interface TextBlockProps {
@@ -12,6 +13,12 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
     right: 'text-right'
   };
 
+  // Sanitize HTML content to prevent XSS attacks
+  const sanitizedContent = DOMPurify.sanitize(content.content, {
+    ADD_ATTR: ['target', 'rel', 'class', 'style'],
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+  });
+
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
@@ -21,7 +28,7 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
           )}
           <div 
             className="prose prose-lg max-w-none text-muted-foreground"
-            dangerouslySetInnerHTML={{ __html: content.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         </div>
       </div>
