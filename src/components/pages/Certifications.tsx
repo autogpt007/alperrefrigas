@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Award, Shield, CheckCircle, Download, FileText, Package } from 'lucide-react';
+import { Award, Shield, CheckCircle, Download, FileText, Package, ExternalLink, AlertTriangle, Building2, MapPin, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/contexts/ProductsContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface Certificate {
   id: string;
@@ -148,13 +149,137 @@ const Certifications = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="text-center mb-12">
+        {/* Business Identity Banner */}
+        <div className="bg-blue-900 text-white p-6 rounded-lg mb-8">
+          <div className="grid md:grid-cols-2 gap-6 items-center">
+            <div className="flex items-start gap-4">
+              <Building2 className="h-8 w-8 text-blue-300 flex-shrink-0 mt-1" />
+              <div>
+                <h2 className="text-xl font-bold mb-2">Alper Chemical Group</h2>
+                <div className="flex items-start gap-2 text-blue-200 mb-1">
+                  <MapPin className="h-4 w-4 flex-shrink-0 mt-1" />
+                  <span>382 NE 191st St, Miami, FL 33179, United States</span>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200 mb-1">
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <a href="tel:+14099953623" className="hover:text-white transition-colors">+1-409-995-3623</a>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200">
+                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <a href="mailto:certifications@alperrefrigas.com" className="hover:text-white transition-colors">certifications@alperrefrigas.com</a>
+                </div>
+              </div>
+            </div>
+            <div className="bg-amber-500 text-amber-950 p-4 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Shield className="h-6 w-6 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-sm uppercase tracking-wide mb-1">B2B Professional Supplier</p>
+                  <p className="text-sm">
+                    Sales restricted to EPA Section 608 certified HVAC professionals and licensed contractors only.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Certifications & Accreditations</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Our comprehensive certification portfolio demonstrates our unwavering commitment to quality, safety, and regulatory compliance. 
             Every certificate represents our dedication to meeting the highest industry standards and providing you with trusted, reliable refrigerant solutions.
           </p>
         </div>
+
+        {/* Verification Disclaimer */}
+        <Alert className="mb-8 border-amber-300 bg-amber-50">
+          <AlertTriangle className="h-5 w-5 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            <strong>Certification Verification Notice:</strong> All certifications listed below can be independently verified through official regulatory bodies. 
+            Copies of current certificates are available upon request. Contact us at{' '}
+            <a href="mailto:certifications@alperrefrigas.com" className="underline font-semibold">certifications@alperrefrigas.com</a> for verification documentation.
+          </AlertDescription>
+        </Alert>
+
+        {/* Official Verification Links */}
+        <Card className="mb-8 border-2 border-blue-200">
+          <CardHeader className="bg-blue-50">
+            <CardTitle className="flex items-center">
+              <ExternalLink className="h-6 w-6 text-blue-600 mr-2" />
+              Official Verification Resources
+            </CardTitle>
+            <p className="text-gray-600 mt-2">
+              Verify our certifications and memberships through these official regulatory and industry organization portals.
+            </p>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-4 bg-gray-50 rounded-lg border">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <h4 className="font-semibold text-gray-900">EPA Section 608</h4>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Verify refrigerant handling certifications through the U.S. Environmental Protection Agency.
+                </p>
+                <a 
+                  href="https://www.epa.gov/section608" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  EPA Section 608 Portal <ExternalLink className="h-3 w-3" />
+                </a>
+                <p className="text-xs text-gray-500 mt-2">
+                  Contact EPA at 1-800-296-1996 for certification verification.
+                </p>
+              </div>
+              
+              <div className="p-4 bg-gray-50 rounded-lg border">
+                <div className="flex items-center gap-2 mb-3">
+                  <Award className="h-5 w-5 text-purple-600" />
+                  <h4 className="font-semibold text-gray-900">AHRI Membership</h4>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Verify membership status through the Air-Conditioning, Heating & Refrigeration Institute.
+                </p>
+                <a 
+                  href="https://www.ahrinet.org/certification/directory" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  AHRI Directory <ExternalLink className="h-3 w-3" />
+                </a>
+                <p className="text-xs text-gray-500 mt-2">
+                  AHRI contact: certification@ahrinet.org
+                </p>
+              </div>
+              
+              <div className="p-4 bg-gray-50 rounded-lg border">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <h4 className="font-semibold text-gray-900">ISO Certification</h4>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">
+                  Verify ISO certifications through the International Organization for Standardization database.
+                </p>
+                <a 
+                  href="https://www.iso.org/certification.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-800 font-medium"
+                >
+                  ISO Certification Portal <ExternalLink className="h-3 w-3" />
+                </a>
+                <p className="text-xs text-gray-500 mt-2">
+                  Certificate copies available upon request.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Product Certificates Section */}
         {productCertificates.length > 0 && (
@@ -374,7 +499,7 @@ const Certifications = () => {
                 </p>
                 <ul className="text-green-800 mt-2 space-y-1">
                   <li>📧 Email: certifications@alperrefrigas.com</li>
-                  <li>📞 Phone: 1-800-734-7443 ext. 3</li>
+                  <li>📞 Phone: +1-409-995-3623</li>
                   <li>🕒 Available: Monday-Friday, 8AM-6PM EST</li>
                 </ul>
               </div>
@@ -390,6 +515,33 @@ const Certifications = () => {
                 </ul>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Legal Disclaimer */}
+        <div className="mt-8 p-6 bg-gray-100 rounded-lg border border-gray-300">
+          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-gray-600" />
+            Important Compliance Disclaimer
+          </h4>
+          <div className="text-sm text-gray-700 space-y-2">
+            <p>
+              <strong>EPA Certification Claims:</strong> Our EPA Section 608 certifications are issued by EPA-approved certifying organizations 
+              and can be verified through the EPA's official channels. Certification numbers and documentation are available upon request 
+              for customer verification and regulatory compliance purposes.
+            </p>
+            <p>
+              <strong>ISO Certification Claims:</strong> ISO certifications displayed are issued by accredited third-party certification bodies. 
+              Certificate validity and scope can be verified through the issuing certification body or the IAF CertSearch database.
+            </p>
+            <p>
+              <strong>AHRI Membership:</strong> AHRI membership status can be verified directly through the Air-Conditioning, Heating & Refrigeration Institute 
+              member directory at <a href="https://www.ahrinet.org" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">ahrinet.org</a>.
+            </p>
+            <p>
+              <strong>Documentation Availability:</strong> Physical or digital copies of all certificates are maintained on file and will be provided 
+              within 2 business days upon written request to <a href="mailto:certifications@alperrefrigas.com" className="text-blue-600 underline">certifications@alperrefrigas.com</a>.
+            </p>
           </div>
         </div>
       </div>
