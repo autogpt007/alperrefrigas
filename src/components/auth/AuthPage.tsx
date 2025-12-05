@@ -1,17 +1,26 @@
 
-import React, { useState, useEffect } from 'react';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Shield, ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import HCaptchaWrapper from '@/components/ui/HCaptcha';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const AuthPage = () => {
-  const { user, isLoading, isAdmin } = useAuth();
+  const { user, isLoading, isAdmin, login } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
   const navigate = useNavigate();
 
   console.log('AuthPage - user:', user, 'isLoading:', isLoading, 'isAdmin:', isAdmin);
@@ -35,6 +44,44 @@ const AuthPage = () => {
       navigate('/admin', { replace: true });
     }
   }, [user, isAdmin, isLoading, navigate]);
+
+  const handleCaptchaVerify = (token: string) => {
+    setCaptchaToken(token);
+  };
+
+  const handleCaptchaExpire = () => {
+    setCaptchaToken(null);
+  };
+
+  const handleCaptchaError = () => {
+    setCaptchaToken(null);
+    setError('Captcha verification failed. Please try again.');
+  };
+
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setAuthLoading(true);
+
+    try {
+      const result = await login(email, password, captchaToken || undefined);
+      
+      if (result?.error) {
+        setError(result.error.message || 'Login failed');
+        resetCaptcha();
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
+      resetCaptcha();
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   if (isLoading || authLoading) {
     return (
@@ -72,24 +119,72 @@ const AuthPage = () => {
               <p className="text-xs text-gray-500 mt-2">This is restricted to administrators only</p>
             </CardHeader>
             <CardContent>
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#06b6d4',
-                        brandAccent: '#0891b2',
-                      }
-                    }
-                  }
-                }}
-                providers={[]}
-                redirectTo={`${window.location.origin}/admin`}
-                view="sign_in"
-                showLinks={false}
-              />
+              <form onSubmit={handleLogin} className="space-y-4">
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-gray-300">Email address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                    required
+                    className="bg-slate-700/50 border-slate-600 text-white"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-gray-300">Your Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      className="bg-slate-700/50 border-slate-600 text-white pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="py-2">
+                  <HCaptchaWrapper
+                    ref={captchaRef}
+                    onVerify={handleCaptchaVerify}
+                    onExpire={handleCaptchaExpire}
+                    onError={handleCaptchaError}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
+                  disabled={authLoading || !email || !password}
+                >
+                  {authLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    'Sign in'
+                  )}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </div>
