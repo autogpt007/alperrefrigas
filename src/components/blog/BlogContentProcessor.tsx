@@ -1,21 +1,6 @@
 import React from 'react';
 import { marked } from 'marked';
-
-// Simple HTML sanitizer for blog content
-const sanitizeHTML = (html: string, options?: { allowIframe?: boolean }): string => {
-  // Remove script tags and event handlers
-  let clean = html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
-    .replace(/javascript:/gi, '');
-  
-  // If iframes not allowed, remove them
-  if (!options?.allowIframe) {
-    clean = clean.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
-  }
-  
-  return clean;
-};
+import { sanitizeHTMLExtended } from '@/lib/sanitize';
 import { useProducts } from '@/contexts/ProductsContext';
 import { createProductSlug } from '@/lib/slugs';
 
@@ -64,6 +49,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
     
     return null;
   };
+
   const processContent = (html: string, postTitle: string): string => {
     let processedContent = html;
     
@@ -86,9 +72,8 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
 
     // Fix heading hierarchy - ensure only one H1 (which should be the title)
     const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    let h2Counter = 0;
 
-    headings.forEach((heading, index) => {
+    headings.forEach((heading) => {
       const currentLevel = parseInt(heading.tagName[1]);
       
       // Convert all H1s in content to H2s (main title is handled separately)
@@ -97,10 +82,8 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
         newH2.innerHTML = heading.innerHTML;
         newH2.className = 'text-2xl font-bold text-white mb-4 mt-8 drop-shadow-sm';
         heading.parentNode?.replaceChild(newH2, heading);
-        h2Counter++;
       } else if (currentLevel === 2) {
         heading.className = 'text-2xl font-bold text-white mb-4 mt-8 drop-shadow-sm';
-        h2Counter++;
       } else if (currentLevel === 3) {
         heading.className = 'text-xl font-semibold text-white mb-3 mt-6 drop-shadow-sm';
       } else if (currentLevel === 4) {
@@ -216,8 +199,8 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
 
   const processedHTML = processContent(content, title);
   
-  // Sanitize HTML to prevent XSS attacks
-  const sanitizedHTML = sanitizeHTML(processedHTML, { allowIframe: true });
+  // Sanitize HTML using robust DOMPurify library
+  const sanitizedHTML = sanitizeHTMLExtended(processedHTML);
 
   return (
     <div 

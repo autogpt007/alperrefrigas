@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-// Simple HTML sanitizer fallback
-const sanitizeHTML = (html: string): string => {
-  const div = document.createElement('div');
-  div.textContent = html.replace(/<[^>]*>/g, (tag) => {
-    // Allow only safe tags
-    const safeTagMatch = tag.match(/^<\/?(strong|em|b|i|br|span)(\s|>|\/)/i);
-    return safeTagMatch ? tag : '';
-  });
-  return div.innerHTML || html.replace(/<script[^>]*>.*?<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '');
-};
+import { sanitizeInlineHTML } from '@/lib/sanitize';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdverts } from '@/hooks/useAdverts';
@@ -114,10 +104,10 @@ export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex-1 text-center">
             <div className="animate-fade-in">
-                <span 
-                  className="text-sm md:text-base font-medium"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(currentMessage.text) }}
-                />
+              <span 
+                className="text-sm md:text-base font-medium"
+                dangerouslySetInnerHTML={{ __html: sanitizeInlineHTML(currentMessage.text) }}
+              />
             </div>
           </div>
           

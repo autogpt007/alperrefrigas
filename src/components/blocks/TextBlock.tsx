@@ -1,13 +1,6 @@
 import React from 'react';
 import { TextBlockContent } from '@/types/page-blocks';
-
-// Simple HTML sanitizer
-const sanitizeHTML = (html: string): string => {
-  return html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
-    .replace(/javascript:/gi, '');
-};
+import { sanitizeHTML } from '@/lib/sanitize';
 
 interface TextBlockProps {
   content: TextBlockContent;
@@ -20,7 +13,7 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
     right: 'text-right'
   };
 
-  // Sanitize HTML content to prevent XSS attacks
+  // Sanitize HTML content using robust DOMPurify library
   const sanitizedContent = sanitizeHTML(content.content);
 
   return (
