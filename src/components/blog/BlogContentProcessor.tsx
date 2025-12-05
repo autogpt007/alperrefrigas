@@ -1,6 +1,21 @@
 import React from 'react';
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+
+// Simple HTML sanitizer for blog content
+const sanitizeHTML = (html: string, options?: { allowIframe?: boolean }): string => {
+  // Remove script tags and event handlers
+  let clean = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/javascript:/gi, '');
+  
+  // If iframes not allowed, remove them
+  if (!options?.allowIframe) {
+    clean = clean.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+  }
+  
+  return clean;
+};
 import { useProducts } from '@/contexts/ProductsContext';
 import { createProductSlug } from '@/lib/slugs';
 
@@ -202,11 +217,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
   const processedHTML = processContent(content, title);
   
   // Sanitize HTML to prevent XSS attacks
-  const sanitizedHTML = DOMPurify.sanitize(processedHTML, {
-    ADD_TAGS: ['iframe'],
-    ADD_ATTR: ['target', 'rel', 'class', 'style'],
-    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
-  });
+  const sanitizedHTML = sanitizeHTML(processedHTML, { allowIframe: true });
 
   return (
     <div 
