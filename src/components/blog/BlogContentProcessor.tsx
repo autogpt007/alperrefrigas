@@ -1,5 +1,6 @@
 import React from 'react';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { useProducts } from '@/contexts/ProductsContext';
 import { createProductSlug } from '@/lib/slugs';
 
@@ -199,11 +200,18 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
   };
 
   const processedHTML = processContent(content, title);
+  
+  // Sanitize HTML to prevent XSS attacks
+  const sanitizedHTML = DOMPurify.sanitize(processedHTML, {
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['target', 'rel', 'class', 'style'],
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+  });
 
   return (
     <div 
       className="prose prose-lg prose-invert max-w-none"
-      dangerouslySetInnerHTML={{ __html: processedHTML }}
+      dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
     />
   );
 };

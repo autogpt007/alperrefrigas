@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdverts } from '@/hooks/useAdverts';
@@ -105,7 +106,7 @@ export const RollingTextBanner: React.FC<RollingTextBannerProps> = ({
             <div className="animate-fade-in">
               <span 
                 className="text-sm md:text-base font-medium"
-                dangerouslySetInnerHTML={{ __html: currentMessage.text }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentMessage.text) }}
               />
             </div>
           </div>
