@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, User, Building, Shield, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import HCaptchaWrapper from '@/components/ui/HCaptcha';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -19,6 +21,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
   const { login, register } = useAuth();
 
   const [loginData, setLoginData] = useState({
@@ -34,13 +38,41 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     epaLicense: ''
   });
 
+  const handleCaptchaVerify = (token: string) => {
+    setCaptchaToken(token);
+    setError('');
+  };
+
+  const handleCaptchaExpire = () => {
+    setCaptchaToken(null);
+    setError('Captcha expired. Please verify again.');
+  };
+
+  const handleCaptchaError = () => {
+    setCaptchaToken(null);
+    setError('Captcha error. Please try again.');
+  };
+
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!captchaToken) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await login(loginData.email, loginData.password);
+      const { error } = await login(loginData.email, loginData.password, captchaToken);
+      resetCaptcha();
+      
       if (error) {
         setError(error.message || 'Login failed. Please check your credentials.');
       } else {
@@ -50,6 +82,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Login failed:', error);
       setError('An unexpected error occurred. Please try again.');
+      resetCaptcha();
     } finally {
       setIsLoading(false);
     }
@@ -57,11 +90,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!captchaToken) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await register(registerData);
+      const { error } = await register(registerData, captchaToken);
+      resetCaptcha();
+      
       if (error) {
         if (error.message?.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
@@ -81,6 +122,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Registration failed:', error);
       setError('An unexpected error occurred. Please try again.');
+      resetCaptcha();
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +131,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleClose = () => {
     onClose();
     setError('');
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
     setLoginData({ email: '', password: '' });
     setRegisterData({
       name: '',
@@ -103,7 +147,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto">
         <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
           {/* Glowing Header */}
           <CardHeader className="text-center space-y-4 relative overflow-hidden">
@@ -189,10 +233,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     </div>
                   </div>
 
+                  <div className="py-2">
+                    <HCaptchaWrapper
+                      ref={captchaRef}
+                      onVerify={handleCaptchaVerify}
+                      onExpire={handleCaptchaExpire}
+                      onError={handleCaptchaError}
+                    />
+                  </div>
+
                   <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25"
+                    disabled={isLoading || !captchaToken}
+                    className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
@@ -292,10 +345,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     </div>
                   </div>
 
+                  <div className="py-2">
+                    <HCaptchaWrapper
+                      ref={captchaRef}
+                      onVerify={handleCaptchaVerify}
+                      onExpire={handleCaptchaExpire}
+                      onError={handleCaptchaError}
+                    />
+                  </div>
+
                   <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25"
+                    disabled={isLoading || !captchaToken}
+                    className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
