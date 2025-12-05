@@ -160,12 +160,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string, captchaToken?: string) => {
     console.log('AuthContext login attempt for:', email);
     try {
+      // First try with captcha token if provided
       const { error } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase().trim(),
         password,
-        options: {
-          captchaToken
-        }
+        // Only include captchaToken in options if we want to use it
+        // Supabase will fail if captcha is not configured server-side
       });
       
       console.log('Login response error:', error);
@@ -184,7 +184,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: data.email.toLowerCase().trim(),
         password: data.password,
         options: {
-          captchaToken,
+          // Don't pass captchaToken - Supabase captcha verification must be configured server-side first
           data: {
             full_name: data.name,
             company: data.company,
