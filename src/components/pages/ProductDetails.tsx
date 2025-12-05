@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
 import { useCart } from '../../contexts/CartContext';
 import { useToast } from '../../hooks/use-toast';
@@ -402,6 +402,27 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              
+              {/* PROFESSIONAL USE ONLY Disclaimer - Only show for refrigerants */}
+              {product.product_type !== 'accessory' && (
+                <div className="mb-4 p-4 bg-yellow-50 border-2 border-yellow-400 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-bold text-yellow-800 text-lg mb-1">
+                        ⚠️ PROFESSIONAL USE ONLY
+                      </h3>
+                      <div className="text-sm text-yellow-700 space-y-1">
+                        <p><strong>EPA Section 608 certification REQUIRED</strong> for purchase.</p>
+                        <p>This product is regulated under the Clean Air Act and is restricted to licensed HVAC professionals and EPA-certified technicians only.</p>
+                        <p className="text-xs mt-2">
+                          <strong>DOT HazMat Compliance:</strong> All refrigerant shipments comply with DOT hazardous materials regulations (49 CFR). Commercial delivery address required.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Starting Price display */}
               <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">

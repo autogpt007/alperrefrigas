@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Filter, Grid, List, Shield, Truck } from 'lucide-react';
+import { Search, Filter, Grid, List, Shield, Truck, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -400,6 +400,22 @@ const ProductCatalog = () => {
           </div>
         </div>
       </section>
+
+      {/* EPA Compliance Banner - Only for refrigerants */}
+      {productType === 'refrigerant' && (
+        <div className="bg-yellow-50 border-y-2 border-yellow-400">
+          <div className="container mx-auto px-4 sm:px-6 py-4">
+            <div className="flex items-center justify-center gap-3 text-center">
+              <AlertTriangle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
+              <div className="text-sm text-yellow-800">
+                <strong>⚠️ PROFESSIONAL USE ONLY</strong> — All refrigerants require EPA Section 608 certification for purchase. 
+                Sales restricted to licensed HVAC professionals and certified technicians only. 
+                <a href="/compliance" className="underline ml-1 hover:text-yellow-900">Learn more about EPA compliance →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">

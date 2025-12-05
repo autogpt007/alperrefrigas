@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { createProductSlug } from '@/lib/slugs';
@@ -157,6 +157,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-lg">
                 <Zap className="h-3 w-3 mr-1" />
                 EPA
+              </Badge>
+            </div>
+          )}
+
+          {/* Professional Use Only Badge for Refrigerants */}
+          {product.product_type !== 'accessory' && (
+            <div className="absolute bottom-3 left-3 right-3">
+              <Badge className="bg-yellow-500/90 text-yellow-900 border-0 shadow-lg text-xs w-full justify-center py-1">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                EPA 608 CERT. REQUIRED
               </Badge>
             </div>
           )}
