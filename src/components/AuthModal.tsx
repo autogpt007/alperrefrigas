@@ -61,16 +61,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!captchaToken) {
-      setError('Please complete the captcha verification.');
-      return;
-    }
+    // Captcha is optional - only check if hCaptcha is configured server-side
+    // For now, allow login without captcha verification
     
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await login(loginData.email, loginData.password, captchaToken);
+      const { error } = await login(loginData.email, loginData.password, captchaToken || undefined);
       resetCaptcha();
       
       if (error) {
@@ -91,16 +89,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!captchaToken) {
-      setError('Please complete the captcha verification.');
-      return;
-    }
+    // Captcha is optional - only check if hCaptcha is configured server-side
     
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await register(registerData, captchaToken);
+      const { error } = await register(registerData, captchaToken || undefined);
       resetCaptcha();
       
       if (error) {
@@ -244,7 +239,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !captchaToken}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -356,7 +351,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !captchaToken}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (

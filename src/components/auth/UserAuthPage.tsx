@@ -76,11 +76,7 @@ const UserAuthPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check captcha
-    if (!captchaToken) {
-      setError('Please complete the captcha verification.');
-      return;
-    }
+    // Captcha is optional - server-side must be configured to verify
     
     // Check rate limiting
     const userIP = 'login-user'; // In a real app, you'd get the user's IP
@@ -98,7 +94,7 @@ const UserAuthPage = () => {
       setError('');
       
       console.log('Attempting login for:', validatedData.email);
-      const { error } = await login(validatedData.email, validatedData.password, captchaToken);
+      const { error } = await login(validatedData.email, validatedData.password, captchaToken || undefined);
       resetCaptcha();
       
       if (error) {
@@ -139,11 +135,7 @@ const UserAuthPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check captcha
-    if (!captchaToken) {
-      setError('Please complete the captcha verification.');
-      return;
-    }
+    // Captcha is optional - server-side must be configured to verify
     
     // Check rate limiting
     const userIP = 'register-user'; // In a real app, you'd get the user's IP
@@ -357,7 +349,7 @@ const UserAuthPage = () => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !captchaToken}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -491,7 +483,7 @@ const UserAuthPage = () => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !captchaToken}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
