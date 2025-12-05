@@ -33,7 +33,7 @@ interface Order {
 }
 
 const AccountDashboard = () => {
-  const { user, profile, logout } = useAuth();
+  const { user, profile, logout, isAdmin } = useAuth();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -271,7 +271,7 @@ const AccountDashboard = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span>Account Type:</span>
-                  <Badge variant="secondary">{profile.role === 'admin' ? 'Administrator' : 'Business'}</Badge>
+                  <Badge variant="secondary">{isAdmin ? 'Administrator' : 'Business'}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>EPA Verified:</span>
