@@ -903,27 +903,36 @@ const CheckoutPage = () => {
                     {/* Show EPA compliance only if cart contains refrigerants */}
                     {items.some(item => item.product_type !== 'accessory') && (
                       <>
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-semibold mb-2">Important EPA Compliance Notice</h4>
-                          <div className="text-sm text-gray-700 space-y-2">
-                            <p>• EPA Section 608 certification required for refrigerant purchases</p>
-                            <p>• All refrigerant sales are for professional HVAC use only</p>
-                            <p>• Proper handling and disposal regulations must be followed</p>
-                            <p>• False certification claims are subject to federal penalties</p>
+                        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-300">
+                          <h4 className="font-semibold mb-2 text-yellow-900 flex items-center">
+                            <AlertTriangle className="h-5 w-5 mr-2" />
+                            ⚠️ PROFESSIONAL USE ONLY - EPA Compliance Required
+                          </h4>
+                          <div className="text-sm text-yellow-800 space-y-2">
+                            <p>• <strong>EPA Section 608 certification REQUIRED</strong> for all refrigerant purchases</p>
+                            <p>• This product is regulated under the Clean Air Act</p>
+                            <p>• Sales restricted to licensed HVAC professionals and certified technicians only</p>
+                            <p>• Proper handling, recovery, and disposal regulations must be followed</p>
+                            <p>• DOT HazMat shipping regulations apply to all refrigerant shipments</p>
+                            <p>• False certification claims are subject to federal penalties up to $44,539 per day per violation</p>
                           </div>
                         </div>
                         
-                        <div className="flex items-start space-x-2">
-                          <Checkbox
-                            id="legal-acknowledgment"
-                            checked={legalAcknowledged}
-                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
-                          />
-                          <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
-                            I acknowledge that I am EPA Section 608 certified and authorized to purchase refrigerants.
-                            I understand that these products are for professional HVAC use only and agree to comply
-                            with all applicable environmental regulations.
-                          </Label>
+                        <div className="bg-red-50 p-4 rounded-lg border border-red-300">
+                          <div className="flex items-start space-x-3">
+                            <Checkbox
+                              id="epa-certification"
+                              checked={legalAcknowledged}
+                              onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                              className="mt-1"
+                            />
+                            <Label htmlFor="epa-certification" className="text-sm leading-6 text-red-900 font-medium">
+                              <strong>I CERTIFY</strong> that I hold a valid EPA Section 608 certification and am legally authorized to purchase regulated refrigerants. 
+                              I understand that these products are for <strong>professional HVAC use only</strong> and are NOT for residential consumer sale. 
+                              I agree to comply with all applicable EPA, DOT, and environmental regulations governing the handling, transportation, recovery, and disposal of refrigerants.
+                              I acknowledge that providing false certification information is a federal offense.
+                            </Label>
+                          </div>
                         </div>
                       </>
                     )}
