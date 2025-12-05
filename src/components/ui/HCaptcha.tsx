@@ -8,7 +8,7 @@ interface HCaptchaWrapperProps {
 }
 
 // hCaptcha site key (public - safe to include in frontend)
-const HCAPTCHA_SITE_KEY = 'ES_379233e827b54feab52289aad7fc0b50';
+const HCAPTCHA_SITE_KEY = 'f732c604-68c2-470a-9410-6fbcfd0425b2';
 
 const HCaptchaWrapper = forwardRef<HCaptcha, HCaptchaWrapperProps>(
   ({ onVerify, onExpire, onError }, ref) => {
