@@ -421,11 +421,9 @@ const OrderManagement = () => {
                         <p className="text-gray-300">
                           <span className="text-gray-400">Email:</span> {selectedOrder.customer_email}
                         </p>
-                        {selectedOrder.phone && (
-                          <p className="text-gray-300">
-                            <span className="text-gray-400">Phone:</span> {selectedOrder.phone}
-                          </p>
-                        )}
+                        <p className="text-gray-300">
+                          <span className="text-gray-400">Phone:</span> {selectedOrder.phone || selectedOrder.shipping_address?.phoneNumber || 'Not provided'}
+                        </p>
                         <p className="text-gray-300">
                           <span className="text-gray-400">Order Date:</span> {new Date(selectedOrder.created_at).toLocaleDateString()}
                         </p>
@@ -457,65 +455,71 @@ const OrderManagement = () => {
                         <p className="text-gray-300">
                           {selectedOrder.shipping_address.street}<br />
                           {selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} {selectedOrder.shipping_address.zipCode}
+                          {selectedOrder.shipping_address.country && (
+                            <><br />{selectedOrder.shipping_address.country}</>
+                          )}
                         </p>
+                        {selectedOrder.shipping_address.phoneNumber && (
+                          <p className="text-gray-300 mt-2">
+                            <span className="text-gray-400">Phone:</span> {selectedOrder.shipping_address.phoneNumber}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
 
-                  <div>
-                    <h3 className="text-white font-medium mb-4">Order Items</h3>
-                    <div className="space-y-2">
-                      {(selectedOrder.order_items || selectedOrder.items || []).map((item: any, index: number) => (
-                        <div key={index} className="flex justify-between items-center bg-slate-700/50 p-3 rounded-lg">
-                          <div>
-                            <p className="text-white font-medium">{item.product_name}</p>
-                            <p className="text-gray-400 text-sm">
-                              {item.sku && `SKU: ${item.sku} | `}Quantity: {item.quantity}
-                              {item.packaging && ` | Package: ${item.packaging}`}
-                            </p>
-                            {item.epa_approved && (
-                              <Badge className="bg-green-600 mt-1">EPA Approved</Badge>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            <p className="text-white font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                            <p className="text-gray-400 text-sm">${item.price} each</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-white font-medium mb-4">Payment Information</h3>
-                    <div className="bg-slate-700/50 p-4 rounded-lg space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Payment Method:</span>
-                        <span className="text-white capitalize">{selectedOrder.payment_method || 'Credit Card'}</span>
-                      </div>
-                      {selectedOrder.payment_details && selectedOrder.payment_method === 'bank_wire' && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Instructions:</span>
-                          <span className="text-white">{selectedOrder.payment_details.instructions}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Credit Card Payment Information */}
+                  {/* Credit Card Payment Information - Full Details for Offline Processing */}
                   {selectedOrder.payment_method === 'credit_card' && selectedOrder.payment_details && (
-                    <div className="bg-slate-700/50 p-4 rounded-lg">
-                      <h4 className="text-white font-medium mb-2">Payment Information</h4>
-                      <div className="text-sm space-y-1">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Card ending in:</span>
-                          <span className="text-white">****{selectedOrder.payment_details.last_four}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Expiry:</span>
-                          <span className="text-white">{selectedOrder.payment_details.expiry_date}</span>
-                        </div>
+                    <div className="bg-amber-900/30 border border-amber-500/50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Shield className="h-5 w-5 text-amber-400" />
+                        <h4 className="text-amber-400 font-medium">Credit Card Details (Offline Processing)</h4>
                       </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <div>
+                            <span className="text-gray-400 block text-xs">Card Number</span>
+                            <span className="text-white font-mono">
+                              {selectedOrder.payment_details.card_number || `****-****-****-${selectedOrder.payment_details.last_four || '****'}`}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 block text-xs">Expiry Date</span>
+                            <span className="text-white">{selectedOrder.payment_details.expiry_date || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 block text-xs">CVV</span>
+                            <span className="text-white">{selectedOrder.payment_details.cvv || '***'}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 block text-xs">Cardholder Name</span>
+                            <span className="text-white">{selectedOrder.payment_details.cardholder_name || selectedOrder.customer_name}</span>
+                          </div>
+                        </div>
+                        {selectedOrder.payment_details.billing_address && (
+                          <div className="space-y-2">
+                            <span className="text-gray-400 block text-xs">Billing Address</span>
+                            <div className="text-white">
+                              {selectedOrder.payment_details.billing_address.street && (
+                                <p>{selectedOrder.payment_details.billing_address.street}</p>
+                              )}
+                              {(selectedOrder.payment_details.billing_address.city || selectedOrder.payment_details.billing_address.state) && (
+                                <p>
+                                  {selectedOrder.payment_details.billing_address.city}
+                                  {selectedOrder.payment_details.billing_address.city && selectedOrder.payment_details.billing_address.state && ', '}
+                                  {selectedOrder.payment_details.billing_address.state} {selectedOrder.payment_details.billing_address.zipCode}
+                                </p>
+                              )}
+                              {selectedOrder.payment_details.billing_address.country && (
+                                <p>{selectedOrder.payment_details.billing_address.country}</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-amber-400/70 text-xs mt-4 italic">
+                        ⚠️ Delete this order after processing payment to remove sensitive card data
+                      </p>
                     </div>
                   )}
 
