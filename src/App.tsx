@@ -74,6 +74,7 @@ import CouponManagement from "./components/admin/CouponManagement";
 import NewsletterManagement from "./components/admin/NewsletterManagement";
 import SitemapGenerator from "./components/admin/SitemapGenerator";
 import PageContentManagement from "./components/admin/PageContentManagement";
+import TaxRatesManagement from "./components/admin/TaxRatesManagement";
 import BlogPage from "./components/pages/BlogPage";
 import BlogPostDetail from "./components/pages/BlogPostDetail";
 import BlogPostRedirect from "./components/pages/BlogPostRedirect";
@@ -113,6 +114,7 @@ function App() {
                          <Route path="adverts" element={<AdvertManagement />} />
                           <Route path="coupons" element={<CouponManagement />} />
                           <Route path="payment-methods" element={<PaymentManagement />} />
+                          <Route path="tax-rates" element={<TaxRatesManagement />} />
                           <Route path="newsletter" element={<NewsletterManagement />} />
                          <Route path="logo" element={<LogoManagement />} />
                          <Route path="contacts" element={<ContactManagement />} />
