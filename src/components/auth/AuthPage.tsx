@@ -173,7 +173,7 @@ const AuthPage = () => {
                 <Button
                   type="submit"
                   className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
-                  disabled={authLoading || !email || !password}
+                  disabled={authLoading || !email || !password || !captchaToken}
                 >
                   {authLoading ? (
                     <>
@@ -184,6 +184,11 @@ const AuthPage = () => {
                     'Sign in'
                   )}
                 </Button>
+                {!captchaToken && email && password && (
+                  <p className="text-xs text-amber-400 text-center mt-2">
+                    Please complete the captcha verification above
+                  </p>
+                )}
               </form>
             </CardContent>
           </Card>
