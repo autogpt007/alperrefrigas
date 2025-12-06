@@ -561,6 +561,73 @@ const OrderManagement = () => {
                     </div>
                   )}
 
+                  {/* Products Ordered */}
+                  <div>
+                    <h3 className="text-white font-medium mb-4">Products Ordered</h3>
+                    <div className="bg-slate-700/50 rounded-lg overflow-hidden">
+                      {(selectedOrder.order_items && selectedOrder.order_items.length > 0) ? (
+                        <table className="w-full">
+                          <thead className="bg-slate-600/50">
+                            <tr>
+                              <th className="text-left text-gray-300 text-sm font-medium px-4 py-3">Product</th>
+                              <th className="text-left text-gray-300 text-sm font-medium px-4 py-3">SKU</th>
+                              <th className="text-left text-gray-300 text-sm font-medium px-4 py-3">Packaging</th>
+                              <th className="text-center text-gray-300 text-sm font-medium px-4 py-3">Qty</th>
+                              <th className="text-right text-gray-300 text-sm font-medium px-4 py-3">Price</th>
+                              <th className="text-right text-gray-300 text-sm font-medium px-4 py-3">Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-600">
+                            {selectedOrder.order_items.map((item) => (
+                              <tr key={item.id} className="hover:bg-slate-600/30">
+                                <td className="px-4 py-3">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-white">{item.product_name}</span>
+                                    {item.epa_approved && (
+                                      <Badge className="bg-green-600/20 text-green-400 text-xs">EPA</Badge>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 text-gray-400 text-sm">{item.sku || 'N/A'}</td>
+                                <td className="px-4 py-3 text-gray-300 text-sm">{item.packaging || 'Standard'}</td>
+                                <td className="px-4 py-3 text-center text-white">{item.quantity}</td>
+                                <td className="px-4 py-3 text-right text-gray-300">${item.price.toFixed(2)}</td>
+                                <td className="px-4 py-3 text-right text-cyan-400 font-medium">
+                                  ${(item.price * item.quantity).toFixed(2)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : selectedOrder.items && Array.isArray(selectedOrder.items) && selectedOrder.items.length > 0 ? (
+                        // Fallback to legacy items JSON if order_items not available
+                        <table className="w-full">
+                          <thead className="bg-slate-600/50">
+                            <tr>
+                              <th className="text-left text-gray-300 text-sm font-medium px-4 py-3">Product</th>
+                              <th className="text-center text-gray-300 text-sm font-medium px-4 py-3">Qty</th>
+                              <th className="text-right text-gray-300 text-sm font-medium px-4 py-3">Price</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-600">
+                            {selectedOrder.items.map((item: any, index: number) => (
+                              <tr key={index} className="hover:bg-slate-600/30">
+                                <td className="px-4 py-3 text-white">{item.name || item.product_name || 'Unknown Product'}</td>
+                                <td className="px-4 py-3 text-center text-white">{item.quantity || 1}</td>
+                                <td className="px-4 py-3 text-right text-cyan-400">${(item.price || 0).toFixed(2)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="p-4 text-center text-gray-400">
+                          No product details available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Order Summary */}
                   <div>
                     <h3 className="text-white font-medium mb-4">Order Summary</h3>
                     <div className="bg-slate-700/50 p-4 rounded-lg space-y-2">
