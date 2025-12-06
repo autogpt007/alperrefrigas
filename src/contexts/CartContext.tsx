@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { trackAddToCart, trackRemoveFromCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
+import { trackFBAddToCart } from '@/utils/facebookPixel';
+import { trackGoogleAdsAddToCart } from '@/utils/googleAdsConversions';
 
 export interface CartItem {
   id: string;
@@ -71,8 +73,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         };
         console.log('Updated existing item, new cart:', updatedItems);
         
-        // Track add to cart in GA4
-        trackAddToCart(cartItemToGA4Item({ ...updatedItems[existingItemIndex], quantity: 1 }));
+        // Track add to cart in GA4 and Facebook Pixel
+        const itemToTrack = updatedItems[existingItemIndex];
+        trackAddToCart(cartItemToGA4Item({ ...itemToTrack, quantity: 1 }));
+        trackFBAddToCart(itemToTrack.sku || itemToTrack.id, itemToTrack.name, itemToTrack.price, 'USD', 1);
+        trackGoogleAdsAddToCart(itemToTrack.price);
         
         return updatedItems;
       }
@@ -81,8 +86,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const newCart = [...currentItems, { ...newItem, quantity: 1 }];
       console.log('Added new item, new cart:', newCart);
       
-      // Track add to cart in GA4
+      // Track add to cart in GA4 and Facebook Pixel
       trackAddToCart(cartItemToGA4Item({ ...newItem, quantity: 1 }));
+      trackFBAddToCart(newItem.sku || newItem.id, newItem.name, newItem.price, 'USD', 1);
+      trackGoogleAdsAddToCart(newItem.price);
       
       return newCart;
     });

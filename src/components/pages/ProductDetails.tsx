@@ -12,6 +12,7 @@ import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
 import { createProductSlug, findProductBySlug } from '@/lib/slugs';
 import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
+import { trackFBViewContent } from '@/utils/facebookPixel';
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
   const navigate = useNavigate();
@@ -50,11 +51,18 @@ const ProductDetails = () => {
     }
   }, [product, id, productSlug, navigate]);
 
-  // Track product view for GA4
+  // Track product view for GA4 and Facebook Pixel
   React.useEffect(() => {
     if (product && !id) {
       // Only track when using slug (not during redirect from ID)
       trackViewItem(productToGA4Item(product));
+      trackFBViewContent(
+        product.sku || product.id,
+        product.name,
+        'product',
+        product.price,
+        'USD'
+      );
     }
   }, [product, id]);
 

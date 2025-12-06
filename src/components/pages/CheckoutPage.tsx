@@ -23,6 +23,8 @@ import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
+import { trackFBInitiateCheckout, trackFBAddPaymentInfo, trackFBPurchase } from '@/utils/facebookPixel';
+import { trackGoogleAdsPurchase, trackGoogleAdsBeginCheckout } from '@/utils/googleAdsConversions';
 import { useTaxCalculator } from '@/hooks/useTaxCalculator';
 import { getStateFromZip, isValidZipCode, US_STATES } from '@/utils/zipCodeUtils';
 
@@ -120,7 +122,16 @@ const CheckoutPage = () => {
   useEffect(() => {
     if (items.length > 0) {
       const ga4Items = items.map(cartItemToGA4Item);
+      const contentIds = items.map(item => item.sku || item.id);
+      
+      // GA4 tracking
       trackBeginCheckout(ga4Items, finalTotal, appliedCoupon?.code);
+      
+      // Facebook Pixel tracking
+      trackFBInitiateCheckout(contentIds, finalTotal, 'USD', items.length);
+      
+      // Google Ads tracking
+      trackGoogleAdsBeginCheckout(finalTotal);
     }
   }, []); // Only track on initial load
 
@@ -247,6 +258,7 @@ const CheckoutPage = () => {
     if (field === 'paymentMethod' && value && items.length > 0) {
       const ga4Items = items.map(cartItemToGA4Item);
       trackAddPaymentInfo(ga4Items, finalTotal, value, appliedCoupon?.code);
+      trackFBAddPaymentInfo(finalTotal);
     }
   };
 
@@ -476,6 +488,14 @@ const CheckoutPage = () => {
 
       // Track purchase in GA4
       const ga4Items = items.map(cartItemToGA4Item);
+      const contentIds = items.map(item => item.sku || item.id);
+      const fbContents = items.map(item => ({
+        id: item.sku || item.id,
+        quantity: item.quantity,
+        item_price: item.price
+      }));
+      
+      // GA4 purchase tracking
       trackPurchase(
         order.order_number,
         ga4Items,
@@ -484,6 +504,12 @@ const CheckoutPage = () => {
         shippingCost,
         appliedCoupon?.code
       );
+      
+      // Facebook Pixel purchase tracking
+      trackFBPurchase(finalTotal, 'USD', contentIds, fbContents, items.length);
+      
+      // Google Ads purchase conversion
+      trackGoogleAdsPurchase(order.order_number, finalTotal);
 
       clearCart();
       navigate(`/order-confirmation?orderNumber=${order.order_number}`);
