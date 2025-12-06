@@ -15,15 +15,16 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
-// Removed secure card encryption import
 import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
+import { useTaxCalculator } from '@/hooks/useTaxCalculator';
+import { getStateFromZip, isValidZipCode, US_STATES } from '@/utils/zipCodeUtils';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -72,6 +73,19 @@ const CheckoutPage = () => {
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
+
+  // Tax calculator - auto-calculate based on ZIP code
+  const taxCalculation = useTaxCalculator(formData.zipCode, total);
+
+  // Auto-fill state from ZIP code when ZIP changes
+  useEffect(() => {
+    if (formData.zipCode && isValidZipCode(formData.zipCode)) {
+      const stateInfo = getStateFromZip(formData.zipCode);
+      if (stateInfo && (!formData.state || formData.state !== stateInfo.stateCode)) {
+        setFormData(prev => ({ ...prev, state: stateInfo.stateCode }));
+      }
+    }
+  }, [formData.zipCode]);
 
   // Auto-fill user data when authenticated
   useEffect(() => {
@@ -219,11 +233,12 @@ const CheckoutPage = () => {
     });
   };
 
-  // Calculate totals with coupon
+  // Calculate totals with coupon and tax
   const subtotal = total;
   const shippingCost = subtotal >= freeShippingThreshold ? 0 : cartShippingCost;
   const discountAmount = couponDiscount;
-  const finalTotal = Math.max(0, subtotal + shippingCost - discountAmount);
+  const taxAmount = taxCalculation.taxAmount;
+  const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -402,7 +417,7 @@ const CheckoutPage = () => {
         payment_method: formData.paymentMethod,
         notes: formData.notes,
         shipping_cost: shippingCost,
-        tax_amount: 0,
+        tax_amount: taxAmount,
         zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
         cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
@@ -465,7 +480,7 @@ const CheckoutPage = () => {
         order.order_number,
         ga4Items,
         finalTotal,
-        0, // tax
+        taxAmount,
         shippingCost,
         appliedCoupon?.code
       );
@@ -601,12 +616,21 @@ const CheckoutPage = () => {
                       </div>
                       <div>
                         <Label htmlFor="state">State *</Label>
-                        <Input
-                          id="state"
+                        <Select
                           value={formData.state}
-                          onChange={(e) => handleInputChange('state', e.target.value)}
-                          required
-                        />
+                          onValueChange={(value) => handleInputChange('state', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {US_STATES.map(state => (
+                              <SelectItem key={state.code} value={state.code}>
+                                {state.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
                         <Label htmlFor="zipCode">ZIP Code *</Label>
@@ -614,8 +638,15 @@ const CheckoutPage = () => {
                           id="zipCode"
                           value={formData.zipCode}
                           onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                          placeholder="12345"
+                          maxLength={10}
                           required
                         />
+                        {formData.zipCode && taxCalculation.stateCode && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Detected: {taxCalculation.stateName}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div>
@@ -1042,6 +1073,29 @@ const CheckoutPage = () => {
                         )}
                       </span>
                     </div>
+                    
+                    {/* Tax Display */}
+                    <div className="flex justify-between items-center">
+                      <span className="flex items-center gap-1">
+                        Estimated Tax
+                        {taxCalculation.stateCode && (
+                          <span className="text-xs text-gray-500">
+                            ({taxCalculation.stateCode} @ {taxCalculation.taxRate}%)
+                          </span>
+                        )}
+                        :
+                      </span>
+                      <span>
+                        {taxCalculation.isLoading ? (
+                          <span className="text-gray-400">Calculating...</span>
+                        ) : taxCalculation.isNoTaxState ? (
+                          <span className="text-green-600">$0.00</span>
+                        ) : (
+                          formatCurrency(taxAmount)
+                        )}
+                      </span>
+                    </div>
+                    
                     {discountAmount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount:</span>
@@ -1052,6 +1106,25 @@ const CheckoutPage = () => {
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total:</span>
                       <span>{formatCurrency(finalTotal)}</span>
+                    </div>
+                  </div>
+
+                  {/* Tax Compliance Notice - Google Merchant Compliant */}
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="flex items-start gap-2">
+                      <Info className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs text-gray-600">
+                        <p className="font-medium mb-1">Sales Tax Information</p>
+                        <p>
+                          Sales tax is calculated based on your shipping destination and applicable state/local tax laws. 
+                          {taxCalculation.isNoTaxState && formData.zipCode && (
+                            <span className="text-green-700"> {taxCalculation.stateName} has no state sales tax.</span>
+                          )}
+                          {!taxCalculation.isNoTaxState && taxCalculation.stateCode && (
+                            <span> Your order will be taxed at the {taxCalculation.stateName} state rate of {taxCalculation.taxRate}%.</span>
+                          )}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
