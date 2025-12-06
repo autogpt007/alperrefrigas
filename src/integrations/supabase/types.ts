@@ -1195,6 +1195,39 @@ export type Database = {
         }
         Relationships: []
       }
+      state_tax_rates: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          notes: string | null
+          state_code: string
+          state_name: string
+          tax_rate: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          state_code: string
+          state_name: string
+          tax_rate?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          state_code?: string
+          state_name?: string
+          tax_rate?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       table: {
         Row: {
           created_at: string
