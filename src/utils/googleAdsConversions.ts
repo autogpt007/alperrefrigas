@@ -7,17 +7,15 @@
 
 import { isGtagAvailable, pushToDataLayer } from './tracking';
 
-// CONFIGURE YOUR GOOGLE ADS CONVERSION IDS HERE
-// Format: 'AW-XXXXXXXXX/CONVERSION_LABEL'
+// GOOGLE ADS CONVERSION IDS
 const GOOGLE_ADS_CONVERSION_IDS = {
-  // Your Google Ads Conversion ID (replace with your actual ID)
-  CONVERSION_ID: 'AW-XXXXXXXXX', // e.g., 'AW-123456789'
+  CONVERSION_ID: 'AW-17583624817',
   
   // Conversion labels for different actions
-  PURCHASE: '', // e.g., 'AbCdEfGhIjKlMnOp'
-  ADD_TO_CART: '', // Optional
-  BEGIN_CHECKOUT: '', // Optional
-  LEAD: '', // For quote submissions
+  PURCHASE: 'TTjaCLGmkM0bEPGkw8BB',
+  ADD_TO_CART: '', // Optional - add label if needed
+  BEGIN_CHECKOUT: '', // Optional - add label if needed
+  LEAD: '', // For quote submissions - add label if needed
 };
 
 // Check if Google Ads is configured
