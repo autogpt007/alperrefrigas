@@ -85,7 +85,7 @@ const BlockEditor: React.FC<BlockEditorProps> = ({ block, onSave }) => {
             <div>
               <Label>Content</Label>
               <Editor
-                apiKey="your-tinymce-api-key"
+                apiKey={import.meta.env.VITE_TINYMCE_API_KEY || 'no-api-key'}
                 value={content.content || ''}
                 onEditorChange={(newContent) => setContent({ ...content, content: newContent })}
                 init={{
