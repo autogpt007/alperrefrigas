@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,10 @@ import { useQuotes } from '../../contexts/QuotesContext';
 import { supabase } from '@/integrations/supabase/client';
 import SEOComponent from '../seo/SEOComponent';
 import { CryptoPaymentSection } from '../ui/CryptoPaymentSection';
+import { trackPurchase, cartItemToGA4Item, GA4ProductItem } from '@/utils/ga4Ecommerce';
+import { trackFBPurchase, trackFBLead } from '@/utils/facebookPixel';
+import { trackGoogleAdsPurchase, trackGoogleAdsLead } from '@/utils/googleAdsConversions';
+import { pushToDataLayer } from '@/utils/tracking';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -18,6 +22,7 @@ const OrderConfirmation = () => {
   const { quotes, fetchQuotes } = useQuotes();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const conversionTrackedRef = useRef(false);
   
   const orderNumber = searchParams.get('orderNumber');
   const quoteNumber = searchParams.get('quoteNumber');
@@ -117,6 +122,75 @@ const OrderConfirmation = () => {
 
     fetchData();
   }, [confirmationNumber, isQuote, orderNumber, quoteNumber, orders, quotes, fetchOrders, fetchQuotes, navigate]);
+
+  // Track conversion events when order data is loaded (backup tracking in case checkout tracking failed)
+  useEffect(() => {
+    if (data && !conversionTrackedRef.current) {
+      conversionTrackedRef.current = true;
+      
+      if (isQuote) {
+        // Track quote/lead conversion
+        console.log('[OrderConfirmation] Tracking quote lead conversion:', data.quote_number);
+        trackFBLead();
+        trackGoogleAdsLead();
+        pushToDataLayer('generate_lead', {
+          currency: 'USD',
+          lead_type: 'quote_request',
+          quote_number: data.quote_number
+        });
+      } else {
+        // Track purchase conversion (backup - primary tracking is in CheckoutPage)
+        const orderItems = data.items || [];
+        const totalAmount = data.total_amount || 0;
+        const taxAmount = data.tax_amount || 0;
+        const shippingCost = data.shipping_cost || 0;
+        
+        console.log('[OrderConfirmation] Tracking purchase conversion:', data.order_number, totalAmount);
+        
+        // Convert order items to GA4 format
+        const ga4Items: GA4ProductItem[] = orderItems.map((item: any, index: number) => ({
+          item_id: item.sku || item.product_id || `item-${index}`,
+          item_name: item.product_name,
+          price: item.price,
+          quantity: item.quantity,
+          item_variant: item.packaging || '',
+          affiliation: 'Alper Refrigerants'
+        }));
+        
+        const contentIds = orderItems.map((item: any) => item.sku || item.product_id || item.product_name);
+        const fbContents = orderItems.map((item: any) => ({
+          id: item.sku || item.product_id || item.product_name,
+          quantity: item.quantity,
+          item_price: item.price
+        }));
+        
+        // GA4 purchase event
+        trackPurchase(
+          data.order_number,
+          ga4Items,
+          totalAmount,
+          taxAmount,
+          shippingCost
+        );
+        
+        // Facebook Pixel purchase
+        trackFBPurchase(totalAmount, 'USD', contentIds, fbContents, orderItems.length);
+        
+        // Google Ads purchase conversion
+        trackGoogleAdsPurchase(data.order_number, totalAmount);
+        
+        // Push to dataLayer for GTM
+        pushToDataLayer('purchase', {
+          transaction_id: data.order_number,
+          value: totalAmount,
+          tax: taxAmount,
+          shipping: shippingCost,
+          currency: 'USD',
+          items: ga4Items
+        });
+      }
+    }
+  }, [data, isQuote]);
 
   if (loading) {
     return (
