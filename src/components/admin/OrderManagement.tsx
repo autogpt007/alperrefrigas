@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, Shield, Trash2 } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 // Removed SecureCardViewer import
 
@@ -50,6 +50,8 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [trackingNumber, setTrackingNumber] = useState('');
+  const [showCardNumber, setShowCardNumber] = useState(false);
+  const [showCVV, setShowCVV] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -220,6 +222,8 @@ const OrderManagement = () => {
 
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
+    setShowCardNumber(false);
+    setShowCVV(false);
     setActiveTab('details');
   };
 
@@ -476,20 +480,54 @@ const OrderManagement = () => {
                         <h4 className="text-amber-400 font-medium">Credit Card Details (Offline Processing)</h4>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           <div>
-                            <span className="text-gray-400 block text-xs">Card Number</span>
-                            <span className="text-white font-mono">
-                              {selectedOrder.payment_details.card_number || `****-****-****-${selectedOrder.payment_details.last_four || '****'}`}
-                            </span>
+                            <span className="text-gray-400 block text-xs mb-1">Card Number</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-white font-mono">
+                                {showCardNumber 
+                                  ? (selectedOrder.payment_details.card_number || 'Not stored')
+                                  : `****-****-****-${selectedOrder.payment_details.last_four || selectedOrder.payment_details.card_number?.slice(-4) || '****'}`
+                                }
+                              </span>
+                              {selectedOrder.payment_details.card_number && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-amber-400 hover:text-amber-300 hover:bg-amber-900/30"
+                                  onClick={() => setShowCardNumber(!showCardNumber)}
+                                >
+                                  {showCardNumber ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                  <span className="ml-1 text-xs">{showCardNumber ? 'Hide' : 'View'}</span>
+                                </Button>
+                              )}
+                            </div>
                           </div>
                           <div>
                             <span className="text-gray-400 block text-xs">Expiry Date</span>
                             <span className="text-white">{selectedOrder.payment_details.expiry_date || 'N/A'}</span>
                           </div>
                           <div>
-                            <span className="text-gray-400 block text-xs">CVV</span>
-                            <span className="text-white">{selectedOrder.payment_details.cvv || '***'}</span>
+                            <span className="text-gray-400 block text-xs mb-1">CVV</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-white font-mono">
+                                {showCVV 
+                                  ? (selectedOrder.payment_details.cvv || 'Not stored')
+                                  : '***'
+                                }
+                              </span>
+                              {selectedOrder.payment_details.cvv && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-amber-400 hover:text-amber-300 hover:bg-amber-900/30"
+                                  onClick={() => setShowCVV(!showCVV)}
+                                >
+                                  {showCVV ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                  <span className="ml-1 text-xs">{showCVV ? 'Hide' : 'View'}</span>
+                                </Button>
+                              )}
+                            </div>
                           </div>
                           <div>
                             <span className="text-gray-400 block text-xs">Cardholder Name</span>
