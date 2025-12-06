@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Plus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { sanitizeInlineHTML } from '@/lib/sanitize';
 
 interface Advert {
   id: string;
@@ -343,7 +344,7 @@ const AdvertManagement = () => {
                   
                   <div 
                     className="text-gray-300 mb-3"
-                    dangerouslySetInnerHTML={{ __html: advert.content }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeInlineHTML(advert.content) }}
                   />
                   
                   <div className="text-sm text-gray-400 space-y-1">

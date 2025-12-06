@@ -160,13 +160,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string, captchaToken?: string) => {
     console.log('AuthContext login attempt for:', email);
     try {
-      // First try with captcha token if provided
-      const { error } = await supabase.auth.signInWithPassword({
+      // Build auth options with optional captcha token
+      const authOptions: { email: string; password: string; options?: { captchaToken: string } } = {
         email: email.toLowerCase().trim(),
         password,
-        // Only include captchaToken in options if we want to use it
-        // Supabase will fail if captcha is not configured server-side
-      });
+      };
+      
+      // Only include captchaToken if provided and non-empty
+      if (captchaToken) {
+        authOptions.options = { captchaToken };
+      }
+      
+      const { error } = await supabase.auth.signInWithPassword(authOptions);
       
       console.log('Login response error:', error);
       return { error };
@@ -180,18 +185,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('Starting registration for:', data.email);
       
+      // Build signup options
+      const signupOptions: any = {
+        data: {
+          full_name: data.name,
+          company: data.company,
+          epa_license: data.epaLicense,
+        },
+        emailRedirectTo: `${window.location.origin}/`,
+      };
+      
+      // Only include captchaToken if provided and non-empty
+      if (captchaToken) {
+        signupOptions.captchaToken = captchaToken;
+      }
+      
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email.toLowerCase().trim(),
         password: data.password,
-        options: {
-          // Don't pass captchaToken - Supabase captcha verification must be configured server-side first
-          data: {
-            full_name: data.name,
-            company: data.company,
-            epa_license: data.epaLicense,
-          },
-          emailRedirectTo: `${window.location.origin}/`,
-        },
+        options: signupOptions,
       });
       
       if (error) {
