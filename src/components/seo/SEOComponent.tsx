@@ -72,7 +72,18 @@ const SEOComponent: React.FC<SEOProps> = ({
   productData
 }) => {
   const siteUrl = 'https://alperrefrigas.com';
-  const fullTitle = title.includes('Alper') ? title : `${title} | Alper Refrigerant - Professional Refrigerant Distributor`;
+  const businessName = 'Alper Refrigerants';
+  const legalName = 'Alper Chemical Group';
+  const mainPhone = '+1-409-995-3623';
+  const salesEmail = 'sales@alperrefrigas.com';
+  const supportEmail = 'support@alperrefrigas.com';
+  
+  const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName} - Professional Refrigerant Distributor`;
+  
+  // Calculate price valid until (30 days from now for Shopping ads)
+  const priceValidUntil = new Date();
+  priceValidUntil.setDate(priceValidUntil.getDate() + 30);
+  const priceValidUntilStr = priceValidUntil.toISOString().split('T')[0];
   
   // Generate product structured data for Google Merchant Center
   const productStructuredData = product ? {
@@ -82,21 +93,73 @@ const SEOComponent: React.FC<SEOProps> = ({
     "description": product.description,
     "brand": {
       "@type": "Brand",
-      "name": product.brand
+      "name": product.brand || businessName
     },
     "sku": product.sku,
-    "gtin": product.gtin,
-    "image": `${siteUrl}${product.image}`,
+    ...(product.gtin && { "gtin": product.gtin }),
+    "image": product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
+    "category": product.category || "Refrigerants",
     "offers": {
       "@type": "Offer",
       "price": product.price,
       "priceCurrency": product.currency,
-      "availability": `https://schema.org/${product.availability === 'in_stock' ? 'InStock' : 'OutOfStock'}`,
+      "priceValidUntil": priceValidUntilStr,
+      "availability": `https://schema.org/${product.availability === 'in_stock' || product.availability === 'InStock' ? 'InStock' : 'OutOfStock'}`,
+      "itemCondition": "https://schema.org/NewCondition",
       "seller": {
         "@type": "Organization",
-        "name": "FrigidFlow"
+        "name": businessName
+      },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "USD"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "US"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 1,
+            "maxValue": 2,
+            "unitCode": "DAY"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 7,
+            "unitCode": "DAY"
+          }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/RestockingFees",
+        "returnPolicySeasonalOverride": {
+          "@type": "MerchantReturnPolicySeasonalOverride"
+        }
       }
-    }
+    },
+    "audience": {
+      "@type": "BusinessAudience",
+      "audienceType": "B2B HVAC Professionals"
+    },
+    ...(product.moq && {
+      "additionalProperty": {
+        "@type": "PropertyValue",
+        "name": "Minimum Order Quantity",
+        "value": `${product.moq} cylinders`
+      }
+    })
   } : null;
 
   // Breadcrumb structured data
@@ -125,15 +188,31 @@ const SEOComponent: React.FC<SEOProps> = ({
     }))
   } : null;
 
+  // Merchant Return Policy (standalone for pages without product)
+  const merchantReturnPolicy = {
+    "@context": "https://schema.org",
+    "@type": "MerchantReturnPolicy",
+    "name": "Alper Refrigerants Return Policy",
+    "applicableCountry": "US",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+    "merchantReturnDays": 30,
+    "returnMethod": "https://schema.org/ReturnByMail",
+    "returnFees": "https://schema.org/RestockingFees",
+    "url": `${siteUrl}/refund-policy`
+  };
+
   // Enhanced Organization structured data with LocalBusiness
   const organizationData = {
     "@context": "https://schema.org",
     "@type": ["Organization", "LocalBusiness"],
-    "name": "Alper Refrigerant",
-    "alternateName": "Alper Refrigerants",
+    "name": businessName,
+    "legalName": legalName,
+    "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
     "url": siteUrl,
+    "logo": `${siteUrl}/logo.svg`,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
     "foundingDate": "2020",
+    "priceRange": "$$$",
     "serviceArea": {
       "@type": "Country",
       "name": "United States"
@@ -163,9 +242,9 @@ const SEOComponent: React.FC<SEOProps> = ({
     "contactPoint": [
       {
         "@type": "ContactPoint",
-        "telephone": "+1-210-939-1115",
+        "telephone": mainPhone,
         "contactType": "sales",
-        "email": "sales@alperrefrigas.com",
+        "email": salesEmail,
         "availableLanguage": ["English", "Spanish"],
         "hoursAvailable": {
           "@type": "OpeningHoursSpecification",
@@ -176,9 +255,9 @@ const SEOComponent: React.FC<SEOProps> = ({
       },
       {
         "@type": "ContactPoint", 
-        "telephone": "+1-210-939-1115",
+        "telephone": mainPhone,
         "contactType": "customer service",
-        "email": "support@alperrefrigas.com",
+        "email": supportEmail,
         "hoursAvailable": {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -192,27 +271,34 @@ const SEOComponent: React.FC<SEOProps> = ({
         "@type": "PostalAddress",
         "addressCountry": "US",
         "addressRegion": "TX",
-        "addressLocality": "Texas Distribution Center"
+        "addressLocality": "Houston",
+        "postalCode": "77001"
       },
       {
         "@type": "PostalAddress",
         "addressCountry": "US",
         "addressRegion": "FL", 
-        "addressLocality": "Florida Distribution Center"
+        "addressLocality": "Miami"
       },
       {
         "@type": "PostalAddress",
         "addressCountry": "US",
         "addressRegion": "CA",
-        "addressLocality": "California Distribution Center"
+        "addressLocality": "Los Angeles"
       }
     ],
     "sameAs": [
-      "https://www.facebook.com/frigidflow",
-      "https://www.linkedin.com/company/frigidflow"
+      "https://www.facebook.com/alperrefrigerants",
+      "https://www.linkedin.com/company/alperrefrigerants"
     ],
-    "keywords": "refrigerant, wholesale, EPA approved, HVAC, R134a, R410A, R404A, R22, bulk refrigerant, industrial refrigerant, commercial refrigerant",
-    "slogan": "Professional Refrigerant Solutions with Bulk Pricing and Fast Shipping"
+    "keywords": "refrigerant, wholesale, EPA approved, HVAC, R134a, R410A, R404A, R22, bulk refrigerant, industrial refrigerant, commercial refrigerant, B2B refrigerant supplier",
+    "slogan": "Professional Refrigerant Solutions with Bulk Pricing and Fast Shipping",
+    "hasMerchantReturnPolicy": merchantReturnPolicy,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${siteUrl}/products?search={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
   };
 
   return (
@@ -240,14 +326,14 @@ const SEOComponent: React.FC<SEOProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={`${siteUrl}${canonicalUrl || ''}`} />
-      <meta property="og:image" content={`${siteUrl}${ogImage}`} />
-      <meta property="og:site_name" content="FrigidFlow" />
+      <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`} />
+      <meta property="og:site_name" content={businessName} />
       
       {/* Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+      <meta property="twitter:image" content={ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`} />
       
       {/* Business Information */}
       <meta name="geo.region" content="US" />
