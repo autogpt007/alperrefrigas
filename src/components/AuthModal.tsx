@@ -65,16 +65,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setError('');
     
     try {
-      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      // Capture the current captcha token - DO NOT reset before API call
       const currentCaptchaToken = captchaToken;
-      resetCaptcha(); // Reset immediately to prevent reuse
       
       const { error } = await login(loginData.email, loginData.password, currentCaptchaToken || undefined);
+      
+      // Reset captcha AFTER the API call completes
+      resetCaptcha();
       
       if (error) {
         const errorMessage = error.message || 'Login failed. Please check your credentials.';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again and retry.');
+          setError('Captcha verification failed. Please complete the captcha again.');
         } else {
           setError(errorMessage);
         }
@@ -83,10 +85,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoginData({ email: '', password: '' });
       }
     } catch (error: any) {
+      // Reset captcha on any error
+      resetCaptcha();
       console.error('Login failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-        setError('Captcha verification failed. Please complete the captcha again and retry.');
+        setError('Captcha verification failed. Please complete the captcha again.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
@@ -102,20 +106,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setError('');
     
     try {
-      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      // Capture the current captcha token - DO NOT reset before API call
       const currentCaptchaToken = captchaToken;
-      resetCaptcha(); // Reset immediately to prevent reuse
       
-      const { error } = await register(registerData, currentCaptchaToken || undefined);
+      if (!currentCaptchaToken) {
+        setError('Please complete the captcha verification.');
+        setIsLoading(false);
+        return;
+      }
+      
+      const { error } = await register(registerData, currentCaptchaToken);
+      
+      // Reset captcha AFTER the API call completes
+      resetCaptcha();
       
       if (error) {
         const errorMessage = error.message || 'Registration failed. Please try again.';
         if (errorMessage.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again and retry.');
+          setError('Captcha verification failed. Please complete the captcha again.');
         } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
-          setError('Request timed out. Please complete the captcha again and retry.');
+          setError('Request timed out. Please complete the captcha again.');
         } else {
           setError(errorMessage);
         }
@@ -130,10 +142,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         });
       }
     } catch (error: any) {
+      // Reset captcha on any error
+      resetCaptcha();
       console.error('Registration failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-        setError('Captcha verification failed. Please complete the captcha again and retry.');
+        setError('Captcha verification failed. Please complete the captcha again.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }

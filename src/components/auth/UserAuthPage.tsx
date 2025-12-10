@@ -91,16 +91,23 @@ const UserAuthPage = () => {
       setIsLoading(true);
       setError('');
       
-      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      // Capture the current captcha token - DO NOT reset before API call
       const currentCaptchaToken = captchaToken;
-      resetCaptcha(); // Reset immediately to prevent reuse
       
       console.log('Attempting login for:', validatedData.email);
       const { error } = await login(validatedData.email, validatedData.password, currentCaptchaToken || undefined);
       
+      // Reset captcha AFTER the API call completes (success or failure)
+      resetCaptcha();
+      
       if (error) {
         console.error('Login error:', error);
-        setError(error.message || 'Login failed. Please check your credentials.');
+        const errorMessage = error.message || '';
+        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again.');
+        } else {
+          setError(error.message || 'Login failed. Please check your credentials.');
+        }
       } else {
         console.log('Login successful, redirecting');
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
@@ -109,7 +116,9 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
-      // Captcha already reset before API call
+      // Reset captcha on any error
+      resetCaptcha();
+      
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -121,7 +130,7 @@ const UserAuthPage = () => {
         console.error('Login failed:', error);
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again and retry.');
+          setError('Captcha verification failed. Please complete the captcha again.');
         } else if (error.message) {
           setError(error.message);
         } else if (error.details) {
@@ -153,10 +162,14 @@ const UserAuthPage = () => {
       setIsLoading(true);
       setError('');
       
-      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
-      // This prevents "already-seen-response" errors on timeout/retry
+      // Capture the current captcha token - DO NOT reset before API call
       const currentCaptchaToken = captchaToken;
-      resetCaptcha(); // Reset immediately to prevent reuse
+      
+      if (!currentCaptchaToken) {
+        setError('Please complete the captcha verification.');
+        setIsLoading(false);
+        return;
+      }
       
       console.log('Attempting registration for:', validatedData.email);
       const { error } = await register({
@@ -166,6 +179,9 @@ const UserAuthPage = () => {
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
       }, currentCaptchaToken);
+      
+      // Reset captcha AFTER the API call completes (success or failure)
+      resetCaptcha();
       
       if (error) {
         console.error('Registration error:', error);
@@ -188,15 +204,14 @@ const UserAuthPage = () => {
         } else if (errorMessage.includes('Too many requests')) {
           setError('Too many registration attempts. Please wait a moment before trying again.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again and retry.');
+          setError('Captcha verification failed. Please complete the captcha again.');
         } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
-          setError('Request timed out. Please complete the captcha again and retry.');
+          setError('Request timed out. Please complete the captcha again.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
       } else {
         console.log('Registration successful');
-        setError('Account created successfully! You are now signed in.');
         // Navigate to appropriate page after successful registration
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
           ? returnTo 
@@ -204,7 +219,9 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
-      // Captcha already reset before API call, no need to reset again
+      // Reset captcha on any error
+      resetCaptcha();
+      
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -216,7 +233,7 @@ const UserAuthPage = () => {
         console.error('Registration failed:', error);
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again and retry.');
+          setError('Captcha verification failed. Please complete the captcha again.');
         } else {
           setError('An unexpected error occurred. Please try again.');
         }
