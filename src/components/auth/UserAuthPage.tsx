@@ -76,10 +76,8 @@ const UserAuthPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Captcha is optional - server-side must be configured to verify
-    
     // Check rate limiting
-    const userIP = 'login-user'; // In a real app, you'd get the user's IP
+    const userIP = 'login-user';
     if (!rateLimiter.canAttempt(userIP)) {
       const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
       setError(`Too many login attempts. Please wait ${timeLeft} minutes before trying again.`);
@@ -93,9 +91,12 @@ const UserAuthPage = () => {
       setIsLoading(true);
       setError('');
       
+      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      const currentCaptchaToken = captchaToken;
+      resetCaptcha(); // Reset immediately to prevent reuse
+      
       console.log('Attempting login for:', validatedData.email);
-      const { error } = await login(validatedData.email, validatedData.password, captchaToken || undefined);
-      resetCaptcha();
+      const { error } = await login(validatedData.email, validatedData.password, currentCaptchaToken || undefined);
       
       if (error) {
         console.error('Login error:', error);
@@ -108,7 +109,7 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
-      resetCaptcha();
+      // Captcha already reset before API call
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -118,8 +119,10 @@ const UserAuthPage = () => {
         setValidationErrors(errors);
       } else {
         console.error('Login failed:', error);
-        // More specific error handling
-        if (error.message) {
+        const errorMessage = error?.message || '';
+        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again and retry.');
+        } else if (error.message) {
           setError(error.message);
         } else if (error.details) {
           setError(`Login failed: ${error.details}`);
@@ -135,10 +138,8 @@ const UserAuthPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Captcha is optional - server-side must be configured to verify
-    
     // Check rate limiting
-    const userIP = 'register-user'; // In a real app, you'd get the user's IP
+    const userIP = 'register-user';
     if (!rateLimiter.canAttempt(userIP)) {
       const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
       setError(`Too many registration attempts. Please wait ${timeLeft} minutes before trying again.`);
@@ -152,6 +153,11 @@ const UserAuthPage = () => {
       setIsLoading(true);
       setError('');
       
+      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      // This prevents "already-seen-response" errors on timeout/retry
+      const currentCaptchaToken = captchaToken;
+      resetCaptcha(); // Reset immediately to prevent reuse
+      
       console.log('Attempting registration for:', validatedData.email);
       const { error } = await register({
         name: sanitizeInput(validatedData.name),
@@ -159,9 +165,7 @@ const UserAuthPage = () => {
         password: validatedData.password,
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
-      }, captchaToken);
-      
-      resetCaptcha();
+      }, currentCaptchaToken);
       
       if (error) {
         console.error('Registration error:', error);
@@ -183,6 +187,10 @@ const UserAuthPage = () => {
           setError('Please enter a valid email address.');
         } else if (errorMessage.includes('Too many requests')) {
           setError('Too many registration attempts. Please wait a moment before trying again.');
+        } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again and retry.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+          setError('Request timed out. Please complete the captcha again and retry.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
@@ -196,7 +204,7 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
-      resetCaptcha();
+      // Captcha already reset before API call, no need to reset again
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -206,7 +214,12 @@ const UserAuthPage = () => {
         setValidationErrors(errors);
       } else {
         console.error('Registration failed:', error);
-        setError('An unexpected error occurred. Please try again.');
+        const errorMessage = error?.message || '';
+        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again and retry.');
+        } else {
+          setError('An unexpected error occurred. Please try again.');
+        }
       }
     } finally {
       setIsLoading(false);

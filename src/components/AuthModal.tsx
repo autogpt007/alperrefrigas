@@ -61,26 +61,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Captcha is optional - only check if hCaptcha is configured server-side
-    // For now, allow login without captcha verification
-    
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await login(loginData.email, loginData.password, captchaToken || undefined);
-      resetCaptcha();
+      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      const currentCaptchaToken = captchaToken;
+      resetCaptcha(); // Reset immediately to prevent reuse
+      
+      const { error } = await login(loginData.email, loginData.password, currentCaptchaToken || undefined);
       
       if (error) {
-        setError(error.message || 'Login failed. Please check your credentials.');
+        const errorMessage = error.message || 'Login failed. Please check your credentials.';
+        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again and retry.');
+        } else {
+          setError(errorMessage);
+        }
       } else {
         onClose();
         setLoginData({ email: '', password: '' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      setError('An unexpected error occurred. Please try again.');
-      resetCaptcha();
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+        setError('Captcha verification failed. Please complete the captcha again and retry.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -89,20 +98,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Captcha is optional - only check if hCaptcha is configured server-side
-    
     setIsLoading(true);
     setError('');
     
     try {
-      const { error } = await register(registerData, captchaToken || undefined);
-      resetCaptcha();
+      // CRITICAL: Capture and immediately reset captcha token BEFORE API call
+      const currentCaptchaToken = captchaToken;
+      resetCaptcha(); // Reset immediately to prevent reuse
+      
+      const { error } = await register(registerData, currentCaptchaToken || undefined);
       
       if (error) {
-        if (error.message?.includes('already registered')) {
+        const errorMessage = error.message || 'Registration failed. Please try again.';
+        if (errorMessage.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
+        } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+          setError('Captcha verification failed. Please complete the captcha again and retry.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+          setError('Request timed out. Please complete the captcha again and retry.');
         } else {
-          setError(error.message || 'Registration failed. Please try again.');
+          setError(errorMessage);
         }
       } else {
         onClose();
@@ -114,10 +129,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           epaLicense: ''
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
-      setError('An unexpected error occurred. Please try again.');
-      resetCaptcha();
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
+        setError('Captcha verification failed. Please complete the captcha again and retry.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
