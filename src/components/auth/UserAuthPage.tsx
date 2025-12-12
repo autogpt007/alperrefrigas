@@ -20,8 +20,13 @@ const UserAuthPage = () => {
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
+  
+  // Separate captcha tokens and refs for each tab to prevent cross-contamination
+  const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
+  const [registerCaptchaToken, setRegisterCaptchaToken] = useState<string | null>(null);
+  const loginCaptchaRef = useRef<HCaptcha>(null);
+  const registerCaptchaRef = useRef<HCaptcha>(null);
+  
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -53,24 +58,48 @@ const UserAuthPage = () => {
     }
   }, [user, navigate, returnTo]);
 
-  const handleCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
+  // Reset both captchas when switching tabs to ensure fresh tokens
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setError('');
+    setValidationErrors({});
+    // Clear all captcha tokens and reset widgets
+    setLoginCaptchaToken(null);
+    setRegisterCaptchaToken(null);
+    loginCaptchaRef.current?.resetCaptcha();
+    registerCaptchaRef.current?.resetCaptcha();
+  };
+
+  // Login captcha handlers
+  const handleLoginCaptchaVerify = (token: string) => {
+    setLoginCaptchaToken(token);
     setError('');
   };
 
-  const handleCaptchaExpire = () => {
-    setCaptchaToken(null);
+  const handleLoginCaptchaExpire = () => {
+    setLoginCaptchaToken(null);
     setError('Captcha expired. Please verify again.');
   };
 
-  const handleCaptchaError = () => {
-    setCaptchaToken(null);
+  const handleLoginCaptchaError = () => {
+    setLoginCaptchaToken(null);
     setError('Captcha error. Please try again.');
   };
 
-  const resetCaptcha = () => {
-    setCaptchaToken(null);
-    captchaRef.current?.resetCaptcha();
+  // Register captcha handlers
+  const handleRegisterCaptchaVerify = (token: string) => {
+    setRegisterCaptchaToken(token);
+    setError('');
+  };
+
+  const handleRegisterCaptchaExpire = () => {
+    setRegisterCaptchaToken(null);
+    setError('Captcha expired. Please verify again.');
+  };
+
+  const handleRegisterCaptchaError = () => {
+    setRegisterCaptchaToken(null);
+    setError('Captcha error. Please try again.');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -84,6 +113,10 @@ const UserAuthPage = () => {
       return;
     }
 
+    // Capture token atomically and clear state immediately to prevent reuse
+    const tokenToUse = loginCaptchaToken;
+    setLoginCaptchaToken(null);
+
     // Validate form data
     try {
       const validatedData = loginSchema.parse(loginData);
@@ -91,20 +124,19 @@ const UserAuthPage = () => {
       setIsLoading(true);
       setError('');
       
-      // Capture the current captcha token - DO NOT reset before API call
-      const currentCaptchaToken = captchaToken;
-      
       console.log('Attempting login for:', validatedData.email);
-      const { error } = await login(validatedData.email, validatedData.password, currentCaptchaToken || undefined);
+      const { error } = await login(validatedData.email, validatedData.password, tokenToUse || undefined);
       
-      // Reset captcha AFTER the API call completes (success or failure)
-      resetCaptcha();
+      // Always reset captcha after API call
+      loginCaptchaRef.current?.resetCaptcha();
       
       if (error) {
         console.error('Login error:', error);
         const errorMessage = error.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+          setError('The request timed out. Please complete the captcha and try again.');
         } else {
           setError(error.message || 'Login failed. Please check your credentials.');
         }
@@ -117,7 +149,7 @@ const UserAuthPage = () => {
       }
     } catch (error: any) {
       // Reset captcha on any error
-      resetCaptcha();
+      loginCaptchaRef.current?.resetCaptcha();
       
       if (error.errors) {
         // Zod validation errors
@@ -155,21 +187,21 @@ const UserAuthPage = () => {
       return;
     }
 
+    // Capture token atomically and clear state immediately to prevent reuse
+    const tokenToUse = registerCaptchaToken;
+    setRegisterCaptchaToken(null);
+
+    if (!tokenToUse) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
+
     // Validate form data
     try {
       const validatedData = registerSchema.parse(registerData);
       setValidationErrors({});
       setIsLoading(true);
       setError('');
-      
-      // Capture the current captcha token - DO NOT reset before API call
-      const currentCaptchaToken = captchaToken;
-      
-      if (!currentCaptchaToken) {
-        setError('Please complete the captcha verification.');
-        setIsLoading(false);
-        return;
-      }
       
       console.log('Attempting registration for:', validatedData.email);
       const { error } = await register({
@@ -178,10 +210,10 @@ const UserAuthPage = () => {
         password: validatedData.password,
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
-      }, currentCaptchaToken);
+      }, tokenToUse);
       
-      // Reset captcha AFTER the API call completes (success or failure)
-      resetCaptcha();
+      // Always reset captcha after API call
+      registerCaptchaRef.current?.resetCaptcha();
       
       if (error) {
         console.error('Registration error:', error);
@@ -205,8 +237,8 @@ const UserAuthPage = () => {
           setError('Too many registration attempts. Please wait a moment before trying again.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
-          setError('Request timed out. Please complete the captcha again.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+          setError('The request timed out. Your account may have been created - please try signing in first. If that doesn\'t work, complete the captcha and try again.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
@@ -220,7 +252,7 @@ const UserAuthPage = () => {
       }
     } catch (error: any) {
       // Reset captcha on any error
-      resetCaptcha();
+      registerCaptchaRef.current?.resetCaptcha();
       
       if (error.errors) {
         // Zod validation errors
@@ -310,7 +342,7 @@ const UserAuthPage = () => {
               </Alert>
             )}
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Create Account</TabsTrigger>
@@ -370,16 +402,16 @@ const UserAuthPage = () => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
-                      ref={captchaRef}
-                      onVerify={handleCaptchaVerify}
-                      onExpire={handleCaptchaExpire}
-                      onError={handleCaptchaError}
+                      ref={loginCaptchaRef}
+                      onVerify={handleLoginCaptchaVerify}
+                      onExpire={handleLoginCaptchaExpire}
+                      onError={handleLoginCaptchaError}
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !loginCaptchaToken}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -387,6 +419,8 @@ const UserAuthPage = () => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Signing In...
                       </div>
+                    ) : !loginCaptchaToken ? (
+                      'Complete Captcha to Sign In'
                     ) : (
                       'Sign In'
                     )}
@@ -454,24 +488,6 @@ const UserAuthPage = () => {
 
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
-                      <Building className="h-4 w-4 text-blue-500" />
-                      EPA License (Optional)
-                    </Label>
-                    <Input
-                      type="text"
-                      value={registerData.epaLicense}
-                      onChange={(e) => handleInputChange('register', 'epaLicense', e.target.value)}
-                      placeholder="Your EPA License Number"
-                      className={validationErrors.epaLicense ? 'border-red-500' : ''}
-                      disabled={isLoading}
-                    />
-                    {validationErrors.epaLicense && (
-                      <p className="text-red-600 text-sm mt-1">{validationErrors.epaLicense}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
                       <Lock className="h-4 w-4 text-blue-500" />
                       Password
                     </Label>
@@ -504,16 +520,16 @@ const UserAuthPage = () => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
-                      ref={captchaRef}
-                      onVerify={handleCaptchaVerify}
-                      onExpire={handleCaptchaExpire}
-                      onError={handleCaptchaError}
+                      ref={registerCaptchaRef}
+                      onVerify={handleRegisterCaptchaVerify}
+                      onExpire={handleRegisterCaptchaExpire}
+                      onError={handleRegisterCaptchaError}
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !registerCaptchaToken}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -521,6 +537,8 @@ const UserAuthPage = () => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Creating Account...
                       </div>
+                    ) : !registerCaptchaToken ? (
+                      'Complete Captcha to Create Account'
                     ) : (
                       'Create Account'
                     )}
