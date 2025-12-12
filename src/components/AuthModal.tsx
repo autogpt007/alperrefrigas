@@ -21,8 +21,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
+  
+  // Separate captcha tokens and refs for each tab to prevent cross-contamination
+  const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
+  const [registerCaptchaToken, setRegisterCaptchaToken] = useState<string | null>(null);
+  const loginCaptchaRef = useRef<HCaptcha>(null);
+  const registerCaptchaRef = useRef<HCaptcha>(null);
+  
   const { login, register } = useAuth();
 
   const [loginData, setLoginData] = useState({
@@ -38,45 +43,71 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     epaLicense: ''
   });
 
-  const handleCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
+  // Reset both captchas when switching tabs to ensure fresh tokens
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setError('');
+    // Clear all captcha tokens and reset widgets
+    setLoginCaptchaToken(null);
+    setRegisterCaptchaToken(null);
+    loginCaptchaRef.current?.resetCaptcha();
+    registerCaptchaRef.current?.resetCaptcha();
+  };
+
+  // Login captcha handlers
+  const handleLoginCaptchaVerify = (token: string) => {
+    setLoginCaptchaToken(token);
     setError('');
   };
 
-  const handleCaptchaExpire = () => {
-    setCaptchaToken(null);
+  const handleLoginCaptchaExpire = () => {
+    setLoginCaptchaToken(null);
     setError('Captcha expired. Please verify again.');
   };
 
-  const handleCaptchaError = () => {
-    setCaptchaToken(null);
+  const handleLoginCaptchaError = () => {
+    setLoginCaptchaToken(null);
     setError('Captcha error. Please try again.');
   };
 
-  const resetCaptcha = () => {
-    setCaptchaToken(null);
-    captchaRef.current?.resetCaptcha();
+  // Register captcha handlers
+  const handleRegisterCaptchaVerify = (token: string) => {
+    setRegisterCaptchaToken(token);
+    setError('');
+  };
+
+  const handleRegisterCaptchaExpire = () => {
+    setRegisterCaptchaToken(null);
+    setError('Captcha expired. Please verify again.');
+  };
+
+  const handleRegisterCaptchaError = () => {
+    setRegisterCaptchaToken(null);
+    setError('Captcha error. Please try again.');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Capture token atomically and clear state immediately to prevent reuse
+    const tokenToUse = loginCaptchaToken;
+    setLoginCaptchaToken(null);
+    
     setIsLoading(true);
     setError('');
     
     try {
-      // Capture the current captcha token - DO NOT reset before API call
-      const currentCaptchaToken = captchaToken;
+      const { error } = await login(loginData.email, loginData.password, tokenToUse || undefined);
       
-      const { error } = await login(loginData.email, loginData.password, currentCaptchaToken || undefined);
-      
-      // Reset captcha AFTER the API call completes
-      resetCaptcha();
+      // Always reset captcha after API call
+      loginCaptchaRef.current?.resetCaptcha();
       
       if (error) {
         const errorMessage = error.message || 'Login failed. Please check your credentials.';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+          setError('The request timed out. Please complete the captcha and try again.');
         } else {
           setError(errorMessage);
         }
@@ -86,7 +117,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
     } catch (error: any) {
       // Reset captcha on any error
-      resetCaptcha();
+      loginCaptchaRef.current?.resetCaptcha();
       console.error('Login failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
@@ -102,23 +133,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Capture token atomically and clear state immediately to prevent reuse
+    const tokenToUse = registerCaptchaToken;
+    setRegisterCaptchaToken(null);
+    
+    if (!tokenToUse) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
     
     try {
-      // Capture the current captcha token - DO NOT reset before API call
-      const currentCaptchaToken = captchaToken;
+      const { error } = await register(registerData, tokenToUse);
       
-      if (!currentCaptchaToken) {
-        setError('Please complete the captcha verification.');
-        setIsLoading(false);
-        return;
-      }
-      
-      const { error } = await register(registerData, currentCaptchaToken);
-      
-      // Reset captcha AFTER the API call completes
-      resetCaptcha();
+      // Always reset captcha after API call
+      registerCaptchaRef.current?.resetCaptcha();
       
       if (error) {
         const errorMessage = error.message || 'Registration failed. Please try again.';
@@ -126,8 +157,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           setError('This email is already registered. Please sign in instead.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
-          setError('Request timed out. Please complete the captcha again.');
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+          setError('The request timed out. Your account may have been created - please try signing in first. If that doesn\'t work, complete the captcha and try again.');
         } else {
           setError(errorMessage);
         }
@@ -143,7 +174,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
     } catch (error: any) {
       // Reset captcha on any error
-      resetCaptcha();
+      registerCaptchaRef.current?.resetCaptcha();
       console.error('Registration failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
@@ -159,8 +190,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleClose = () => {
     onClose();
     setError('');
-    setCaptchaToken(null);
-    captchaRef.current?.resetCaptcha();
+    setLoginCaptchaToken(null);
+    setRegisterCaptchaToken(null);
+    loginCaptchaRef.current?.resetCaptcha();
+    registerCaptchaRef.current?.resetCaptcha();
     setLoginData({ email: '', password: '' });
     setRegisterData({
       name: '',
@@ -202,7 +235,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </Alert>
             )}
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-cyan-500/20">
                 <TabsTrigger 
                   value="signin" 
@@ -232,6 +265,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
                       placeholder="your@email.com"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -248,6 +282,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20 pr-10"
                         placeholder="••••••••"
                         required
+                        disabled={isLoading}
                       />
                       <Button
                         type="button"
@@ -255,6 +290,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-cyan-400"
                         onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -263,16 +299,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
-                      ref={captchaRef}
-                      onVerify={handleCaptchaVerify}
-                      onExpire={handleCaptchaExpire}
-                      onError={handleCaptchaError}
+                      ref={loginCaptchaRef}
+                      onVerify={handleLoginCaptchaVerify}
+                      onExpire={handleLoginCaptchaExpire}
+                      onError={handleLoginCaptchaError}
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !loginCaptchaToken}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -280,6 +316,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Signing In...
                       </div>
+                    ) : !loginCaptchaToken ? (
+                      'Complete Captcha to Sign In'
                     ) : (
                       'Sign In'
                     )}
@@ -301,6 +339,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
                       placeholder="John Doe"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -316,6 +355,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
                       placeholder="your@email.com"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -330,6 +370,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       onChange={(e) => setRegisterData({...registerData, company: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
                       placeholder="Your Company"
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -344,6 +385,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       onChange={(e) => setRegisterData({...registerData, epaLicense: e.target.value})}
                       className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20"
                       placeholder="EPA-608-123456"
+                      disabled={isLoading}
                     />
                   </div>
 
@@ -360,6 +402,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         className="bg-slate-800/50 border-cyan-500/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20 pr-10"
                         placeholder="••••••••"
                         required
+                        disabled={isLoading}
                       />
                       <Button
                         type="button"
@@ -367,6 +410,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-cyan-400"
                         onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -375,16 +419,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
-                      ref={captchaRef}
-                      onVerify={handleCaptchaVerify}
-                      onExpire={handleCaptchaExpire}
-                      onError={handleCaptchaError}
+                      ref={registerCaptchaRef}
+                      onVerify={handleRegisterCaptchaVerify}
+                      onExpire={handleRegisterCaptchaExpire}
+                      onError={handleRegisterCaptchaError}
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !registerCaptchaToken}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -392,6 +436,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Creating Account...
                       </div>
+                    ) : !registerCaptchaToken ? (
+                      'Complete Captcha to Create Account'
                     ) : (
                       'Create Account'
                     )}
@@ -405,6 +451,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 variant="ghost"
                 onClick={handleClose}
                 className="w-full text-gray-400 hover:text-white hover:bg-slate-700/50"
+                disabled={isLoading}
               >
                 Close
               </Button>
