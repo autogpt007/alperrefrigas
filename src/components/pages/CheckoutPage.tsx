@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
@@ -27,6 +27,7 @@ import { trackFBInitiateCheckout, trackFBAddPaymentInfo, trackFBPurchase } from 
 import { trackGoogleAdsPurchase, trackGoogleAdsBeginCheckout } from '@/utils/googleAdsConversions';
 import { useTaxCalculator } from '@/hooks/useTaxCalculator';
 import { getStateFromZip, isValidZipCode, US_STATES } from '@/utils/zipCodeUtils';
+import { useDirectCheckout } from '@/hooks/useDirectCheckout';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -37,6 +38,9 @@ const CheckoutPage = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const isGuest = searchParams.get('guest') === 'true';
+  
+  // Handle direct checkout from Google Merchant Center links
+  const { isLoading: isDirectCheckoutLoading, error: directCheckoutError } = useDirectCheckout();
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('');
@@ -531,6 +535,21 @@ const CheckoutPage = () => {
     }
   };
 
+  // Show loading state when direct checkout is processing
+  if (isDirectCheckoutLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <Loader2 className="h-12 w-12 mx-auto text-primary animate-spin mb-4" />
+            <CardTitle>Loading Product...</CardTitle>
+            <CardDescription>Please wait while we prepare your checkout</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -538,7 +557,11 @@ const CheckoutPage = () => {
           <CardHeader className="text-center">
             <ShoppingCart className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <CardTitle>Your cart is empty</CardTitle>
-            <CardDescription>Add some products to your cart to checkout</CardDescription>
+            <CardDescription>
+              {directCheckoutError 
+                ? directCheckoutError 
+                : "Add some products to your cart to checkout"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => navigate('/products')} className="w-full">

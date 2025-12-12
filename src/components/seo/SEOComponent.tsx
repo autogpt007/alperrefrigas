@@ -106,6 +106,9 @@ const SEOComponent: React.FC<SEOProps> = ({
       "priceValidUntil": priceValidUntilStr,
       "availability": `https://schema.org/${product.availability === 'in_stock' || product.availability === 'InStock' ? 'InStock' : 'OutOfStock'}`,
       "itemCondition": "https://schema.org/NewCondition",
+      "url": `${siteUrl}/products/${product.sku?.toLowerCase() || ''}`,
+      // Google Merchant Center direct checkout URL template
+      "checkoutPageURLTemplate": `${siteUrl}/checkout?sku=${encodeURIComponent(product.sku)}&quantity=1`,
       "seller": {
         "@type": "Organization",
         "name": businessName
