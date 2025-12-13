@@ -141,33 +141,41 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Prevent double-submit
-    if (inFlightRef.current) return;
-    
+    // Strict double-submit prevention - check and set immediately
+    if (inFlightRef.current) {
+      console.log('Login already in flight, ignoring duplicate submit');
+      return;
+    }
+    inFlightRef.current = true;
+
     // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = loginCaptchaToken;
+    
+    // CRITICAL: Clear token state BEFORE anything else
     setLoginCaptchaToken(null);
-    hardResetLoginCaptcha();
+    setLoginCaptchaKey((k) => k + 1);
+    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
 
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
+      inFlightRef.current = false;
       return;
     }
     
-    inFlightRef.current = true;
     setIsLoading(true);
     setError('');
     setSuccessMessage('');
     
     try {
+      console.log('Submitting login with fresh captcha token');
       const { error } = await login(loginData.email, loginData.password, tokenToUse);
       
       if (error) {
         const errorMessage = error.message || 'Login failed. Please check your credentials.';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out. Please complete the captcha and try again.');
+          setError('The request timed out. Please complete a new captcha and try again.');
         } else {
           setError(errorMessage);
         }
@@ -178,38 +186,47 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } catch (error: any) {
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-        setError('Captcha verification failed. Please complete the captcha again.');
+        setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
+      setLoginCaptchaKey((k) => k + 1);
     }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Prevent double-submit
-    if (inFlightRef.current) return;
-    
+    // Strict double-submit prevention - check and set immediately
+    if (inFlightRef.current) {
+      console.log('Registration already in flight, ignoring duplicate submit');
+      return;
+    }
+    inFlightRef.current = true;
+
     // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = registerCaptchaToken;
+    
+    // CRITICAL: Clear token state BEFORE anything else
     setRegisterCaptchaToken(null);
-    hardResetRegisterCaptcha();
+    setRegisterCaptchaKey((k) => k + 1);
+    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
 
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
+      inFlightRef.current = false;
       return;
     }
     
-    inFlightRef.current = true;
     setIsLoading(true);
     setError('');
     setSuccessMessage('');
     
     try {
+      console.log('Submitting registration with fresh captcha token');
       const { error } = await register(registerData, tokenToUse);
       
       if (error) {
@@ -217,9 +234,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         if (errorMessage.includes('already registered')) {
           setError('This email is already registered. Please sign in instead.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, try registering again.');
+          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, complete a new captcha and try registering again.');
         } else {
           setError(errorMessage);
         }
@@ -236,13 +253,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } catch (error: any) {
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-        setError('Captcha verification failed. Please complete the captcha again.');
+        setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
+      setRegisterCaptchaKey((k) => k + 1);
     }
   };
 
