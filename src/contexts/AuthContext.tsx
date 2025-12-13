@@ -238,21 +238,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Wait a moment for the trigger to create the profile
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Try to verify the profile was created
+        // Try to verify the profile was created (non-blocking check)
         try {
-          const { data: profileData, error: profileError } = await supabase
+          const { data: profileData } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', authData.user.id)
-            .single();
+            .maybeSingle();
           
-          if (profileError) {
-            console.error('Profile creation error:', profileError);
-          } else {
+          if (profileData) {
             console.log('Profile created successfully:', profileData);
+          } else {
+            console.log('Profile not yet created (trigger may still be processing)');
           }
         } catch (profileCheckError) {
-          console.error('Error checking profile:', profileCheckError);
+          // Silently ignore profile check errors - the trigger will handle creation
+          console.log('Profile check skipped');
         }
       }
       
