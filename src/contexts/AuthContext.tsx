@@ -17,8 +17,8 @@ interface AuthContextType {
   isAdmin: boolean;
   isLoading: boolean;
   signOut: () => Promise<void>;
-  login: (email: string, password: string, captchaToken?: string) => Promise<{ error: any }>;
-  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -157,21 +157,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const login = async (email: string, password: string, captchaToken?: string) => {
+  const login = async (email: string, password: string) => {
     console.log('AuthContext login attempt for:', email);
     try {
-      // Build auth options with optional captcha token
-      const authOptions: { email: string; password: string; options?: { captchaToken: string } } = {
+      const { error } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase().trim(),
         password,
-      };
-      
-      // Only include captchaToken if provided and non-empty
-      if (captchaToken) {
-        authOptions.options = { captchaToken };
-      }
-      
-      const { error } = await supabase.auth.signInWithPassword(authOptions);
+      });
       
       console.log('Login response error:', error);
       return { error };
@@ -181,29 +173,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => {
+  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
     try {
       console.log('Starting registration for:', data.email);
-      
-      // Build signup options
-      const signupOptions: any = {
-        data: {
-          full_name: data.name,
-          company: data.company,
-          epa_license: data.epaLicense,
-        },
-        emailRedirectTo: `${window.location.origin}/`,
-      };
-      
-      // Only include captchaToken if provided and non-empty
-      if (captchaToken) {
-        signupOptions.captchaToken = captchaToken;
-      }
       
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email.toLowerCase().trim(),
         password: data.password,
-        options: signupOptions,
+        options: {
+          data: {
+            full_name: data.name,
+            company: data.company,
+            epa_license: data.epaLicense,
+          },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
       
       if (error) {
