@@ -18,7 +18,7 @@ interface AuthContextType {
   isLoading: boolean;
   signOut: () => Promise<void>;
   login: (email: string, password: string, captchaToken?: string) => Promise<{ error: any }>;
-  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => Promise<{ error: any }>;
+  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }, captchaToken?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -231,9 +231,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
       }
       
+      // Check for duplicate email (Supabase returns 200 with empty identities for existing users)
+      if (authData.user && (!authData.user.identities || authData.user.identities.length === 0)) {
+        console.log('Duplicate email detected - empty identities array');
+        return {
+          error: {
+            message: 'DUPLICATE_EMAIL',
+            isDuplicate: true
+          }
+        };
+      }
+      
+      // Check if email confirmation is required
+      const needsEmailConfirmation = authData.user && !authData.user.email_confirmed_at;
+      
       if (authData.user) {
         console.log('Registration successful, user created:', authData.user.id);
-        console.log('User email confirmed:', !!authData.user.email_confirmed_at);
+        console.log('Email confirmed:', !!authData.user.email_confirmed_at);
+        console.log('Needs email confirmation:', needsEmailConfirmation);
         
         // Wait a moment for the trigger to create the profile
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -255,9 +270,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Silently ignore profile check errors - the trigger will handle creation
           console.log('Profile check skipped');
         }
+        
+        // If email confirmation is required, return a special status
+        if (needsEmailConfirmation) {
+          return { 
+            error: null, 
+            needsEmailConfirmation: true,
+            email: data.email
+          };
+        }
       }
       
-      return { error: null };
+      return { error: null, needsEmailConfirmation: false };
     } catch (err: any) {
       console.error('Unexpected registration error:', err);
       return { 

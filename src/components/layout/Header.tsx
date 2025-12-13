@@ -28,7 +28,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { itemCount } = useCart();
   const { itemCount: quoteItemCount } = useRFQ();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -119,7 +119,11 @@ const Header = () => {
           </div>
           <div className="flex items-center space-x-4">
             <LanguageSwitcher />
-            {user ? (
+            {authLoading ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+              </div>
+            ) : user ? (
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
