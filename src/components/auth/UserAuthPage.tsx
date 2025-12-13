@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
 import { supabase } from '@/integrations/supabase/client';
+import GoogleLoginButton from '@/components/ui/GoogleLoginButton';
 
 const UserAuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -404,6 +405,17 @@ const UserAuthPage = () => {
                     <RefreshCw className="h-4 w-4" />
                     Resend Confirmation Email
                   </Button>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-gray-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                    </div>
+                  </div>
+
+                  <GoogleLoginButton disabled={isLoading} />
                 </form>
               </TabsContent>
 
@@ -518,6 +530,17 @@ const UserAuthPage = () => {
                     <RefreshCw className="h-4 w-4" />
                     Resend Confirmation Email
                   </Button>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-gray-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                    </div>
+                  </div>
+
+                  <GoogleLoginButton disabled={isLoading} />
                 </form>
               </TabsContent>
             </Tabs>
