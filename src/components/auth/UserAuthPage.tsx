@@ -210,6 +210,11 @@ const UserAuthPage = () => {
           setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else if (/504|timeout|timed out/i.test(errorMessage)) {
           setError('The request timed out. Please complete a new captcha and try again.');
+        } else if (errorMessage.includes('Invalid login credentials')) {
+          // Check if it might be unconfirmed email
+          setError('Invalid email or password. If you just registered, please check your email to confirm your account first.');
+        } else if (errorMessage.includes('Email not confirmed')) {
+          setError('Please confirm your email address before signing in. Check your inbox for the confirmation link.');
         } else {
           setError(error.message || 'Login failed. Please check your credentials.');
         }
@@ -291,7 +296,7 @@ const UserAuthPage = () => {
       
       console.log('Submitting registration with fresh captcha token');
       
-      const { error } = await register({
+      const result = await register({
         name: sanitizeInput(validatedData.name),
         email: validatedData.email.toLowerCase().trim(),
         password: validatedData.password,
@@ -299,16 +304,26 @@ const UserAuthPage = () => {
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
       }, tokenToUse);
       
-      if (error) {
+      if (result.error) {
+        // Handle duplicate email specifically
+        if (result.error.isDuplicate || result.error.message === 'DUPLICATE_EMAIL') {
+          setError('This email is already registered. Please sign in instead, or use "Forgot Password" if you need to reset your password.');
+          setActiveTab('signin');
+          // Pre-fill the email in login form
+          setLoginData(prev => ({ ...prev, email: registerData.email }));
+          return;
+        }
+        
         // Handle different types of error objects
-        const errorMessage = typeof error === 'string' ? error : 
-                           error.message || 
-                           (error.details && error.details.message) ||
+        const errorMessage = typeof result.error === 'string' ? result.error : 
+                           result.error.message || 
+                           (result.error.details && result.error.details.message) ||
                            'Registration failed';
         
         if (errorMessage.includes('already registered') || errorMessage.includes('User already registered')) {
           setError('This email is already registered. Please sign in instead.');
           setActiveTab('signin');
+          setLoginData(prev => ({ ...prev, email: registerData.email }));
         } else if (errorMessage.includes('Password must be at least')) {
           setError('Password must be at least 6 characters long.');
         } else if (errorMessage.includes('Invalid email')) {
@@ -322,8 +337,14 @@ const UserAuthPage = () => {
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
+      } else if (result.needsEmailConfirmation) {
+        // Show email confirmation message instead of navigating
+        setSuccessMessage(`Account created! Please check your email (${registerData.email}) to confirm your account before signing in. Check your spam folder if you don't see it.`);
+        setActiveTab('signin');
+        // Pre-fill email in login form
+        setLoginData(prev => ({ ...prev, email: registerData.email }));
       } else {
-        // Navigate to appropriate page after successful registration
+        // Navigate to appropriate page after successful registration (auto-confirmed)
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
           ? returnTo 
           : '/account';
