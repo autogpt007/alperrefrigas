@@ -10,7 +10,6 @@ import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft, RefreshCw } from 'l
 import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
-import HCaptchaWrapper, { HCaptchaHandle } from '@/components/ui/HCaptcha';
 import { supabase } from '@/integrations/supabase/client';
 
 const UserAuthPage = () => {
@@ -20,16 +19,6 @@ const UserAuthPage = () => {
   const [error, setError] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  
-  // Separate captcha tokens and refs for each tab to prevent cross-contamination
-  const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
-  const [registerCaptchaToken, setRegisterCaptchaToken] = useState<string | null>(null);
-  const loginCaptchaRef = useRef<HCaptchaHandle>(null);
-  const registerCaptchaRef = useRef<HCaptchaHandle>(null);
-  
-  // Remount keys to force hard reset of captcha widgets
-  const [loginCaptchaKey, setLoginCaptchaKey] = useState(1);
-  const [registerCaptchaKey, setRegisterCaptchaKey] = useState(1);
   
   // Prevent double-submit
   const inFlightRef = useRef(false);
@@ -65,61 +54,11 @@ const UserAuthPage = () => {
     }
   }, [user, navigate, returnTo]);
 
-  // Hard reset login captcha - clears token, resets widget, and remounts
-  const hardResetLoginCaptcha = () => {
-    setLoginCaptchaToken(null);
-    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
-    setLoginCaptchaKey((k) => k + 1);
-  };
-
-  // Hard reset register captcha - clears token, resets widget, and remounts
-  const hardResetRegisterCaptcha = () => {
-    setRegisterCaptchaToken(null);
-    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
-    setRegisterCaptchaKey((k) => k + 1);
-  };
-
-  // Reset both captchas when switching tabs to ensure fresh tokens
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     setError('');
     setSuccessMessage('');
     setValidationErrors({});
-    // Hard reset BOTH captchas to kill any stale token paths
-    hardResetLoginCaptcha();
-    hardResetRegisterCaptcha();
-  };
-
-  // Login captcha handlers
-  const handleLoginCaptchaVerify = (token: string) => {
-    setLoginCaptchaToken(token);
-    setError('');
-  };
-
-  const handleLoginCaptchaExpire = () => {
-    hardResetLoginCaptcha();
-    setError('Captcha expired. Please verify again.');
-  };
-
-  const handleLoginCaptchaError = () => {
-    hardResetLoginCaptcha();
-    setError('Captcha error. Please try again.');
-  };
-
-  // Register captcha handlers
-  const handleRegisterCaptchaVerify = (token: string) => {
-    setRegisterCaptchaToken(token);
-    setError('');
-  };
-
-  const handleRegisterCaptchaExpire = () => {
-    hardResetRegisterCaptcha();
-    setError('Captcha expired. Please verify again.');
-  };
-
-  const handleRegisterCaptchaError = () => {
-    hardResetRegisterCaptcha();
-    setError('Captcha error. Please try again.');
   };
 
   // Resend confirmation email
@@ -157,7 +96,7 @@ const UserAuthPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Strict double-submit prevention - check and set immediately
+    // Strict double-submit prevention
     if (inFlightRef.current) {
       console.log('Login already in flight, ignoring duplicate submit');
       return;
@@ -173,24 +112,6 @@ const UserAuthPage = () => {
       return;
     }
 
-    // Consume token atomically - capture, clear state, and hard reset immediately
-    const tokenToUse = loginCaptchaToken;
-    
-    // CRITICAL: Clear token state BEFORE anything else to prevent any possibility of reuse
-    setLoginCaptchaToken(null);
-    
-    // Force increment key to ensure widget remounts with fresh state
-    setLoginCaptchaKey((k) => k + 1);
-    
-    // Also call reset on the ref as backup
-    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
-
-    if (!tokenToUse) {
-      setError('Please complete the captcha verification.');
-      inFlightRef.current = false;
-      return;
-    }
-
     // Validate form data
     try {
       const validatedData = loginSchema.parse(loginData);
@@ -200,18 +121,13 @@ const UserAuthPage = () => {
       setError('');
       setSuccessMessage('');
       
-      console.log('Submitting login with fresh captcha token');
+      console.log('Submitting login');
       
-      const { error } = await login(validatedData.email, validatedData.password, tokenToUse);
+      const { error } = await login(validatedData.email, validatedData.password);
       
       if (error) {
         const errorMessage = error.message || '';
-        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
-        } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out. Please complete a new captcha and try again.');
-        } else if (errorMessage.includes('Invalid login credentials')) {
-          // Check if it might be unconfirmed email
+        if (errorMessage.includes('Invalid login credentials')) {
           setError('Invalid email or password. If you just registered, please check your email to confirm your account first.');
         } else if (errorMessage.includes('Email not confirmed')) {
           setError('Please confirm your email address before signing in. Check your inbox for the confirmation link.');
@@ -233,25 +149,18 @@ const UserAuthPage = () => {
         });
         setValidationErrors(errors);
       } else {
-        const errorMessage = error?.message || '';
-        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
-        } else {
-          setError(error.message || 'Login failed. Please check your credentials and try again.');
-        }
+        setError(error.message || 'Login failed. Please check your credentials and try again.');
       }
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
-      // Ensure captcha is always reset after any attempt
-      setLoginCaptchaKey((k) => k + 1);
     }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Strict double-submit prevention - check and set immediately
+    // Strict double-submit prevention
     if (inFlightRef.current) {
       console.log('Registration already in flight, ignoring duplicate submit');
       return;
@@ -267,24 +176,6 @@ const UserAuthPage = () => {
       return;
     }
 
-    // Consume token atomically - capture, clear state, and hard reset immediately
-    const tokenToUse = registerCaptchaToken;
-    
-    // CRITICAL: Clear token state BEFORE anything else to prevent any possibility of reuse
-    setRegisterCaptchaToken(null);
-    
-    // Force increment key to ensure widget remounts with fresh state
-    setRegisterCaptchaKey((k) => k + 1);
-    
-    // Also call reset on the ref as backup
-    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
-
-    if (!tokenToUse) {
-      setError('Please complete the captcha verification.');
-      inFlightRef.current = false;
-      return;
-    }
-
     // Validate form data
     try {
       const validatedData = registerSchema.parse(registerData);
@@ -294,7 +185,7 @@ const UserAuthPage = () => {
       setError('');
       setSuccessMessage('');
       
-      console.log('Submitting registration with fresh captcha token');
+      console.log('Submitting registration');
       
       const result = await register({
         name: sanitizeInput(validatedData.name),
@@ -302,19 +193,17 @@ const UserAuthPage = () => {
         password: validatedData.password,
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
-      }, tokenToUse);
+      });
       
       if (result.error) {
         // Handle duplicate email specifically
         if (result.error.isDuplicate || result.error.message === 'DUPLICATE_EMAIL') {
           setError('This email is already registered. Please sign in instead, or use "Forgot Password" if you need to reset your password.');
           setActiveTab('signin');
-          // Pre-fill the email in login form
           setLoginData(prev => ({ ...prev, email: registerData.email }));
           return;
         }
         
-        // Handle different types of error objects
         const errorMessage = typeof result.error === 'string' ? result.error : 
                            result.error.message || 
                            (result.error.details && result.error.details.message) ||
@@ -330,21 +219,14 @@ const UserAuthPage = () => {
           setError('Please enter a valid email address.');
         } else if (errorMessage.includes('Too many requests')) {
           setError('Too many registration attempts. Please wait a moment before trying again.');
-        } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
-        } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, complete a new captcha and try registering again.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
       } else if (result.needsEmailConfirmation) {
-        // Show email confirmation message instead of navigating
         setSuccessMessage(`Account created! Please check your email (${registerData.email}) to confirm your account before signing in. Check your spam folder if you don't see it.`);
         setActiveTab('signin');
-        // Pre-fill email in login form
         setLoginData(prev => ({ ...prev, email: registerData.email }));
       } else {
-        // Navigate to appropriate page after successful registration (auto-confirmed)
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
           ? returnTo 
           : '/account';
@@ -352,25 +234,17 @@ const UserAuthPage = () => {
       }
     } catch (error: any) {
       if (error.errors) {
-        // Zod validation errors
         const errors: Record<string, string> = {};
         error.errors.forEach((err: any) => {
           errors[err.path[0]] = err.message;
         });
         setValidationErrors(errors);
       } else {
-        const errorMessage = error?.message || '';
-        if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
-        } else {
-          setError('An unexpected error occurred. Please try again.');
-        }
+        setError('An unexpected error occurred. Please try again.');
       }
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
-      // Ensure captcha is always reset after any attempt
-      setRegisterCaptchaKey((k) => k + 1);
     }
   };
 
@@ -379,7 +253,6 @@ const UserAuthPage = () => {
     field: keyof LoginData | keyof RegisterData,
     value: string
   ) => {
-    // Clear validation error when user starts typing
     if (validationErrors[field]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -387,7 +260,6 @@ const UserAuthPage = () => {
       }));
     }
 
-    // Don't sanitize during typing - only sanitize on submit to preserve natural typing flow
     const sanitizedValue = field === 'email' 
       ? value.toLowerCase().trim() 
       : value;
@@ -404,9 +276,6 @@ const UserAuthPage = () => {
       }));
     }
   };
-
-  const canSubmitLogin = !isLoading && !!loginCaptchaToken;
-  const canSubmitRegister = !isLoading && !!registerCaptchaToken;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-6">
@@ -510,19 +379,9 @@ const UserAuthPage = () => {
                     </div>
                   </div>
 
-                  <div className="py-2">
-                    <HCaptchaWrapper
-                      key={`login-captcha-${loginCaptchaKey}`}
-                      ref={loginCaptchaRef}
-                      onVerify={handleLoginCaptchaVerify}
-                      onExpire={handleLoginCaptchaExpire}
-                      onError={handleLoginCaptchaError}
-                    />
-                  </div>
-
                   <Button
                     type="submit"
-                    disabled={!canSubmitLogin}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -530,8 +389,6 @@ const UserAuthPage = () => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Signing In...
                       </div>
-                    ) : !loginCaptchaToken ? (
-                      'Complete Captcha to Sign In'
                     ) : (
                       'Sign In'
                     )}
@@ -636,19 +493,9 @@ const UserAuthPage = () => {
                     <PasswordStrengthIndicator password={registerData.password} />
                   </div>
 
-                  <div className="py-2">
-                    <HCaptchaWrapper
-                      key={`register-captcha-${registerCaptchaKey}`}
-                      ref={registerCaptchaRef}
-                      onVerify={handleRegisterCaptchaVerify}
-                      onExpire={handleRegisterCaptchaExpire}
-                      onError={handleRegisterCaptchaError}
-                    />
-                  </div>
-
                   <Button
                     type="submit"
-                    disabled={!canSubmitRegister}
+                    disabled={isLoading}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -656,8 +503,6 @@ const UserAuthPage = () => {
                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         Creating Account...
                       </div>
-                    ) : !registerCaptchaToken ? (
-                      'Complete Captcha to Continue'
                     ) : (
                       'Create Account'
                     )}
