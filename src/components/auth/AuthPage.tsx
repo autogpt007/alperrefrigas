@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,8 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import HCaptchaWrapper from '@/components/ui/HCaptcha';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const AuthPage = () => {
   const { user, isLoading, isAdmin, login } = useAuth();
@@ -19,8 +17,6 @@ const AuthPage = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
   const navigate = useNavigate();
 
   console.log('AuthPage - user:', user, 'isLoading:', isLoading, 'isAdmin:', isAdmin);
@@ -45,39 +41,19 @@ const AuthPage = () => {
     }
   }, [user, isAdmin, isLoading, navigate]);
 
-  const handleCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
-  };
-
-  const handleCaptchaExpire = () => {
-    setCaptchaToken(null);
-  };
-
-  const handleCaptchaError = () => {
-    setCaptchaToken(null);
-    setError('Captcha verification failed. Please try again.');
-  };
-
-  const resetCaptcha = () => {
-    setCaptchaToken(null);
-    captchaRef.current?.resetCaptcha();
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setAuthLoading(true);
 
     try {
-      const result = await login(email, password, captchaToken || undefined);
+      const result = await login(email, password);
       
       if (result?.error) {
         setError(result.error.message || 'Login failed');
-        resetCaptcha();
       }
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred');
-      resetCaptcha();
     } finally {
       setAuthLoading(false);
     }
@@ -161,19 +137,10 @@ const AuthPage = () => {
                   </div>
                 </div>
 
-                <div className="py-2">
-                  <HCaptchaWrapper
-                    ref={captchaRef}
-                    onVerify={handleCaptchaVerify}
-                    onExpire={handleCaptchaExpire}
-                    onError={handleCaptchaError}
-                  />
-                </div>
-
                 <Button
                   type="submit"
                   className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
-                  disabled={authLoading || !email || !password || !captchaToken}
+                  disabled={authLoading || !email || !password}
                 >
                   {authLoading ? (
                     <>
@@ -184,11 +151,6 @@ const AuthPage = () => {
                     'Sign in'
                   )}
                 </Button>
-                {!captchaToken && email && password && (
-                  <p className="text-xs text-amber-400 text-center mt-2">
-                    Please complete the captcha verification above
-                  </p>
-                )}
               </form>
             </CardContent>
           </Card>
