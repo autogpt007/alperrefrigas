@@ -1,31 +1,38 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema, sanitizeInput, RateLimiter, type LoginData, type RegisterData } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
-import HCaptchaWrapper from '@/components/ui/HCaptcha';
+import HCaptchaWrapper, { HCaptchaHandle } from '@/components/ui/HCaptcha';
+import { supabase } from '@/integrations/supabase/client';
 
 const UserAuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   
   // Separate captcha tokens and refs for each tab to prevent cross-contamination
   const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
   const [registerCaptchaToken, setRegisterCaptchaToken] = useState<string | null>(null);
-  const loginCaptchaRef = useRef<HCaptcha>(null);
-  const registerCaptchaRef = useRef<HCaptcha>(null);
+  const loginCaptchaRef = useRef<HCaptchaHandle>(null);
+  const registerCaptchaRef = useRef<HCaptchaHandle>(null);
+  
+  // Remount keys to force hard reset of captcha widgets
+  const [loginCaptchaKey, setLoginCaptchaKey] = useState(1);
+  const [registerCaptchaKey, setRegisterCaptchaKey] = useState(1);
+  
+  // Prevent double-submit
+  const inFlightRef = useRef(false);
   
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
@@ -33,7 +40,7 @@ const UserAuthPage = () => {
   const returnTo = searchParams.get('returnTo');
 
   // Rate limiter for authentication attempts
-  const rateLimiter = new RateLimiter(5, 900000); // 5 attempts per 15 minutes
+  const rateLimiter = useRef(new RateLimiter(5, 900000)); // 5 attempts per 15 minutes
 
   const [loginData, setLoginData] = useState({
     email: '',
@@ -58,16 +65,29 @@ const UserAuthPage = () => {
     }
   }, [user, navigate, returnTo]);
 
+  // Hard reset login captcha - clears token, resets widget, and remounts
+  const hardResetLoginCaptcha = () => {
+    setLoginCaptchaToken(null);
+    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
+    setLoginCaptchaKey((k) => k + 1);
+  };
+
+  // Hard reset register captcha - clears token, resets widget, and remounts
+  const hardResetRegisterCaptcha = () => {
+    setRegisterCaptchaToken(null);
+    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
+    setRegisterCaptchaKey((k) => k + 1);
+  };
+
   // Reset both captchas when switching tabs to ensure fresh tokens
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     setError('');
+    setSuccessMessage('');
     setValidationErrors({});
-    // Clear all captcha tokens and reset widgets
-    setLoginCaptchaToken(null);
-    setRegisterCaptchaToken(null);
-    loginCaptchaRef.current?.resetCaptcha();
-    registerCaptchaRef.current?.resetCaptcha();
+    // Hard reset BOTH captchas to kill any stale token paths
+    hardResetLoginCaptcha();
+    hardResetRegisterCaptcha();
   };
 
   // Login captcha handlers
@@ -77,12 +97,12 @@ const UserAuthPage = () => {
   };
 
   const handleLoginCaptchaExpire = () => {
-    setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
     setError('Captcha expired. Please verify again.');
   };
 
   const handleLoginCaptchaError = () => {
-    setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
     setError('Captcha error. Please try again.');
   };
 
@@ -93,64 +113,99 @@ const UserAuthPage = () => {
   };
 
   const handleRegisterCaptchaExpire = () => {
-    setRegisterCaptchaToken(null);
+    hardResetRegisterCaptcha();
     setError('Captcha expired. Please verify again.');
   };
 
   const handleRegisterCaptchaError = () => {
-    setRegisterCaptchaToken(null);
+    hardResetRegisterCaptcha();
     setError('Captcha error. Please try again.');
+  };
+
+  // Resend confirmation email
+  const handleResendConfirmation = async () => {
+    const email = activeTab === 'signin' ? loginData.email : registerData.email;
+    
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+
+      if (resendError) {
+        setError(resendError.message || 'Failed to resend confirmation email.');
+      } else {
+        setSuccessMessage('Confirmation email sent! Please check your inbox and spam folder.');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Failed to resend confirmation email.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Prevent double-submit
+    if (inFlightRef.current) return;
+    
     // Check rate limiting
     const userIP = 'login-user';
-    if (!rateLimiter.canAttempt(userIP)) {
-      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
+    if (!rateLimiter.current.canAttempt(userIP)) {
+      const timeLeft = Math.ceil(rateLimiter.current.getTimeUntilReset(userIP) / 60000);
       setError(`Too many login attempts. Please wait ${timeLeft} minutes before trying again.`);
       return;
     }
 
-    // Capture token atomically and clear state immediately to prevent reuse
+    // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = loginCaptchaToken;
     setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
+
+    if (!tokenToUse) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
 
     // Validate form data
     try {
       const validatedData = loginSchema.parse(loginData);
       setValidationErrors({});
+      
+      inFlightRef.current = true;
       setIsLoading(true);
       setError('');
+      setSuccessMessage('');
       
-      console.log('Attempting login for:', validatedData.email);
-      const { error } = await login(validatedData.email, validatedData.password, tokenToUse || undefined);
-      
-      // Always reset captcha after API call
-      loginCaptchaRef.current?.resetCaptcha();
+      const { error } = await login(validatedData.email, validatedData.password, tokenToUse);
       
       if (error) {
-        console.error('Login error:', error);
         const errorMessage = error.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+        } else if (/504|timeout|timed out/i.test(errorMessage)) {
           setError('The request timed out. Please complete the captcha and try again.');
         } else {
           setError(error.message || 'Login failed. Please check your credentials.');
         }
       } else {
-        console.log('Login successful, redirecting');
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
           ? returnTo 
           : '/account';
         navigate(redirectPath);
       }
     } catch (error: any) {
-      // Reset captcha on any error
-      loginCaptchaRef.current?.resetCaptcha();
-      
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -159,19 +214,15 @@ const UserAuthPage = () => {
         });
         setValidationErrors(errors);
       } else {
-        console.error('Login failed:', error);
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (error.message) {
-          setError(error.message);
-        } else if (error.details) {
-          setError(`Login failed: ${error.details}`);
         } else {
-          setError('Login failed. Please check your credentials and try again.');
+          setError(error.message || 'Login failed. Please check your credentials and try again.');
         }
       }
     } finally {
+      inFlightRef.current = false;
       setIsLoading(false);
     }
   };
@@ -179,17 +230,21 @@ const UserAuthPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Prevent double-submit
+    if (inFlightRef.current) return;
+    
     // Check rate limiting
     const userIP = 'register-user';
-    if (!rateLimiter.canAttempt(userIP)) {
-      const timeLeft = Math.ceil(rateLimiter.getTimeUntilReset(userIP) / 60000);
+    if (!rateLimiter.current.canAttempt(userIP)) {
+      const timeLeft = Math.ceil(rateLimiter.current.getTimeUntilReset(userIP) / 60000);
       setError(`Too many registration attempts. Please wait ${timeLeft} minutes before trying again.`);
       return;
     }
 
-    // Capture token atomically and clear state immediately to prevent reuse
+    // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = registerCaptchaToken;
     setRegisterCaptchaToken(null);
+    hardResetRegisterCaptcha();
 
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
@@ -200,10 +255,12 @@ const UserAuthPage = () => {
     try {
       const validatedData = registerSchema.parse(registerData);
       setValidationErrors({});
+      
+      inFlightRef.current = true;
       setIsLoading(true);
       setError('');
+      setSuccessMessage('');
       
-      console.log('Attempting registration for:', validatedData.email);
       const { error } = await register({
         name: sanitizeInput(validatedData.name),
         email: validatedData.email.toLowerCase().trim(),
@@ -212,19 +269,12 @@ const UserAuthPage = () => {
         epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
       }, tokenToUse);
       
-      // Always reset captcha after API call
-      registerCaptchaRef.current?.resetCaptcha();
-      
       if (error) {
-        console.error('Registration error:', error);
-        
         // Handle different types of error objects
         const errorMessage = typeof error === 'string' ? error : 
                            error.message || 
                            (error.details && error.details.message) ||
                            'Registration failed';
-        
-        console.log('Error message type:', typeof error, 'Error details:', error);
         
         if (errorMessage.includes('already registered') || errorMessage.includes('User already registered')) {
           setError('This email is already registered. Please sign in instead.');
@@ -237,13 +287,12 @@ const UserAuthPage = () => {
           setError('Too many registration attempts. Please wait a moment before trying again.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
-          setError('The request timed out. Your account may have been created - please try signing in first. If that doesn\'t work, complete the captcha and try again.');
+        } else if (/504|timeout|timed out/i.test(errorMessage)) {
+          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, try registering again.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
       } else {
-        console.log('Registration successful');
         // Navigate to appropriate page after successful registration
         const redirectPath = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') 
           ? returnTo 
@@ -251,9 +300,6 @@ const UserAuthPage = () => {
         navigate(redirectPath);
       }
     } catch (error: any) {
-      // Reset captcha on any error
-      registerCaptchaRef.current?.resetCaptcha();
-      
       if (error.errors) {
         // Zod validation errors
         const errors: Record<string, string> = {};
@@ -262,7 +308,6 @@ const UserAuthPage = () => {
         });
         setValidationErrors(errors);
       } else {
-        console.error('Registration failed:', error);
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
@@ -271,6 +316,7 @@ const UserAuthPage = () => {
         }
       }
     } finally {
+      inFlightRef.current = false;
       setIsLoading(false);
     }
   };
@@ -306,6 +352,9 @@ const UserAuthPage = () => {
     }
   };
 
+  const canSubmitLogin = !isLoading && !!loginCaptchaToken;
+  const canSubmitRegister = !isLoading && !!registerCaptchaToken;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
@@ -338,6 +387,14 @@ const UserAuthPage = () => {
               <Alert className="mb-4 border-red-200 bg-red-50">
                 <AlertDescription className="text-red-700">
                   {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {successMessage && (
+              <Alert className="mb-4 border-green-200 bg-green-50">
+                <AlertDescription className="text-green-700">
+                  {successMessage}
                 </AlertDescription>
               </Alert>
             )}
@@ -402,6 +459,7 @@ const UserAuthPage = () => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
+                      key={`login-captcha-${loginCaptchaKey}`}
                       ref={loginCaptchaRef}
                       onVerify={handleLoginCaptchaVerify}
                       onExpire={handleLoginCaptchaExpire}
@@ -411,7 +469,7 @@ const UserAuthPage = () => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !loginCaptchaToken}
+                    disabled={!canSubmitLogin}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -424,6 +482,17 @@ const UserAuthPage = () => {
                     ) : (
                       'Sign In'
                     )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendConfirmation}
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
@@ -478,12 +547,8 @@ const UserAuthPage = () => {
                       value={registerData.company}
                       onChange={(e) => handleInputChange('register', 'company', e.target.value)}
                       placeholder="Your Company"
-                      className={validationErrors.company ? 'border-red-500' : ''}
                       disabled={isLoading}
                     />
-                    {validationErrors.company && (
-                      <p className="text-red-600 text-sm mt-1">{validationErrors.company}</p>
-                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -520,6 +585,7 @@ const UserAuthPage = () => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
+                      key={`register-captcha-${registerCaptchaKey}`}
                       ref={registerCaptchaRef}
                       onVerify={handleRegisterCaptchaVerify}
                       onExpire={handleRegisterCaptchaExpire}
@@ -529,7 +595,7 @@ const UserAuthPage = () => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !registerCaptchaToken}
+                    disabled={!canSubmitRegister}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -538,10 +604,21 @@ const UserAuthPage = () => {
                         Creating Account...
                       </div>
                     ) : !registerCaptchaToken ? (
-                      'Complete Captcha to Create Account'
+                      'Complete Captcha to Continue'
                     ) : (
                       'Create Account'
                     )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendConfirmation}
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
