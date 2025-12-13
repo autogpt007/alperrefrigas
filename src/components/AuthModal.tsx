@@ -1,15 +1,14 @@
-
 import React, { useState, useRef } from 'react';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Mail, Lock, User, Building, Shield, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, Shield, Sparkles, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import HCaptchaWrapper from '@/components/ui/HCaptcha';
+import HCaptchaWrapper, { HCaptchaHandle } from '@/components/ui/HCaptcha';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -21,12 +20,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   
   // Separate captcha tokens and refs for each tab to prevent cross-contamination
   const [loginCaptchaToken, setLoginCaptchaToken] = useState<string | null>(null);
   const [registerCaptchaToken, setRegisterCaptchaToken] = useState<string | null>(null);
-  const loginCaptchaRef = useRef<HCaptcha>(null);
-  const registerCaptchaRef = useRef<HCaptcha>(null);
+  const loginCaptchaRef = useRef<HCaptchaHandle>(null);
+  const registerCaptchaRef = useRef<HCaptchaHandle>(null);
+  
+  // Remount keys to force hard reset of captcha widgets
+  const [loginCaptchaKey, setLoginCaptchaKey] = useState(1);
+  const [registerCaptchaKey, setRegisterCaptchaKey] = useState(1);
+  
+  // Prevent double-submit
+  const inFlightRef = useRef(false);
   
   const { login, register } = useAuth();
 
@@ -43,15 +50,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     epaLicense: ''
   });
 
+  // Hard reset login captcha - clears token, resets widget, and remounts
+  const hardResetLoginCaptcha = () => {
+    setLoginCaptchaToken(null);
+    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
+    setLoginCaptchaKey((k) => k + 1);
+  };
+
+  // Hard reset register captcha - clears token, resets widget, and remounts
+  const hardResetRegisterCaptcha = () => {
+    setRegisterCaptchaToken(null);
+    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
+    setRegisterCaptchaKey((k) => k + 1);
+  };
+
   // Reset both captchas when switching tabs to ensure fresh tokens
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     setError('');
-    // Clear all captcha tokens and reset widgets
-    setLoginCaptchaToken(null);
-    setRegisterCaptchaToken(null);
-    loginCaptchaRef.current?.resetCaptcha();
-    registerCaptchaRef.current?.resetCaptcha();
+    setSuccessMessage('');
+    // Hard reset BOTH captchas to kill any stale token paths
+    hardResetLoginCaptcha();
+    hardResetRegisterCaptcha();
   };
 
   // Login captcha handlers
@@ -61,12 +81,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleLoginCaptchaExpire = () => {
-    setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
     setError('Captcha expired. Please verify again.');
   };
 
   const handleLoginCaptchaError = () => {
-    setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
     setError('Captcha error. Please try again.');
   };
 
@@ -77,36 +97,76 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleRegisterCaptchaExpire = () => {
-    setRegisterCaptchaToken(null);
+    hardResetRegisterCaptcha();
     setError('Captcha expired. Please verify again.');
   };
 
   const handleRegisterCaptchaError = () => {
-    setRegisterCaptchaToken(null);
+    hardResetRegisterCaptcha();
     setError('Captcha error. Please try again.');
+  };
+
+  // Resend confirmation email
+  const handleResendConfirmation = async () => {
+    const email = activeTab === 'signin' ? loginData.email : registerData.email;
+    
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/` },
+      });
+
+      if (resendError) {
+        setError(resendError.message || 'Failed to resend confirmation email.');
+      } else {
+        setSuccessMessage('Confirmation email sent! Please check your inbox and spam folder.');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Failed to resend confirmation email.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Capture token atomically and clear state immediately to prevent reuse
+    // Prevent double-submit
+    if (inFlightRef.current) return;
+    
+    // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = loginCaptchaToken;
     setLoginCaptchaToken(null);
+    hardResetLoginCaptcha();
+
+    if (!tokenToUse) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
     
+    inFlightRef.current = true;
     setIsLoading(true);
     setError('');
+    setSuccessMessage('');
     
     try {
-      const { error } = await login(loginData.email, loginData.password, tokenToUse || undefined);
-      
-      // Always reset captcha after API call
-      loginCaptchaRef.current?.resetCaptcha();
+      const { error } = await login(loginData.email, loginData.password, tokenToUse);
       
       if (error) {
         const errorMessage = error.message || 'Login failed. Please check your credentials.';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
+        } else if (/504|timeout|timed out/i.test(errorMessage)) {
           setError('The request timed out. Please complete the captcha and try again.');
         } else {
           setError(errorMessage);
@@ -116,9 +176,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoginData({ email: '', password: '' });
       }
     } catch (error: any) {
-      // Reset captcha on any error
-      loginCaptchaRef.current?.resetCaptcha();
-      console.error('Login failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
         setError('Captcha verification failed. Please complete the captcha again.');
@@ -126,6 +183,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setError('An unexpected error occurred. Please try again.');
       }
     } finally {
+      inFlightRef.current = false;
       setIsLoading(false);
     }
   };
@@ -133,23 +191,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Capture token atomically and clear state immediately to prevent reuse
+    // Prevent double-submit
+    if (inFlightRef.current) return;
+    
+    // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = registerCaptchaToken;
     setRegisterCaptchaToken(null);
-    
+    hardResetRegisterCaptcha();
+
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
       return;
     }
     
+    inFlightRef.current = true;
     setIsLoading(true);
     setError('');
+    setSuccessMessage('');
     
     try {
       const { error } = await register(registerData, tokenToUse);
-      
-      // Always reset captcha after API call
-      registerCaptchaRef.current?.resetCaptcha();
       
       if (error) {
         const errorMessage = error.message || 'Registration failed. Please try again.';
@@ -157,8 +218,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           setError('This email is already registered. Please sign in instead.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
           setError('Captcha verification failed. Please complete the captcha again.');
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out') || errorMessage.includes('504')) {
-          setError('The request timed out. Your account may have been created - please try signing in first. If that doesn\'t work, complete the captcha and try again.');
+        } else if (/504|timeout|timed out/i.test(errorMessage)) {
+          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, try registering again.');
         } else {
           setError(errorMessage);
         }
@@ -173,9 +234,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         });
       }
     } catch (error: any) {
-      // Reset captcha on any error
-      registerCaptchaRef.current?.resetCaptcha();
-      console.error('Registration failed:', error);
       const errorMessage = error?.message || '';
       if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
         setError('Captcha verification failed. Please complete the captcha again.');
@@ -183,6 +241,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setError('An unexpected error occurred. Please try again.');
       }
     } finally {
+      inFlightRef.current = false;
       setIsLoading(false);
     }
   };
@@ -190,10 +249,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleClose = () => {
     onClose();
     setError('');
-    setLoginCaptchaToken(null);
-    setRegisterCaptchaToken(null);
-    loginCaptchaRef.current?.resetCaptcha();
-    registerCaptchaRef.current?.resetCaptcha();
+    setSuccessMessage('');
+    hardResetLoginCaptcha();
+    hardResetRegisterCaptcha();
     setLoginData({ email: '', password: '' });
     setRegisterData({
       name: '',
@@ -203,6 +261,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       epaLicense: ''
     });
   };
+
+  const canSubmitLogin = !isLoading && !!loginCaptchaToken;
+  const canSubmitRegister = !isLoading && !!registerCaptchaToken;
 
   if (!isOpen) return null;
 
@@ -231,6 +292,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <Alert className="mb-4 border-red-500/50 bg-red-500/10">
                 <AlertDescription className="text-red-400">
                   {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {successMessage && (
+              <Alert className="mb-4 border-green-500/50 bg-green-500/10">
+                <AlertDescription className="text-green-400">
+                  {successMessage}
                 </AlertDescription>
               </Alert>
             )}
@@ -299,6 +368,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
+                      key={`modal-login-captcha-${loginCaptchaKey}`}
                       ref={loginCaptchaRef}
                       onVerify={handleLoginCaptchaVerify}
                       onExpire={handleLoginCaptchaExpire}
@@ -308,7 +378,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !loginCaptchaToken}
+                    disabled={!canSubmitLogin}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -321,6 +391,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     ) : (
                       'Sign In'
                     )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendConfirmation}
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-2 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
@@ -419,6 +500,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <div className="py-2">
                     <HCaptchaWrapper
+                      key={`modal-register-captcha-${registerCaptchaKey}`}
                       ref={registerCaptchaRef}
                       onVerify={handleRegisterCaptchaVerify}
                       onExpire={handleRegisterCaptchaExpire}
@@ -428,7 +510,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading || !registerCaptchaToken}
+                    disabled={!canSubmitRegister}
                     className="w-full h-12 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold border-0 shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -437,21 +519,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         Creating Account...
                       </div>
                     ) : !registerCaptchaToken ? (
-                      'Complete Captcha to Create Account'
+                      'Complete Captcha to Continue'
                     ) : (
                       'Create Account'
                     )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendConfirmation}
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-2 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
 
-            <div className="mt-6 pt-4 border-t border-cyan-500/20">
+            <div className="mt-6 text-center">
               <Button
                 variant="ghost"
                 onClick={handleClose}
-                className="w-full text-gray-400 hover:text-white hover:bg-slate-700/50"
-                disabled={isLoading}
+                className="text-gray-400 hover:text-white"
               >
                 Close
               </Button>
