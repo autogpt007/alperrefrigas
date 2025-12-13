@@ -157,24 +157,37 @@ const UserAuthPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Prevent double-submit
-    if (inFlightRef.current) return;
+    // Strict double-submit prevention - check and set immediately
+    if (inFlightRef.current) {
+      console.log('Login already in flight, ignoring duplicate submit');
+      return;
+    }
+    inFlightRef.current = true;
     
     // Check rate limiting
     const userIP = 'login-user';
     if (!rateLimiter.current.canAttempt(userIP)) {
       const timeLeft = Math.ceil(rateLimiter.current.getTimeUntilReset(userIP) / 60000);
       setError(`Too many login attempts. Please wait ${timeLeft} minutes before trying again.`);
+      inFlightRef.current = false;
       return;
     }
 
     // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = loginCaptchaToken;
+    
+    // CRITICAL: Clear token state BEFORE anything else to prevent any possibility of reuse
     setLoginCaptchaToken(null);
-    hardResetLoginCaptcha();
+    
+    // Force increment key to ensure widget remounts with fresh state
+    setLoginCaptchaKey((k) => k + 1);
+    
+    // Also call reset on the ref as backup
+    try { loginCaptchaRef.current?.resetCaptcha(); } catch {}
 
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
+      inFlightRef.current = false;
       return;
     }
 
@@ -183,19 +196,20 @@ const UserAuthPage = () => {
       const validatedData = loginSchema.parse(loginData);
       setValidationErrors({});
       
-      inFlightRef.current = true;
       setIsLoading(true);
       setError('');
       setSuccessMessage('');
+      
+      console.log('Submitting login with fresh captcha token');
       
       const { error } = await login(validatedData.email, validatedData.password, tokenToUse);
       
       if (error) {
         const errorMessage = error.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out. Please complete the captcha and try again.');
+          setError('The request timed out. Please complete a new captcha and try again.');
         } else {
           setError(error.message || 'Login failed. Please check your credentials.');
         }
@@ -216,7 +230,7 @@ const UserAuthPage = () => {
       } else {
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else {
           setError(error.message || 'Login failed. Please check your credentials and try again.');
         }
@@ -224,30 +238,45 @@ const UserAuthPage = () => {
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
+      // Ensure captcha is always reset after any attempt
+      setLoginCaptchaKey((k) => k + 1);
     }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Prevent double-submit
-    if (inFlightRef.current) return;
+    // Strict double-submit prevention - check and set immediately
+    if (inFlightRef.current) {
+      console.log('Registration already in flight, ignoring duplicate submit');
+      return;
+    }
+    inFlightRef.current = true;
     
     // Check rate limiting
     const userIP = 'register-user';
     if (!rateLimiter.current.canAttempt(userIP)) {
       const timeLeft = Math.ceil(rateLimiter.current.getTimeUntilReset(userIP) / 60000);
       setError(`Too many registration attempts. Please wait ${timeLeft} minutes before trying again.`);
+      inFlightRef.current = false;
       return;
     }
 
     // Consume token atomically - capture, clear state, and hard reset immediately
     const tokenToUse = registerCaptchaToken;
+    
+    // CRITICAL: Clear token state BEFORE anything else to prevent any possibility of reuse
     setRegisterCaptchaToken(null);
-    hardResetRegisterCaptcha();
+    
+    // Force increment key to ensure widget remounts with fresh state
+    setRegisterCaptchaKey((k) => k + 1);
+    
+    // Also call reset on the ref as backup
+    try { registerCaptchaRef.current?.resetCaptcha(); } catch {}
 
     if (!tokenToUse) {
       setError('Please complete the captcha verification.');
+      inFlightRef.current = false;
       return;
     }
 
@@ -256,10 +285,11 @@ const UserAuthPage = () => {
       const validatedData = registerSchema.parse(registerData);
       setValidationErrors({});
       
-      inFlightRef.current = true;
       setIsLoading(true);
       setError('');
       setSuccessMessage('');
+      
+      console.log('Submitting registration with fresh captcha token');
       
       const { error } = await register({
         name: sanitizeInput(validatedData.name),
@@ -286,9 +316,9 @@ const UserAuthPage = () => {
         } else if (errorMessage.includes('Too many requests')) {
           setError('Too many registration attempts. Please wait a moment before trying again.');
         } else if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else if (/504|timeout|timed out/i.test(errorMessage)) {
-          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, try registering again.');
+          setError('The request timed out, but your account may have been created. Try signing in first. If that fails, complete a new captcha and try registering again.');
         } else {
           setError(`Registration failed: ${errorMessage}`);
         }
@@ -310,7 +340,7 @@ const UserAuthPage = () => {
       } else {
         const errorMessage = error?.message || '';
         if (errorMessage.includes('already-seen-response') || errorMessage.includes('captcha')) {
-          setError('Captcha verification failed. Please complete the captcha again.');
+          setError('Captcha verification failed. Please complete the NEW captcha below and try again.');
         } else {
           setError('An unexpected error occurred. Please try again.');
         }
@@ -318,6 +348,8 @@ const UserAuthPage = () => {
     } finally {
       inFlightRef.current = false;
       setIsLoading(false);
+      // Ensure captcha is always reset after any attempt
+      setRegisterCaptchaKey((k) => k + 1);
     }
   };
 
