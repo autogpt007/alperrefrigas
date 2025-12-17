@@ -1,8 +1,9 @@
 # Netlify redirects for URL canonicalization and clean URLs
 
-# Force HTTPS and www
-http://alperrefrigas.com/* https://www.alperrefrigas.com/:splat 301!
-https://alperrefrigas.com/* https://www.alperrefrigas.com/:splat 301!
+# Force HTTPS and non-www (primary host: https://alperrefrigas.com)
+http://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
+https://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
+http://alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
 
 # Handle SPA routing
 /*    /index.html   200
