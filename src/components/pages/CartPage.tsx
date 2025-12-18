@@ -5,17 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Info } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const CartPage = () => {
   const { t } = useTranslation();
   const { items, updateQuantity, removeItem, total, itemCount } = useCart();
   const { user } = useAuth();
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency, currencyName, currencySymbol } = useCurrency();
   const navigate = useNavigate();
 
   // Track view cart event
@@ -154,6 +155,17 @@ const CartPage = () => {
                    </div>
                    <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
                  </div>
+
+                {/* Currency Conversion Notice */}
+                {currency !== 'USD' && (
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <Info className="h-4 w-4 text-blue-600" />
+                    <AlertDescription className="text-xs text-blue-700">
+                      <span className="font-medium">Currency Notice:</span> Prices shown in {currencyName} ({currencySymbol}) are estimates.{' '}
+                      <strong>All charges will be processed in USD.</strong>
+                    </AlertDescription>
+                  </Alert>
+                )}
                 
                 <div className="space-y-3 pt-4">
                   {user ? (

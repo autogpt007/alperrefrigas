@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Package, Truck, FileText, ArrowRight, Quote } from 'lucide-react';
+import { CheckCircle, Package, Truck, FileText, ArrowRight, Quote, Info } from 'lucide-react';
 import { useOrders } from '../../contexts/OrdersContext';
 import { useQuotes } from '../../contexts/QuotesContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,12 +14,15 @@ import { trackPurchase, cartItemToGA4Item, GA4ProductItem } from '@/utils/ga4Eco
 import { trackFBPurchase, trackFBLead } from '@/utils/facebookPixel';
 import { trackGoogleAdsPurchase, trackGoogleAdsLead } from '@/utils/googleAdsConversions';
 import { pushToDataLayer } from '@/utils/tracking';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { orders, fetchOrders } = useOrders();
   const { quotes, fetchQuotes } = useQuotes();
+  const { formatPrice, currency, currencyName } = useCurrency();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const conversionTrackedRef = useRef(false);
@@ -344,7 +347,7 @@ const OrderConfirmation = () => {
                   </div>
                   {!isQuote && item.price && (
                     <div className="text-right">
-                      <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-semibold">{formatPrice(item.price * item.quantity)}</p>
                     </div>
                   )}
                 </div>
@@ -354,24 +357,34 @@ const OrderConfirmation = () => {
                 <div className="space-y-2 pt-4">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>${(data.total_amount - (data.shipping_cost || 0) - (data.tax_amount || 0)).toFixed(2)}</span>
+                    <span>{formatPrice(data.total_amount - (data.shipping_cost || 0) - (data.tax_amount || 0))}</span>
                   </div>
                   {data.shipping_cost > 0 && (
                     <div className="flex justify-between">
                       <span>Shipping</span>
-                      <span>${data.shipping_cost.toFixed(2)}</span>
+                      <span>{formatPrice(data.shipping_cost)}</span>
                     </div>
                   )}
                   {data.tax_amount > 0 && (
                     <div className="flex justify-between">
                       <span>Tax</span>
-                      <span>${data.tax_amount.toFixed(2)}</span>
+                      <span>{formatPrice(data.tax_amount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-lg font-bold border-t pt-2">
                     <span>Total</span>
-                    <span className="text-green-600">${data.total_amount.toFixed(2)}</span>
+                    <span className="text-green-600">{formatPrice(data.total_amount)}</span>
                   </div>
+                  
+                  {/* Currency notice for non-USD */}
+                  {currency !== 'USD' && (
+                    <Alert className="mt-3 bg-blue-50 border-blue-200">
+                      <Info className="h-4 w-4 text-blue-600" />
+                      <AlertDescription className="text-xs text-blue-700">
+                        Prices shown in {currencyName} are estimates. <strong>Your order was charged in USD (${data.total_amount.toFixed(2)}).</strong>
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </div>
               )}
               
