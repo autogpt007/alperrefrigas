@@ -85,7 +85,123 @@ const SEOComponent: React.FC<SEOProps> = ({
   priceValidUntil.setDate(priceValidUntil.getDate() + 30);
   const priceValidUntilStr = priceValidUntil.toISOString().split('T')[0];
   
-  // Generate product structured data for Google Merchant Center
+  // Multi-currency exchange rates for GMC compliance
+  const exchangeRates = {
+    EUR: 0.92,
+    GBP: 0.79,
+    AUD: 1.57,
+    CAD: 1.44
+  };
+  
+  // Generate multi-currency offers for Google Merchant Center
+  const generateMultiCurrencyOffers = (basePrice: number, sku: string) => {
+    const offers = [
+      // Primary USD offer
+      {
+        "@type": "Offer",
+        "price": basePrice,
+        "priceCurrency": "USD",
+        "priceValidUntil": priceValidUntilStr,
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "url": `${siteUrl}/products/${sku?.toLowerCase() || ''}`,
+        "checkoutPageURLTemplate": `${siteUrl}/checkout?sku=${encodeURIComponent(sku)}&quantity=1`,
+        "seller": { "@type": "Organization", "name": businessName },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "USD" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 3, "maxValue": 7, "unitCode": "DAY" }
+          }
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "US",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 30,
+          "returnMethod": "https://schema.org/ReturnByMail"
+        }
+      },
+      // EUR offer for EU countries
+      {
+        "@type": "Offer",
+        "price": (basePrice * exchangeRates.EUR).toFixed(2),
+        "priceCurrency": "EUR",
+        "priceValidUntil": priceValidUntilStr,
+        "availability": "https://schema.org/InStock",
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "99.99", "currency": "EUR" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": ["DE", "FR", "IT", "ES", "NL", "BE", "AT", "PT", "IE"] },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 7, "maxValue": 14, "unitCode": "DAY" }
+          }
+        }
+      },
+      // GBP offer for UK
+      {
+        "@type": "Offer",
+        "price": (basePrice * exchangeRates.GBP).toFixed(2),
+        "priceCurrency": "GBP",
+        "priceValidUntil": priceValidUntilStr,
+        "availability": "https://schema.org/InStock",
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "79.99", "currency": "GBP" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "GB" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 10, "unitCode": "DAY" }
+          }
+        }
+      },
+      // AUD offer for Australia
+      {
+        "@type": "Offer",
+        "price": (basePrice * exchangeRates.AUD).toFixed(2),
+        "priceCurrency": "AUD",
+        "priceValidUntil": priceValidUntilStr,
+        "availability": "https://schema.org/InStock",
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "149.99", "currency": "AUD" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "AU" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 10, "maxValue": 21, "unitCode": "DAY" }
+          }
+        }
+      },
+      // CAD offer for Canada
+      {
+        "@type": "Offer",
+        "price": (basePrice * exchangeRates.CAD).toFixed(2),
+        "priceCurrency": "CAD",
+        "priceValidUntil": priceValidUntilStr,
+        "availability": "https://schema.org/InStock",
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "89.99", "currency": "CAD" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CA" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 10, "unitCode": "DAY" }
+          }
+        }
+      }
+    ];
+    return offers;
+  };
+
+  // Generate product structured data for Google Merchant Center with multi-currency
   const productStructuredData = product ? {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -99,59 +215,7 @@ const SEOComponent: React.FC<SEOProps> = ({
     ...(product.gtin && { "gtin": product.gtin }),
     "image": product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
     "category": product.category || "Refrigerants",
-    "offers": {
-      "@type": "Offer",
-      "price": product.price,
-      "priceCurrency": product.currency,
-      "priceValidUntil": priceValidUntilStr,
-      "availability": `https://schema.org/${product.availability === 'in_stock' || product.availability === 'InStock' ? 'InStock' : 'OutOfStock'}`,
-      "itemCondition": "https://schema.org/NewCondition",
-      "url": `${siteUrl}/products/${product.sku?.toLowerCase() || ''}`,
-      // Google Merchant Center direct checkout URL template
-      "checkoutPageURLTemplate": `${siteUrl}/checkout?sku=${encodeURIComponent(product.sku)}&quantity=1`,
-      "seller": {
-        "@type": "Organization",
-        "name": businessName
-      },
-      "shippingDetails": {
-        "@type": "OfferShippingDetails",
-        "shippingRate": {
-          "@type": "MonetaryAmount",
-          "value": "0",
-          "currency": "USD"
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "US"
-        },
-        "deliveryTime": {
-          "@type": "ShippingDeliveryTime",
-          "handlingTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 1,
-            "maxValue": 2,
-            "unitCode": "DAY"
-          },
-          "transitTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 3,
-            "maxValue": 7,
-            "unitCode": "DAY"
-          }
-        }
-      },
-      "hasMerchantReturnPolicy": {
-        "@type": "MerchantReturnPolicy",
-        "applicableCountry": "US",
-        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 30,
-        "returnMethod": "https://schema.org/ReturnByMail",
-        "returnFees": "https://schema.org/RestockingFees",
-        "returnPolicySeasonalOverride": {
-          "@type": "MerchantReturnPolicySeasonalOverride"
-        }
-      }
-    },
+    "offers": generateMultiCurrencyOffers(product.price, product.sku),
     "audience": {
       "@type": "BusinessAudience",
       "audienceType": "B2B HVAC Professionals"
@@ -216,11 +280,21 @@ const SEOComponent: React.FC<SEOProps> = ({
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
     "foundingDate": "2020",
     "priceRange": "$$$",
-    "serviceArea": {
-      "@type": "Country",
-      "name": "United States"
-    },
-    "areaServed": ["Texas", "Florida", "California", "United States"],
+    "serviceArea": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Country", "name": "Canada" },
+      { "@type": "Country", "name": "Australia" },
+      { "@type": "AdministrativeArea", "name": "European Union" }
+    ],
+    "areaServed": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Country", "name": "Canada" },
+      { "@type": "Country", "name": "Australia" },
+      { "@type": "AdministrativeArea", "name": "European Union" }
+    ],
+    "currenciesAccepted": ["USD", "EUR", "GBP", "AUD", "CAD"],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Refrigerant Products",

@@ -55,6 +55,7 @@ const AdminSidebar = () => {
     { icon: CreditCard, label: 'Payment Methods', path: '/admin/payment-methods' },
     { icon: Calculator, label: 'US Tax Rates', path: '/admin/tax-rates' },
     { icon: Globe, label: 'International Taxes', path: '/admin/international-taxes' },
+    { icon: Globe, label: 'Exchange Rates', path: '/admin/exchange-rates' },
     { icon: MessageSquare, label: 'Contacts', path: '/admin/contacts' },
     { icon: Mail, label: 'Newsletter', path: '/admin/newsletter' },
     { icon: Phone, label: 'Contact Info', path: '/admin/contact-info' },

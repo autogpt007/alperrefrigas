@@ -8,12 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCurrency } from '../../contexts/CurrencyContext';
 import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 
 const CartPage = () => {
   const { t } = useTranslation();
   const { items, updateQuantity, removeItem, total, itemCount } = useCart();
   const { user } = useAuth();
+  const { formatPrice } = useCurrency();
   const navigate = useNavigate();
 
   // Track view cart event
@@ -109,10 +111,10 @@ const CartPage = () => {
 
                      <div className="text-right">
                        <div className="text-xl font-bold text-green-600">
-                         ${(item.price * item.quantity).toLocaleString()}
+                         {formatPrice(item.price * item.quantity)}
                        </div>
                        <div className="text-sm text-gray-500">
-                         ${item.price.toLocaleString()} each
+                         {formatPrice(item.price)} each
                        </div>
                      </div>
 
@@ -139,7 +141,7 @@ const CartPage = () => {
               <CardContent className="space-y-4">
                  <div className="flex justify-between text-sm">
                    <span className="text-gray-600">Subtotal</span>
-                   <span>${total.toLocaleString()}</span>
+                   <span>{formatPrice(total)}</span>
                  </div>
                  <div className="flex justify-between text-sm">
                    <span className="text-gray-600">Shipping</span>
@@ -148,7 +150,7 @@ const CartPage = () => {
                  <div className="border-t pt-4">
                    <div className="flex justify-between text-lg font-bold">
                      <span>Total</span>
-                     <span className="text-green-600">${total.toLocaleString()}</span>
+                     <span className="text-green-600">{formatPrice(total)}</span>
                    </div>
                    <p className="text-xs text-gray-500 mt-1">+ shipping & taxes</p>
                  </div>

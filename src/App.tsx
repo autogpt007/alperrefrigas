@@ -76,6 +76,7 @@ import SitemapGenerator from "./components/admin/SitemapGenerator";
 import PageContentManagement from "./components/admin/PageContentManagement";
 import TaxRatesManagement from "./components/admin/TaxRatesManagement";
 import InternationalTaxManagement from "./components/admin/InternationalTaxManagement";
+import ExchangeRateManagement from "./components/admin/ExchangeRateManagement";
 import BlogPage from "./components/pages/BlogPage";
 import BlogPostDetail from "./components/pages/BlogPostDetail";
 import BlogPostRedirect from "./components/pages/BlogPostRedirect";
@@ -117,6 +118,7 @@ function App() {
                           <Route path="payment-methods" element={<PaymentManagement />} />
                           <Route path="tax-rates" element={<TaxRatesManagement />} />
                           <Route path="international-taxes" element={<InternationalTaxManagement />} />
+                          <Route path="exchange-rates" element={<ExchangeRateManagement />} />
                           <Route path="newsletter" element={<NewsletterManagement />} />
                          <Route path="logo" element={<LogoManagement />} />
                          <Route path="contacts" element={<ContactManagement />} />

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
 import { useCart } from '../../contexts/CartContext';
+import { useCurrency } from '../../contexts/CurrencyContext';
 import { useToast } from '../../hooks/use-toast';
 import { useProducts } from '../../contexts/ProductsContext';
 import SEOComponent from '../seo/SEOComponent';
@@ -25,6 +26,7 @@ const ProductDetails = () => {
   const {
     addItem: addToCart
   } = useCart();
+  const { formatPrice } = useCurrency();
   const {
     toast
   } = useToast();
@@ -449,7 +451,7 @@ const ProductDetails = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-4">
                       <p className="text-3xl font-bold text-blue-600">
-                        ${getCurrentPrice().toLocaleString()}
+                        {formatPrice(getCurrentPrice())}
                       </p>
                       {getDiscountPercentage() > 0 && (
                         <div className="flex items-center gap-2">
@@ -458,10 +460,10 @@ const ProductDetails = () => {
                           </span>
                           <span className="text-lg text-gray-500 line-through">
                             {product.product_type === 'accessory' ? (
-                              packaging === '5-Pack' ? `$${(product.price * 5).toFixed(2)}` :
-                              packaging === '10-Pack' ? `$${(product.price * 10).toFixed(2)}` : `$${product.price.toFixed(2)}`
+                              packaging === '5-Pack' ? formatPrice(product.price * 5) :
+                              packaging === '10-Pack' ? formatPrice(product.price * 10) : formatPrice(product.price)
                             ) : (
-                              `$${(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}`
+                              formatPrice(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280))
                             )}
                           </span>
                         </div>
@@ -505,7 +507,7 @@ const ProductDetails = () => {
                               <span>{pkg}</span>
                               <div className="ml-4 text-right">
                                 <span className="font-semibold text-blue-600">
-                                  ${calculateBulkPrice(pkg).toLocaleString()}
+                                  {formatPrice(calculateBulkPrice(pkg))}
                                 </span>
                                 {product.product_type === 'accessory' ? (
                                   pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :

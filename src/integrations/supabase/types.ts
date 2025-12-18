@@ -425,6 +425,48 @@ export type Database = {
         }
         Relationships: []
       }
+      exchange_rates: {
+        Row: {
+          base_currency: string
+          country_codes: string[]
+          created_at: string | null
+          currency_name: string
+          currency_symbol: string
+          flag_emoji: string | null
+          id: string
+          is_active: boolean | null
+          last_updated: string | null
+          rate: number
+          target_currency: string
+        }
+        Insert: {
+          base_currency?: string
+          country_codes: string[]
+          created_at?: string | null
+          currency_name: string
+          currency_symbol: string
+          flag_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_updated?: string | null
+          rate: number
+          target_currency: string
+        }
+        Update: {
+          base_currency?: string
+          country_codes?: string[]
+          created_at?: string | null
+          currency_name?: string
+          currency_symbol?: string
+          flag_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_updated?: string | null
+          rate?: number
+          target_currency?: string
+        }
+        Relationships: []
+      }
       featured_products: {
         Row: {
           created_at: string
