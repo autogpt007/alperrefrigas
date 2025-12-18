@@ -493,6 +493,45 @@ export type Database = {
         }
         Relationships: []
       }
+      international_tax_rates: {
+        Row: {
+          country_code: string
+          country_name: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          region: string
+          tax_rate: number
+          tax_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          country_code: string
+          country_name: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          region: string
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          country_code?: string
+          country_name?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          region?: string
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       miner_ownerships: {
         Row: {
           created_at: string

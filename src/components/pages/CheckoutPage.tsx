@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2 } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
 import SEOComponent from '../seo/SEOComponent';
@@ -25,8 +25,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBInitiateCheckout, trackFBAddPaymentInfo, trackFBPurchase } from '@/utils/facebookPixel';
 import { trackGoogleAdsPurchase, trackGoogleAdsBeginCheckout } from '@/utils/googleAdsConversions';
-import { useTaxCalculator } from '@/hooks/useTaxCalculator';
-import { getStateFromZip, isValidZipCode, US_STATES } from '@/utils/zipCodeUtils';
+import { useInternationalTaxCalculator, SUPPORTED_COUNTRIES, getCountryByCode } from '@/hooks/useInternationalTaxCalculator';
+import { US_STATES } from '@/utils/zipCodeUtils';
 import { useDirectCheckout } from '@/hooks/useDirectCheckout';
 
 const CheckoutPage = () => {
@@ -56,6 +56,7 @@ const CheckoutPage = () => {
     city: '',
     state: '',
     zipCode: '',
+    countryCode: 'US', // Use country code for international support
     country: 'United States',
     paymentMethod: '', // No payment method preselected
     notes: '',
@@ -80,18 +81,23 @@ const CheckoutPage = () => {
   const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
 
-  // Tax calculator - auto-calculate based on ZIP code
-  const taxCalculation = useTaxCalculator(formData.zipCode, total);
+  // International Tax calculator - supports US state tax, EU VAT, UK VAT, AU GST
+  const taxCalculation = useInternationalTaxCalculator(formData.countryCode, formData.zipCode, total);
 
-  // Auto-fill state from ZIP code when ZIP changes
+  // Auto-fill state from ZIP code when ZIP changes (US only)
   useEffect(() => {
-    if (formData.zipCode && isValidZipCode(formData.zipCode)) {
-      const stateInfo = getStateFromZip(formData.zipCode);
-      if (stateInfo && (!formData.state || formData.state !== stateInfo.stateCode)) {
-        setFormData(prev => ({ ...prev, state: stateInfo.stateCode }));
-      }
+    if (formData.countryCode === 'US' && formData.zipCode && formData.zipCode.length >= 5) {
+      // Import ZIP code utilities dynamically for US
+      import('@/utils/zipCodeUtils').then(({ getStateFromZip, isValidZipCode }) => {
+        if (isValidZipCode(formData.zipCode)) {
+          const stateInfo = getStateFromZip(formData.zipCode);
+          if (stateInfo && (!formData.state || formData.state !== stateInfo.stateCode)) {
+            setFormData(prev => ({ ...prev, state: stateInfo.stateCode }));
+          }
+        }
+      });
     }
-  }, [formData.zipCode]);
+  }, [formData.zipCode, formData.countryCode]);
 
   // Auto-fill user data when authenticated
   useEffect(() => {
@@ -428,6 +434,7 @@ const CheckoutPage = () => {
           state: formData.state,
           zipCode: formData.zipCode,
           country: formData.country,
+          countryCode: formData.countryCode,
           phoneNumber: formData.phoneNumber
         },
         payment_method: formData.paymentMethod,
@@ -437,24 +444,33 @@ const CheckoutPage = () => {
         zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
         cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
-        payment_details: formData.paymentMethod === 'credit_card' ? {
-          // Full card details for offline processing - admin will delete after processing
-          card_number: formData.cardNumber,
-          expiry_date: formData.expiryDate,
-          cvv: formData.cvv,
-          cardholder_name: formData.cardholderName,
-          last_four: formData.cardNumber.slice(-4),
-          billing_address: {
-            street: formData.billingStreet || formData.street,
-            city: formData.billingCity || formData.city,
-            state: formData.billingState || formData.state,
-            zipCode: formData.billingZipCode || formData.zipCode,
-            country: formData.billingCountry || formData.country
-          }
-        } : formData.paymentMethod.startsWith('crypto_') ? {
-          selected_wallet: selectedCryptoWallet,
-          wallet_type: formData.paymentMethod.replace('crypto_', '')
-        } : null,
+        payment_details: {
+          // Tax information for audit trail
+          tax_type: taxCalculation.taxType,
+          tax_rate: taxCalculation.taxRate,
+          country_code: formData.countryCode,
+          region: taxCalculation.region,
+          // Credit card details if applicable
+          ...(formData.paymentMethod === 'credit_card' ? {
+            card_number: formData.cardNumber,
+            expiry_date: formData.expiryDate,
+            cvv: formData.cvv,
+            cardholder_name: formData.cardholderName,
+            last_four: formData.cardNumber.slice(-4),
+            billing_address: {
+              street: formData.billingStreet || formData.street,
+              city: formData.billingCity || formData.city,
+              state: formData.billingState || formData.state,
+              zipCode: formData.billingZipCode || formData.zipCode,
+              country: formData.billingCountry || formData.country
+            }
+          } : {}),
+          // Crypto wallet details if applicable
+          ...(formData.paymentMethod.startsWith('crypto_') ? {
+            selected_wallet: selectedCryptoWallet,
+            wallet_type: formData.paymentMethod.replace('crypto_', '')
+          } : {})
+        },
       };
 
       // Log checkout attempt for debugging
@@ -653,7 +669,7 @@ const CheckoutPage = () => {
                         required
                       />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City *</Label>
                         <Input
@@ -664,6 +680,52 @@ const CheckoutPage = () => {
                         />
                       </div>
                       <div>
+                        <Label htmlFor="zipCode">{formData.countryCode === 'US' ? 'ZIP Code' : 'Postal Code'} *</Label>
+                        <Input
+                          id="zipCode"
+                          value={formData.zipCode}
+                          onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                          placeholder={formData.countryCode === 'US' ? '12345' : 'Enter postal code'}
+                          maxLength={formData.countryCode === 'US' ? 10 : 20}
+                          required
+                        />
+                        {formData.countryCode === 'US' && formData.zipCode && formData.state && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Detected: {US_STATES.find(s => s.code === formData.state)?.name || formData.state}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="country">Country *</Label>
+                      <Select
+                        value={formData.countryCode}
+                        onValueChange={(value) => {
+                          const country = getCountryByCode(value);
+                          handleInputChange('countryCode', value);
+                          handleInputChange('country', country?.name || value);
+                          // Clear state when switching to non-US country
+                          if (value !== 'US') {
+                            handleInputChange('state', '');
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px]">
+                          {SUPPORTED_COUNTRIES.map(country => (
+                            <SelectItem key={country.code} value={country.code}>
+                              {country.name} {country.region === 'EU' && '🇪🇺'} {country.region === 'UK' && '🇬🇧'} {country.region === 'AU' && '🇦🇺'}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Show state/province field for US */}
+                    {formData.countryCode === 'US' && (
+                      <div className="md:col-span-2">
                         <Label htmlFor="state">State *</Label>
                         <Select
                           value={formData.state}
@@ -681,39 +743,40 @@ const CheckoutPage = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div>
-                        <Label htmlFor="zipCode">ZIP Code *</Label>
+                    )}
+
+                    {/* Show region field for non-US countries */}
+                    {formData.countryCode !== 'US' && (
+                      <div className="md:col-span-2">
+                        <Label htmlFor="state">Region/Province</Label>
                         <Input
-                          id="zipCode"
-                          value={formData.zipCode}
-                          onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                          placeholder="12345"
-                          maxLength={10}
-                          required
+                          id="state"
+                          value={formData.state}
+                          onChange={(e) => handleInputChange('state', e.target.value)}
+                          placeholder="Enter region or province"
                         />
-                        {formData.zipCode && taxCalculation.stateCode && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Detected: {taxCalculation.stateName}
-                          </p>
-                        )}
                       </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="country">Country *</Label>
-                      <Select
-                        value={formData.country}
-                        onValueChange={(value) => handleInputChange('country', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="United States">United States</SelectItem>
-                          <SelectItem value="Canada">Canada</SelectItem>
-                          <SelectItem value="Mexico">Mexico</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    )}
+
+                    {/* International Tax Notice */}
+                    {formData.countryCode !== 'US' && (
+                      <div className="md:col-span-2">
+                        <Alert>
+                          <Globe className="h-4 w-4" />
+                          <AlertDescription>
+                            {taxCalculation.region === 'EU' && (
+                              <>EU VAT ({taxCalculation.taxRate}%) will be applied to your order. F-Gas certification may be required for refrigerant purchases.</>
+                            )}
+                            {taxCalculation.region === 'UK' && (
+                              <>UK VAT ({taxCalculation.taxRate}%) will be applied. Customs duties may apply upon delivery.</>
+                            )}
+                            {taxCalculation.region === 'AU' && (
+                              <>Australian GST ({taxCalculation.taxRate}%) will be applied. Import duties may apply.</>
+                            )}
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -1126,18 +1189,12 @@ const CheckoutPage = () => {
                     {/* Tax Display */}
                     <div className="flex justify-between items-center">
                       <span className="flex items-center gap-1">
-                        Estimated Tax
-                        {taxCalculation.stateCode && (
-                          <span className="text-xs text-gray-500">
-                            ({taxCalculation.stateCode} @ {taxCalculation.taxRate}%)
-                          </span>
-                        )}
-                        :
+                        {taxCalculation.displayLabel}:
                       </span>
                       <span>
                         {taxCalculation.isLoading ? (
                           <span className="text-gray-400">Calculating...</span>
-                        ) : taxCalculation.isNoTaxState ? (
+                        ) : taxCalculation.taxAmount === 0 ? (
                           <span className="text-green-600">$0.00</span>
                         ) : (
                           formatCurrency(taxAmount)
@@ -1163,14 +1220,39 @@ const CheckoutPage = () => {
                     <div className="flex items-start gap-2">
                       <Info className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
                       <div className="text-xs text-gray-600">
-                        <p className="font-medium mb-1">Sales Tax Information</p>
+                        <p className="font-medium mb-1">
+                          {taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
+                           taxCalculation.taxType === 'GST' ? 'GST Information' : 
+                           'Sales Tax Information'}
+                        </p>
                         <p>
-                          Sales tax is calculated based on your shipping destination and applicable state/local tax laws. 
-                          {taxCalculation.isNoTaxState && formData.zipCode && (
-                            <span className="text-green-700"> {taxCalculation.stateName} has no state sales tax.</span>
-                          )}
-                          {!taxCalculation.isNoTaxState && taxCalculation.stateCode && (
-                            <span> Your order will be taxed at the {taxCalculation.stateName} state rate of {taxCalculation.taxRate}%.</span>
+                          {formData.countryCode === 'US' ? (
+                            <>
+                              Sales tax is calculated based on your shipping destination and applicable state/local tax laws.
+                              {taxCalculation.taxAmount === 0 && formData.zipCode && (
+                                <span className="text-green-700"> Your state has no sales tax or tax-exempt status applies.</span>
+                              )}
+                              {taxCalculation.taxAmount > 0 && (
+                                <span> Your order will be taxed at {taxCalculation.taxRate}%.</span>
+                              )}
+                            </>
+                          ) : taxCalculation.region === 'EU' ? (
+                            <>
+                              VAT is applied at the standard rate of {taxCalculation.taxRate}% for {taxCalculation.countryName}.
+                              For B2B purchases with valid VAT registration, please contact us for VAT exemption.
+                            </>
+                          ) : taxCalculation.region === 'UK' ? (
+                            <>
+                              UK VAT is applied at the standard rate of {taxCalculation.taxRate}%.
+                              Additional customs duties may apply upon delivery.
+                            </>
+                          ) : taxCalculation.region === 'AU' ? (
+                            <>
+                              Australian GST is applied at {taxCalculation.taxRate}%.
+                              Additional import duties may apply.
+                            </>
+                          ) : (
+                            <>Tax is calculated based on your shipping destination.</>
                           )}
                         </p>
                       </div>
