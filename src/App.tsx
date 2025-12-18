@@ -7,7 +7,7 @@ import { useFavicon } from "./hooks/useFavicon";
 import ResourceOptimizer from '@/components/seo/ResourceOptimizer';
 import CriticalCSS from '@/components/seo/CriticalCSS';
 import MetaRedirects from '@/components/seo/MetaRedirects';
-import { HelmetProvider } from 'react-helmet-async';
+
 import SecurityHeaders from '@/components/security/SecurityHeaders';
 import SecurityMonitor from '@/components/security/SecurityMonitor';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -89,7 +89,7 @@ function App() {
   useFavicon();
   
   return (
-    <HelmetProvider>
+    <>
       <SecurityHeaders />
       <SecurityMonitor />
       <QueryClientProvider client={queryClient}>
@@ -198,7 +198,7 @@ function App() {
         </TooltipProvider>
         </CurrencyProvider>
       </QueryClientProvider>
-    </HelmetProvider>
+    </>
   );
 }
 
