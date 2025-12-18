@@ -72,8 +72,16 @@ const CheckoutPage = () => {
     billingCountry: 'United States',
     cashappTag: '',
     zelleTag: '',
-    zellePhone: ''
+    zellePhone: '',
+    // F-Gas certification for EU orders
+    fGasCertificationNumber: '',
+    fGasCertificationValid: false,
+    // VAT exemption for international orders
+    payVatAtCustoms: false
   });
+
+  // Check if cart contains refrigerant products (non-accessories)
+  const hasRefrigerantProducts = items.some(item => item.product_type !== 'accessory');
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
@@ -254,11 +262,11 @@ const CheckoutPage = () => {
     });
   };
 
-  // Calculate totals with coupon and tax
+  // Calculate totals with coupon and tax (support VAT exemption)
   const subtotal = total;
   const shippingCost = subtotal >= freeShippingThreshold ? 0 : cartShippingCost;
   const discountAmount = couponDiscount;
-  const taxAmount = taxCalculation.taxAmount;
+  const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
 
   const handleInputChange = (field: string, value: string) => {
@@ -348,6 +356,26 @@ const CheckoutPage = () => {
         variant: "destructive",
       });
       return false;
+    }
+
+    // F-Gas validation for EU refrigerant orders
+    if (taxCalculation.region === 'EU' && hasRefrigerantProducts) {
+      if (!formData.fGasCertificationNumber.trim()) {
+        toast({
+          title: "F-Gas Certification Required",
+          description: "EU Regulation 517/2014 requires F-Gas certification for refrigerant purchases",
+          variant: "destructive",
+        });
+        return false;
+      }
+      if (!formData.fGasCertificationValid) {
+        toast({
+          title: "Please Confirm F-Gas Certification",
+          description: "You must confirm that your F-Gas certification is valid",
+          variant: "destructive",
+        });
+        return false;
+      }
     }
 
     if (!legalAcknowledged) {
@@ -447,9 +475,21 @@ const CheckoutPage = () => {
         payment_details: {
           // Tax information for audit trail
           tax_type: taxCalculation.taxType,
-          tax_rate: taxCalculation.taxRate,
+          tax_rate: formData.payVatAtCustoms ? 0 : taxCalculation.taxRate,
           country_code: formData.countryCode,
           region: taxCalculation.region,
+          // VAT exemption information
+          vat_exempt: formData.payVatAtCustoms,
+          vat_payment_method: formData.payVatAtCustoms ? 'customs' : 'prepaid',
+          delivery_terms: formData.payVatAtCustoms ? 'DDU' : 'DDP',
+          // F-Gas certification for EU orders
+          ...(taxCalculation.region === 'EU' && hasRefrigerantProducts ? {
+            fgas_certification: {
+              number: formData.fGasCertificationNumber,
+              confirmed_valid: formData.fGasCertificationValid,
+              country: formData.countryCode
+            }
+          } : {}),
           // Credit card details if applicable
           ...(formData.paymentMethod === 'credit_card' ? {
             card_number: formData.cardNumber,
@@ -765,7 +805,7 @@ const CheckoutPage = () => {
                           <Globe className="h-4 w-4" />
                           <AlertDescription>
                             {taxCalculation.region === 'EU' && (
-                              <>EU VAT ({taxCalculation.taxRate}%) will be applied to your order. F-Gas certification may be required for refrigerant purchases.</>
+                              <>EU VAT ({taxCalculation.taxRate}%) will be applied to your order. F-Gas certification is required for refrigerant purchases under EU Regulation 517/2014.</>
                             )}
                             {taxCalculation.region === 'UK' && (
                               <>UK VAT ({taxCalculation.taxRate}%) will be applied. Customs duties may apply upon delivery.</>
@@ -779,6 +819,99 @@ const CheckoutPage = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* F-Gas Certification for EU Orders */}
+                {taxCalculation.region === 'EU' && hasRefrigerantProducts && (
+                  <Card className="border-orange-200 bg-orange-50/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center text-orange-800">
+                        <Shield className="h-5 w-5 mr-2" />
+                        F-Gas Certification Required (EU Regulation 517/2014)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Alert className="bg-orange-100 border-orange-300">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription className="text-orange-800">
+                          EU regulations require valid F-Gas certification for all refrigerant purchases. 
+                          You must provide your certification number to complete this order.
+                        </AlertDescription>
+                      </Alert>
+                      <div>
+                        <Label htmlFor="fGasCertificationNumber" className="text-orange-900">F-Gas Certification Number *</Label>
+                        <Input
+                          id="fGasCertificationNumber"
+                          value={formData.fGasCertificationNumber}
+                          onChange={(e) => handleInputChange('fGasCertificationNumber', e.target.value)}
+                          placeholder="Enter your F-Gas certification number"
+                          className="border-orange-200 focus:border-orange-400"
+                          required
+                        />
+                        <p className="text-xs text-orange-700 mt-1">
+                          Format varies by country. E.g., UK: F-123456-ABC, Germany: DE-FGA-12345
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Checkbox
+                          id="fGasCertificationValid"
+                          checked={formData.fGasCertificationValid}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, fGasCertificationValid: checked === true }))}
+                          className="mt-1"
+                        />
+                        <Label htmlFor="fGasCertificationValid" className="text-sm text-orange-900">
+                          I confirm that my F-Gas certification is valid and current, and I am authorized to purchase regulated refrigerants under EU Regulation 517/2014.
+                        </Label>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* VAT Exemption Option for International Orders */}
+                {formData.countryCode !== 'US' && (
+                  <Card className="border-blue-200 bg-blue-50/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center text-blue-800">
+                        <Calculator className="h-5 w-5 mr-2" />
+                        Tax Payment Options
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="payVatAtCustoms"
+                          checked={formData.payVatAtCustoms}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, payVatAtCustoms: checked === true }))}
+                          className="mt-1"
+                        />
+                        <div className="space-y-1">
+                          <Label htmlFor="payVatAtCustoms" className="font-medium text-blue-900">
+                            I will pay {taxCalculation.taxType || 'VAT/GST'} at customs
+                          </Label>
+                          <p className="text-xs text-blue-700">
+                            Select this option if you are a VAT-registered business or prefer to pay 
+                            import duties and taxes directly to customs upon delivery. 
+                            Your invoice will show 0% {taxCalculation.taxType || 'tax'}.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {formData.payVatAtCustoms && (
+                        <Alert className="bg-blue-100 border-blue-300">
+                          <Info className="h-4 w-4" />
+                          <AlertDescription className="text-blue-800">
+                            <strong>Important (DDU Terms):</strong> By selecting this option, you acknowledge:
+                            <ul className="list-disc pl-4 mt-2 text-xs space-y-1">
+                              <li>You are responsible for all import duties, taxes, and customs clearance fees</li>
+                              <li>Customs may charge additional handling or brokerage fees</li>
+                              <li>Delivery may be delayed pending customs clearance</li>
+                              <li>Shipment will be marked as "Delivered Duty Unpaid (DDU)"</li>
+                            </ul>
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Payment Method */}
                 <Card>
