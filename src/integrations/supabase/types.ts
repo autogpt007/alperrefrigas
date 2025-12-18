@@ -1249,6 +1249,54 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_zones: {
+        Row: {
+          base_rate: number
+          countries: string[]
+          created_at: string | null
+          free_shipping_threshold: number | null
+          hazmat_surcharge: number | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          order_index: number | null
+          region_name: string
+          transit_days_max: number
+          transit_days_min: number
+          updated_at: string | null
+        }
+        Insert: {
+          base_rate?: number
+          countries?: string[]
+          created_at?: string | null
+          free_shipping_threshold?: number | null
+          hazmat_surcharge?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          order_index?: number | null
+          region_name: string
+          transit_days_max?: number
+          transit_days_min?: number
+          updated_at?: string | null
+        }
+        Update: {
+          base_rate?: number
+          countries?: string[]
+          created_at?: string | null
+          free_shipping_threshold?: number | null
+          hazmat_surcharge?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          order_index?: number | null
+          region_name?: string
+          transit_days_max?: number
+          transit_days_min?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string | null

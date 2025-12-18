@@ -78,6 +78,7 @@ import PageContentManagement from "./components/admin/PageContentManagement";
 import TaxRatesManagement from "./components/admin/TaxRatesManagement";
 import InternationalTaxManagement from "./components/admin/InternationalTaxManagement";
 import ExchangeRateManagement from "./components/admin/ExchangeRateManagement";
+import ShippingManagement from "./components/admin/ShippingManagement";
 import BlogPage from "./components/pages/BlogPage";
 import BlogPostDetail from "./components/pages/BlogPostDetail";
 import BlogPostRedirect from "./components/pages/BlogPostRedirect";
@@ -114,6 +115,7 @@ function App() {
                          <Route path="accessories" element={<AccessoryManagement />} />
                          <Route path="featured-products" element={<FeaturedProductManagement />} />
                          <Route path="orders" element={<OrderManagement />} />
+                         <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
                          <Route path="adverts" element={<AdvertManagement />} />
                           <Route path="coupons" element={<CouponManagement />} />
