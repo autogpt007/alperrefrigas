@@ -84,33 +84,21 @@ const ExchangeRateManagement = () => {
   const refreshRates = async () => {
     setIsRefreshing(true);
     try {
-      // Fetch rates from Frankfurter API (free, uses ECB data)
-      const response = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,GBP,AUD,CAD');
-      const data = await response.json();
+      // Call the edge function to update rates
+      const { data, error } = await supabase.functions.invoke('update-exchange-rates');
 
-      if (data.rates) {
-        // Update each rate in database
-        for (const [currency, rate] of Object.entries(data.rates)) {
-          const { error } = await supabase
-            .from('exchange_rates')
-            .update({ 
-              rate: rate as number, 
-              last_updated: new Date().toISOString() 
-            })
-            .eq('target_currency', currency);
+      if (error) throw error;
 
-          if (error) {
-            console.error(`Failed to update ${currency}:`, error);
-          }
-        }
-
+      if (data?.success) {
         queryClient.invalidateQueries({ queryKey: ['admin-exchange-rates'] });
         queryClient.invalidateQueries({ queryKey: ['exchange-rates'] });
         toast.success('Exchange rates refreshed from ECB');
+      } else {
+        toast.error(data?.message || 'Failed to update rates');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch rates:', error);
-      toast.error('Failed to fetch latest rates');
+      toast.error('Failed to fetch latest rates: ' + error.message);
     } finally {
       setIsRefreshing(false);
     }

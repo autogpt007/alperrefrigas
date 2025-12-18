@@ -438,7 +438,7 @@ const ProductDetails = () => {
               <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-800 mb-1">Starting Price</p>
                 <p className="text-lg font-semibold text-blue-900">
-                  ${product.price}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
+                  {formatPrice(product.price)}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
                 </p>
                 <p className="text-xs text-blue-600">
                   {product.product_type === 'accessory' ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' : 'Bulk discounts available for containers'}
