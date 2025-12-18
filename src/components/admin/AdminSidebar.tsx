@@ -21,7 +21,8 @@ import {
   Map,
   CreditCard,
   LogOut,
-  Calculator
+  Calculator,
+  Truck
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -49,6 +50,7 @@ const AdminSidebar = () => {
     { icon: Wrench, label: 'Accessories', path: '/admin/accessories' },
     { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
+    { icon: Truck, label: 'Shipping', path: '/admin/shipping' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
     { icon: Tag, label: 'Coupons', path: '/admin/coupons' },

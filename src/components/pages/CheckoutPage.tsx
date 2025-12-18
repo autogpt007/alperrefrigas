@@ -28,6 +28,7 @@ import { trackGoogleAdsPurchase, trackGoogleAdsBeginCheckout } from '@/utils/goo
 import { useInternationalTaxCalculator, SUPPORTED_COUNTRIES, getCountryByCode } from '@/hooks/useInternationalTaxCalculator';
 import { US_STATES } from '@/utils/zipCodeUtils';
 import { useDirectCheckout } from '@/hooks/useDirectCheckout';
+import { useShippingZones, getShippingZoneForCountry, calculateShippingCost } from '@/hooks/useShippingZones';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -89,6 +90,11 @@ const CheckoutPage = () => {
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
+
+  // Shipping zones for dynamic rates
+  const { data: shippingZones } = useShippingZones();
+  const shippingZone = shippingZones ? getShippingZoneForCountry(shippingZones, formData.countryCode, formData.state) : null;
+  const dynamicShipping = calculateShippingCost(shippingZone, total, hasRefrigerantProducts);
 
   // International Tax calculator - supports US state tax, EU VAT, UK VAT, AU GST
   const taxCalculation = useInternationalTaxCalculator(formData.countryCode, formData.zipCode, total);
@@ -263,9 +269,9 @@ const CheckoutPage = () => {
     });
   };
 
-  // Calculate totals with coupon and tax (support VAT exemption)
+  // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
-  const shippingCost = subtotal >= freeShippingThreshold ? 0 : cartShippingCost;
+  const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
   const discountAmount = couponDiscount;
   const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
