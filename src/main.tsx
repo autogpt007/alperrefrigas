@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import { CurrencyProvider } from './contexts/CurrencyContext';
 import App from './App.tsx';
 import './index.css';
 
@@ -17,9 +15,7 @@ import('./i18n/i18n').then(() => {
   root.render(
     <React.StrictMode>
       <HelmetProvider>
-        <CurrencyProvider>
-          <App />
-        </CurrencyProvider>
+        <App />
       </HelmetProvider>
     </React.StrictMode>
   );

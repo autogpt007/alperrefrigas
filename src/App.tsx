@@ -17,6 +17,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { RFQProvider } from "./contexts/RFQContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
 import { QuotesProvider } from "./contexts/QuotesContext";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
@@ -92,7 +93,8 @@ function App() {
       <SecurityHeaders />
       <SecurityMonitor />
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
+        <CurrencyProvider>
+          <TooltipProvider>
           <AuthProvider>
             <ProductsProvider>
               <CartProvider>
@@ -194,6 +196,7 @@ function App() {
             </ProductsProvider>
           </AuthProvider>
         </TooltipProvider>
+        </CurrencyProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
