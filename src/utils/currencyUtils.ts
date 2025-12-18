@@ -19,13 +19,17 @@ export function formatCurrencyPrice(
 ): string {
   const convertedPrice = priceUSD * exchangeRate;
   
-  // Format based on currency
-  const formatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  // USD keeps 2 decimal places, other currencies round to whole numbers
+  if (currency === 'USD') {
+    const formatter = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return `${currencySymbol}${formatter.format(convertedPrice)}`;
+  }
   
-  return `${currencySymbol}${formatter.format(convertedPrice)}`;
+  // Round to nearest whole number for non-USD currencies
+  return `${currencySymbol}${Math.round(convertedPrice).toLocaleString()}`;
 }
 
 // Convert USD to target currency

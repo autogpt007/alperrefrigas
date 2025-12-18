@@ -36,7 +36,7 @@ const CheckoutPage = () => {
   const { createOrder } = useOrders();
   const { user } = useAuth();
   const { toast } = useToast();
-  const { formatPrice: formatCurrency } = useCurrency();
+  const { formatPrice: formatCurrency, currency, currencyName, currencySymbol } = useCurrency();
   const [searchParams] = useSearchParams();
   const isGuest = searchParams.get('guest') === 'true';
   
@@ -238,7 +238,7 @@ const CheckoutPage = () => {
       setCouponDiscount(discount);
       toast({
         title: "Coupon Applied!",
-        description: `You saved $${discount.toFixed(2)}`,
+        description: `You saved ${formatCurrency(discount)}`,
       });
 
     } catch (error) {
@@ -1348,6 +1348,18 @@ const CheckoutPage = () => {
                       <span>{formatCurrency(finalTotal)}</span>
                     </div>
                   </div>
+
+                  {/* Currency Conversion Notice */}
+                  {currency !== 'USD' && (
+                    <Alert className="bg-amber-50 border-amber-200">
+                      <Globe className="h-4 w-4 text-amber-600" />
+                      <AlertDescription className="text-xs text-amber-800">
+                        <strong>Currency Notice:</strong> Prices shown in {currencyName} ({currencySymbol}) are approximate.{' '}
+                        Your payment will be charged in <strong>USD (${finalTotal.toFixed(2)})</strong>.
+                        Final amount may vary based on exchange rates.
+                      </AlertDescription>
+                    </Alert>
+                  )}
 
                   {/* Tax Compliance Notice - Google Merchant Compliant */}
                   <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
