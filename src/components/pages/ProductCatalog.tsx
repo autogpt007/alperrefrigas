@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useProducts } from '../../contexts/ProductsContext';
+import { useCurrency } from '../../contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
 import { createProductSlug } from '@/lib/slugs';
 import { trackViewItemList, productToGA4Item } from '@/utils/ga4Ecommerce';
@@ -16,6 +17,7 @@ import { trackViewItemList, productToGA4Item } from '@/utils/ga4Ecommerce';
 const ProductCatalog = () => {
   const { t } = useTranslation();
   const { products } = useProducts();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const { category: urlCategory } = useParams();
   const location = useLocation();
@@ -246,7 +248,7 @@ const ProductCatalog = () => {
           <div className="mt-auto">
             <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-bold text-blue-600">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
             </div>
