@@ -11,6 +11,7 @@ import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '../ui/LanguageSwitcher';
+import CurrencySwitcher from '../ui/CurrencySwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
 import QuoteTypeSelector from '../ui/QuoteTypeSelector';
 import {
@@ -118,6 +119,7 @@ const Header = () => {
             <span>📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</span>
           </div>
           <div className="flex items-center space-x-4">
+            <CurrencySwitcher />
             <LanguageSwitcher />
             {authLoading ? (
               <div className="flex items-center space-x-2">

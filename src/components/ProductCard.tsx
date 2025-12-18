@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingCart, Plus, Minus, Check, Zap, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { Link } from 'react-router-dom';
 import { createProductSlug } from '@/lib/slugs';
 import { trackSelectItem, productToGA4Item } from '@/utils/ga4Ecommerce';
@@ -37,6 +38,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem, items } = useCart();
+  const { formatPrice } = useCurrency();
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -231,16 +233,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {getDiscountPercentage() > 0 && (
                   <span className="text-xs text-gray-500 line-through">
                     {product.product_type === 'accessory' ? (
-                      selectedPackaging === '5-Pack' ? `$${(product.price * 5).toFixed(2)}` :
-                      selectedPackaging === '10-Pack' ? `$${(product.price * 10).toFixed(2)}` : 
-                      `$${product.price.toFixed(2)}`
+                      selectedPackaging === '5-Pack' ? formatPrice(product.price * 5) :
+                      selectedPackaging === '10-Pack' ? formatPrice(product.price * 10) : 
+                      formatPrice(product.price)
                     ) : (
-                      `$${(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280)).toLocaleString()}`
+                      formatPrice(product.price * (selectedPackaging === '1 Pallet' ? 40 : selectedPackaging === '20ft Container' ? 1140 : 2280))
                     )}
                   </span>
                 )}
                 <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  ${getCurrentPrice().toLocaleString()}
+                  {formatPrice(getCurrentPrice())}
                 </div>
               </div>
               <div className="text-xs text-gray-400 leading-tight">

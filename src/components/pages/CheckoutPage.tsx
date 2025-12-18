@@ -17,7 +17,7 @@ import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
 import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { formatPrice, formatPriceWhole, formatCurrency } from '@/lib/utils';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
 import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +36,7 @@ const CheckoutPage = () => {
   const { createOrder } = useOrders();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { formatPrice: formatCurrency } = useCurrency();
   const [searchParams] = useSearchParams();
   const isGuest = searchParams.get('guest') === 'true';
   
