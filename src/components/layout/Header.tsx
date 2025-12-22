@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench, Wind } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -100,12 +100,20 @@ const Header = () => {
     { 
       title: 'Refrigerants',
       href: '/products/refrigerants',
-      description: 'Professional-grade refrigerants for all HVAC applications'
+      description: 'Professional-grade refrigerants for all HVAC applications',
+      icon: 'snowflake'
+    },
+    { 
+      title: 'Air Conditioners',
+      href: '/products/air-conditioners',
+      description: 'Bulk wholesale AC units - mini-splits, window & portable',
+      icon: 'wind'
     },
     { 
       title: 'Accessories',
       href: '/products/accessories', 
-      description: 'Tools, gauges, and equipment for refrigeration work'
+      description: 'Tools, gauges, and equipment for refrigeration work',
+      icon: 'wrench'
     },
   ];
 
@@ -298,8 +306,10 @@ const Header = () => {
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <div className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-all duration-300 group-hover:scale-110">
-                              {item.title === 'Refrigerants' ? (
+                              {item.icon === 'snowflake' ? (
                                 <Snowflake className="h-4 w-4 text-accent" />
+                              ) : item.icon === 'wind' ? (
+                                <Wind className="h-4 w-4 text-accent" />
                               ) : (
                                 <Wrench className="h-4 w-4 text-accent" />
                               )}
