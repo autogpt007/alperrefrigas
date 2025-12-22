@@ -33,7 +33,7 @@ const EnhancedProductManagement = () => {
     condition: 'new' as 'new' | 'used' | 'refurbished',
     stock: 0,
     epaApproved: false,
-    product_type: 'refrigerant' as 'refrigerant' | 'accessory',
+    product_type: 'refrigerant' as 'refrigerant' | 'accessory' | 'air_conditioner',
     brand: 'FrigidFlow',
     chemicalFormula: '',
     casNumber: '',
@@ -47,11 +47,27 @@ const EnhancedProductManagement = () => {
     technicalSpecs: {} as Record<string, any>,
     packaging: [] as string[],
     gtin: '',
+    mpn: '',
     dimensions: {
       length: '',
       width: '',
       height: ''
-    }
+    },
+    // AC Bulk Pricing fields
+    q20_units: undefined as number | undefined,
+    q40_units: undefined as number | undefined,
+    mid_bulk_uplift_percent: 12,
+    custom_uplift_5_19: 35,
+    custom_uplift_20_39: 25,
+    custom_uplift_40_half: 15,
+    base_unit_price: undefined as number | undefined,
+    // Google Merchant fields
+    google_product_category: '',
+    weight_kg: undefined as number | undefined,
+    length_cm: undefined as number | undefined,
+    width_cm: undefined as number | undefined,
+    height_cm: undefined as number | undefined,
+    identifier_exists: true
   });
 
   const resetForm = () => {
@@ -79,11 +95,25 @@ const EnhancedProductManagement = () => {
       technicalSpecs: {},
       packaging: [],
       gtin: '',
+      mpn: '',
       dimensions: {
         length: '',
         width: '',
         height: ''
-      }
+      },
+      q20_units: undefined,
+      q40_units: undefined,
+      mid_bulk_uplift_percent: 12,
+      custom_uplift_5_19: 35,
+      custom_uplift_20_39: 25,
+      custom_uplift_40_half: 15,
+      base_unit_price: undefined,
+      google_product_category: '',
+      weight_kg: undefined,
+      length_cm: undefined,
+      width_cm: undefined,
+      height_cm: undefined,
+      identifier_exists: true
     });
     setEditingProduct(null);
   };
@@ -141,7 +171,21 @@ const EnhancedProductManagement = () => {
       technicalSpecs: product.technicalSpecs || {},
       packaging: Array.isArray(product.packaging) ? product.packaging : [],
       gtin: product.gtin || '',
-      dimensions: product.dimensions || { length: '', width: '', height: '' }
+      mpn: product.mpn || '',
+      dimensions: product.dimensions || { length: '', width: '', height: '' },
+      q20_units: product.q20_units,
+      q40_units: product.q40_units,
+      mid_bulk_uplift_percent: product.mid_bulk_uplift_percent ?? 12,
+      custom_uplift_5_19: product.custom_uplift_5_19 ?? 35,
+      custom_uplift_20_39: product.custom_uplift_20_39 ?? 25,
+      custom_uplift_40_half: product.custom_uplift_40_half ?? 15,
+      base_unit_price: product.base_unit_price,
+      google_product_category: product.google_product_category || '',
+      weight_kg: product.weight_kg,
+      length_cm: product.length_cm,
+      width_cm: product.width_cm,
+      height_cm: product.height_cm,
+      identifier_exists: product.identifier_exists ?? true
     });
     setEditingProduct(product);
     setIsAddDialogOpen(true);
@@ -205,11 +249,13 @@ const EnhancedProductManagement = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <Tabs defaultValue="basic" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-6">
+                  <TabsTrigger value="basic">Basic</TabsTrigger>
                   <TabsTrigger value="details">Details</TabsTrigger>
                   <TabsTrigger value="images">Images</TabsTrigger>
-                  <TabsTrigger value="specs">Specifications</TabsTrigger>
+                  <TabsTrigger value="specs">Specs</TabsTrigger>
+                  <TabsTrigger value="bulk">Bulk Pricing</TabsTrigger>
+                  <TabsTrigger value="merchant">Merchant</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="basic" className="space-y-4">
@@ -287,6 +333,9 @@ const EnhancedProductManagement = () => {
                           <SelectItem value="Natural">Natural</SelectItem>
                           <SelectItem value="HCFC">HCFC</SelectItem>
                           <SelectItem value="CFC">CFC</SelectItem>
+                          <SelectItem value="mini-splits">Mini-Splits</SelectItem>
+                          <SelectItem value="window-ac">Window AC</SelectItem>
+                          <SelectItem value="portable-ac">Portable AC</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -340,13 +389,33 @@ const EnhancedProductManagement = () => {
                     />
                   </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="epaApproved"
-                      checked={formData.epaApproved}
-                      onCheckedChange={(checked) => setFormData({ ...formData, epaApproved: checked })}
-                    />
-                    <Label htmlFor="epaApproved" className="text-white">EPA Approved</Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="epaApproved"
+                        checked={formData.epaApproved}
+                        onCheckedChange={(checked) => setFormData({ ...formData, epaApproved: checked })}
+                      />
+                      <Label htmlFor="epaApproved" className="text-white">EPA Approved</Label>
+                    </div>
+                    <div>
+                      <Label htmlFor="product_type" className="text-white">Product Type</Label>
+                      <Select
+                        value={formData.product_type}
+                        onValueChange={(value: 'refrigerant' | 'accessory' | 'air_conditioner') => 
+                          setFormData({ ...formData, product_type: value })
+                        }
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="refrigerant">Refrigerant</SelectItem>
+                          <SelectItem value="accessory">Accessory</SelectItem>
+                          <SelectItem value="air_conditioner">Air Conditioner</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </TabsContent>
 
@@ -510,6 +579,195 @@ const EnhancedProductManagement = () => {
                     />
                   </div>
                 </TabsContent>
+
+                {/* Bulk Pricing Tab (for Air Conditioners) */}
+                <TabsContent value="bulk" className="space-y-4">
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                    <p className="text-yellow-400 text-sm">
+                      These fields are required for Air Conditioner products. Set Q20 (20ft container capacity) to enable bulk pricing tiers.
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="base_unit_price" className="text-white">Base Unit Price (Full Container) *</Label>
+                      <Input
+                        id="base_unit_price"
+                        type="number"
+                        step="0.01"
+                        value={formData.base_unit_price ?? ''}
+                        onChange={(e) => setFormData({ ...formData, base_unit_price: e.target.value ? parseFloat(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="Best price per unit"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="q20_units" className="text-white">20ft Container Capacity (Q20) *</Label>
+                      <Input
+                        id="q20_units"
+                        type="number"
+                        value={formData.q20_units ?? ''}
+                        onChange={(e) => setFormData({ ...formData, q20_units: e.target.value ? parseInt(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="Units per 20ft container"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="q40_units" className="text-white">40ft Container Capacity (Q40)</Label>
+                      <Input
+                        id="q40_units"
+                        type="number"
+                        value={formData.q40_units ?? ''}
+                        onChange={(e) => setFormData({ ...formData, q40_units: e.target.value ? parseInt(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="Units per 40ft container (optional)"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="mid_bulk_uplift" className="text-white">Mid Bulk Uplift % (Half Container+)</Label>
+                      <Input
+                        id="mid_bulk_uplift"
+                        type="number"
+                        step="0.1"
+                        value={formData.mid_bulk_uplift_percent}
+                        onChange={(e) => setFormData({ ...formData, mid_bulk_uplift_percent: parseFloat(e.target.value) || 12 })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="12"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="border-t border-slate-600 pt-4">
+                    <Label className="text-white mb-2 block">Custom Bulk Uplift Percentages (5 to half-1 units)</Label>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="uplift_5_19" className="text-sm text-gray-300">5-19 Units</Label>
+                        <Input
+                          id="uplift_5_19"
+                          type="number"
+                          step="0.1"
+                          value={formData.custom_uplift_5_19}
+                          onChange={(e) => setFormData({ ...formData, custom_uplift_5_19: parseFloat(e.target.value) || 35 })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="35"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="uplift_20_39" className="text-sm text-gray-300">20-39 Units</Label>
+                        <Input
+                          id="uplift_20_39"
+                          type="number"
+                          step="0.1"
+                          value={formData.custom_uplift_20_39}
+                          onChange={(e) => setFormData({ ...formData, custom_uplift_20_39: parseFloat(e.target.value) || 25 })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="25"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="uplift_40_half" className="text-sm text-gray-300">40 to Half-1</Label>
+                        <Input
+                          id="uplift_40_half"
+                          type="number"
+                          step="0.1"
+                          value={formData.custom_uplift_40_half}
+                          onChange={(e) => setFormData({ ...formData, custom_uplift_40_half: parseFloat(e.target.value) || 15 })}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          placeholder="15"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Google Merchant Tab */}
+                <TabsContent value="merchant" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="mpn" className="text-white">MPN (Manufacturer Part Number)</Label>
+                      <Input
+                        id="mpn"
+                        value={formData.mpn}
+                        onChange={(e) => setFormData({ ...formData, mpn: e.target.value })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="google_product_category" className="text-white">Google Product Category</Label>
+                      <Input
+                        id="google_product_category"
+                        value={formData.google_product_category}
+                        onChange={(e) => setFormData({ ...formData, google_product_category: e.target.value })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="e.g., 1801 (HVAC)"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-4">
+                    <div>
+                      <Label htmlFor="weight_kg" className="text-white">Weight (kg)</Label>
+                      <Input
+                        id="weight_kg"
+                        type="number"
+                        step="0.1"
+                        value={formData.weight_kg ?? ''}
+                        onChange={(e) => setFormData({ ...formData, weight_kg: e.target.value ? parseFloat(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="length_cm" className="text-white">Length (cm)</Label>
+                      <Input
+                        id="length_cm"
+                        type="number"
+                        step="0.1"
+                        value={formData.length_cm ?? ''}
+                        onChange={(e) => setFormData({ ...formData, length_cm: e.target.value ? parseFloat(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="width_cm" className="text-white">Width (cm)</Label>
+                      <Input
+                        id="width_cm"
+                        type="number"
+                        step="0.1"
+                        value={formData.width_cm ?? ''}
+                        onChange={(e) => setFormData({ ...formData, width_cm: e.target.value ? parseFloat(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="height_cm" className="text-white">Height (cm)</Label>
+                      <Input
+                        id="height_cm"
+                        type="number"
+                        step="0.1"
+                        value={formData.height_cm ?? ''}
+                        onChange={(e) => setFormData({ ...formData, height_cm: e.target.value ? parseFloat(e.target.value) : undefined })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="identifier_exists"
+                      checked={formData.identifier_exists}
+                      onCheckedChange={(checked) => setFormData({ ...formData, identifier_exists: checked })}
+                    />
+                    <Label htmlFor="identifier_exists" className="text-white">
+                      Identifier Exists (GTIN or MPN available)
+                    </Label>
+                  </div>
+                  <p className="text-gray-400 text-sm">
+                    Set to false if no GTIN or MPN is available. Google Merchant requires this flag.
+                  </p>
+                </TabsContent>
               </Tabs>
 
               <div className="flex justify-end space-x-2 pt-4">
@@ -571,6 +829,9 @@ const EnhancedProductManagement = () => {
                 <SelectItem value="Natural">Natural</SelectItem>
                 <SelectItem value="HCFC">HCFC</SelectItem>
                 <SelectItem value="CFC">CFC</SelectItem>
+                <SelectItem value="mini-splits">Mini-Splits</SelectItem>
+                <SelectItem value="window-ac">Window AC</SelectItem>
+                <SelectItem value="portable-ac">Portable AC</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -959,6 +959,7 @@ export type Database = {
         Row: {
           applications: Json | null
           availability: string | null
+          base_unit_price: number | null
           brand: string | null
           cas_number: string | null
           category: string | null
@@ -968,21 +969,32 @@ export type Database = {
           container_20ft_price: number | null
           container_40ft_price: number | null
           created_at: string | null
+          custom_uplift_20_39: number | null
+          custom_uplift_40_half: number | null
+          custom_uplift_5_19: number | null
           description: string | null
           dimensions: Json | null
           discount_20ft: number | null
           discount_40ft: number | null
           epa_approved: boolean | null
+          google_product_category: string | null
           gtin: string | null
           hazard_class: string | null
+          height_cm: number | null
           id: string
+          identifier_exists: boolean | null
           images: string[] | null
+          length_cm: number | null
+          mid_bulk_uplift_percent: number | null
+          mpn: string | null
           name: string
           packaging: Json | null
           packaging_options: Json | null
           pallet_price: number | null
           price: number
           product_type: string
+          q20_units: number | null
+          q40_units: number | null
           sds_url: string | null
           shipping_weight: string | null
           sku: string | null
@@ -991,10 +1003,13 @@ export type Database = {
           thumbnail_url: string | null
           un_number: string | null
           updated_at: string | null
+          weight_kg: number | null
+          width_cm: number | null
         }
         Insert: {
           applications?: Json | null
           availability?: string | null
+          base_unit_price?: number | null
           brand?: string | null
           cas_number?: string | null
           category?: string | null
@@ -1004,21 +1019,32 @@ export type Database = {
           container_20ft_price?: number | null
           container_40ft_price?: number | null
           created_at?: string | null
+          custom_uplift_20_39?: number | null
+          custom_uplift_40_half?: number | null
+          custom_uplift_5_19?: number | null
           description?: string | null
           dimensions?: Json | null
           discount_20ft?: number | null
           discount_40ft?: number | null
           epa_approved?: boolean | null
+          google_product_category?: string | null
           gtin?: string | null
           hazard_class?: string | null
+          height_cm?: number | null
           id?: string
+          identifier_exists?: boolean | null
           images?: string[] | null
+          length_cm?: number | null
+          mid_bulk_uplift_percent?: number | null
+          mpn?: string | null
           name: string
           packaging?: Json | null
           packaging_options?: Json | null
           pallet_price?: number | null
           price: number
           product_type?: string
+          q20_units?: number | null
+          q40_units?: number | null
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null
@@ -1027,10 +1053,13 @@ export type Database = {
           thumbnail_url?: string | null
           un_number?: string | null
           updated_at?: string | null
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Update: {
           applications?: Json | null
           availability?: string | null
+          base_unit_price?: number | null
           brand?: string | null
           cas_number?: string | null
           category?: string | null
@@ -1040,21 +1069,32 @@ export type Database = {
           container_20ft_price?: number | null
           container_40ft_price?: number | null
           created_at?: string | null
+          custom_uplift_20_39?: number | null
+          custom_uplift_40_half?: number | null
+          custom_uplift_5_19?: number | null
           description?: string | null
           dimensions?: Json | null
           discount_20ft?: number | null
           discount_40ft?: number | null
           epa_approved?: boolean | null
+          google_product_category?: string | null
           gtin?: string | null
           hazard_class?: string | null
+          height_cm?: number | null
           id?: string
+          identifier_exists?: boolean | null
           images?: string[] | null
+          length_cm?: number | null
+          mid_bulk_uplift_percent?: number | null
+          mpn?: string | null
           name?: string
           packaging?: Json | null
           packaging_options?: Json | null
           pallet_price?: number | null
           price?: number
           product_type?: string
+          q20_units?: number | null
+          q40_units?: number | null
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null
@@ -1063,6 +1103,8 @@ export type Database = {
           thumbnail_url?: string | null
           un_number?: string | null
           updated_at?: string | null
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Relationships: []
       }
