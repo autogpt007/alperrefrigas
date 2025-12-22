@@ -45,6 +45,7 @@ interface CartContextType {
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateItemConfiguration: (id: string, configuration: CartItem['configuration_json']) => void;
   clearCart: () => void;
   total: number;
   itemCount: number;
@@ -149,6 +150,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const updateItemConfiguration = (id: string, configuration: CartItem['configuration_json']) => {
+    console.log('Updating configuration for item:', id, configuration);
+    setItems(currentItems =>
+      currentItems.map(item =>
+        item.id === id ? { ...item, configuration_json: configuration } : item
+      )
+    );
+  };
+
   const clearCart = () => {
     console.log('Clearing cart');
     setItems([]);
@@ -179,6 +189,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     addItem,
     removeItem,
     updateQuantity,
+    updateItemConfiguration,
     clearCart,
     total,
     itemCount,

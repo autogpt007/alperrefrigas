@@ -6,11 +6,107 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Info } from 'lucide-react';
-import { useCart } from '../../contexts/CartContext';
+import { useCart, CartItem } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ACConfigSummary } from '@/components/ui/ACConfigSummary';
+import { ACConfiguration } from '@/components/ui/ACConfigurator';
+// Extracted cart item component for cleaner code
+interface CartItemCardProps {
+  item: CartItem;
+  formatPrice: (price: number) => string;
+  updateQuantity: (id: string, quantity: number) => void;
+  removeItem: (id: string) => void;
+}
+
+const CartItemCard: React.FC<CartItemCardProps> = ({ 
+  item, 
+  formatPrice, 
+  updateQuantity, 
+  removeItem 
+}) => {
+  const { updateItemConfiguration } = useCart();
+  
+  const hasACConfig = item.configuration_json && 
+    (item.configuration_json.btu || item.configuration_json.voltage);
+
+  const handleConfigurationChange = (newConfig: ACConfiguration) => {
+    updateItemConfiguration(item.id, newConfig);
+  };
+
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-20 h-20 object-cover rounded-lg bg-muted"
+          />
+          
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-foreground">{item.name}</h3>
+            <p className="text-muted-foreground text-sm">SKU: {item.sku}</p>
+            {item.epaApproved && (
+              <Badge variant="secondary" className="bg-green-100 text-green-800 mt-1">
+                EPA Approved
+              </Badge>
+            )}
+            
+            {/* AC Configuration Summary */}
+            {hasACConfig && (
+              <ACConfigSummary
+                configuration={item.configuration_json as ACConfiguration}
+                onConfigurationChange={handleConfigurationChange}
+                editable={true}
+                compact={true}
+              />
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+              disabled={item.quantity <= 1}
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <span className="w-12 text-center font-medium">{item.quantity}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="text-right">
+            <div className="text-xl font-bold text-green-600">
+              {formatPrice(item.price * item.quantity)}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              {formatPrice(item.price)} each
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => removeItem(item.id)}
+            className="text-destructive hover:text-destructive/80"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const CartPage = () => {
   const { t } = useTranslation();
@@ -72,64 +168,13 @@ const CartPage = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
-              <Card key={item.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded-lg bg-gray-100"
-                    />
-                    
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-                      <p className="text-gray-600">SKU: {item.sku}</p>
-                      {item.epaApproved && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800 mt-1">
-                          EPA Approved
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        disabled={item.quantity <= 1}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-12 text-center font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                     <div className="text-right">
-                       <div className="text-xl font-bold text-green-600">
-                         {formatPrice(item.price * item.quantity)}
-                       </div>
-                       <div className="text-sm text-gray-500">
-                         {formatPrice(item.price)} each
-                       </div>
-                     </div>
-
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeItem(item.id)}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <CartItemCard
+                key={item.id}
+                item={item}
+                formatPrice={formatPrice}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
             ))}
           </div>
 
