@@ -30,10 +30,18 @@ const ProductCatalog = () => {
   const getProductTypeFromUrl = () => {
     if (location.pathname.includes('/refrigerants')) return 'refrigerant';
     if (location.pathname.includes('/accessories')) return 'accessory';
+    if (location.pathname.includes('/air-conditioners')) return 'air_conditioner';
     return 'all';
   };
 
+  // Get AC subcategory from URL if applicable
+  const getACSubcategory = () => {
+    const match = location.pathname.match(/\/air-conditioners\/([^/]+)/);
+    return match ? match[1] : null;
+  };
+
   const productType = getProductTypeFromUrl();
+  const acSubcategory = getACSubcategory();
 
   useEffect(() => {
     const search = searchParams.get('search');
@@ -72,16 +80,31 @@ const ProductCatalog = () => {
         { value: 'safety', label: 'Safety Equipment' },
         { value: 'valves', label: 'Valves & Controls' }
       ];
+    } else if (productType === 'air_conditioner') {
+      return [
+        { value: 'all', label: 'All Air Conditioners' },
+        { value: 'mini-splits', label: 'Ductless Mini-Splits' },
+        { value: 'window-ac', label: 'Window AC Units' },
+        { value: 'portable-ac', label: 'Portable AC Units' }
+      ];
     } else {
       return [
         { value: 'all', label: t('products.categories.all') },
         { value: 'refrigerant', label: 'Refrigerants' },
-        { value: 'accessory', label: 'Accessories' }
+        { value: 'accessory', label: 'Accessories' },
+        { value: 'air_conditioner', label: 'Air Conditioners' }
       ];
     }
   };
 
   const categories = getCategories();
+
+  // Set category from AC subcategory URL param if applicable
+  useEffect(() => {
+    if (acSubcategory) {
+      setSelectedCategory(acSubcategory);
+    }
+  }, [acSubcategory]);
 
   // Enhanced filtering logic with product type and category filtering
   const filteredProducts = products.filter(product => {
@@ -119,8 +142,15 @@ const ProductCatalog = () => {
     }
 
     // For product type filtering in mixed view
-    if (selectedCategory === 'refrigerant' || selectedCategory === 'accessory') {
+    if (selectedCategory === 'refrigerant' || selectedCategory === 'accessory' || selectedCategory === 'air_conditioner') {
       return product.product_type === selectedCategory && matchesSearch;
+    }
+
+    // AC subcategory matching (mini-splits, window-ac, portable-ac)
+    if (productType === 'air_conditioner') {
+      const categoryMatch = product.category?.toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
+                           product.category?.toLowerCase() === selectedCategory.replace(/-/g, ' ');
+      return categoryMatch && matchesSearch;
     }
 
     // Direct category match
