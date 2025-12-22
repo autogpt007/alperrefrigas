@@ -765,6 +765,7 @@ export type Database = {
       }
       order_items: {
         Row: {
+          configuration_json: Json | null
           created_at: string | null
           epa_approved: boolean | null
           id: string
@@ -777,6 +778,7 @@ export type Database = {
           sku: string | null
         }
         Insert: {
+          configuration_json?: Json | null
           created_at?: string | null
           epa_approved?: boolean | null
           id?: string
@@ -789,6 +791,7 @@ export type Database = {
           sku?: string | null
         }
         Update: {
+          configuration_json?: Json | null
           created_at?: string | null
           epa_approved?: boolean | null
           id?: string
@@ -957,14 +960,18 @@ export type Database = {
       }
       products: {
         Row: {
+          ac_type: string | null
           applications: Json | null
           availability: string | null
           base_unit_price: number | null
           brand: string | null
+          btu: number | null
           cas_number: string | null
           category: string | null
           certificate_urls: Json | null
           chemical_formula: string | null
+          comes_with_accessories: Json | null
+          comes_with_base: Json | null
           condition: string | null
           container_20ft_price: number | null
           container_40ft_price: number | null
@@ -976,7 +983,9 @@ export type Database = {
           dimensions: Json | null
           discount_20ft: number | null
           discount_40ft: number | null
+          efficiency_label: string | null
           epa_approved: boolean | null
+          frequency: string | null
           google_product_category: string | null
           gtin: string | null
           hazard_class: string | null
@@ -985,16 +994,20 @@ export type Database = {
           identifier_exists: boolean | null
           images: string[] | null
           length_cm: number | null
+          max_room_size: string | null
           mid_bulk_uplift_percent: number | null
           mpn: string | null
           name: string
           packaging: Json | null
           packaging_options: Json | null
           pallet_price: number | null
+          phase: string | null
+          plug_type: string | null
           price: number
           product_type: string
           q20_units: number | null
           q40_units: number | null
+          refrigerant_type: string | null
           sds_url: string | null
           shipping_weight: string | null
           sku: string | null
@@ -1003,18 +1016,23 @@ export type Database = {
           thumbnail_url: string | null
           un_number: string | null
           updated_at: string | null
+          voltage: string | null
           weight_kg: number | null
           width_cm: number | null
         }
         Insert: {
+          ac_type?: string | null
           applications?: Json | null
           availability?: string | null
           base_unit_price?: number | null
           brand?: string | null
+          btu?: number | null
           cas_number?: string | null
           category?: string | null
           certificate_urls?: Json | null
           chemical_formula?: string | null
+          comes_with_accessories?: Json | null
+          comes_with_base?: Json | null
           condition?: string | null
           container_20ft_price?: number | null
           container_40ft_price?: number | null
@@ -1026,7 +1044,9 @@ export type Database = {
           dimensions?: Json | null
           discount_20ft?: number | null
           discount_40ft?: number | null
+          efficiency_label?: string | null
           epa_approved?: boolean | null
+          frequency?: string | null
           google_product_category?: string | null
           gtin?: string | null
           hazard_class?: string | null
@@ -1035,16 +1055,20 @@ export type Database = {
           identifier_exists?: boolean | null
           images?: string[] | null
           length_cm?: number | null
+          max_room_size?: string | null
           mid_bulk_uplift_percent?: number | null
           mpn?: string | null
           name: string
           packaging?: Json | null
           packaging_options?: Json | null
           pallet_price?: number | null
+          phase?: string | null
+          plug_type?: string | null
           price: number
           product_type?: string
           q20_units?: number | null
           q40_units?: number | null
+          refrigerant_type?: string | null
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null
@@ -1053,18 +1077,23 @@ export type Database = {
           thumbnail_url?: string | null
           un_number?: string | null
           updated_at?: string | null
+          voltage?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
         Update: {
+          ac_type?: string | null
           applications?: Json | null
           availability?: string | null
           base_unit_price?: number | null
           brand?: string | null
+          btu?: number | null
           cas_number?: string | null
           category?: string | null
           certificate_urls?: Json | null
           chemical_formula?: string | null
+          comes_with_accessories?: Json | null
+          comes_with_base?: Json | null
           condition?: string | null
           container_20ft_price?: number | null
           container_40ft_price?: number | null
@@ -1076,7 +1105,9 @@ export type Database = {
           dimensions?: Json | null
           discount_20ft?: number | null
           discount_40ft?: number | null
+          efficiency_label?: string | null
           epa_approved?: boolean | null
+          frequency?: string | null
           google_product_category?: string | null
           gtin?: string | null
           hazard_class?: string | null
@@ -1085,16 +1116,20 @@ export type Database = {
           identifier_exists?: boolean | null
           images?: string[] | null
           length_cm?: number | null
+          max_room_size?: string | null
           mid_bulk_uplift_percent?: number | null
           mpn?: string | null
           name?: string
           packaging?: Json | null
           packaging_options?: Json | null
           pallet_price?: number | null
+          phase?: string | null
+          plug_type?: string | null
           price?: number
           product_type?: string
           q20_units?: number | null
           q40_units?: number | null
+          refrigerant_type?: string | null
           sds_url?: string | null
           shipping_weight?: string | null
           sku?: string | null
@@ -1103,6 +1138,7 @@ export type Database = {
           thumbnail_url?: string | null
           un_number?: string | null
           updated_at?: string | null
+          voltage?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }

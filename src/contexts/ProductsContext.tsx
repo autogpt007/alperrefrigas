@@ -55,6 +55,18 @@ export interface Product {
   width_cm?: number;
   height_cm?: number;
   identifier_exists?: boolean;
+  // AC Configuration fields
+  btu?: number;
+  ac_type?: string;
+  voltage?: string;
+  frequency?: string;
+  plug_type?: string;
+  phase?: string;
+  refrigerant_type?: string;
+  max_room_size?: string;
+  efficiency_label?: string;
+  comes_with_base?: string[];
+  comes_with_accessories?: string[];
 }
 
 interface ProductsContextType {
@@ -160,7 +172,19 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         length_cm: product.length_cm ? Number(product.length_cm) : undefined,
         width_cm: product.width_cm ? Number(product.width_cm) : undefined,
         height_cm: product.height_cm ? Number(product.height_cm) : undefined,
-        identifier_exists: product.identifier_exists ?? true
+        identifier_exists: product.identifier_exists ?? true,
+        // AC Configuration fields
+        btu: product.btu ?? undefined,
+        ac_type: product.ac_type || undefined,
+        voltage: product.voltage || undefined,
+        frequency: product.frequency || undefined,
+        plug_type: product.plug_type || undefined,
+        phase: product.phase || '1-Phase',
+        refrigerant_type: product.refrigerant_type || undefined,
+        max_room_size: product.max_room_size || undefined,
+        efficiency_label: product.efficiency_label || undefined,
+        comes_with_base: jsonToStringArray(product.comes_with_base),
+        comes_with_accessories: jsonToStringArray(product.comes_with_accessories)
       }))
 
       setProducts(transformedProducts);
@@ -222,7 +246,19 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         length_cm: productData.length_cm,
         width_cm: productData.width_cm,
         height_cm: productData.height_cm,
-        identifier_exists: productData.identifier_exists
+        identifier_exists: productData.identifier_exists,
+        // AC Configuration fields
+        btu: productData.btu,
+        ac_type: productData.ac_type,
+        voltage: productData.voltage,
+        frequency: productData.frequency,
+        plug_type: productData.plug_type,
+        phase: productData.phase,
+        refrigerant_type: productData.refrigerant_type,
+        max_room_size: productData.max_room_size,
+        efficiency_label: productData.efficiency_label,
+        comes_with_base: productData.comes_with_base || [],
+        comes_with_accessories: productData.comes_with_accessories || []
       };
 
       const { data, error } = await supabase
@@ -273,7 +309,19 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         length_cm: data.length_cm ? Number(data.length_cm) : undefined,
         width_cm: data.width_cm ? Number(data.width_cm) : undefined,
         height_cm: data.height_cm ? Number(data.height_cm) : undefined,
-        identifier_exists: data.identifier_exists ?? true
+        identifier_exists: data.identifier_exists ?? true,
+        // AC Configuration fields
+        btu: data.btu ?? undefined,
+        ac_type: data.ac_type || undefined,
+        voltage: data.voltage || undefined,
+        frequency: data.frequency || undefined,
+        plug_type: data.plug_type || undefined,
+        phase: data.phase || '1-Phase',
+        refrigerant_type: data.refrigerant_type || undefined,
+        max_room_size: data.max_room_size || undefined,
+        efficiency_label: data.efficiency_label || undefined,
+        comes_with_base: jsonToStringArray(data.comes_with_base),
+        comes_with_accessories: jsonToStringArray(data.comes_with_accessories)
       };
 
       setProducts(prev => [newProduct, ...prev]);
@@ -337,6 +385,18 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       if (updates.width_cm !== undefined) supabaseUpdates.width_cm = updates.width_cm;
       if (updates.height_cm !== undefined) supabaseUpdates.height_cm = updates.height_cm;
       if (updates.identifier_exists !== undefined) supabaseUpdates.identifier_exists = updates.identifier_exists;
+      // AC Configuration fields
+      if (updates.btu !== undefined) supabaseUpdates.btu = updates.btu;
+      if (updates.ac_type !== undefined) supabaseUpdates.ac_type = updates.ac_type;
+      if (updates.voltage !== undefined) supabaseUpdates.voltage = updates.voltage;
+      if (updates.frequency !== undefined) supabaseUpdates.frequency = updates.frequency;
+      if (updates.plug_type !== undefined) supabaseUpdates.plug_type = updates.plug_type;
+      if (updates.phase !== undefined) supabaseUpdates.phase = updates.phase;
+      if (updates.refrigerant_type !== undefined) supabaseUpdates.refrigerant_type = updates.refrigerant_type;
+      if (updates.max_room_size !== undefined) supabaseUpdates.max_room_size = updates.max_room_size;
+      if (updates.efficiency_label !== undefined) supabaseUpdates.efficiency_label = updates.efficiency_label;
+      if (updates.comes_with_base !== undefined) supabaseUpdates.comes_with_base = updates.comes_with_base;
+      if (updates.comes_with_accessories !== undefined) supabaseUpdates.comes_with_accessories = updates.comes_with_accessories;
 
       const { error } = await supabase
         .from('products')

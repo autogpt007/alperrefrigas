@@ -67,7 +67,19 @@ const EnhancedProductManagement = () => {
     length_cm: undefined as number | undefined,
     width_cm: undefined as number | undefined,
     height_cm: undefined as number | undefined,
-    identifier_exists: true
+    identifier_exists: true,
+    // AC Configuration fields
+    btu: undefined as number | undefined,
+    ac_type: '' as string,
+    voltage: '' as string,
+    frequency: '' as string,
+    plug_type: '' as string,
+    phase: '1-Phase' as string,
+    refrigerant_type: '' as string,
+    max_room_size: '' as string,
+    efficiency_label: '' as string,
+    comes_with_base: [] as string[],
+    comes_with_accessories: [] as string[]
   });
 
   const resetForm = () => {
@@ -113,7 +125,19 @@ const EnhancedProductManagement = () => {
       length_cm: undefined,
       width_cm: undefined,
       height_cm: undefined,
-      identifier_exists: true
+      identifier_exists: true,
+      // AC Configuration fields
+      btu: undefined,
+      ac_type: '',
+      voltage: '',
+      frequency: '',
+      plug_type: '',
+      phase: '1-Phase',
+      refrigerant_type: '',
+      max_room_size: '',
+      efficiency_label: '',
+      comes_with_base: [],
+      comes_with_accessories: []
     });
     setEditingProduct(null);
   };
@@ -185,7 +209,19 @@ const EnhancedProductManagement = () => {
       length_cm: product.length_cm,
       width_cm: product.width_cm,
       height_cm: product.height_cm,
-      identifier_exists: product.identifier_exists ?? true
+      identifier_exists: product.identifier_exists ?? true,
+      // AC Configuration fields
+      btu: product.btu,
+      ac_type: product.ac_type || '',
+      voltage: product.voltage || '',
+      frequency: product.frequency || '',
+      plug_type: product.plug_type || '',
+      phase: product.phase || '1-Phase',
+      refrigerant_type: product.refrigerant_type || '',
+      max_room_size: product.max_room_size || '',
+      efficiency_label: product.efficiency_label || '',
+      comes_with_base: Array.isArray(product.comes_with_base) ? product.comes_with_base : [],
+      comes_with_accessories: Array.isArray(product.comes_with_accessories) ? product.comes_with_accessories : []
     });
     setEditingProduct(product);
     setIsAddDialogOpen(true);
@@ -249,11 +285,12 @@ const EnhancedProductManagement = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <Tabs defaultValue="basic" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="grid w-full grid-cols-7">
                   <TabsTrigger value="basic">Basic</TabsTrigger>
                   <TabsTrigger value="details">Details</TabsTrigger>
                   <TabsTrigger value="images">Images</TabsTrigger>
                   <TabsTrigger value="specs">Specs</TabsTrigger>
+                  <TabsTrigger value="ac-config">AC Config</TabsTrigger>
                   <TabsTrigger value="bulk">Bulk Pricing</TabsTrigger>
                   <TabsTrigger value="merchant">Merchant</TabsTrigger>
                 </TabsList>
@@ -576,6 +613,182 @@ const EnhancedProductManagement = () => {
                       className="bg-slate-700 border-slate-600 text-white"
                       rows={3}
                       placeholder="30 lb Cylinder&#10;125 lb Cylinder&#10;Bulk Containers"
+                    />
+                  </div>
+                </TabsContent>
+
+                {/* AC Configuration Tab */}
+                <TabsContent value="ac-config" className="space-y-4">
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+                    <p className="text-blue-400 text-sm">
+                      Configure Air Conditioner electrical specs and included items. Required for AC products.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="btu" className="text-white">BTU Rating *</Label>
+                      <Select
+                        value={formData.btu?.toString() || ''}
+                        onValueChange={(value) => setFormData({ ...formData, btu: value ? parseInt(value) : undefined })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select BTU" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="9000">9,000 BTU</SelectItem>
+                          <SelectItem value="12000">12,000 BTU</SelectItem>
+                          <SelectItem value="18000">18,000 BTU</SelectItem>
+                          <SelectItem value="24000">24,000 BTU</SelectItem>
+                          <SelectItem value="36000">36,000 BTU</SelectItem>
+                          <SelectItem value="48000">48,000 BTU</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="ac_type" className="text-white">AC Type *</Label>
+                      <Select
+                        value={formData.ac_type}
+                        onValueChange={(value) => setFormData({ ...formData, ac_type: value })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Mini-Split">Mini-Split</SelectItem>
+                          <SelectItem value="Window">Window</SelectItem>
+                          <SelectItem value="Portable">Portable</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="voltage" className="text-white">Voltage *</Label>
+                      <Select
+                        value={formData.voltage}
+                        onValueChange={(value) => setFormData({ ...formData, voltage: value })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select voltage" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="110-120V">110-120V</SelectItem>
+                          <SelectItem value="220-240V">220-240V</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="plug_type" className="text-white">Plug Type</Label>
+                      <Select
+                        value={formData.plug_type}
+                        onValueChange={(value) => setFormData({ ...formData, plug_type: value })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select plug" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="US (Type A/B)">US (Type A/B)</SelectItem>
+                          <SelectItem value="EU (Type C/F)">EU (Type C/F)</SelectItem>
+                          <SelectItem value="UK (Type G)">UK (Type G)</SelectItem>
+                          <SelectItem value="Universal">Universal</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="frequency" className="text-white">Frequency</Label>
+                      <Select
+                        value={formData.frequency}
+                        onValueChange={(value) => setFormData({ ...formData, frequency: value })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select frequency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="50Hz">50Hz</SelectItem>
+                          <SelectItem value="60Hz">60Hz</SelectItem>
+                          <SelectItem value="50/60Hz">50/60Hz</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="phase" className="text-white">Phase</Label>
+                      <Select
+                        value={formData.phase}
+                        onValueChange={(value) => setFormData({ ...formData, phase: value })}
+                      >
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                          <SelectValue placeholder="Select phase" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1-Phase">1-Phase</SelectItem>
+                          <SelectItem value="3-Phase">3-Phase</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="refrigerant_type" className="text-white">Refrigerant Type</Label>
+                      <Input
+                        id="refrigerant_type"
+                        value={formData.refrigerant_type}
+                        onChange={(e) => setFormData({ ...formData, refrigerant_type: e.target.value })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="e.g., R-410A"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="max_room_size" className="text-white">Max Room Size</Label>
+                      <Input
+                        id="max_room_size"
+                        value={formData.max_room_size}
+                        onChange={(e) => setFormData({ ...formData, max_room_size: e.target.value })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="e.g., 450 sq ft"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="efficiency_label" className="text-white">Efficiency Label</Label>
+                      <Input
+                        id="efficiency_label"
+                        value={formData.efficiency_label}
+                        onChange={(e) => setFormData({ ...formData, efficiency_label: e.target.value })}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        placeholder="e.g., SEER2 20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="border-t border-slate-600 pt-4">
+                    <Label className="text-white mb-2 block">Comes With Base (Required for AC) *</Label>
+                    <p className="text-gray-400 text-xs mb-2">Items always included with the unit. One per line.</p>
+                    <Textarea
+                      value={formData.comes_with_base.join('\n')}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        comes_with_base: e.target.value.split('\n').filter(item => item.trim()) 
+                      })}
+                      className="bg-slate-700 border-slate-600 text-white"
+                      rows={4}
+                      placeholder="Indoor unit&#10;Outdoor unit&#10;Wireless remote&#10;Installation manual&#10;Drain hose"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-white mb-2 block">Comes With Accessories (Optional)</Label>
+                    <p className="text-gray-400 text-xs mb-2">Additional items included when buyer selects "With accessories". One per line.</p>
+                    <Textarea
+                      value={formData.comes_with_accessories.join('\n')}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        comes_with_accessories: e.target.value.split('\n').filter(item => item.trim()) 
+                      })}
+                      className="bg-slate-700 border-slate-600 text-white"
+                      rows={4}
+                      placeholder="Copper line set (16ft)&#10;Wall bracket&#10;Insulation tape&#10;Drain extension hose&#10;Vibration pads"
                     />
                   </div>
                 </TabsContent>
