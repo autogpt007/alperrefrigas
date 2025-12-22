@@ -151,6 +151,7 @@ serve(async (req: Request) => {
       sku: it.sku ?? null,
       packaging: it.packaging ?? null,
       epa_approved: Boolean(it.epa_approved ?? false),
+      configuration_json: it.configuration_json ?? null, // AC configuration data
     }));
 
     const { error: itemsError } = await supabaseAdmin.from("order_items").insert(itemsPayload);
@@ -174,7 +175,7 @@ serve(async (req: Request) => {
     const { data: fullOrder, error: fetchError } = await supabaseAdmin
       .from("orders")
       .select(
-        `*, order_items (id, product_id, product_name, quantity, price, sku, packaging, epa_approved)`,
+        `*, order_items (id, product_id, product_name, quantity, price, sku, packaging, epa_approved, configuration_json)`,
       )
       .eq("id", orderId)
       .single();
