@@ -322,30 +322,64 @@ const ProductDetails = () => {
     setQuantity(1);
     setPackaging('');
   };
-  // Enhanced product description with MOQ information
-  const enhancedDescription = `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Fast shipping from multiple distribution centers in TX, FL, and CA.`;
+  // Enhanced product description - different for each product type
+  const enhancedDescription = product.product_type === 'air_conditioner'
+    ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Fast shipping from multiple distribution centers.`
+    : product.product_type === 'accessory'
+    ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Fast shipping available.`
+    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Fast shipping from multiple distribution centers in TX, FL, and CA.`;
 
-  // Product FAQ data for better SEO
-  const productFAQ = [
-    {
-      question: `What is the minimum order quantity for ${product.name}?`,
-      answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet. We also offer 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders) with bulk discounts."
-    },
-    {
-      question: `Is ${product.name} EPA approved?`,
-      answer: product.epaApproved 
-        ? `Yes, ${product.name} is EPA Section 608 compliant and approved for professional HVAC use in the United States.`
-        : `${product.name} meets all applicable EPA regulations for refrigerant use in professional HVAC applications.`
-    },
-    {
-      question: "What are your shipping terms?",
-      answer: "We ship from distribution centers in Texas, Florida, and California. All shipments are DOT certified and include fast, secure delivery with tracking information."
-    },
-    {
-      question: "Do you provide Safety Data Sheets (SDS)?",
-      answer: "Yes, we provide comprehensive Safety Data Sheets for all our refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
-    }
-  ];
+  // Product FAQ data for better SEO - different for each product type
+  const productFAQ = product.product_type === 'air_conditioner'
+    ? [
+        {
+          question: `What is the minimum order quantity for ${product.name}?`,
+          answer: "Our minimum order quantity (MOQ) for air conditioners is 5 units. We offer tiered bulk pricing with better rates at higher quantities."
+        },
+        {
+          question: `What warranty does ${product.name} come with?`,
+          answer: `${product.name} comes with a manufacturer warranty. Contact us for specific warranty details and coverage information.`
+        },
+        {
+          question: "What are your shipping terms?",
+          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments include fast, secure delivery with tracking information."
+        },
+        {
+          question: "Do you offer installation services?",
+          answer: "We recommend professional installation for all air conditioning units. Contact us for referrals to certified HVAC installers in your area."
+        }
+      ]
+    : product.product_type === 'accessory'
+    ? [
+        {
+          question: `What is included with ${product.name}?`,
+          answer: `${product.name} includes all standard components as listed in the product specifications. Contact us for complete details.`
+        },
+        {
+          question: "What are your shipping terms?",
+          answer: "We ship from distribution centers in Texas, Florida, and California. Fast, secure delivery with tracking information."
+        }
+      ]
+    : [
+        {
+          question: `What is the minimum order quantity for ${product.name}?`,
+          answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet. We also offer 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders) with bulk discounts."
+        },
+        {
+          question: `Is ${product.name} EPA approved?`,
+          answer: product.epaApproved 
+            ? `Yes, ${product.name} is EPA Section 608 compliant and approved for professional HVAC use in the United States.`
+            : `${product.name} meets all applicable EPA regulations for refrigerant use in professional HVAC applications.`
+        },
+        {
+          question: "What are your shipping terms?",
+          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments are DOT certified and include fast, secure delivery with tracking information."
+        },
+        {
+          question: "Do you provide Safety Data Sheets (SDS)?",
+          answer: "Yes, we provide comprehensive Safety Data Sheets for all our refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
+        }
+      ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -452,24 +486,28 @@ const ProductDetails = () => {
               </CardContent>
             </Card>
 
-            {/* Certifications & Compliance */}
+            {/* Certifications & Compliance - Only show refrigerant-specific for refrigerants */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Award className="h-5 w-5 mr-2" />
-                  Certifications & Compliance
+                  {product.product_type === 'refrigerant' ? 'Certifications & Compliance' : 'Quality Assurance'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Shield className="h-4 w-4 text-green-600 mr-2" />
-                    <span>EPA Section 608 Compliant</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Shield className="h-4 w-4 text-green-600 mr-2" />
-                    <span>DOT Shipping Certified</span>
-                  </div>
+                  {product.product_type === 'refrigerant' && (
+                    <>
+                      <div className="flex items-center">
+                        <Shield className="h-4 w-4 text-green-600 mr-2" />
+                        <span>EPA Section 608 Compliant</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Shield className="h-4 w-4 text-green-600 mr-2" />
+                        <span>DOT Shipping Certified</span>
+                      </div>
+                    </>
+                  )}
                   <div className="flex items-center">
                     <Shield className="h-4 w-4 text-green-600 mr-2" />
                     <span>ISO 9001 Quality Assured</span>
@@ -489,7 +527,7 @@ const ProductDetails = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
               
               {/* PROFESSIONAL USE ONLY Disclaimer - Only show for refrigerants */}
-              {product.product_type !== 'accessory' && (
+              {product.product_type === 'refrigerant' && (
                 <div className="mb-4 p-4 bg-yellow-50 border-2 border-yellow-400 rounded-lg">
                   <div className="flex items-start gap-3">
                     <AlertTriangle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
