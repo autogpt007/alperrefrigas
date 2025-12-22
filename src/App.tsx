@@ -24,6 +24,7 @@ import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
 import FreonWholesalePage from "./components/pages/FreonWholesalePage";
+import AirConditionersPage from "./components/pages/AirConditionersPage";
 import ProductCategory from "./components/pages/ProductCategory";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
@@ -148,6 +149,8 @@ function App() {
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
+                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
+                                <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
                                 <Route path="/products/category/:category" element={<ProductCategory />} />
                                 <Route path="/products/accessories/:category" element={<ProductCategory />} />
                                 <Route path="/products/:productSlug" element={<ProductDetails />} />
