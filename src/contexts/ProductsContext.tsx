@@ -24,6 +24,7 @@ export interface Product {
   sdsUrl?: string;
   // SEO and Google Merchant Center fields
   gtin?: string;
+  mpn?: string;
   brand: string;
   condition: 'new' | 'used' | 'refurbished';
   availability: 'in_stock' | 'out_of_stock' | 'preorder' | 'backorder';
@@ -39,7 +40,21 @@ export interface Product {
   hazardClass?: string;
   images?: string[];
   technicalSpecs?: Record<string, any>;
-  product_type: 'refrigerant' | 'accessory';
+  product_type: 'refrigerant' | 'accessory' | 'air_conditioner';
+  // AC Bulk Pricing fields
+  q20_units?: number;
+  q40_units?: number;
+  mid_bulk_uplift_percent?: number;
+  custom_uplift_5_19?: number;
+  custom_uplift_20_39?: number;
+  custom_uplift_40_half?: number;
+  base_unit_price?: number;
+  google_product_category?: string;
+  weight_kg?: number;
+  length_cm?: number;
+  width_cm?: number;
+  height_cm?: number;
+  identifier_exists?: boolean;
 }
 
 interface ProductsContextType {
@@ -130,8 +145,23 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         unNumber: product.un_number || '',
         hazardClass: product.hazard_class || '',
         technicalSpecs: jsonToRecord(product.technical_specs),
-        product_type: (product.product_type as 'refrigerant' | 'accessory') || 'refrigerant'
-      }));
+        product_type: (product.product_type as 'refrigerant' | 'accessory' | 'air_conditioner') || 'refrigerant',
+        // AC Bulk Pricing fields
+        q20_units: product.q20_units ?? undefined,
+        q40_units: product.q40_units ?? undefined,
+        mid_bulk_uplift_percent: product.mid_bulk_uplift_percent ? Number(product.mid_bulk_uplift_percent) : 12,
+        custom_uplift_5_19: product.custom_uplift_5_19 ? Number(product.custom_uplift_5_19) : 35,
+        custom_uplift_20_39: product.custom_uplift_20_39 ? Number(product.custom_uplift_20_39) : 25,
+        custom_uplift_40_half: product.custom_uplift_40_half ? Number(product.custom_uplift_40_half) : 15,
+        base_unit_price: product.base_unit_price ? Number(product.base_unit_price) : undefined,
+        mpn: product.mpn || '',
+        google_product_category: product.google_product_category || '',
+        weight_kg: product.weight_kg ? Number(product.weight_kg) : undefined,
+        length_cm: product.length_cm ? Number(product.length_cm) : undefined,
+        width_cm: product.width_cm ? Number(product.width_cm) : undefined,
+        height_cm: product.height_cm ? Number(product.height_cm) : undefined,
+        identifier_exists: product.identifier_exists ?? true
+      }))
 
       setProducts(transformedProducts);
     } catch (error) {
@@ -177,7 +207,22 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         un_number: productData.unNumber,
         hazard_class: productData.hazardClass,
         technical_specs: productData.technicalSpecs || {},
-        product_type: productData.product_type
+        product_type: productData.product_type,
+        // AC Bulk Pricing fields
+        q20_units: productData.q20_units,
+        q40_units: productData.q40_units,
+        mid_bulk_uplift_percent: productData.mid_bulk_uplift_percent,
+        custom_uplift_5_19: productData.custom_uplift_5_19,
+        custom_uplift_20_39: productData.custom_uplift_20_39,
+        custom_uplift_40_half: productData.custom_uplift_40_half,
+        base_unit_price: productData.base_unit_price,
+        mpn: productData.mpn,
+        google_product_category: productData.google_product_category,
+        weight_kg: productData.weight_kg,
+        length_cm: productData.length_cm,
+        width_cm: productData.width_cm,
+        height_cm: productData.height_cm,
+        identifier_exists: productData.identifier_exists
       };
 
       const { data, error } = await supabase
@@ -214,7 +259,21 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
         unNumber: data.un_number || '',
         hazardClass: data.hazard_class || '',
         technicalSpecs: jsonToRecord(data.technical_specs),
-        product_type: (data.product_type as 'refrigerant' | 'accessory') || 'refrigerant'
+        product_type: (data.product_type as 'refrigerant' | 'accessory' | 'air_conditioner') || 'refrigerant',
+        q20_units: data.q20_units ?? undefined,
+        q40_units: data.q40_units ?? undefined,
+        mid_bulk_uplift_percent: data.mid_bulk_uplift_percent ? Number(data.mid_bulk_uplift_percent) : 12,
+        custom_uplift_5_19: data.custom_uplift_5_19 ? Number(data.custom_uplift_5_19) : 35,
+        custom_uplift_20_39: data.custom_uplift_20_39 ? Number(data.custom_uplift_20_39) : 25,
+        custom_uplift_40_half: data.custom_uplift_40_half ? Number(data.custom_uplift_40_half) : 15,
+        base_unit_price: data.base_unit_price ? Number(data.base_unit_price) : undefined,
+        mpn: data.mpn || '',
+        google_product_category: data.google_product_category || '',
+        weight_kg: data.weight_kg ? Number(data.weight_kg) : undefined,
+        length_cm: data.length_cm ? Number(data.length_cm) : undefined,
+        width_cm: data.width_cm ? Number(data.width_cm) : undefined,
+        height_cm: data.height_cm ? Number(data.height_cm) : undefined,
+        identifier_exists: data.identifier_exists ?? true
       };
 
       setProducts(prev => [newProduct, ...prev]);
@@ -263,6 +322,21 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       if (updates.hazardClass !== undefined) supabaseUpdates.hazard_class = updates.hazardClass;
       if (updates.technicalSpecs !== undefined) supabaseUpdates.technical_specs = updates.technicalSpecs;
       if (updates.product_type !== undefined) supabaseUpdates.product_type = updates.product_type;
+      // AC Bulk Pricing fields
+      if (updates.q20_units !== undefined) supabaseUpdates.q20_units = updates.q20_units;
+      if (updates.q40_units !== undefined) supabaseUpdates.q40_units = updates.q40_units;
+      if (updates.mid_bulk_uplift_percent !== undefined) supabaseUpdates.mid_bulk_uplift_percent = updates.mid_bulk_uplift_percent;
+      if (updates.custom_uplift_5_19 !== undefined) supabaseUpdates.custom_uplift_5_19 = updates.custom_uplift_5_19;
+      if (updates.custom_uplift_20_39 !== undefined) supabaseUpdates.custom_uplift_20_39 = updates.custom_uplift_20_39;
+      if (updates.custom_uplift_40_half !== undefined) supabaseUpdates.custom_uplift_40_half = updates.custom_uplift_40_half;
+      if (updates.base_unit_price !== undefined) supabaseUpdates.base_unit_price = updates.base_unit_price;
+      if (updates.mpn !== undefined) supabaseUpdates.mpn = updates.mpn;
+      if (updates.google_product_category !== undefined) supabaseUpdates.google_product_category = updates.google_product_category;
+      if (updates.weight_kg !== undefined) supabaseUpdates.weight_kg = updates.weight_kg;
+      if (updates.length_cm !== undefined) supabaseUpdates.length_cm = updates.length_cm;
+      if (updates.width_cm !== undefined) supabaseUpdates.width_cm = updates.width_cm;
+      if (updates.height_cm !== undefined) supabaseUpdates.height_cm = updates.height_cm;
+      if (updates.identifier_exists !== undefined) supabaseUpdates.identifier_exists = updates.identifier_exists;
 
       const { error } = await supabase
         .from('products')
