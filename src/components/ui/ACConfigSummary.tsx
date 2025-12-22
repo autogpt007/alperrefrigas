@@ -7,6 +7,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Pencil, Zap, Package, Check } from 'lucide-react';
 import { ACConfiguration } from './ACConfigurator';
 
+// Re-export ACConfiguration for convenience
+export type { ACConfiguration };
+
 interface ACConfigSummaryProps {
   configuration: ACConfiguration;
   onConfigurationChange?: (config: ACConfiguration) => void;
