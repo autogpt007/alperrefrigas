@@ -16,6 +16,16 @@ export interface CartItem {
   epaApproved: boolean;
   packaging?: string;
   product_type?: string;
+  // AC Bulk Pricing audit fields
+  ac_bulk_pricing?: {
+    base_unit_price: number;
+    applied_uplift_percent: number;
+    final_unit_price: number;
+    tier_label: string;
+    q20_units: number;
+    half_units: number;
+    ordered_quantity: number;
+  };
 }
 
 interface CartContextType {

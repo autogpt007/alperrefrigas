@@ -14,6 +14,7 @@ import SEOComponent from '../seo/SEOComponent';
 import { createProductSlug, findProductBySlug } from '@/lib/slugs';
 import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBViewContent } from '@/utils/facebookPixel';
+import ACBulkPricing, { calculateACPricingTier } from '../ui/ACBulkPricing';
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const ProductDetails = () => {
     toast
   } = useToast();
   const [quantity, setQuantity] = useState(1);
+  const [acQuantity, setAcQuantity] = useState(5); // AC products have MOQ of 5
   const [packaging, setPackaging] = useState('');
   // Find product by ID or by slug with better logic
   const product = React.useMemo(() => {
@@ -125,13 +127,28 @@ const ProductDetails = () => {
   };
 
   const getCurrentPrice = (): number => {
-    if (!packaging || !product) {
+    if (!product) return 0;
+    
+    // AC products use tiered pricing
+    if (product.product_type === 'air_conditioner') {
+      const tier = calculateACPricingTier(product, acQuantity);
+      return tier ? tier.total : 0;
+    }
+    
+    if (!packaging) {
       console.log('getCurrentPrice: No packaging or product', { packaging, hasProduct: !!product });
       return product?.price || 0;
     }
     const price = calculateBulkPrice(packaging);
     console.log('getCurrentPrice result:', price, 'for packaging:', packaging);
     return price;
+  };
+
+  // Get AC unit price for display
+  const getACUnitPrice = (): number => {
+    if (!product || product.product_type !== 'air_conditioner') return 0;
+    const tier = calculateACPricingTier(product, acQuantity);
+    return tier ? tier.unitPrice : 0;
   };
 
   const getDiscountPercentage = (): number => {
@@ -210,6 +227,64 @@ const ProductDetails = () => {
     setPackaging('');
   };
   const handleAddToCart = () => {
+    // AC products have different validation
+    if (product.product_type === 'air_conditioner') {
+      const tier = calculateACPricingTier(product, acQuantity);
+      if (!tier) {
+        if (acQuantity < 5) {
+          toast({
+            title: "Minimum Order Quantity",
+            description: "Air conditioners require a minimum order of 5 units.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Pricing Not Configured",
+            description: "This product's bulk pricing is not yet configured. Please contact us.",
+            variant: "destructive"
+          });
+        }
+        return;
+      }
+      
+      // Create unique cart item ID for AC
+      const cartItemId = `${product.id}-ac-bulk-${acQuantity}`;
+      const q20 = product.q20_units || 0;
+      const half = Math.ceil(q20 * 0.5);
+      
+      addToCart({
+        id: cartItemId,
+        name: product.name,
+        price: tier.total,
+        image: product.image || '/placeholder.svg',
+        sku: product.sku || 'N/A',
+        epaApproved: product.epaApproved || false,
+        packaging: `${acQuantity} units (${tier.label})`,
+        product_type: 'air_conditioner',
+        // AC Bulk Pricing audit fields for order storage
+        ac_bulk_pricing: {
+          base_unit_price: product.base_unit_price || 0,
+          applied_uplift_percent: tier.upliftPercent,
+          final_unit_price: tier.unitPrice,
+          tier_label: tier.label,
+          q20_units: q20,
+          half_units: half,
+          ordered_quantity: acQuantity
+        }
+      });
+      
+      toast({
+        title: "Added to Cart",
+        description: `${acQuantity} units of ${product.name} added to your cart.`,
+        action: <Button variant="outline" size="sm" onClick={() => navigate('/cart')}>
+            View Cart
+          </Button>
+      });
+      
+      setAcQuantity(5);
+      return;
+    }
+    
     if (!packaging) {
       toast({
         title: "Please select packaging",
@@ -434,54 +509,68 @@ const ProductDetails = () => {
                 </div>
               )}
               
-              {/* Starting Price display */}
-              <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800 mb-1">Starting Price</p>
-                <p className="text-lg font-semibold text-blue-900">
-                  {formatPrice(product.price)}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
-                </p>
-                <p className="text-xs text-blue-600">
-                  {product.product_type === 'accessory' ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' : 'Bulk discounts available for containers'}
-                </p>
-              </div>
+              {/* Starting Price display - show different content for AC products */}
+              {product.product_type === 'air_conditioner' ? (
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 mb-1">Full Container Base Price</p>
+                  <p className="text-lg font-semibold text-blue-900">
+                    {product.base_unit_price ? formatPrice(product.base_unit_price) : 'Not configured'}/unit
+                  </p>
+                  <p className="text-xs text-blue-600">
+                    Tiered bulk pricing: MOQ 5 units. Best price at full container quantities.
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 mb-1">Starting Price</p>
+                  <p className="text-lg font-semibold text-blue-900">
+                    {formatPrice(product.price)}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
+                  </p>
+                  <p className="text-xs text-blue-600">
+                    {product.product_type === 'accessory' ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' : 'Bulk discounts available for containers'}
+                  </p>
+                </div>
+              )}
               
-              {/* Pricing Display */}
-              <div className="mb-4">
-                {packaging ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-4">
-                      <p className="text-3xl font-bold text-blue-600">
-                        {formatPrice(getCurrentPrice())}
-                      </p>
-                      {getDiscountPercentage() > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
-                            {getDiscountPercentage()}% OFF
-                          </span>
-                          <span className="text-lg text-gray-500 line-through">
-                            {product.product_type === 'accessory' ? (
-                              packaging === '5-Pack' ? formatPrice(product.price * 5) :
-                              packaging === '10-Pack' ? formatPrice(product.price * 10) : formatPrice(product.price)
-                            ) : (
-                              formatPrice(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280))
-                            )}
-                          </span>
-                        </div>
-                      )}
+              {/* Pricing Display - Skip for AC products as they use ACBulkPricing component */}
+              {product.product_type !== 'air_conditioner' && (
+                <div className="mb-4">
+                  {packaging ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-4">
+                        <p className="text-3xl font-bold text-blue-600">
+                          {formatPrice(getCurrentPrice())}
+                        </p>
+                        {getDiscountPercentage() > 0 && (
+                          <div className="flex items-center gap-2">
+                            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
+                              {getDiscountPercentage()}% OFF
+                            </span>
+                            <span className="text-lg text-gray-500 line-through">
+                              {product.product_type === 'accessory' ? (
+                                packaging === '5-Pack' ? formatPrice(product.price * 5) :
+                                packaging === '10-Pack' ? formatPrice(product.price * 10) : formatPrice(product.price)
+                              ) : (
+                                formatPrice(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280))
+                              )}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {packaging === '1 Pallet' && '40 cylinders per pallet'}
+                        {packaging === '20ft Container' && '1,140 cylinders per container'}  
+                        {packaging === '40ft Container' && '2,280 cylinders per container'}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {packaging === '1 Pallet' && '40 cylinders per pallet'}
-                      {packaging === '20ft Container' && '1,140 cylinders per container'}  
-                      {packaging === '40ft Container' && '2,280 cylinders per container'}
+                  ) : (
+                    <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <p className="text-gray-500 text-lg font-medium">Select packaging to see pricing</p>
+                      <p className="text-sm text-gray-400 mt-1">Bulk discounts available</p>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <p className="text-gray-500 text-lg font-medium">Select packaging to see pricing</p>
-                    <p className="text-sm text-gray-400 mt-1">Bulk discounts available</p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
 
               {/* Purchase Options - Moved up for better UX */}
               <Card className="mb-6">
@@ -492,67 +581,98 @@ const ProductDetails = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Packaging Type *
-                    </label>
-                    <Select value={packaging} onValueChange={setPackaging}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select packaging option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(product.packaging_options || product.packaging)?.map(pkg => (
-                          <SelectItem key={pkg} value={pkg}>
-                            <div className="flex justify-between items-center w-full">
-                              <span>{pkg}</span>
-                              <div className="ml-4 text-right">
-                                <span className="font-semibold text-blue-600">
-                                  {formatPrice(calculateBulkPrice(pkg))}
-                                </span>
-                                {product.product_type === 'accessory' ? (
-                                  pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
-                                  pkg === '10-Pack' ? <div className="text-xs text-green-600">15% OFF</div> : null
-                                ) : (
-                                  pkg !== '1 Pallet' && (
-                                    <div className="text-xs text-green-600">
-                                      {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* AC Products: Use tiered bulk pricing */}
+                  {product.product_type === 'air_conditioner' ? (
+                    <>
+                      <ACBulkPricing
+                        product={product}
+                        quantity={acQuantity}
+                        onQuantityChange={setAcQuantity}
+                        formatPrice={formatPrice}
+                      />
+                      
+                      <div className="space-y-3 pt-4 border-t">
+                        <Button 
+                          onClick={handleAddToCart} 
+                          className="w-full bg-orange-500 hover:bg-orange-600"
+                          disabled={acQuantity < 5 || !calculateACPricingTier(product, acQuantity)}
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart
+                        </Button>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quantity
-                    </label>
-                    <div className="flex items-center space-x-3">
-                      <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                        -
-                      </Button>
-                      <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                      <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                        +
-                      </Button>
-                    </div>
-                  </div>
+                        <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Request Quote
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Non-AC products: Packaging selector */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Packaging Type *
+                        </label>
+                        <Select value={packaging} onValueChange={setPackaging}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select packaging option" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(product.packaging_options || product.packaging)?.map(pkg => (
+                              <SelectItem key={pkg} value={pkg}>
+                                <div className="flex justify-between items-center w-full">
+                                  <span>{pkg}</span>
+                                  <div className="ml-4 text-right">
+                                    <span className="font-semibold text-blue-600">
+                                      {formatPrice(calculateBulkPrice(pkg))}
+                                    </span>
+                                    {product.product_type === 'accessory' ? (
+                                      pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
+                                      pkg === '10-Pack' ? <div className="text-xs text-green-600">15% OFF</div> : null
+                                    ) : (
+                                      pkg !== '1 Pallet' && (
+                                        <div className="text-xs text-green-600">
+                                          {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div className="space-y-3">
-                    <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Add to Cart
-                    </Button>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Quantity
+                        </label>
+                        <div className="flex items-center space-x-3">
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                            -
+                          </Button>
+                          <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
+                            +
+                          </Button>
+                        </div>
+                      </div>
 
-                    <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add to Quote Request
-                    </Button>
-                  </div>
+                      <div className="space-y-3">
+                        <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart
+                        </Button>
+
+                        <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add to Quote Request
+                        </Button>
+                      </div>
+                    </>
+                  )}
 
                   <div className="grid grid-cols-2 gap-3">
                     <Link to="/cart">
@@ -570,7 +690,9 @@ const ProductDetails = () => {
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-blue-900 mb-2">Need Help?</h4>
                     <p className="text-blue-800 text-sm">
-                      Our refrigerant experts are available to help you choose the right product for your application.
+                      {product.product_type === 'air_conditioner' 
+                        ? 'Our HVAC experts are available to help you select the right units for your project.'
+                        : 'Our refrigerant experts are available to help you choose the right product for your application.'}
                     </p>
                     <Button variant="link" className="text-blue-600 p-0 h-auto mt-2">
                       Contact Technical Support
