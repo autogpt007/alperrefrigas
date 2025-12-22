@@ -33,7 +33,6 @@ interface PricingTier {
  */
 export function calculateACPricingTier(product: Product, quantity: number): PricingTier | null {
   const q20 = product.q20_units;
-  const q40 = product.q40_units;
   const basePrice = product.base_unit_price;
   
   // If Q20 or base price not configured, cannot calculate
@@ -57,29 +56,29 @@ export function calculateACPricingTier(product: Product, quantity: number): Pric
   let tierLabel: string;
   let upliftPercent: number;
   
-  // Check for Full Container (Q40 first if available, then Q20)
-  if (q40 && quantity >= q40) {
-    tierLabel = 'Full Container (40ft)';
+  // TIER 1: FULL BULK - qty >= Q20
+  if (quantity >= q20) {
+    tierLabel = 'Full Bulk';
     upliftPercent = 0;
-  } else if (quantity >= q20) {
-    tierLabel = 'Full Container (20ft)';
-    upliftPercent = 0;
-  } else if (quantity >= half) {
-    // Mid Bulk: half container or more
-    tierLabel = 'Mid Bulk (Half Container+)';
+  } 
+  // TIER 2: MID BULK - qty >= HALF and qty < Q20
+  else if (quantity >= half) {
+    tierLabel = 'Mid Bulk';
     upliftPercent = midBulkUplift;
-  } else if (quantity >= 40) {
-    // Custom Bulk: 40 to (half-1)
-    tierLabel = 'Custom Bulk (40+ units)';
-    upliftPercent = uplift40_half;
-  } else if (quantity >= 20) {
-    // Custom Bulk: 20-39
-    tierLabel = 'Custom Bulk (20-39 units)';
-    upliftPercent = uplift20_39;
-  } else {
-    // Custom Bulk: 5-19
-    tierLabel = 'Custom Bulk (5-19 units)';
-    upliftPercent = uplift5_19;
+  } 
+  // TIER 3: CUSTOM BULK - qty >= 5 and qty < HALF
+  // Use ladder: 5-19, 20-39, 40-(HALF-1)
+  else {
+    tierLabel = 'Custom Bulk';
+    // Custom tier ladder - MUST stop at (HALF-1)
+    if (quantity >= 40 && quantity < half) {
+      upliftPercent = uplift40_half;
+    } else if (quantity >= 20 && quantity < Math.min(40, half)) {
+      upliftPercent = uplift20_39;
+    } else {
+      // 5-19 range (or up to min(19, half-1))
+      upliftPercent = uplift5_19;
+    }
   }
   
   const unitPrice = basePrice * (1 + upliftPercent / 100);
@@ -149,28 +148,16 @@ const ACBulkPricing: React.FC<ACBulkPricingProps> = ({
         )}
       </div>
       
-      {/* Pricing Tier Display */}
+      {/* Pricing Tier Display - NO uplift percentages shown to customer */}
       {tier && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4 space-y-3">
             {/* Tier Label */}
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">Pricing Tier</span>
-              <span className="font-semibold text-primary">{tier.label}</span>
-            </div>
-            
-            {/* Uplift Display */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Uplift from Base Price</span>
-              <span className={`font-medium ${tier.upliftPercent === 0 ? 'text-green-600' : 'text-orange-600'}`}>
-                {tier.upliftPercent === 0 ? (
-                  <span className="flex items-center gap-1">
-                    <Check className="h-4 w-4" />
-                    Best Price (0%)
-                  </span>
-                ) : (
-                  `+${tier.upliftPercent}%`
-                )}
+              <span className="font-semibold text-primary flex items-center gap-1">
+                {tier.label}
+                {tier.upliftPercent === 0 && <Check className="h-4 w-4 text-green-600" />}
               </span>
             </div>
             
@@ -185,58 +172,18 @@ const ACBulkPricing: React.FC<ACBulkPricingProps> = ({
               <span className="font-medium text-foreground">Total ({quantity} units)</span>
               <span className="text-2xl font-bold text-primary">{formatPrice(tier.total)}</span>
             </div>
+            
+            {tier.upliftPercent === 0 && (
+              <p className="text-xs text-green-600 text-center">Best available price!</p>
+            )}
           </CardContent>
         </Card>
       )}
       
-      {/* Reference: Full Container Base Price */}
-      <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-        <p className="font-medium mb-1">Reference Pricing:</p>
-        <ul className="space-y-1 text-xs">
-          <li>• Full Container (20ft) Price: <strong>{formatPrice(basePrice)}/unit</strong> (Q20: {q20} units)</li>
-          {product.q40_units && (
-            <li>• Full Container (40ft): {product.q40_units} units capacity</li>
-          )}
-          <li>• Mid Bulk starts at: {half} units (half container)</li>
-        </ul>
-      </div>
-      
-      {/* Tier Reference Table */}
-      <details className="text-sm">
-        <summary className="cursor-pointer text-primary hover:underline">View all pricing tiers</summary>
-        <div className="mt-2 bg-muted/30 rounded-lg p-3 space-y-2">
-          <div className="grid grid-cols-3 gap-2 text-xs font-medium text-muted-foreground border-b pb-1">
-            <span>Quantity Range</span>
-            <span>Tier</span>
-            <span className="text-right">Uplift</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            <span>5-19</span>
-            <span>Custom Bulk</span>
-            <span className="text-right">+{product.custom_uplift_5_19 ?? 35}%</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            <span>20-39</span>
-            <span>Custom Bulk</span>
-            <span className="text-right">+{product.custom_uplift_20_39 ?? 25}%</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            <span>40-{half - 1}</span>
-            <span>Custom Bulk</span>
-            <span className="text-right">+{product.custom_uplift_40_half ?? 15}%</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            <span>{half}-{q20 - 1}</span>
-            <span>Mid Bulk</span>
-            <span className="text-right">+{product.mid_bulk_uplift_percent ?? 12}%</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs font-medium text-green-700">
-            <span>{q20}+</span>
-            <span>Full Container</span>
-            <span className="text-right">0%</span>
-          </div>
-        </div>
-      </details>
+      {/* Volume discount hint - no percentages */}
+      <p className="text-xs text-muted-foreground text-center">
+        Order {q20}+ units for best pricing
+      </p>
     </div>
   );
 };
