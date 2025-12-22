@@ -476,6 +476,8 @@ const CheckoutPage = () => {
             packaging: item.packaging,
             sku: item.sku,
             epa_approved: item.epaApproved,
+            // AC configuration data for air conditioner products
+            configuration_json: item.configuration_json || null,
             // AC Bulk Pricing audit data (if present)
             ...(item.ac_bulk_pricing ? {
               ac_bulk_pricing: {

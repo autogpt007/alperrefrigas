@@ -13,6 +13,7 @@ export interface OrderItem {
   sku?: string;
   packaging?: string;
   epa_approved?: boolean;
+  configuration_json?: any; // AC configuration data
 }
 
 export interface Order {
@@ -74,7 +75,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
             price,
             sku,
             packaging,
-            epa_approved
+            epa_approved,
+            configuration_json
           )
         `)
         .eq('user_id', user.id)
