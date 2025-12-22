@@ -22,7 +22,9 @@ import {
   CreditCard,
   LogOut,
   Calculator,
-  Truck
+  Truck,
+  Wind,
+  DollarSign
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -47,8 +49,9 @@ const AdminSidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
     { icon: Package, label: 'Products', path: '/admin/products' },
+    { icon: Wind, label: 'AC Products', path: '/admin/ac-products' },
     { icon: Wrench, label: 'Accessories', path: '/admin/accessories' },
-    { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
+    { icon: DollarSign, label: 'Pricing Tiers', path: '/admin/pricing' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
     { icon: Truck, label: 'Shipping', path: '/admin/shipping' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
