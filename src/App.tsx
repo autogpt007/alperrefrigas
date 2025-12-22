@@ -56,6 +56,8 @@ import UserAuthPage from "./components/auth/UserAuthPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./components/admin/Dashboard";
 import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
+import ACProductManagement from "./components/admin/ACProductManagement";
+import PricingTiersManagement from "./components/admin/PricingTiersManagement";
 import AccessoryManagement from "./components/admin/AccessoryManagement";
 import OrderManagement from "./components/admin/OrderManagement";
 import BlogPostManagement from "./components/admin/BlogPostManagement";
@@ -113,8 +115,9 @@ function App() {
                        <Route path="/admin" element={<AdminLayout />}>
                          <Route index element={<Dashboard />} />
                          <Route path="products" element={<EnhancedProductManagement />} />
+                         <Route path="ac-products" element={<ACProductManagement />} />
+                         <Route path="pricing" element={<PricingTiersManagement />} />
                          <Route path="accessories" element={<AccessoryManagement />} />
-                         <Route path="featured-products" element={<FeaturedProductManagement />} />
                          <Route path="orders" element={<OrderManagement />} />
                          <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
