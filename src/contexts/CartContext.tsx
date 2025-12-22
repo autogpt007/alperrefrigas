@@ -26,6 +26,18 @@ export interface CartItem {
     half_units: number;
     ordered_quantity: number;
   };
+  // AC Configuration for order storage
+  configuration_json?: {
+    btu?: number;
+    ac_type?: string;
+    voltage?: string;
+    plug_type?: string;
+    frequency?: string;
+    phase?: string;
+    accessories_mode?: 'without' | 'with';
+    selected_accessory_ids?: string[];
+    comes_with_list?: string[];
+  };
 }
 
 interface CartContextType {
