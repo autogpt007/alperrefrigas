@@ -1106,6 +1106,72 @@ const EnhancedProductManagement = () => {
                   <span className="text-gray-400">Stock:</span>
                   <span className="text-white">{product.stock || 0}</span>
                 </div>
+                
+                {/* AC-specific badges */}
+                {product.product_type === 'air_conditioner' && (
+                  <div className="space-y-2 pt-2 border-t border-slate-600">
+                    <div className="flex flex-wrap gap-1">
+                      {product.ac_type && (
+                        <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                          {product.ac_type}
+                        </Badge>
+                      )}
+                      {product.btu && (
+                        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                          ⚡ {product.btu.toLocaleString()} BTU
+                        </Badge>
+                      )}
+                      {product.voltage && (
+                        <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                          🔌 {product.voltage}
+                        </Badge>
+                      )}
+                      {product.plug_type && (
+                        <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                          {product.plug_type}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    {/* Configuration status indicator */}
+                    {(!product.btu || !product.voltage) && (
+                      <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
+                        ⚠️ Needs AC Config
+                      </Badge>
+                    )}
+                    
+                    {/* Bulk pricing info */}
+                    {product.base_unit_price && (
+                      <div className="text-xs text-gray-400 space-y-1">
+                        <div className="flex justify-between">
+                          <span>Base Unit:</span>
+                          <span className="text-cyan-400">${product.base_unit_price}</span>
+                        </div>
+                        {(product.q20_units || product.q40_units) && (
+                          <div className="flex justify-between">
+                            <span>Container Qty:</span>
+                            <span className="text-white">
+                              {product.q20_units && `Q20: ${product.q20_units}`}
+                              {product.q20_units && product.q40_units && ' | '}
+                              {product.q40_units && `Q40: ${product.q40_units}`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Comes with indicator */}
+                    {((product.comes_with_base && product.comes_with_base.length > 0) || 
+                      (product.comes_with_accessories && product.comes_with_accessories.length > 0)) && (
+                      <div className="text-xs text-gray-400">
+                        <span className="text-green-400">✓</span> Includes: {' '}
+                        {product.comes_with_base?.length || 0} base items, {' '}
+                        {product.comes_with_accessories?.length || 0} accessories
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 {product.epaApproved && (
                   <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                     EPA Approved
