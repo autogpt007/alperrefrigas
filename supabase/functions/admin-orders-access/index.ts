@@ -96,7 +96,8 @@ serve(async (req) => {
             price,
             sku,
             packaging,
-            epa_approved
+            epa_approved,
+            configuration_json
           )
         `)
         .order('created_at', { ascending: false });

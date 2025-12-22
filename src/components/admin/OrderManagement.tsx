@@ -10,9 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2 } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2, Snowflake, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 // Removed SecureCardViewer import
+
+interface ACConfiguration {
+  btu?: number;
+  ac_type?: string;
+  voltage?: string;
+  plug_type?: string;
+  frequency?: string;
+  phase?: string;
+  accessories_mode?: 'without' | 'with';
+  comes_with_list?: string[];
+}
 
 interface Order {
   id: string;
@@ -43,6 +54,7 @@ interface OrderItem {
   sku: string;
   packaging: string;
   epa_approved: boolean;
+  configuration_json?: ACConfiguration;
 }
 
 const OrderManagement = () => {
@@ -581,10 +593,69 @@ const OrderManagement = () => {
                             {selectedOrder.order_items.map((item) => (
                               <tr key={item.id} className="hover:bg-slate-600/30">
                                 <td className="px-4 py-3">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-white">{item.product_name}</span>
-                                    {item.epa_approved && (
-                                      <Badge className="bg-green-600/20 text-green-400 text-xs">EPA</Badge>
+                                  <div className="flex flex-col gap-1">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-white">{item.product_name}</span>
+                                      {item.epa_approved && (
+                                        <Badge className="bg-green-600/20 text-green-400 text-xs">EPA</Badge>
+                                      )}
+                                    </div>
+                                    {/* AC Configuration Display */}
+                                    {item.configuration_json && (
+                                      <div className="bg-blue-900/30 border border-blue-500/30 rounded p-2 mt-1">
+                                        <div className="flex items-center gap-1 mb-1">
+                                          <Snowflake className="h-3 w-3 text-blue-400" />
+                                          <span className="text-blue-400 text-xs font-medium">AC Configuration</span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                                          {item.configuration_json.btu && (
+                                            <div className="text-gray-300">
+                                              <span className="text-gray-500">BTU:</span> {item.configuration_json.btu.toLocaleString()}
+                                            </div>
+                                          )}
+                                          {item.configuration_json.voltage && (
+                                            <div className="text-gray-300 flex items-center gap-1">
+                                              <Zap className="h-3 w-3 text-yellow-500" />
+                                              <span className="text-gray-500">Voltage:</span> {item.configuration_json.voltage}
+                                            </div>
+                                          )}
+                                          {item.configuration_json.plug_type && (
+                                            <div className="text-gray-300">
+                                              <span className="text-gray-500">Plug:</span> {item.configuration_json.plug_type}
+                                            </div>
+                                          )}
+                                          {item.configuration_json.frequency && (
+                                            <div className="text-gray-300">
+                                              <span className="text-gray-500">Freq:</span> {item.configuration_json.frequency}
+                                            </div>
+                                          )}
+                                          {item.configuration_json.phase && (
+                                            <div className="text-gray-300">
+                                              <span className="text-gray-500">Phase:</span> {item.configuration_json.phase}
+                                            </div>
+                                          )}
+                                          {item.configuration_json.accessories_mode && (
+                                            <div className="col-span-2 text-gray-300">
+                                              <span className="text-gray-500">Accessories:</span>{' '}
+                                              <Badge className={item.configuration_json.accessories_mode === 'with' ? 'bg-green-600/20 text-green-400' : 'bg-gray-600/20 text-gray-400'}>
+                                                {item.configuration_json.accessories_mode === 'with' ? 'With Accessories' : 'Unit Only'}
+                                              </Badge>
+                                            </div>
+                                          )}
+                                        </div>
+                                        {item.configuration_json.comes_with_list && item.configuration_json.comes_with_list.length > 0 && (
+                                          <div className="mt-2 pt-2 border-t border-blue-500/20">
+                                            <span className="text-gray-500 text-xs">Includes:</span>
+                                            <ul className="text-xs text-gray-300 mt-1 ml-2">
+                                              {item.configuration_json.comes_with_list.map((item_included, idx) => (
+                                                <li key={idx} className="flex items-center gap-1">
+                                                  <span className="text-green-400">✓</span> {item_included}
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                 </td>
