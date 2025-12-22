@@ -15,6 +15,8 @@ import { createProductSlug, findProductBySlug } from '@/lib/slugs';
 import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBViewContent } from '@/utils/facebookPixel';
 import ACBulkPricing, { calculateACPricingTier } from '../ui/ACBulkPricing';
+import ACConfigurator, { ACConfiguration, getDefaultConfiguration, formatConfigurationSummary } from '../ui/ACConfigurator';
+
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
   const navigate = useNavigate();
@@ -34,6 +36,8 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [acQuantity, setAcQuantity] = useState(5); // AC products have MOQ of 5
   const [packaging, setPackaging] = useState('');
+  const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
+  
   // Find product by ID or by slug with better logic
   const product = React.useMemo(() => {
     if (id) {
@@ -46,6 +50,13 @@ const ProductDetails = () => {
     }
     return null;
   }, [products, id, productSlug]);
+
+  // Initialize AC configuration when product loads
+  React.useEffect(() => {
+    if (product?.product_type === 'air_conditioner' && !acConfiguration) {
+      setAcConfiguration(getDefaultConfiguration(product));
+    }
+  }, [product]);
 
   // Redirect to SEO-friendly URL if accessed via ID
   React.useEffect(() => {
@@ -247,8 +258,11 @@ const ProductDetails = () => {
         return;
       }
       
-      // Create unique cart item ID for AC
-      const cartItemId = `${product.id}-ac-bulk-${acQuantity}`;
+      // Create unique cart item ID for AC including configuration
+      const configKey = acConfiguration ? 
+        `${acConfiguration.accessories_mode}-${acConfiguration.selected_accessory_ids.join(',')}` : 
+        'default';
+      const cartItemId = `${product.id}-ac-bulk-${acQuantity}-${configKey}`;
       const q20 = product.q20_units || 0;
       const half = Math.ceil(q20 * 0.5);
       
@@ -270,7 +284,19 @@ const ProductDetails = () => {
           q20_units: q20,
           half_units: half,
           ordered_quantity: acQuantity
-        }
+        },
+        // AC Configuration for order storage
+        configuration_json: acConfiguration ? {
+          btu: acConfiguration.btu,
+          ac_type: acConfiguration.ac_type,
+          voltage: acConfiguration.voltage,
+          plug_type: acConfiguration.plug_type,
+          frequency: acConfiguration.frequency,
+          phase: acConfiguration.phase,
+          accessories_mode: acConfiguration.accessories_mode,
+          selected_accessory_ids: acConfiguration.selected_accessory_ids,
+          comes_with_list: acConfiguration.comes_with_list
+        } : undefined
       });
       
       toast({
@@ -619,15 +645,33 @@ const ProductDetails = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* AC Products: Use tiered bulk pricing */}
+                  {/* AC Products: Configuration + tiered bulk pricing */}
                   {product.product_type === 'air_conditioner' ? (
                     <>
+                      {/* AC Configurator - Configure Your Unit section */}
+                      {acConfiguration && (
+                        <div className="mb-4">
+                          <ACConfigurator
+                            product={product}
+                            configuration={acConfiguration}
+                            onConfigurationChange={setAcConfiguration}
+                          />
+                        </div>
+                      )}
+                      
                       <ACBulkPricing
                         product={product}
                         quantity={acQuantity}
                         onQuantityChange={setAcQuantity}
                         formatPrice={formatPrice}
                       />
+                      
+                      {/* Configuration Summary */}
+                      {acConfiguration && (
+                        <div className="text-sm text-muted-foreground bg-muted/50 rounded-md p-2 text-center">
+                          {formatConfigurationSummary(acConfiguration)}
+                        </div>
+                      )}
                       
                       <div className="space-y-3 pt-4 border-t">
                         <Button 
