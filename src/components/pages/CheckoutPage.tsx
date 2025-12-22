@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
@@ -29,6 +29,7 @@ import { useInternationalTaxCalculator, SUPPORTED_COUNTRIES, getCountryByCode } 
 import { US_STATES } from '@/utils/zipCodeUtils';
 import { useDirectCheckout } from '@/hooks/useDirectCheckout';
 import { useShippingZones, getShippingZoneForCountry, calculateShippingCost } from '@/hooks/useShippingZones';
+import { ACConfigSummary, ACConfiguration } from '../ui/ACConfigSummary';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -89,6 +90,11 @@ const CheckoutPage = () => {
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
+  const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
+
+  // Check if cart has AC products
+  const hasACProducts = items.some(item => item.product_type === 'air_conditioner');
+  const acItems = items.filter(item => item.product_type === 'air_conditioner');
   const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
 
   // Shipping zones for dynamic rates
@@ -389,6 +395,16 @@ const CheckoutPage = () => {
       toast({
         title: "Legal Acknowledgment Required",
         description: "Please acknowledge the legal information to proceed",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // AC Configuration confirmation validation
+    if (hasACProducts && !acConfigConfirmed) {
+      toast({
+        title: "AC Configuration Confirmation Required",
+        description: "Please confirm your AC configuration (voltage, plug type, and accessories) before placing your order",
         variant: "destructive",
       });
       return false;
@@ -1274,11 +1290,50 @@ const CheckoutPage = () => {
                           <p className="font-medium text-sm">{item.name}</p>
                           <p className="text-xs text-gray-500">{item.packaging}</p>
                           <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          {/* AC Configuration Summary */}
+                          {item.product_type === 'air_conditioner' && item.configuration_json && (
+                            <div className="mt-1">
+                              <ACConfigSummary 
+                                configuration={item.configuration_json as ACConfiguration} 
+                                compact 
+                                editable={false}
+                              />
+                            </div>
+                          )}
                         </div>
                         <p className="font-medium">{formatCurrency(item.price * item.quantity)}</p>
                       </div>
                     ))}
                   </div>
+
+                  {/* AC Configuration Confirmation */}
+                  {hasACProducts && (
+                    <>
+                      <Separator />
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                        <div className="flex items-start gap-2 mb-3">
+                          <Snowflake className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-blue-900">AC Configuration Review</p>
+                            <p className="text-xs text-blue-700 mt-1">
+                              Please review your air conditioner configuration(s) above before proceeding.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-2 mt-2">
+                          <Checkbox
+                            id="ac-config-confirmation"
+                            checked={acConfigConfirmed}
+                            onCheckedChange={(checked) => setAcConfigConfirmed(checked === true)}
+                            className="mt-0.5"
+                          />
+                          <Label htmlFor="ac-config-confirmation" className="text-xs text-blue-800 leading-4">
+                            I have reviewed and confirmed the voltage, plug type, and accessories selection for my AC unit(s). I understand that incorrect specifications cannot be exchanged.
+                          </Label>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   <Separator />
 
