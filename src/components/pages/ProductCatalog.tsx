@@ -137,6 +137,14 @@ const ProductCatalog = () => {
              (normalizedQuery.startsWith('r') && normalizedField.includes(normalizedQuery.substring(1)));
     });
 
+    // AC subcategory matching - check BEFORE 'all' category check
+    // When on an AC subcategory page (e.g., /air-conditioners/mini-splits), filter by that subcategory
+    if (productType === 'air_conditioner' && acSubcategory) {
+      const categoryMatch = product.category?.toLowerCase().replace(/\s+/g, '-') === acSubcategory ||
+                           product.category?.toLowerCase() === acSubcategory.replace(/-/g, ' ');
+      return categoryMatch && matchesSearch;
+    }
+
     if (selectedCategory === 'all') {
       return matchesSearch;
     }
@@ -146,7 +154,7 @@ const ProductCatalog = () => {
       return product.product_type === selectedCategory && matchesSearch;
     }
 
-    // AC subcategory matching (mini-splits, window-ac, portable-ac)
+    // AC subcategory matching via dropdown selection
     if (productType === 'air_conditioner') {
       const categoryMatch = product.category?.toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
                            product.category?.toLowerCase() === selectedCategory.replace(/-/g, ' ');
