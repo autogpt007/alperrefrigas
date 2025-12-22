@@ -459,7 +459,19 @@ const CheckoutPage = () => {
             price: Number(item.price) || 0, // Ensure numeric price
             packaging: item.packaging,
             sku: item.sku,
-            epa_approved: item.epaApproved
+            epa_approved: item.epaApproved,
+            // AC Bulk Pricing audit data (if present)
+            ...(item.ac_bulk_pricing ? {
+              ac_bulk_pricing: {
+                base_unit_price: item.ac_bulk_pricing.base_unit_price,
+                applied_uplift_percent: item.ac_bulk_pricing.applied_uplift_percent,
+                final_unit_price: item.ac_bulk_pricing.final_unit_price,
+                tier_label: item.ac_bulk_pricing.tier_label,
+                q20_units: item.ac_bulk_pricing.q20_units,
+                half_units: item.ac_bulk_pricing.half_units,
+                ordered_quantity: item.ac_bulk_pricing.ordered_quantity
+              }
+            } : {})
           };
         }),
         status: 'pending' as const,
