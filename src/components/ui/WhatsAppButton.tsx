@@ -81,7 +81,7 @@ export const WhatsAppButton: React.FC = () => {
   return (
     <button
       onClick={handleWhatsAppClick}
-      className="fixed bottom-24 right-6 bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-full shadow-lg z-40 transition-all duration-300 hover:scale-110"
+      className="fixed bottom-32 right-6 bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-full shadow-lg z-40 transition-all duration-300 hover:scale-110"
       aria-label="Chat on WhatsApp"
       title="Chat with us on WhatsApp"
     >
