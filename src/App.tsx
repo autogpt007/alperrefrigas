@@ -118,6 +118,7 @@ function App() {
                          <Route path="ac-products" element={<ACProductManagement />} />
                          <Route path="pricing" element={<PricingTiersManagement />} />
                          <Route path="accessories" element={<AccessoryManagement />} />
+                         <Route path="featured-products" element={<FeaturedProductManagement />} />
                          <Route path="orders" element={<OrderManagement />} />
                          <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
