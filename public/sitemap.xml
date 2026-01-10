@@ -201,6 +201,38 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- LLMs.txt for AI crawlers -->
+  <url>
+    <loc>https://alperrefrigas.com/llms.txt</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Bulk Pricing Page -->
+  <url>
+    <loc>https://alperrefrigas.com/bulk-pricing</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Freon Wholesale Page -->
+  <url>
+    <loc>https://alperrefrigas.com/freon-wholesale</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Air Conditioners Page -->
+  <url>
+    <loc>https://alperrefrigas.com/products/air-conditioners</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Individual Product Pages -->
   <!-- Note: Product pages are dynamically generated via the admin sitemap generator -->
   <!-- which includes all current products with proper SEO-friendly URLs -->

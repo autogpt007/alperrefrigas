@@ -15,45 +15,45 @@ const ProductCategory = () => {
     }
   }, [category, setSearchParams]);
 
-  // Category-specific SEO data
+  // Category-specific SEO data - UNIQUE titles and descriptions for each category page
   const getCategoryData = (cat: string) => {
     const categoryData: Record<string, { title: string; description: string; keywords: string }> = {
       'hfc': {
-        title: 'HFC Refrigerants - Professional Distribution',
-        description: 'High-quality HFC refrigerants including R-410A, R-134a, R-404A, and more. EPA-certified professional distribution with competitive wholesale pricing.',
-        keywords: 'HFC refrigerants, R-410A, R-134a, R-404A, R-407C, hydrofluorocarbon, HVAC refrigerants, commercial refrigeration'
+        title: 'Buy HFC Refrigerants Wholesale - R-410A, R-134a, R-404A Bulk Supply | Alper Refrigerants',
+        description: '⭐ Shop HFC refrigerants at wholesale prices. R-410A, R-134a, R-404A, R-407C bulk supply. EPA certified, 99.9% purity guarantee, MOQ 40 cylinders. Same-day shipping from TX, FL, CA.',
+        keywords: 'HFC refrigerants wholesale, R-410A bulk, R-134a wholesale, R-404A distributor, R-407C bulk pricing, hydrofluorocarbon refrigerants, EPA certified HFC'
       },
       'hfo': {
-        title: 'HFO Refrigerants - Low GWP Alternative Solutions',
-        description: 'Environmentally-friendly HFO refrigerants with low global warming potential. Professional distribution of R-1234yf, R-1234ze, and other HFO solutions.',
-        keywords: 'HFO refrigerants, R-1234yf, R-1234ze, hydrofluoroolefin, low GWP, environmental refrigerants, next-generation refrigerants'
+        title: 'HFO Low-GWP Refrigerants - R-1234yf, R-1234ze Wholesale Distribution | Alper Refrigerants',
+        description: '🌱 Next-generation HFO refrigerants with ultra-low global warming potential. R-1234yf, R-1234ze, R-513A wholesale. Environmental compliance solutions for contractors.',
+        keywords: 'HFO refrigerants, R-1234yf wholesale, R-1234ze bulk, hydrofluoroolefin, low GWP refrigerants, environmental refrigerants, R-513A distributor'
       },
       'natural': {
-        title: 'Natural Refrigerants - Eco-Friendly HVAC Solutions',
-        description: 'Natural refrigerants including R-290 (propane), R-600a (isobutane), and R-744 (CO2). Zero ozone depletion, low GWP alternatives.',
-        keywords: 'natural refrigerants, R-290, R-600a, R-744, propane refrigerant, isobutane, CO2 refrigerant, hydrocarbon refrigerants'
+        title: 'Natural Refrigerants - R-290 Propane, R-600a, R-744 CO2 Wholesale | Alper Refrigerants',
+        description: '🌿 Eco-friendly natural refrigerants for sustainable HVAC. R-290 propane, R-600a isobutane, R-744 CO2 wholesale. Zero ODP, ultra-low GWP alternatives.',
+        keywords: 'natural refrigerants, R-290 propane wholesale, R-600a isobutane, R-744 CO2 refrigerant, hydrocarbon refrigerants, eco-friendly HVAC, zero ODP'
       },
       'automotive': {
-        title: 'Automotive Refrigerants - Professional AC Service',
-        description: 'Automotive A/C refrigerants for professional service technicians. R-134a, R-1234yf, and specialty automotive refrigerants with EPA certification.',
-        keywords: 'automotive refrigerants, R-134a, R-1234yf, car AC refrigerant, automotive air conditioning, mobile AC service'
+        title: 'Automotive AC Refrigerants - R-134a, R-1234yf Wholesale for Technicians | Alper Refrigerants',
+        description: '🚗 Professional automotive A/C refrigerants for certified technicians. R-134a, R-1234yf wholesale pricing. EPA 609 compliant, bulk discounts for auto shops.',
+        keywords: 'automotive refrigerants, R-134a automotive, R-1234yf car AC, mobile AC refrigerant, automotive air conditioning, EPA 609 certified, auto shop supplies'
       },
       'commercial': {
-        title: 'Commercial Refrigerants - Industrial HVAC Solutions',
-        description: 'Commercial-grade refrigerants for large HVAC systems, supermarket refrigeration, and industrial applications. Bulk quantities available.',
-        keywords: 'commercial refrigerants, industrial HVAC, supermarket refrigeration, bulk refrigerants, commercial air conditioning'
+        title: 'Commercial HVAC Refrigerants - Supermarket & Large System Solutions | Alper Refrigerants',
+        description: '🏢 Commercial-grade refrigerants for large HVAC systems. Supermarket refrigeration, chillers, rooftop units. Container-load pricing for facility managers.',
+        keywords: 'commercial refrigerants, supermarket refrigeration, large HVAC systems, commercial chillers, rooftop AC refrigerant, facility management, bulk commercial'
       },
       'industrial': {
-        title: 'Industrial Refrigerants - Heavy-Duty Applications',
-        description: 'Industrial refrigerants for process cooling, manufacturing, and large-scale refrigeration systems. Professional-grade solutions with technical support.',
-        keywords: 'industrial refrigerants, process cooling, manufacturing refrigeration, heavy-duty HVAC, industrial cooling systems'
+        title: 'Industrial Refrigerants - Process Cooling & Manufacturing Solutions | Alper Refrigerants',
+        description: '🏭 Industrial refrigerants for manufacturing and process cooling. Heavy-duty applications with technical support. Container pricing and dedicated account management.',
+        keywords: 'industrial refrigerants, process cooling, manufacturing refrigeration, heavy-duty HVAC, industrial cooling systems, cold storage, ammonia alternatives'
       }
     };
     
     return categoryData[cat] || {
-      title: 'Professional Refrigerant Products',
-      description: 'High-quality refrigerants for all applications. EPA-certified distribution with competitive pricing and expert technical support.',
-      keywords: 'refrigerants, HVAC, professional distribution, EPA certified'
+      title: 'Professional Refrigerant Products Catalog | Alper Refrigerants',
+      description: 'Browse our complete refrigerant catalog. HFC, HFO, natural refrigerants with EPA certification. Wholesale pricing, MOQ 40 cylinders, expert technical support.',
+      keywords: 'refrigerant products, HVAC refrigerants, professional distribution, EPA certified, wholesale pricing'
     };
   };
 

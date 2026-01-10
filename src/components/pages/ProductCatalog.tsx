@@ -305,11 +305,12 @@ const ProductCatalog = () => {
     </Card>
   );
 
-  // Get page title and description based on product type
+  // Get page title and description based on product type - UNIQUE titles for SEO
   const getPageTitle = () => {
-    if (productType === 'refrigerant') return 'Refrigerants';
-    if (productType === 'accessory') return 'HVAC Accessories & Tools';
-    return 'All Products';
+    if (productType === 'refrigerant') return 'Refrigerant Gas Products';
+    if (productType === 'accessory') return 'HVAC Accessories & Professional Tools';
+    if (productType === 'air_conditioner') return 'Wholesale Air Conditioning Units';
+    return 'Complete Product Catalog';
   };
 
   const getSearchPlaceholder = () => {
@@ -386,22 +387,51 @@ const ProductCatalog = () => {
     return breadcrumbs;
   };
 
+  // Generate unique SEO title based on product type and category for no duplicates
+  const getSEOTitle = () => {
+    if (productType === 'refrigerant') {
+      return `${getPageTitle()} - ${getCategoryDisplayName()} | EPA Certified Bulk Refrigerants | Alper Refrigerants`;
+    }
+    if (productType === 'accessory') {
+      return `${getPageTitle()} - ${getCategoryDisplayName()} | Professional HVAC Equipment | Alper Refrigerants`;
+    }
+    if (productType === 'air_conditioner') {
+      return `${getPageTitle()} - ${getCategoryDisplayName()} | Container Pricing Available | Alper Refrigerants`;
+    }
+    return `${getPageTitle()} | MOQ 40 Cylinders | Wholesale Bulk Orders | Alper Refrigerants`;
+  };
+
+  // Generate unique SEO description based on product type for no duplicates
+  const getSEODescription = () => {
+    if (productType === 'refrigerant') {
+      return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA distribution centers.`;
+    }
+    if (productType === 'accessory') {
+      return `🔧 Shop professional HVAC accessories & tools including ${getCategoryDisplayName().toLowerCase()}. Gauges, manifolds, recovery equipment, fittings. Quality brands with fast shipping for contractors.`;
+    }
+    if (productType === 'air_conditioner') {
+      return `❄️ Wholesale ${getCategoryDisplayName().toLowerCase()} with container-load pricing. Mini-splits, window units, portable AC. MOQ 5 units with tiered bulk discounts for distributors.`;
+    }
+    return `Browse our complete product catalog featuring refrigerants, HVAC accessories, and air conditioning units. Bulk wholesale pricing with same-day shipping. EPA certified distributor.`;
+  };
+
+  // Generate unique keywords based on product type
+  const getSEOKeywords = () => {
+    if (productType === 'refrigerant') {
+      return `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, MOQ 40 cylinders, EPA certified, fast shipping, ${getCategoryDisplayName().toLowerCase()}`;
+    }
+    if (productType === 'accessory') {
+      return "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, leak detectors, professional HVAC tools, contractor supplies, bulk pricing";
+    }
+    return "HVAC products, refrigerants accessories, wholesale HVAC, professional refrigeration, contractor supplies, EPA certified, bulk pricing";
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title={`${getPageTitle()} - ${getCategoryDisplayName()} | MOQ 40 Cylinders | Wholesale Prices & Bulk Orders | Alper Refrigerants`}
-        description={productType === 'refrigerant' 
-          ? `⭐ Best prices on ${getCategoryDisplayName().toLowerCase()} refrigerants. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity guarantee. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA. Bulk discounts for contractors & distributors.`
-          : productType === 'accessory'
-          ? `🔧 Professional HVAC accessories & tools. Gauges, manifolds, recovery equipment, fittings & more. Quality brands, competitive prices, fast shipping for contractors & technicians. Bulk pricing available.`
-          : `Complete HVAC product catalog - refrigerants & accessories. Wholesale prices, MOQ 40 cylinders, bulk orders, professional-grade equipment. EPA certified, fast shipping, contractor discounts available.`
-        }
-        keywords={productType === 'refrigerant' 
-          ? `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, MOQ 40 cylinders, EPA certified, fast shipping, ${getCategoryDisplayName().toLowerCase()}`
-          : productType === 'accessory'
-          ? "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, leak detectors, professional HVAC tools, contractor supplies, bulk pricing"
-          : "HVAC products, refrigerants accessories, wholesale HVAC, professional refrigeration, contractor supplies, EPA certified, bulk pricing"
-        }
+        title={getSEOTitle()}
+        description={getSEODescription()}
+        keywords={getSEOKeywords()}
         canonicalUrl={location.pathname}
         breadcrumbs={generateBreadcrumbs()}
         faq={generateCatalogFAQ()}

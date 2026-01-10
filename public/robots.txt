@@ -44,5 +44,8 @@ Disallow: /admin-auth
 # Sitemap location
 Sitemap: https://alperrefrigas.com/sitemap.xml
 
+# LLMs.txt for AI crawler information
+# See https://alperrefrigas.com/llms.txt
+
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
