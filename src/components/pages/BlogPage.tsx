@@ -74,8 +74,10 @@ const BlogPage = () => {
   return (
     <>
       <Helmet>
-        <title>News & Industry Updates - North American Refrigerants</title>
-        <meta name="description" content="Stay updated with the latest news, industry insights, and regulatory updates from North American Refrigerants." />
+        <title>Refrigerant Industry News & HVAC Updates | Alper Refrigerants Blog</title>
+        <meta name="description" content="Stay informed with refrigerant industry news, EPA regulation updates, HVAC technology trends, and expert insights from Alper Refrigerants. Professional resources for contractors." />
+        <meta name="keywords" content="refrigerant news, HVAC industry updates, EPA regulations, refrigerant technology, contractor resources, industry insights" />
+        <link rel="canonical" href="https://alperrefrigas.com/blog" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">

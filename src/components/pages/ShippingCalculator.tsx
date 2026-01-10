@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { Truck, AlertTriangle, MapPin, Globe, Package, DollarSign, Clock } from 'lucide-react';
 import { useShippingZones, getShippingZoneForCountry, calculateShippingCost, type ShippingZone } from '@/hooks/useShippingZones';
 import { Badge } from '../ui/badge';
+import SEOComponent from '../seo/SEOComponent';
 
 const ShippingCalculator = () => {
   const { data: zones, isLoading: zonesLoading } = useShippingZones();
@@ -83,13 +84,21 @@ const ShippingCalculator = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-4">Shipping Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate shipping costs and check EPA/regulatory compliance for refrigerant deliveries worldwide.
-        </p>
-      </div>
+    <>
+      <SEOComponent
+        title="Refrigerant Shipping Calculator - International Rates & HazMat Compliance | Alper Refrigerants"
+        description="Calculate shipping costs for refrigerant deliveries worldwide. Check HazMat compliance requirements, transit times, and EPA/F-Gas regulations. Free shipping thresholds for bulk orders."
+        keywords="refrigerant shipping calculator, hazmat shipping rates, international refrigerant delivery, EPA shipping compliance, F-Gas shipping requirements, bulk refrigerant shipping"
+        canonicalUrl="/shipping"
+      />
+      
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-4">Refrigerant Shipping Calculator</h1>
+          <p className="text-muted-foreground">
+            Calculate shipping costs and check EPA/regulatory compliance for refrigerant deliveries worldwide.
+          </p>
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Shipping Form */}
@@ -379,10 +388,11 @@ const ShippingCalculator = () => {
               <p>• Delivery signature required for all orders</p>
               <p>• Alaska & Hawaii may have extended delivery times</p>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
