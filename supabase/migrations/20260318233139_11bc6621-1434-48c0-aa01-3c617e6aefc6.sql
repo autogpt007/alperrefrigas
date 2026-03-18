@@ -1,0 +1,1 @@
+DROP POLICY "mining_payouts_require_auth" ON public.mining_payouts;
