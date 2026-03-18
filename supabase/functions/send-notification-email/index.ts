@@ -12,7 +12,7 @@ interface EmailRequest {
   data: any;
 }
 
-const resend = new Resend('re_XnueqiFG_PsgTCqZwxFxkpVdJcXw7bD24');
+const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
