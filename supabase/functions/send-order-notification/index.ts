@@ -12,7 +12,7 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
-const resend = new Resend('re_XnueqiFG_PsgTCqZwxFxkpVdJcXw7bD24');
+const resend = new Resend(Deno.env.get('RESEND_API_KEY')!);
 
 interface OrderNotificationRequest {
   orderId: string;
