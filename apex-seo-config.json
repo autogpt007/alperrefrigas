@@ -1,8 +1,11 @@
 {
-  "https://alperrefrigas.com": {
-    "all_images": "Contextual descriptions including 'Refrigeração Industrial' and 'Manutenção'",
-    "null": "https://alperrefrigas.com/",
-    "title": "Alper Refrigas | Refrigeração Industrial e Manutenção",
-    "description": "A Alper Refrigas oferece soluções completas em refrigeração industrial e comercial. Manutenção especializada, instalação e projetos sob medida. Peça seu orçamento hoje!"
+  "/": {
+    "title": "Alper Refrigas | Refrigeração Industrial e Manutenção de Chillers em SP",
+    "description": "A Alper Refrigas oferece soluções completas em refrigeração industrial, manutenção preventiva e corretiva de chillers e sistemas de climatização. Atendimento técnico especializado.",
+    "h1": "Alper Refrigas: Especialista em Refrigeração Industrial e Manutenção de Chillers",
+    "rel_canonical": "https://alperrefrigas.com/",
+    "img_logo": "Logo Alper Refrigas - Especialistas em Refrigeração Industrial",
+    "img_chiller": "Manutenção técnica de Chiller industrial de alta performance",
+    "body_text": "~800 words including Service Details and FAQ"
   }
 }
