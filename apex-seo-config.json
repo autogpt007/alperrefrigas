@@ -1,44 +1,16 @@
 {
-  "https://alperrefrigas.com/": {
-    "title": "Alper Refrigerants | Wholesale HFC, HFO & Natural Refrigerants",
-    "description": "Your trusted wholesale supplier for high-quality refrigerants. We offer a wide range of HFC, HFO, and natural refrigerants for commercial, industrial, and automotive use.",
-    "h1": "Wholesale Refrigerant Supplier",
-    "canonical": "https://alperrefrigas.com/",
-    "json-ld": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"Alper Refrigerants\",\"url\":\"https://alperrefrigas.com/\",\"logo\":\"https://alperrefrigas.com/logo.png\",\"contactPoint\":{\"@type\":\"ContactPoint\",\"telephone\":\"+1-800-555-1234\",\"contactType\":\"customer service\"}}</script>"
-  },
   "https://alperrefrigas.com/about": {
-    "title": "About Alper Refrigerants | Our Story & Mission",
-    "description": "Learn about Alper Refrigerants, our commitment to quality, and our mission to be the leading professional refrigerant distributor in the industry.",
-    "h1": "About Alper Refrigerants",
-    "canonical": "https://alperrefrigas.com/about"
-  },
-  "https://alperrefrigas.com/products": {
-    "title": "Our Refrigerant Products | HFC, HFO, Natural & Accessories",
-    "description": "Explore our complete catalog of refrigerant products, including HFCs, HFOs, natural refrigerants, and essential accessories for all your cooling needs.",
-    "h1": "Refrigerant Products & Accessories",
-    "canonical": "https://alperrefrigas.com/products"
+    "title": "About Alper Refrigerants | Trusted HVAC Refrigerant Suppliers",
+    "description": "Learn about Alper Refrigerants, a leading EPA-certified distributor of industrial and commercial refrigerants. Committed to quality, compliance, and rapid North American delivery.",
+    "h1": "About Alper Refrigerants: Your Distribution Partner"
   },
   "https://alperrefrigas.com/products/refrigerants": {
-    "title": "All Refrigerants | HFC, HFO & Natural Blends | Alper Refrigerants",
-    "description": "Browse our extensive selection of refrigerants. We supply high-purity HFCs, low-GWP HFOs, and eco-friendly natural refrigerants for various applications.",
-    "h1": "Our Full Range of Refrigerants",
-    "canonical": "https://alperrefrigas.com/products/refrigerants"
+    "title": "Refrigerant Gases | HFC, HFO & Natural Refrigerants for Sale",
+    "description": "Browse our full catalog of refrigerants including R-410A, R-134a, R-404A, and eco-friendly HFO options. Available in cylinders and bulk containers for HVAC professionals.",
+    "h1": "Professional Grade Refrigerant Solutions"
   },
-  "https://alperrefrigas.com/products/accessories": {
-    "title": "Refrigerant Accessories & Tools | Alper Refrigerants",
-    "description": "Find all the necessary accessories and tools for refrigerant handling and system maintenance. Quality supplies for professional HVAC-R technicians.",
-    "h1": "Refrigerant System Accessories",
-    "canonical": "https://alperrefrigas.com/products/accessories"
-  },
-  "https://alperrefrigas.com/contact": {
-    "title": "Contact Us | Alper Refrigerants Customer Support",
-    "description": "Get in touch with the Alper Refrigerants team. Contact us for sales inquiries, technical support, or questions about our refrigerant products.",
-    "h1": "Contact Alper Refrigerants",
-    "canonical": "https://alperrefrigas.com/contact"
-  },
-  "https://alperrefrigas.com/rfq": {
-    "title": "Request a Quote (RFQ) | Bulk Refrigerant Pricing",
-    "description": "Need bulk pricing on refrigerants? Submit a Request for Quote (RFQ) to get competitive wholesale pricing on HFC, HFO, and natural refrigerants.",
-    "h1": "Request a Quote"
+  "https://alperrefrigas.com/freon-wholesale": {
+    "title": "Wholesale Freon & Refrigerant Supplies | Bulk Discounts",
+    "description": "Save on wholesale Freon and refrigerant orders. We provide competitive pricing for HVAC contractors and industrial facilities on all major refrigerant types."
   }
 }
