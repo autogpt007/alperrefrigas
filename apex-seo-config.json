@@ -1,0 +1,24 @@
+{
+  "https://alperrefrigas.com": {
+    "h1": "Welcome to Alper Refrigerants",
+    "canonical": "https://alperrefrigas.com/"
+  },
+  "https://alperrefrigas.com/": {
+    "schema": "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"Alper Refrigerants\",\"url\":\"https://alperrefrigas.com/\"}"
+  },
+  "https://alperrefrigas.com/about": {
+    "title": "About Alper Refrigerants | Our Company Mission & Values",
+    "meta_description": "Learn about Alper Refrigerants, our commitment to quality, sustainability, and customer satisfaction in refrigerant distribution.",
+    "h1": "About Alper Refrigerants",
+    "canonical": "https://alperrefrigas.com/about"
+  },
+  "https://alperrefrigas.com/products": {
+    "title": "All Products | Refrigerants & Accessories | Alper Refrigerants",
+    "meta_description": "Browse our complete catalog of refrigerants and related accessories. Find the solutions you need for HVAC, automotive, and industrial applications.",
+    "h1": "Our Products",
+    "canonical": "https://alperrefrigas.com/products"
+  },
+  "https://alperrefrigas.com/products/category/hfc": {
+    "title": "HFC Refrigerants | R-134a, R-410a & More | Alper Refrigerants"
+  }
+}
