@@ -1,10 +1,8 @@
 {
-  "https://alperrefrigas.com/": {
-    "title": "Alper Refrigas | Refrigeración Industrial y Climatización en México",
-    "description": "Especialistas en instalación y mantenimiento de refrigeración industrial, chillers y aire acondicionado. Soluciones eficientes para su empresa con Alper Refrigas. ¡Cotice hoy!",
-    "h1": "Servicios de Refrigeración Industrial y Aire Acondicionado | Alper Refrigas",
-    "rel_canonical": "https://alperrefrigas.com/",
-    "alt_text": "Técnico realizando mantenimiento de refrigeración industrial Alper Refrigas",
-    "word_count": ">800"
+  "https://alperrefrigas.com": {
+    "all_images": "Contextual descriptions including 'Refrigeração Industrial' and 'Manutenção'",
+    "null": "https://alperrefrigas.com/",
+    "title": "Alper Refrigas | Refrigeração Industrial e Manutenção",
+    "description": "A Alper Refrigas oferece soluções completas em refrigeração industrial e comercial. Manutenção especializada, instalação e projetos sob medida. Peça seu orçamento hoje!"
   }
 }
