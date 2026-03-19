@@ -1,16 +1,10 @@
 {
-  "https://alperrefrigas.com/about": {
-    "title": "About Alper Refrigerants | Trusted EPA-Certified Refrigerant Supplier",
-    "description": "Learn about Alper Refrigerants, a leading North American distributor of HVAC refrigerants. We specialize in EPA-compliant HFC, HFO, and natural gas distribution."
-  },
-  "https://alperrefrigas.com/products/refrigerants": {
-    "h1": "Wholesale HVAC Refrigerants: HFC, HFO & Natural Solutions"
-  },
-  "https://alperrefrigas.com/products/category/hfc": {
-    "title": "HFC Refrigerants (R-410A, R-134a, R-404A) | Alper Refrigerants",
-    "description": "Shop high-quality HFC refrigerants including R-410A and R-134a. Available in individual cylinders or bulk pallets for HVAC professionals."
-  },
-  "https://alperrefrigas.com": {
-    "img_alt": "Alper Refrigerants Logo - Professional HVAC Refrigerant Distribution"
+  "https://alperrefrigas.com/": {
+    "title": "Alper Refrigas | Refrigeración Industrial y Climatización en México",
+    "description": "Especialistas en instalación y mantenimiento de refrigeración industrial, chillers y aire acondicionado. Soluciones eficientes para su empresa con Alper Refrigas. ¡Cotice hoy!",
+    "h1": "Servicios de Refrigeración Industrial y Aire Acondicionado | Alper Refrigas",
+    "rel_canonical": "https://alperrefrigas.com/",
+    "alt_text": "Técnico realizando mantenimiento de refrigeración industrial Alper Refrigas",
+    "word_count": ">800"
   }
 }
