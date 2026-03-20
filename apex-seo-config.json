@@ -1,10 +1,6 @@
 {
-  "https://alperrefrigas.com": {
-    "title": "Alper Refrigas | Expert Commercial Refrigeration & HVAC Services",
-    "meta_description": "Need reliable commercial refrigeration repair? Alper Refrigas provides 24/7 expert HVAC, cooling, and refrigeration services for businesses. Fast, professional, and guaranteed.",
-    "H1": "<h1>Premier Commercial Refrigeration & HVAC Solutions</h1>",
-    "canonical": "<link rel='canonical' href='https://alperrefrigas.com/' />",
-    "body": "Expanded 1,200-word authority content including H2/H3 headers, service descriptions, industry-specific solutions, and clear CTAs for lead generation.",
-    "alt_text": "Applied descriptive alt tags to all site imagery including 'commercial refrigeration repair' and 'HVAC maintenance' keywords."
+  "https://alperrefrigas.com/": {
+    "title": "Alper Refrigerants: Bulk Refrigerant Supplier | R-410A, R-134a, HFOs & More",
+    "description": "Alper Refrigerants is your trusted EPA-certified bulk refrigerant supplier. We offer wholesale pricing on R-410A, R-134a, HFOs, and natural refrigerants with fast, nationwide shipping."
   }
 }
