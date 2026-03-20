@@ -33,9 +33,9 @@ const Index = () => {
   return (
     <>
       <SEOComponent 
-        title="Wholesale Refrigerant Distributor | R-410A, R-134a, R-404A | Alper Refrigerants"
-        description="Alper Refrigerants is a leading EPA-certified supplier of bulk HFC, HFO, and natural refrigerants. Competitive wholesale pricing on R-410A, R-134a, and more with nationwide shipping."
-        keywords="refrigerant distributor, wholesale freon, R-410A supplier, R-134a bulk, R-404A wholesale, HFO refrigerants, HVAC supplies, buy refrigerant online, EPA certified refrigerant supplier"
+        title="Alper Refrigerants: Bulk Refrigerant Supplier | R-410A, R-134a, HFOs & More"
+        description="Alper Refrigerants is your trusted EPA-certified bulk refrigerant supplier. We offer wholesale pricing on R-410A, R-134a, HFOs, and natural refrigerants with fast, nationwide shipping."
+        keywords="bulk refrigerant supplier, wholesale refrigerants, R-410A, R-134a, HFO refrigerants, natural refrigerants, EPA certified, HVAC supply, refrigerant distribution, buy freon"
         canonicalUrl="/"
         structuredData={homeSchema}
       />
