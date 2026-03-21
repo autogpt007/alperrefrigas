@@ -1,10 +1,11 @@
 {
-  "https://alperrefrigas.com": {
-    "body": "Expanded homepage content (500+ words) covering HVAC, Refrigeration, and Emergency services as provided in the response above.",
-    "title_tag": "Commercial Refrigeration & HVAC Services Miami | Alper Refrigas",
-    "meta_description": "Expert commercial refrigeration and HVAC repair in Miami. 24/7 emergency service for walk-in coolers, freezers, and AC systems.",
-    "canonical_tag": "<link rel=\"canonical\" href=\"https://alperrefrigas.com/\" />",
-    "image_alt_text": "Alper Refrigas technician repairing a commercial walk-in freezer in Miami",
-    "h1": "Expert Commercial Refrigeration & HVAC Services in Miami"
+  "https://alperrefrigas.com/products/air-conditioners": {
+    "redirect": "https://alperrefrigas.com/products/accessories"
+  },
+  "https://alperrefrigas.com/freon-wholesale": {
+    "redirect": "https://alperrefrigas.com/products"
+  },
+  "https://alperrefrigas.com/shipping": {
+    "redirect": "https://alperrefrigas.com/shipping-policy"
   }
 }
