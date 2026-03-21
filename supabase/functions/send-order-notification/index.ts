@@ -145,8 +145,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error in send-order-notification function:", error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: 'Failed to send order notification'
+        error: 'Internal server error'
       }),
       {
         status: 500,

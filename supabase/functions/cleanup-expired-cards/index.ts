@@ -48,7 +48,7 @@ serve(async (req) => {
     console.error('Cleanup function error:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: 'Internal server error',
         timestamp: new Date().toISOString()
       }),
       {
