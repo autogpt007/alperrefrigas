@@ -1,9 +1,10 @@
 {
   "https://alperrefrigas.com": {
-    "h1": "<h1>Expert Commercial Refrigeration & HVAC Solutions | Alper Refrigas</h1>",
-    "title": "Commercial Refrigeration Repair & HVAC Services | Alper Refrigas",
-    "description": "Alper Refrigas provides professional commercial refrigeration, ice machine repair, and HVAC maintenance. Serving your area with 24/7 emergency support.",
-    "canonical": "https://alperrefrigas.com/",
-    "alt_text": "Alper Refrigas commercial refrigeration technician repairing a walk-in freezer"
+    "body_copy": "Expanded service descriptions for HVAC, Refrigeration, and Ice Machines (400+ words added)",
+    "h1": "Expert Commercial Refrigeration & HVAC Services",
+    "title": "Alper Refrigas | Commercial Refrigeration & HVAC Specialists",
+    "description": "Expert commercial refrigeration and HVAC services by Alper Refrigas. Specializing in walk-in coolers, freezers, and ice machine repair. Request a quote today!",
+    "canonical_link": "https://alperrefrigas.com/",
+    "alt_text": "Alper Refrigas Commercial HVAC and Refrigeration Repair Services"
   }
 }
