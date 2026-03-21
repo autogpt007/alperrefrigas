@@ -23,8 +23,6 @@ import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
-import FreonWholesalePage from "./components/pages/FreonWholesalePage";
-import AirConditionersPage from "./components/pages/AirConditionersPage";
 import ProductCategory from "./components/pages/ProductCategory";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
