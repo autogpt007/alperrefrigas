@@ -13,6 +13,18 @@ const THIRD_PARTY_ERROR_HOSTS = [
   'consent.cookiebot.com',
 ];
 
+const PREVIEW_HOST_PATTERNS = [
+  'lovableproject.com',
+  'lovable.app',
+  'localhost',
+  'webcontainer',
+];
+
+const isPreviewOrDevHost = () => {
+  if (typeof window === 'undefined') return false;
+  return PREVIEW_HOST_PATTERNS.some((host) => window.location.hostname.includes(host));
+};
+
 const isThirdPartySource = (source?: string | null) => {
   if (!source) return false;
   return THIRD_PARTY_ERROR_HOSTS.some((host) => source.includes(host));
@@ -31,6 +43,32 @@ const shouldIgnoreScriptError = (
 };
 
 if (typeof window !== 'undefined') {
+  const w = window as any;
+
+  if (isPreviewOrDevHost()) {
+    w.dataLayer = [];
+
+    w.gtag = (...args: any[]) => {
+      const [command, target] = args;
+
+      if (command === 'event' && (target === 'conversion' || target === 'purchase')) {
+        return;
+      }
+
+      if (
+        command === 'config' &&
+        typeof target === 'string' &&
+        (target.startsWith('GT-') || target.startsWith('AW-') || target.startsWith('G-'))
+      ) {
+        return;
+      }
+
+      w.dataLayer.push(args);
+    };
+
+    w.fbq = () => {};
+  }
+
   const previousOnError = window.onerror;
 
   window.onerror = (message, source, lineno, colno, error) => {
