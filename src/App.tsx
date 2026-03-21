@@ -168,7 +168,7 @@ function App() {
                         <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
                               <Route path="/faq" element={<FAQ />} />
-                              <Route path="/shipping" element={<ShippingCalculator />} />
+                              <Route path="/shipping" element={<Navigate to="/shipping-policy" replace />} />
                               <Route path="/compliance" element={<EPACompliance />} />
                               <Route path="/certifications" element={<Certifications />} />
                               <Route path="/privacy" element={<PrivacyPolicy />} />
