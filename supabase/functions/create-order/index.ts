@@ -1,5 +1,6 @@
 // Supabase Edge Function: create-order
 // Creates an order and its items using the service role so guest checkouts work with RLS
+// Verifies item prices server-side against the products table to prevent price manipulation
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
@@ -20,12 +21,10 @@ serve(async (req: Request) => {
     const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Client to validate the user from the incoming Authorization header
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
     });
 
-    // Admin client to bypass RLS for inserts
     const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const {
@@ -45,14 +44,14 @@ serve(async (req: Request) => {
       items = [],
     } = await req.json();
 
-    // Enhanced validation with clearer error messages
+    // --- Input validation ---
     if (!customer_name?.trim()) {
       return new Response(
         JSON.stringify({ error: "Customer name is required" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
-    
+
     if (!customer_email?.trim() || !customer_email.includes('@')) {
       return new Response(
         JSON.stringify({ error: "Valid customer email is required" }),
@@ -74,7 +73,6 @@ serve(async (req: Request) => {
       );
     }
 
-    // Validate each order item
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       if (!item.product_name?.trim()) {
@@ -97,11 +95,85 @@ serve(async (req: Request) => {
       }
     }
 
+    // --- Server-side price verification ---
+    const productIds = items
+      .map((it: any) => it.product_id)
+      .filter((id: any) => typeof id === "string" && id.length > 0);
+
+    if (productIds.length > 0) {
+      const { data: products, error: productsError } = await supabaseAdmin
+        .from("products")
+        .select("id, price, name")
+        .in("id", productIds);
+
+      if (productsError) {
+        console.error("[EDGE:create-order] Failed to fetch products for price verification:", productsError);
+        return new Response(
+          JSON.stringify({ error: "Unable to verify product prices. Please try again." }),
+          { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
+        );
+      }
+
+      const priceMap = new Map<string, number>();
+      if (products) {
+        for (const p of products) {
+          priceMap.set(p.id, Number(p.price));
+        }
+      }
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (typeof item.product_id === "string" && item.product_id.length > 0) {
+          const dbPrice = priceMap.get(item.product_id);
+          if (dbPrice === undefined) {
+            return new Response(
+              JSON.stringify({ error: `Item ${i + 1}: Product not found in catalog` }),
+              { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+            );
+          }
+          // Allow a small tolerance (1 cent) for floating point rounding
+          if (Math.abs(Number(item.price) - dbPrice) > 0.01) {
+            console.warn("[EDGE:create-order] Price mismatch detected", {
+              product_id: item.product_id,
+              client_price: item.price,
+              db_price: dbPrice,
+            });
+            return new Response(
+              JSON.stringify({ error: `Item ${i + 1}: Price does not match current catalog price. Please refresh your cart.` }),
+              { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+            );
+          }
+        }
+      }
+    }
+
+    // Recompute total server-side from verified prices
+    let computedItemsTotal = 0;
+    for (const item of items) {
+      computedItemsTotal += Number(item.price) * Number(item.quantity ?? 1);
+    }
+    const computedTotal = computedItemsTotal + Number(shipping_cost) + Number(tax_amount);
+
+    // Allow tolerance of $0.02 for rounding across multiple items
+    if (Math.abs(computedTotal - Number(total_amount)) > 0.02) {
+      console.warn("[EDGE:create-order] Total mismatch", {
+        client_total: total_amount,
+        computed_total: computedTotal,
+      });
+      return new Response(
+        JSON.stringify({ error: "Order total does not match item prices. Please refresh your cart and try again." }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
+    // Use server-computed total for persistence
+    const verifiedTotal = computedTotal;
+
     // Determine user_id from token if available
     const { data: authData } = await supabase.auth.getUser();
     const user_id = authData?.user?.id ?? null;
 
-    // Insert order
+    // Insert order with server-verified total
     const { data: orderInsert, error: orderError } = await supabaseAdmin
       .from("orders")
       .insert({
@@ -110,7 +182,7 @@ serve(async (req: Request) => {
         customer_email,
         phone,
         status,
-        total_amount,
+        total_amount: verifiedTotal,
         shipping_cost,
         tax_amount,
         shipping_address,
@@ -126,22 +198,19 @@ serve(async (req: Request) => {
     if (orderError || !orderInsert) {
       console.error("[EDGE:create-order] Order insert failed:", {
         error: orderError,
-        customer_email: customer_email,
-        user_id: user_id,
-        total_amount: total_amount,
-        items_count: items.length
+        customer_email,
+        user_id,
+        total_amount: verifiedTotal,
+        items_count: items.length,
       });
       return new Response(
-        JSON.stringify({ 
-          error: orderError?.message ?? "Failed to create order. Please check your information and try again." 
-        }),
+        JSON.stringify({ error: "Failed to create order. Please check your information and try again." }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
 
     const orderId = orderInsert.id;
 
-    // Prepare and insert order_items
     const itemsPayload = items.map((it: any) => ({
       order_id: orderId,
       product_id: typeof it.product_id === "string" ? it.product_id : null,
@@ -151,27 +220,22 @@ serve(async (req: Request) => {
       sku: it.sku ?? null,
       packaging: it.packaging ?? null,
       epa_approved: Boolean(it.epa_approved ?? false),
-      configuration_json: it.configuration_json ?? null, // AC configuration data
+      configuration_json: it.configuration_json ?? null,
     }));
 
     const { error: itemsError } = await supabaseAdmin.from("order_items").insert(itemsPayload);
     if (itemsError) {
-      // Attempt cleanup to avoid orphan orders
       await supabaseAdmin.from("orders").delete().eq("id", orderId);
       console.error("[EDGE:create-order] Order items insert failed:", {
         error: itemsError,
         order_id: orderId,
-        items_payload: itemsPayload
       });
       return new Response(
-        JSON.stringify({ 
-          error: "Failed to add items to order. Please check your cart items and try again." 
-        }),
+        JSON.stringify({ error: "Failed to add items to order. Please check your cart items and try again." }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
 
-    // Fetch full order with items to return
     const { data: fullOrder, error: fetchError } = await supabaseAdmin
       .from("orders")
       .select(
@@ -182,7 +246,7 @@ serve(async (req: Request) => {
 
     if (fetchError || !fullOrder) {
       return new Response(
-        JSON.stringify({ error: fetchError?.message ?? "Failed to fetch created order" }),
+        JSON.stringify({ error: "Order created but failed to fetch details. Your order was placed successfully." }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } },
       );
     }
