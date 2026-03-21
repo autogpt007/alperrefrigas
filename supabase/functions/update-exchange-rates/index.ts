@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
       })
 
     if (usdError) {
-      errors.push(`USD: ${usdError.message}`)
+      errors.push(`USD: update failed`)
     } else {
       updatedRates.push('USD: 1.0')
     }
