@@ -1,6 +1,9 @@
 {
-  "https://alperrefrigas.com/": {
-    "title": "Alper Refrigerants: Bulk Refrigerant Supplier | R-410A, R-134a, HFOs & More",
-    "description": "Alper Refrigerants is your trusted EPA-certified bulk refrigerant supplier. We offer wholesale pricing on R-410A, R-134a, HFOs, and natural refrigerants with fast, nationwide shipping."
+  "https://alperrefrigas.com": {
+    "h1": "Professional Commercial Refrigeration & HVAC Services",
+    "title": "Alper Refrigas | Commercial Refrigeration, HVAC & Ice Machine Repair",
+    "description": "Expert commercial refrigeration and HVAC services by Alper Refrigas. Specializing in walk-in coolers, ice machines, and industrial cooling solutions.",
+    "canonical_link": "https://alperrefrigas.com/",
+    "alt_text": "Technician performing maintenance on a commercial refrigeration unit - Alper Refrigas"
   }
 }
