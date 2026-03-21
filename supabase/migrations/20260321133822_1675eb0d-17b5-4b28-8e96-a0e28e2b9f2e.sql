@@ -1,0 +1,1 @@
+DROP POLICY "order_items_block_anon_select" ON public.order_items;
