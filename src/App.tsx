@@ -23,8 +23,6 @@ import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
-import FreonWholesalePage from "./components/pages/FreonWholesalePage";
-import AirConditionersPage from "./components/pages/AirConditionersPage";
 import ProductCategory from "./components/pages/ProductCategory";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
@@ -149,11 +147,11 @@ function App() {
                           <main className="flex-1">
                             <Routes>
                            <Route path="/" element={<HomePage />} />
-                           <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
+                           <Route path="/freon-wholesale" element={<Navigate to="/products" replace />} />
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
-                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
+                                <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
                                 <Route path="/products/category/:category" element={<ProductCategory />} />
                                 <Route path="/products/accessories/:category" element={<ProductCategory />} />
@@ -170,7 +168,7 @@ function App() {
                         <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
                               <Route path="/faq" element={<FAQ />} />
-                              <Route path="/shipping" element={<ShippingCalculator />} />
+                              <Route path="/shipping" element={<Navigate to="/shipping-policy" replace />} />
                               <Route path="/compliance" element={<EPACompliance />} />
                               <Route path="/certifications" element={<Certifications />} />
                               <Route path="/privacy" element={<PrivacyPolicy />} />

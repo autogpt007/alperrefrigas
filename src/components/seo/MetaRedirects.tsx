@@ -25,6 +25,18 @@ const MetaRedirects: React.FC = () => {
       return;
     }
 
+    // Apex SEO redirects
+    const seoRedirects: Record<string, string> = {
+      '/products/air-conditioners': '/products/accessories',
+      '/freon-wholesale': '/products',
+      '/shipping': '/shipping-policy',
+    };
+
+    if (seoRedirects[currentPath]) {
+      navigate(seoRedirects[currentPath], { replace: true });
+      return;
+    }
+
     // Handle legacy URLs with file extensions
     const legacyRedirects: Record<string, string> = {
       '/index.html': '/',

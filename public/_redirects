@@ -5,6 +5,11 @@ http://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
 https://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
 http://alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
 
+# Apex SEO redirects
+/products/air-conditioners /products/accessories 301!
+/freon-wholesale /products 301!
+/shipping /shipping-policy 301!
+
 # Handle SPA routing
 /*    /index.html   200
 
