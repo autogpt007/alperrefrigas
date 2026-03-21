@@ -43,6 +43,52 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify the request is authorized via a shared secret
+    const cronSecret = Deno.env.get('CRON_SECRET')
+    const authHeader = req.headers.get('Authorization')
+    const providedSecret = req.headers.get('x-cron-secret')
+
+    // Allow if valid cron secret OR valid admin JWT
+    if (providedSecret !== cronSecret || !cronSecret) {
+      // Fall back to JWT auth check
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+      const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!
+      
+      if (!authHeader?.startsWith('Bearer ')) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
+      const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
+      })
+      const { data: { user }, error: authError } = await authClient.auth.getUser()
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      // Check admin role
+      const { data: roleData } = await authClient
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle()
+
+      if (!roleData) {
+        return new Response(JSON.stringify({ error: 'Forbidden' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
     console.log('Starting exchange rate update...')
 
     // Fetch latest rates from Frankfurter API (USD base)
@@ -144,7 +190,7 @@ Deno.serve(async (req) => {
     
     return new Response(JSON.stringify({
       success: false,
-      error: error.message,
+      error: 'Internal server error',
       timestamp: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

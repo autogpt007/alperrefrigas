@@ -65,7 +65,7 @@ serve(async (req) => {
     console.error('Security logging error:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: 'Internal server error',
         success: false 
       }),
       {

@@ -130,8 +130,7 @@ serve(async (req) => {
     console.error('Error sending notification email:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: 'Failed to send notification email'
+        error: 'Internal server error'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
