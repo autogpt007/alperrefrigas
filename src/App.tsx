@@ -147,11 +147,11 @@ function App() {
                           <main className="flex-1">
                             <Routes>
                            <Route path="/" element={<HomePage />} />
-                           <Route path="/freon-wholesale" element={<FreonWholesalePage />} />
+                           <Route path="/freon-wholesale" element={<Navigate to="/products" replace />} />
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
-                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
+                                <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
                                 <Route path="/products/category/:category" element={<ProductCategory />} />
                                 <Route path="/products/accessories/:category" element={<ProductCategory />} />
