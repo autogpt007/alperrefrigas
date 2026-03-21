@@ -7,7 +7,7 @@ const Index = () => {
     "@type": "WholesaleStore",
     "@id": "https://alperrefrigas.com/#organization",
     "name": "Alper Refrigerants",
-    "description": "Leading EPA-certified distributor of high-quality HFC, HFO, and natural refrigerants including R-410A, R-134a, and R-404A. Bulk supply for HVAC professionals.",
+    "description": "Leading EPA-certified distributor of HFO refrigerants for sale, including R-1234yf and R-454B. Bulk supply for HVAC professionals.",
     "url": "https://alperrefrigas.com",
     "telephone": "+1-XXX-XXX-XXXX",
     "address": {
@@ -22,9 +22,9 @@ const Index = () => {
       "@type": "OfferCatalog",
       "name": "Refrigerant Catalog",
       "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "HFO Refrigerant For Sale - Bulk R-1234yf" } },
         { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Wholesale R-410A Refrigerant" } },
         { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Bulk R-134a Refrigerant" } },
-        { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "HFO-1234yf Distribution" } },
         { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "R-404A Wholesale Supply" } }
       ]
     }
@@ -33,14 +33,14 @@ const Index = () => {
   return (
     <>
       <SEOComponent 
-        title="Alper Refrigerants: Bulk Refrigerant Supplier | R-410A, R-134a, HFOs & More"
-        description="Alper Refrigerants is your trusted EPA-certified bulk refrigerant supplier. We offer wholesale pricing on R-410A, R-134a, HFOs, and natural refrigerants with fast, nationwide shipping."
-        keywords="bulk refrigerant supplier, wholesale refrigerants, R-410A, R-134a, HFO refrigerants, natural refrigerants, EPA certified, HVAC supply, refrigerant distribution, buy freon"
+        title="HFO Refrigerant For Sale | Bulk R-1234yf & Low GWP Solutions | Alper"
+        description="Looking for HFO refrigerant for sale? Alper Refrigerants offers EPA-certified bulk HFO-1234yf, R-454B, and R-513A. Wholesale pricing and fast nationwide shipping."
+        keywords="hfo refrigerant for sale, buy hfo 1234yf, wholesale hfo refrigerants, low gwp refrigerants, bulk r-454b, r-513a supplier, hvac hfo supply"
         canonicalUrl="/"
         structuredData={homeSchema}
       />
       <main>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center my-8 px-4">Alper Refrigerants: Bulk Refrigerant Distribution & Wholesale HVAC Solutions</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center my-8 px-4">HFO Refrigerant For Sale: Bulk Distribution & Wholesale HVAC Solutions</h1>
         <HomePage />
       </main>
     </>
