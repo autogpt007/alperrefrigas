@@ -10,6 +10,7 @@ const THIRD_PARTY_ERROR_HOSTS = [
   'googleadservices.com',
   'doubleclick.net',
   'connect.facebook.net',
+  'facebook.com',
   'consent.cookiebot.com',
 ];
 
@@ -43,7 +44,11 @@ const shouldIgnoreScriptError = (
 };
 
 if (typeof window !== 'undefined') {
-  const w = window as any;
+  const w = window as Window & {
+    fbq?: (...args: any[]) => void;
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
+  };
 
   if (isPreviewOrDevHost()) {
     w.dataLayer = [];
@@ -63,7 +68,7 @@ if (typeof window !== 'undefined') {
         return;
       }
 
-      w.dataLayer.push(args);
+      w.dataLayer?.push(args);
     };
 
     w.fbq = () => {};
@@ -89,11 +94,24 @@ if (typeof window !== 'undefined') {
     (event) => {
       const target = event.target as HTMLScriptElement | null;
       const source = target?.src;
+      const errorEvent = event as ErrorEvent;
 
-      if (target instanceof HTMLScriptElement && isThirdPartySource(source)) {
-        console.warn('[Runtime] Ignored third-party script load error:', source);
+      const isThirdPartyScriptLoadError =
+        target instanceof HTMLScriptElement && isThirdPartySource(source);
+      const isGenericCrossOriginScriptError =
+        errorEvent instanceof ErrorEvent &&
+        shouldIgnoreScriptError(
+          errorEvent.message,
+          errorEvent.filename,
+          (errorEvent.error as Error | undefined) ?? undefined,
+        );
+
+      if (isThirdPartyScriptLoadError || isGenericCrossOriginScriptError) {
         event.preventDefault();
         event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === 'function') {
+          event.stopImmediatePropagation();
+        }
       }
     },
     true,

@@ -8,9 +8,12 @@ import { useEffect } from 'react';
 export const SecurityMonitor = () => {
   useEffect(() => {
     // Only run security monitoring in production, not in preview/development
-    const isPreviewOrDev = window.location.hostname.includes('lovable.app') || 
-                           window.location.hostname === 'localhost' ||
-                           window.location.hostname.includes('webcontainer');
+    const hostname = window.location.hostname;
+    const isPreviewOrDev =
+      hostname.includes('lovableproject.com') ||
+      hostname.includes('lovable.app') ||
+      hostname === 'localhost' ||
+      hostname.includes('webcontainer');
     
     if (isPreviewOrDev) {
       console.log('[Security] Skipping security monitoring in preview/dev environment');
