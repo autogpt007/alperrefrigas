@@ -103,7 +103,7 @@ serve(async (req: Request) => {
     if (productIds.length > 0) {
       const { data: products, error: productsError } = await supabaseAdmin
         .from("products")
-        .select("id, price, name")
+        .select("id, price, pallet_price, container_20ft_price, container_40ft_price, name")
         .in("id", productIds);
 
       if (productsError) {
@@ -114,29 +114,36 @@ serve(async (req: Request) => {
         );
       }
 
-      const priceMap = new Map<string, number>();
+      const productMap = new Map<string, any>();
       if (products) {
         for (const p of products) {
-          priceMap.set(p.id, Number(p.price));
+          productMap.set(p.id, p);
         }
       }
 
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         if (typeof item.product_id === "string" && item.product_id.length > 0) {
-          const dbPrice = priceMap.get(item.product_id);
-          if (dbPrice === undefined) {
+          const product = productMap.get(item.product_id);
+          if (!product) {
             return new Response(
               JSON.stringify({ error: `Item ${i + 1}: Product not found in catalog` }),
               { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
             );
           }
-          // Allow a small tolerance (1 cent) for floating point rounding
-          if (Math.abs(Number(item.price) - dbPrice) > 0.01) {
+          // Build set of valid prices for this product (base + packaging variants)
+          const validPrices: number[] = [Number(product.price)];
+          if (product.pallet_price != null) validPrices.push(Number(product.pallet_price));
+          if (product.container_20ft_price != null) validPrices.push(Number(product.container_20ft_price));
+          if (product.container_40ft_price != null) validPrices.push(Number(product.container_40ft_price));
+
+          const clientPrice = Number(item.price);
+          const priceMatches = validPrices.some(vp => Math.abs(clientPrice - vp) <= 0.01);
+          if (!priceMatches) {
             console.warn("[EDGE:create-order] Price mismatch detected", {
               product_id: item.product_id,
               client_price: item.price,
-              db_price: dbPrice,
+              valid_prices: validPrices,
             });
             return new Response(
               JSON.stringify({ error: `Item ${i + 1}: Price does not match current catalog price. Please refresh your cart.` }),
