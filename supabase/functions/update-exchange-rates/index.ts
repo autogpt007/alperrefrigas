@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
 
       if (error) {
         console.error(`Error updating ${currency}:`, error)
-        errors.push(`${currency}: ${error.message}`)
+        errors.push(`${currency}: update failed`)
       } else {
         console.log(`Updated ${currency}: ${rate}`)
         updatedRates.push(`${currency}: ${rate}`)
