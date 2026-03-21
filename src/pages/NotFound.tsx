@@ -19,7 +19,7 @@ const NotFound = () => {
   return (
     <>
       <SEOComponent
-        title="Page Not Found - 404 Error"
+        title="Page Not Found - 404 Error | Alper Refrigerants"
         description="The page you're looking for doesn't exist. Find professional refrigerant products and HVAC solutions at Alper Refrigerants."
         canonicalUrl="/404"
       />
@@ -55,8 +55,8 @@ const NotFound = () => {
                 <Link to="/products/refrigerants" className="text-primary hover:underline">
                   Refrigerants
                 </Link>
-                <Link to="/products/hvac-equipment" className="text-primary hover:underline">
-                  HVAC Equipment
+                <Link to="/products/accessories" className="text-primary hover:underline">
+                  HVAC Accessories
                 </Link>
                 <Link to="/about" className="text-primary hover:underline">
                   About Us
@@ -69,31 +69,4 @@ const NotFound = () => {
             
             <div className="mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground mb-4">
-                Need help? Contact our support team:
-              </p>
-              <div className="flex justify-center gap-4">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/contact">
-                    <Phone className="mr-2 h-4 w-4" />
-                    (210) 939-1115
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="sm" asChild>
-                  <EmailObfuscator 
-                    email="support@alperrefrigas.com"
-                    className="flex items-center"
-                  >
-                    <Mail className="mr-2 h-4 w-4" />
-                    Email Support
-                  </EmailObfuscator>
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </>
-  );
-};
-
-export default NotFound;
+           
