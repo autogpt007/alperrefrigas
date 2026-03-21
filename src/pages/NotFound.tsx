@@ -22,6 +22,7 @@ const NotFound = () => {
         title="Page Not Found - 404 Error | Alper Refrigerants"
         description="The page you're looking for doesn't exist. Find professional refrigerant products and HVAC solutions at Alper Refrigerants."
         canonicalUrl="/404"
+        noIndex={true}
       />
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center px-4">
         <Card className="max-w-2xl w-full">
@@ -68,5 +69,4 @@ const NotFound = () => {
             </div>
             
             <div className="mt-6 pt-6 border-t">
-              <p className="text-sm text-muted-foreground mb-4">
-           
+              <p className="text-sm text-muted-foregroun
