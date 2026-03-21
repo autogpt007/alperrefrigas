@@ -72,7 +72,7 @@ const Health = () => {
         description="Real-time system health monitoring for database connectivity, performance metrics, and infrastructure status."
         keywords="system health, database monitoring, infrastructure status, postgres health"
         canonicalUrl="/health"
-        noIndex
+        robotsContent="noindex, nofollow"
       />
 
       <div className="min-h-screen bg-background py-16">
