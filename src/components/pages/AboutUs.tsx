@@ -123,7 +123,7 @@ const AboutUs = () => {
         "postalCode": "33179",
         "addressCountry": "US"
       },
-      "telephone": "+1-409-995-3623",
+      "telephone": "+1-787-965-8975",
       "email": "sales@alperrefrigas.com",
       "specialty": [
         "HFC Refrigerant Distribution",
@@ -195,7 +195,7 @@ const AboutUs = () => {
                 </div>
                 <div className="flex items-center gap-2 text-blue-200 mb-1">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <a href="tel:+14099953623" className="hover:text-white transition-colors">+1-409-995-3623</a>
+                  <a href="tel:+17879658975" className="hover:text-white transition-colors">+1-787-965-8975</a>
                 </div>
                 <div className="flex items-center gap-2 text-blue-200">
                   <Mail className="h-4 w-4 flex-shrink-0" />

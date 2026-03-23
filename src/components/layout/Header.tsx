@@ -55,7 +55,7 @@ const Header = () => {
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distributor',
-        main_phone: settingsMap.main_phone || '1-409-995-3623',
+        main_phone: settingsMap.main_phone || '1-787-965-8975',
         header_email: settingsMap.header_email || 'info@alperrefrigas.com'
       };
     },
