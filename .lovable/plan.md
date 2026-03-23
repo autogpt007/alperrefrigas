@@ -1,49 +1,39 @@
 
 
-## Plan: Wire Up Apex SEO Redirects
+## Plan: Update Phone Number Site-Wide (409-995-3623 → 787-965-8975)
 
-### Context
-The `apex-seo-config.json` defines three 301 redirects that are **not currently active** anywhere:
+### Summary
+Replace every occurrence of the old phone number `409-995-3623` with `787-965-8975` across all 11 source files plus update the database `site_settings` record. This is a straightforward find-and-replace with format matching.
 
-| From | To |
-|------|-----|
-| `/products/air-conditioners` | `/products/accessories` |
-| `/freon-wholesale` | `/products` |
-| `/shipping` | `/shipping-policy` |
+### Files to Update
 
-These need to work at **two levels**: Netlify (server-side, for search engine crawlers) and React Router (client-side, for SPA navigation).
+**1. Database migration** — Update `site_settings.main_phone` to `1-787-965-8975`
 
-### Changes
+**2. SEO & Layout (global impact):**
+- `src/components/seo/SEOComponent.tsx` — `mainPhone` constant
+- `src/components/layout/Header.tsx` — fallback value
+- `src/components/layout/Footer.tsx` — fallback values (2 occurrences)
 
-**1. Update `public/_redirects`** — Add the three Apex SEO redirects as 301s **before** the SPA catch-all rule:
+**3. Page components (hardcoded phone numbers):**
+- `src/components/pages/ContactUs.tsx` — JSON-LD structured data + visible text (3 occurrences)
+- `src/components/pages/AboutUs.tsx` — JSON-LD + visible link (2 occurrences)
+- `src/components/pages/Certifications.tsx` — visible link + text (2 occurrences)
+- `src/components/pages/TermsOfService.tsx` — banner + contact section (2 occurrences)
+- `src/components/pages/PrivacyPolicy.tsx` — banner + contact section (2 occurrences)
+- `src/components/pages/ShippingPolicy.tsx` — banner + contact section (2 occurrences)
+- `src/components/pages/PaymentInformation.tsx` — banner + contact section (2 occurrences)
+- `src/pages/NotFound.tsx` — tel: link + display text
 
-```text
-/products/air-conditioners /products/accessories 301!
-/freon-wholesale /products 301!
-/shipping /shipping-policy 301!
-```
+### Format Mapping
+| Old format | New format |
+|---|---|
+| `+1-409-995-3623` | `+1-787-965-8975` |
+| `1-409-995-3623` | `1-787-965-8975` |
+| `+1 (409) 995-3623` | `+1 (787) 965-8975` |
+| `tel:+14099953623` | `tel:+17879658975` |
 
-These must appear before the `/* /index.html 200` line so Netlify processes them first.
-
-**2. Update `src/components/seo/MetaRedirects.tsx`** — Add the same three paths to a new `seoRedirects` map so client-side SPA navigation also performs the redirect:
-
-```text
-'/products/air-conditioners' → '/products/accessories'
-'/freon-wholesale' → '/products'
-'/shipping' → '/shipping-policy'
-```
-
-**3. Update `src/App.tsx`** — Replace the three existing route components with `<Navigate>` redirects:
-- `/freon-wholesale` → `<Navigate to="/products" replace />`
-- `/products/air-conditioners` → `<Navigate to="/products/accessories" replace />`
-- `/shipping` → `<Navigate to="/shipping-policy" replace />`
-
-This ensures React Router itself performs the redirect even if MetaRedirects doesn't fire fast enough.
-
-**4. Clean up (optional)** — The `FreonWholesalePage` and `AirConditionersPage` imports can be removed from `App.tsx` if they are no longer referenced elsewhere (the `/shipping` route already pointed to `ShippingCalculator`, not `ShippingPolicy`, so that's a genuine content redirect).
-
-### What This Achieves
-- **SEO crawlers** hitting the production Netlify site get proper 301 responses (link equity preserved)
-- **SPA users** navigating client-side get instant redirects via React Router
-- **Apex SEO config** is now fully implemented, not just a static file
+### SEO Preservation
+- All JSON-LD structured data telephone fields updated consistently
+- `site_settings` DB record updated so Header/Footer dynamic fetches show the new number immediately
+- No URL changes, no content restructuring — rankings unaffected
 
