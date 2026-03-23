@@ -162,7 +162,7 @@ const Certifications = () => {
                 </div>
                 <div className="flex items-center gap-2 text-blue-200 mb-1">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <a href="tel:+14099953623" className="hover:text-white transition-colors">+1-409-995-3623</a>
+                  <a href="tel:+17879658975" className="hover:text-white transition-colors">+1-787-965-8975</a>
                 </div>
                 <div className="flex items-center gap-2 text-blue-200">
                   <Mail className="h-4 w-4 flex-shrink-0" />
@@ -499,7 +499,7 @@ const Certifications = () => {
                 </p>
                 <ul className="text-green-800 mt-2 space-y-1">
                   <li>📧 Email: certifications@alperrefrigas.com</li>
-                  <li>📞 Phone: +1-409-995-3623</li>
+                  <li>📞 Phone: +1-787-965-8975</li>
                   <li>🕒 Available: Monday-Friday, 8AM-6PM EST</li>
                 </ul>
               </div>
