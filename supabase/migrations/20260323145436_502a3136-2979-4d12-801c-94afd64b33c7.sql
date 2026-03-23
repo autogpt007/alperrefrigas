@@ -1,0 +1,1 @@
+UPDATE site_settings SET setting_value = '1-787-965-8975', updated_at = now() WHERE setting_key = 'main_phone';
