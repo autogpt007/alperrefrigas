@@ -498,14 +498,14 @@ const HomePage = () => {
 
               {/* Future innovation section - Fixed visibility */}
               <Card className="bg-white/95 border-2 border-indigo-200 backdrop-blur-sm hover:border-indigo-300 transition-all duration-300 shadow-xl">
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-                      <Zap className="h-8 w-8 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                      <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Innovation & Future-Ready Solutions</h3>
-                      <p className="text-gray-700 leading-relaxed text-lg">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Innovation & Future-Ready Solutions</h3>
+                      <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
                         Looking ahead, Alper Refrigerant continues to innovate and expand our service offerings. We're investing in advanced inventory management systems, enhanced logistics capabilities, and emerging refrigerant technologies that will define the future of HVAC and refrigeration. When you partner with Alper Refrigerant, you're not just buying refrigerants - you're gaining a strategic advantage in an evolving industry.
                       </p>
                     </div>
