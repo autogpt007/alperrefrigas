@@ -188,8 +188,8 @@ const Header = () => {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{logoSettings?.company_name || 'Alper Refrigerants'}</h1>
-              <p className="text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900 block">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
+              <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
             </div>
           </Link>
 
