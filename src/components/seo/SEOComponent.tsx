@@ -78,7 +78,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   const salesEmail = 'sales@alperrefrigas.com';
   const supportEmail = 'support@alperrefrigas.com';
   
-  const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName} - Professional Refrigerant Distributor`;
+  const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName}`;
   
   // Calculate price valid until (30 days from now for Shopping ads)
   const priceValidUntil = new Date();

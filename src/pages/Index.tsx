@@ -33,7 +33,7 @@ const Index = () => {
   return (
     <>
       <SEOComponent 
-        title="HFO Refrigerant For Sale | Bulk R-1234yf & Low GWP Solutions | Alper"
+        title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
         description="Looking for HFO refrigerant for sale? Alper Refrigerants offers EPA-certified bulk HFO-1234yf, R-454B, and R-513A. Wholesale pricing and fast nationwide shipping."
         keywords="hfo refrigerant for sale, buy hfo 1234yf, wholesale hfo refrigerants, low gwp refrigerants, bulk r-454b, r-513a supplier, hvac hfo supply"
         canonicalUrl="/"
