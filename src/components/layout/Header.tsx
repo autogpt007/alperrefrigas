@@ -420,6 +420,15 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
+              {/* Mobile-only contact info and switchers */}
+              <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-787-965-8975'}</div>
+                <div className="text-sm text-gray-600">📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</div>
+                <div className="flex items-center space-x-4 pt-2">
+                  <CurrencySwitcher />
+                  <LanguageSwitcher />
+                </div>
+              </div>
               <div className="mt-4">
                 <QuoteTypeSelector>
                   <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">

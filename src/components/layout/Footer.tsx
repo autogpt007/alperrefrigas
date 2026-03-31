@@ -205,7 +205,7 @@ const Footer = () => {
             <div className="text-sm text-gray-400 mb-4 md:mb-0">
               {t('footer.copyright', { year: currentYear })}
             </div>
-            <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm justify-center md:justify-end">
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link>
               <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.termsOfService')}</Link>
               <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund & Return Policy</Link>

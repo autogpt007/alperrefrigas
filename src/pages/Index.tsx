@@ -40,7 +40,7 @@ const Index = () => {
         structuredData={homeSchema}
       />
       <main>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center my-8 px-4">HFO Refrigerant For Sale: Bulk Distribution & Wholesale HVAC Solutions</h1>
+        <h1 className="sr-only">HFO Refrigerant For Sale: Bulk Distribution & Wholesale HVAC Solutions</h1>
         <HomePage />
       </main>
     </>
