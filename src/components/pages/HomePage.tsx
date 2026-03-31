@@ -571,16 +571,16 @@ const HomePage = () => {
               </Card>
 
               {/* Call to action */}
-              <div className="text-center pt-8">
-                <div className="inline-flex gap-4">
+              <div className="text-center pt-6 sm:pt-8">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Link to="/products">
-                    <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
+                    <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
                       <Search className="mr-2 h-5 w-5" />
                       Explore Our Products
                     </Button>
                   </Link>
                   <Link to="/contact">
-                    <Button size="lg" variant="outline" className="bg-white/5 backdrop-blur-sm border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/5 backdrop-blur-sm border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 px-8 py-4 text-lg font-semibold transition-all duration-300">
                       <ArrowRight className="mr-2 h-5 w-5" />
                       Get Expert Guidance
                     </Button>
