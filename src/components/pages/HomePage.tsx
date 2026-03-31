@@ -616,7 +616,7 @@ const HomePage = () => {
               ))}
             </div>
           ) : featuredProducts.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-8 items-stretch">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
               {featuredProducts.map((product) => (
                 <div key={product.id} className="animate-fade-in h-full">
                   <ProductCard product={product} />
