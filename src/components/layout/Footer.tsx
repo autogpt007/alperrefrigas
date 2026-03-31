@@ -171,7 +171,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="text-center mb-6">
             <h4 className="text-lg font-semibold mb-4">{t('footer.weAccept')}</h4>
-            <div className="flex justify-center items-center space-x-6 flex-wrap gap-4">
+            <div className="flex justify-center items-center flex-wrap gap-3 sm:gap-4">
               {/* Credit Cards */}
               <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-xs">VISA</span>
