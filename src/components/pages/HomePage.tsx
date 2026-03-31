@@ -281,22 +281,22 @@ const HomePage = () => {
                   </Link>
             </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mt-10 sm:mt-16">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-400 text-shadow-md">500+</div>
-                  <div className="text-enhanced-secondary font-medium">Products Available</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-cyan-400 text-shadow-md">500+</div>
+                  <div className="text-enhanced-secondary font-medium text-sm sm:text-base">Products Available</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400 text-shadow-md">24/7</div>
-                  <div className="text-enhanced-secondary font-medium">Customer Support</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-blue-400 text-shadow-md">24/7</div>
+                  <div className="text-enhanced-secondary font-medium text-sm sm:text-base">Customer Support</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-400 text-shadow-md">48hr</div>
-                  <div className="text-enhanced-secondary font-medium">Fast Shipping</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-purple-400 text-shadow-md">48hr</div>
+                  <div className="text-enhanced-secondary font-medium text-sm sm:text-base">Fast Shipping</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-400 text-shadow-md">EPA</div>
-                  <div className="text-enhanced-secondary font-medium">Certified</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-green-400 text-shadow-md">EPA</div>
+                  <div className="text-enhanced-secondary font-medium text-sm sm:text-base">Certified</div>
                 </div>
               </div>
           </div>
