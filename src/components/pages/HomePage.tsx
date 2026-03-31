@@ -648,7 +648,7 @@ const HomePage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-4 sm:p-6 md:p-8 rounded-xl border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300">
-              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">EPA Certified Excellence</h3>
