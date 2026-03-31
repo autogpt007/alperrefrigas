@@ -398,23 +398,8 @@ const SEOComponent: React.FC<SEOProps> = ({
       {/* Canonical URL */}
       <link rel="canonical" href={`${siteUrl}${canonicalUrl || ''}`} />
       
-      {/* Hreflang Tags for Multi-Region SEO Targeting */}
-      <link rel="alternate" hrefLang="en-US" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-GB" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-AU" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-CA" href={`${siteUrl}${canonicalUrl || ''}`} />
-      {/* EU Countries - English content, Euro currency */}
-      <link rel="alternate" hrefLang="en-DE" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-FR" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-IT" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-ES" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-NL" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-BE" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-AT" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-PT" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-IE" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-FI" href={`${siteUrl}${canonicalUrl || ''}`} />
-      <link rel="alternate" hrefLang="en-GR" href={`${siteUrl}${canonicalUrl || ''}`} />
+      {/* Hreflang Tags - Single language, single URL */}
+      <link rel="alternate" hrefLang="en" href={`${siteUrl}${canonicalUrl || ''}`} />
       <link rel="alternate" hrefLang="x-default" href={`${siteUrl}${canonicalUrl || ''}`} />
       
       {/* Open Graph Tags */}
