@@ -463,13 +463,13 @@ const HomePage = () => {
 
               {/* Environmental responsibility */}
               <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-teal-500/20 backdrop-blur-sm hover:border-teal-400/40 transition-all duration-300">
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                      <Globe className="h-8 w-8 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                      <Globe className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Environmental Stewardship</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">Environmental Stewardship</h3>
                       <p className="text-gray-100 leading-relaxed">
                         Environmental responsibility drives our operations. We maintain comprehensive recycling programs for used refrigerants, partner with certified reclamation facilities, and continuously invest in cleaner, more sustainable refrigerant technologies. Our commitment to environmental stewardship helps our customers meet their sustainability goals while maintaining operational efficiency.
                       </p>
