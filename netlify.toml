@@ -1,3 +1,10 @@
+[[plugins]]
+  package = "@netlify/plugin-prerender"
+
+  [plugins.inputs]
+    prerenderToken = ""
+    botHeaderKey = "X-Prerender"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
