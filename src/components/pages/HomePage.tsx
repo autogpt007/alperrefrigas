@@ -304,7 +304,7 @@ const HomePage = () => {
       </div>
 
       {/* SEO Content Section */}
-      <section className="py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
+      <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-xl"></div>
@@ -315,15 +315,15 @@ const HomePage = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
             {/* Header section with visual elements */}
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full mb-6 shadow-lg shadow-cyan-500/25">
-                <Building2 className="h-10 w-10 text-white" />
+            <div className="text-center mb-10 sm:mb-16">
+              <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full mb-4 sm:mb-6 shadow-lg shadow-cyan-500/25">
+                <Building2 className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
                 Professional Wholesale Refrigerant Distributor
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-6 rounded-full"></div>
-              <p className="text-xl text-enhanced-secondary max-w-3xl mx-auto">
+              <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 mx-auto mb-4 sm:mb-6 rounded-full"></div>
+              <p className="text-base sm:text-xl text-enhanced-secondary max-w-3xl mx-auto">
                 Trusted by thousands of HVAC professionals across North America
               </p>
             </div>
