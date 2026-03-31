@@ -152,32 +152,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       }
     });
 
-    // Add relevant external links for SEO and user value
-    const addExternalLinks = () => {
-      const textNodes = tempDiv.querySelectorAll('p, li');
-      textNodes.forEach(node => {
-        let html = node.innerHTML;
-        
-        // Add EPA links
-        if (html.includes('EPA') && !html.includes('href')) {
-          html = html.replace(/\bEPA\b/g, '<a href="https://www.epa.gov/section608" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/50 hover:decoration-cyan-300">EPA</a>');
-        }
-        
-        // Add HVAC industry links
-        if ((html.includes('HVAC') || html.includes('air conditioning')) && !html.includes('href')) {
-          html = html.replace(/\bHVAC\b/g, '<a href="https://www.acca.org/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/50 hover:decoration-cyan-300">HVAC</a>');
-        }
-        
-        // Add refrigerant industry authority links
-        if (html.includes('refrigerant safety') || html.includes('ASHRAE')) {
-          html = html.replace(/\bASHRAE\b/g, '<a href="https://www.ashrae.org/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/50 hover:decoration-cyan-300">ASHRAE</a>');
-        }
-        
-        node.innerHTML = html;
-      });
-    };
-    
-    addExternalLinks();
+    // External auto-linking removed: EPA, ACCA, ASHRAE sites return 403 to crawlers
 
     // Add structured content sections for better SEO
     const finalContent = tempDiv.innerHTML;
