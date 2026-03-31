@@ -413,8 +413,8 @@ const HomePage = () => {
               {/* Two-column expertise section */}
               <div className="grid md:grid-cols-2 gap-8">
                 <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-green-500/20 backdrop-blur-sm hover:border-green-400/40 transition-all duration-300">
-                  <CardContent className="p-8">
-                    <div className="flex items-center gap-4 mb-6">
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                     <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                       <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
                         <Users className="h-6 w-6 text-white" />
                       </div>
