@@ -190,7 +190,7 @@ const CryptoPaymentPage = () => {
   return (
     <>
       <SEOComponent 
-        title="Complete Your Crypto Payment - FrigidFlow"
+        title="Complete Your Crypto Payment | Alper"
         description="Complete your cryptocurrency payment securely"
         canonicalUrl="/crypto-payment"
       />

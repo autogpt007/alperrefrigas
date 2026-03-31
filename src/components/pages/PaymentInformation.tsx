@@ -7,7 +7,7 @@ const PaymentInformation = () => {
   return (
     <>
       <SEOComponent
-        title="Payment Information - Alper Refrigerants | Accepted Payment Methods"
+        title="Payment Methods | Alper Refrigerants"
         description="Complete payment information for refrigerant orders. Learn about accepted payment methods, wire transfer instructions, and payment terms for HVAC contractors and wholesale buyers."
         keywords="refrigerant payment methods, wholesale payment terms, wire transfer, HVAC supplier payments, B2B payment options"
         canonicalUrl="/payment-info"

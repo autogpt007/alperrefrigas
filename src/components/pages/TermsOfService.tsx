@@ -8,7 +8,7 @@ const TermsOfService = () => {
   return (
     <>
       <SEOComponent
-        title="Terms of Service - Alper Refrigerants Professional Refrigerant Distribution"
+        title="Terms of Service | Alper Refrigerants"
         description="Complete terms of service for refrigerant purchases. EPA compliance requirements, shipping terms, and conditions for HFC, HFO, and natural refrigerant sales."
         keywords="terms of service, refrigerant sales terms, EPA compliance, HVAC contractor terms, refrigerant distributor conditions"
         canonicalUrl="/terms"

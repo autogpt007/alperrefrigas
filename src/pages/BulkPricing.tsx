@@ -24,7 +24,7 @@ const BulkPricing = () => {
   return (
     <>
       <SEOComponent
-        title="Bulk Refrigerant Pricing - Container Loads & Wholesale Quotes | Alper Refrigerants"
+        title="Bulk Refrigerant Pricing | Container Loads | Alper"
         description="Get competitive bulk pricing on 20ft/40ft container loads of R-410A, R-134a, R-22 refrigerants. Volume discounts up to 25% for HVAC contractors. Request wholesale quote today!"
         keywords="bulk refrigerant pricing, container load refrigerant, wholesale refrigerant quotes, volume discounts refrigerant, HVAC contractor pricing, bulk R-410A, bulk R-134a, refrigerant container pricing"
         canonicalUrl="/bulk-pricing"

@@ -86,7 +86,7 @@ const ShippingCalculator = () => {
   return (
     <>
       <SEOComponent
-        title="Refrigerant Shipping Calculator - International Rates & HazMat Compliance | Alper Refrigerants"
+        title="Shipping Calculator | HazMat Rates | Alper"
         description="Calculate shipping costs for refrigerant deliveries worldwide. Check HazMat compliance requirements, transit times, and EPA/F-Gas regulations. Free shipping thresholds for bulk orders."
         keywords="refrigerant shipping calculator, hazmat shipping rates, international refrigerant delivery, EPA shipping compliance, F-Gas shipping requirements, bulk refrigerant shipping"
         canonicalUrl="/shipping"

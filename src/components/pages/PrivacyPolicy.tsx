@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Privacy Policy - Alper Refrigerants Professional Refrigerant Distribution"
+        title="Privacy Policy | Alper Refrigerants"
         description="Comprehensive privacy policy for Alper Chemical Group refrigerant distribution services. Learn how we protect your personal information and comply with EPA regulations for refrigerant sales."
         keywords="privacy policy, refrigerant sales, EPA compliance, data protection, HVAC distributor privacy"
         canonicalUrl="/privacy"

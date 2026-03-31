@@ -19,32 +19,32 @@ const ProductCategory = () => {
   const getCategoryData = (cat: string) => {
     const categoryData: Record<string, { title: string; description: string; keywords: string }> = {
       'hfc': {
-        title: 'Buy HFC Refrigerants Wholesale - R-410A, R-134a, R-404A Bulk Supply | Alper Refrigerants',
+        title: 'HFC Refrigerants | R-410A, R-134a Bulk | Alper',
         description: '⭐ Shop HFC refrigerants at wholesale prices. R-410A, R-134a, R-404A, R-407C bulk supply. EPA certified, 99.9% purity guarantee, MOQ 40 cylinders. Same-day shipping from TX, FL, CA.',
         keywords: 'HFC refrigerants wholesale, R-410A bulk, R-134a wholesale, R-404A distributor, R-407C bulk pricing, hydrofluorocarbon refrigerants, EPA certified HFC'
       },
       'hfo': {
-        title: 'HFO Low-GWP Refrigerants - R-1234yf, R-1234ze Wholesale Distribution | Alper Refrigerants',
+        title: 'HFO Refrigerants | R-1234yf Wholesale | Alper',
         description: '🌱 Next-generation HFO refrigerants with ultra-low global warming potential. R-1234yf, R-1234ze, R-513A wholesale. Environmental compliance solutions for contractors.',
         keywords: 'HFO refrigerants, R-1234yf wholesale, R-1234ze bulk, hydrofluoroolefin, low GWP refrigerants, environmental refrigerants, R-513A distributor'
       },
       'natural': {
-        title: 'Natural Refrigerants - R-290 Propane, R-600a, R-744 CO2 Wholesale | Alper Refrigerants',
+        title: 'Natural Refrigerants | R-290, R-744 | Alper',
         description: '🌿 Eco-friendly natural refrigerants for sustainable HVAC. R-290 propane, R-600a isobutane, R-744 CO2 wholesale. Zero ODP, ultra-low GWP alternatives.',
         keywords: 'natural refrigerants, R-290 propane wholesale, R-600a isobutane, R-744 CO2 refrigerant, hydrocarbon refrigerants, eco-friendly HVAC, zero ODP'
       },
       'automotive': {
-        title: 'Automotive AC Refrigerants - R-134a, R-1234yf Wholesale for Technicians | Alper Refrigerants',
+        title: 'Automotive Refrigerants | R-134a, R-1234yf | Alper',
         description: '🚗 Professional automotive A/C refrigerants for certified technicians. R-134a, R-1234yf wholesale pricing. EPA 609 compliant, bulk discounts for auto shops.',
         keywords: 'automotive refrigerants, R-134a automotive, R-1234yf car AC, mobile AC refrigerant, automotive air conditioning, EPA 609 certified, auto shop supplies'
       },
       'commercial': {
-        title: 'Commercial HVAC Refrigerants - Supermarket & Large System Solutions | Alper Refrigerants',
+        title: 'Commercial HVAC Refrigerants | Bulk | Alper',
         description: '🏢 Commercial-grade refrigerants for large HVAC systems. Supermarket refrigeration, chillers, rooftop units. Container-load pricing for facility managers.',
         keywords: 'commercial refrigerants, supermarket refrigeration, large HVAC systems, commercial chillers, rooftop AC refrigerant, facility management, bulk commercial'
       },
       'industrial': {
-        title: 'Industrial Refrigerants - Process Cooling & Manufacturing Solutions | Alper Refrigerants',
+        title: 'Industrial Refrigerants | Process Cooling | Alper',
         description: '🏭 Industrial refrigerants for manufacturing and process cooling. Heavy-duty applications with technical support. Container pricing and dedicated account management.',
         keywords: 'industrial refrigerants, process cooling, manufacturing refrigeration, heavy-duty HVAC, industrial cooling systems, cold storage, ammonia alternatives'
       }
