@@ -481,14 +481,14 @@ const HomePage = () => {
               {/* Emergency support callout */}
               <Card className="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-2 border-red-500/30 backdrop-blur-sm hover:border-red-400/50 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-xl"></div>
-                <CardContent className="p-8 relative z-10">
-                  <div className="flex items-center gap-6">
-                    <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25">
-                      <Clock className="h-10 w-10 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8 relative z-10">
+                  <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/25">
+                      <Clock className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                     </div>
-                    <div>
-                      <h3 className="text-3xl font-bold text-white mb-4">24/7 Emergency Support</h3>
-                      <p className="text-white text-lg leading-relaxed font-medium text-shadow-sm">
+                    <div className="text-center sm:text-left">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">24/7 Emergency Support</h3>
+                      <p className="text-white text-base sm:text-lg leading-relaxed font-medium text-shadow-sm">
                         System failures don't wait for business hours. Our emergency response team is available around the clock to provide urgent refrigerant supply and technical guidance. When critical systems are down, count on Alper Refrigerant to get you back up and running quickly.
                       </p>
                     </div>
