@@ -657,9 +657,9 @@ const HomePage = () => {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-8 rounded-xl border border-purple-500/20 hover:border-purple-400/50 transition-all duration-300">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-6">
-                <Truck className="h-8 w-8 text-white" />
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-4 sm:p-6 md:p-8 rounded-xl border border-purple-500/20 hover:border-purple-400/50 transition-all duration-300">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <Truck className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-4">Lightning Fast Delivery</h3>
               <p className="text-white leading-relaxed font-medium text-shadow-sm">
