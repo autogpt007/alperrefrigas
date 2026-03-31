@@ -8,7 +8,7 @@ const CookiePolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Cookie Policy - Alper Refrigerants Professional Refrigerant Distribution"
+        title="Cookie Policy | Alper Refrigerants"
         description="Cookie usage policy for FrigidFlow website. Learn about our cookie practices, data collection, and privacy protection for refrigerant industry professionals."
         keywords="cookie policy, website cookies, data privacy, refrigerant distributor website, tracking policy"
         canonicalUrl="/cookies"

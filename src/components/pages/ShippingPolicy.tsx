@@ -7,7 +7,7 @@ const ShippingPolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Shipping Policy - Alper Refrigerants | HazMat Refrigerant Delivery"
+        title="Shipping Policy | HazMat Delivery | Alper"
         description="Comprehensive shipping policy for refrigerant orders. Learn about processing times, transit estimates, HazMat requirements, and delivery options for EPA-certified HVAC professionals."
         keywords="refrigerant shipping, HazMat delivery, DOT compliant shipping, refrigerant freight, HVAC supply delivery, international shipping, EU F-Gas"
         canonicalUrl="/shipping-policy"

@@ -76,7 +76,7 @@ const Sitemap = () => {
   return (
     <>
       <SEOComponent
-        title="Site Map - Alper Refrigerants Professional Refrigerant Distribution"
+        title="Site Map | Alper Refrigerants"
         description="Complete navigation guide for FrigidFlow refrigerant distributor website. Find all pages, products, resources, and tools for HVAC professionals."
         keywords="sitemap, website navigation, refrigerant distributor pages, HVAC resources, EPA compliance tools"
         canonicalUrl="/sitemap"

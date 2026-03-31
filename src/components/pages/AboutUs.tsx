@@ -139,7 +139,7 @@ const AboutUs = () => {
   return (
     <>
       <SEOComponent
-        title="About Alper Refrigerants - 13+ Years Leading Turkey's Refrigerant Market | EPA Certified"
+        title="About Us | 13+ Years in Refrigerants | Alper"
         description="⭐ Established 2011. Turkey's most trusted refrigerant distributor with 13+ years experience. 500+ satisfied customers, 99.9% purity guarantee, ISO certified facility. Expert team serving HVAC professionals, contractors & industrial clients nationwide."
         keywords="about alper refrigerants, refrigerant distributor turkey history, EPA certified company, professional HVAC supplier, wholesale refrigerant company turkey, HVAC contractor supplier, refrigerant distribution services, refrigerant company since 2011"
         canonicalUrl="/about"

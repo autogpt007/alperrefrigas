@@ -224,7 +224,7 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="Alper Refrigerants - Wholesale Refrigerant Distributor | R-410A, R-134a, R-22 Bulk Supplier | EPA Certified"
+        title="Wholesale Refrigerants | R-410A, R-134a Bulk | Alper"
         description="⭐ Leading wholesale refrigerant distributor since 2020. EPA certified bulk supplier of R-410A, R-134a, R-22, R-404A with 99.9% purity guarantee. MOQ 40 cylinders. Same-day shipping from TX, FL, CA distribution centers. Professional HVAC supply partner for contractors & distributors nationwide."
         keywords="alper refrigerants, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, MOQ 40 cylinders, fast shipping, distribution centers, professional HVAC supplier"
         canonicalUrl="/"

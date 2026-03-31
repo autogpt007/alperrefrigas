@@ -223,7 +223,7 @@ const ContactUs = () => {
   return (
     <>
       <SEOComponent
-        title="Contact Alper Refrigerants - Get Wholesale Refrigerant Pricing Quote | Turkey"
+        title="Contact Us | Wholesale Refrigerant Quotes | Alper"
         description="Contact EPA-certified refrigerant experts for wholesale pricing on R-410A, R-134a, R-1234yf. Bulk quotes for HVAC contractors with 24/7 emergency support and fast shipping across North America."
         keywords="contact refrigerant distributor, wholesale refrigerant pricing, bulk refrigerant quote, HVAC contractor pricing, EPA certified refrigerant supplier contact, emergency refrigerant support"
         canonicalUrl="/contact"
