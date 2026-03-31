@@ -711,16 +711,16 @@ const HomePage = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-slate-800/50">
+      <section className="py-10 sm:py-16 md:py-20 bg-slate-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Comprehensive Refrigerant Services</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Comprehensive Refrigerant Services</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
               Beyond supply, we offer complete refrigerant lifecycle management to support your business operations and ensure regulatory compliance.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <Card className="bg-gradient-to-br from-slate-700 to-slate-600 border-cyan-500/30 hover:border-cyan-400/50 transition-all">
               <CardContent className="p-6 text-center">
                 <ThermometerSun className="h-12 w-12 text-cyan-400 mx-auto mb-4" />
