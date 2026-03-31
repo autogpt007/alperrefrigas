@@ -122,13 +122,15 @@ const Header = () => {
       <div className="container mx-auto px-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
             <span>📞 {logoSettings?.main_phone || '1-800-REFRIGERANT'}</span>
-            <span>📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</span>
+            <span className="hidden md:inline">📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <CurrencySwitcher />
-            <LanguageSwitcher />
+          <div className="flex items-center space-x-4 ml-auto">
+            <div className="hidden sm:flex items-center space-x-4">
+              <CurrencySwitcher />
+              <LanguageSwitcher />
+            </div>
             {authLoading ? (
               <div className="flex items-center space-x-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
