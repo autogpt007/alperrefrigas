@@ -332,14 +332,14 @@ const HomePage = () => {
             <div className="space-y-8">
               {/* Introduction card */}
               <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-cyan-500/20 backdrop-blur-sm hover:border-cyan-400/40 transition-all duration-300">
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
-                      <Award className="h-8 w-8 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                      <Award className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                         <div>
-                          <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Premier Freon & Refrigerant Quality Excellence</h3>
-                          <p className="text-enhanced-secondary text-lg leading-relaxed">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 text-shadow-sm">Premier Freon & Refrigerant Quality Excellence</h3>
+                          <p className="text-enhanced-secondary text-base sm:text-lg leading-relaxed">
                             Alper Refrigerant stands as North America's premier wholesale freon and refrigerant distributor, serving HVAC professionals, contractors, and industrial facilities with the highest quality refrigerants and unmatched technical expertise. Since our founding, we've built a reputation for reliability, compliance, and innovation in the refrigeration industry.
                           </p>
                         </div>
