@@ -637,17 +637,17 @@ const HomePage = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20">
+      <section className="py-10 sm:py-16 md:py-20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Why Choose Alper Refrigerant?</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Alper Refrigerant?</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
               We're more than just a supplier - we're your strategic partner in refrigerant solutions. Here's what sets us apart in the industry.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-8 rounded-xl border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-4 sm:p-6 md:p-8 rounded-xl border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mb-6">
                 <Shield className="h-8 w-8 text-white" />
               </div>
