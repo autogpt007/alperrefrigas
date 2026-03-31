@@ -603,7 +603,7 @@ const HomePage = () => {
           </div>
 
           {loading ? (
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
               {[1, 2, 3].map((i) => (
                 <Card key={i} className="bg-gradient-to-br from-slate-800 to-slate-700 border-cyan-500/20 animate-pulse">
                   <CardContent className="p-6">
