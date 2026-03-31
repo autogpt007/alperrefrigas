@@ -146,7 +146,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <CardContent className="p-4 relative z-10 flex-1 flex flex-col">
         {/* Product Image - Larger display */}
-        <div className="relative mb-3 overflow-hidden rounded-lg bg-slate-700/50 h-64">
+        <div className="relative mb-3 overflow-hidden rounded-lg bg-slate-700/50 h-48 sm:h-56 md:h-64">
           <img
             src={product.image}
             alt={product.name}

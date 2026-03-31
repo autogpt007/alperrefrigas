@@ -171,7 +171,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="text-center mb-6">
             <h4 className="text-lg font-semibold mb-4">{t('footer.weAccept')}</h4>
-            <div className="flex justify-center items-center space-x-6 flex-wrap gap-4">
+            <div className="flex justify-center items-center flex-wrap gap-3 sm:gap-4">
               {/* Credit Cards */}
               <div className="bg-white rounded-lg p-2 w-12 h-8 flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-xs">VISA</span>
@@ -205,7 +205,7 @@ const Footer = () => {
             <div className="text-sm text-gray-400 mb-4 md:mb-0">
               {t('footer.copyright', { year: currentYear })}
             </div>
-            <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm justify-center md:justify-end">
               <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link>
               <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">{t('footer.termsOfService')}</Link>
               <Link to="/refund-policy" className="text-gray-400 hover:text-white transition-colors">Refund & Return Policy</Link>

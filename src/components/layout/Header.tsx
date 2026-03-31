@@ -122,13 +122,15 @@ const Header = () => {
       <div className="container mx-auto px-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
             <span>📞 {logoSettings?.main_phone || '1-800-REFRIGERANT'}</span>
-            <span>📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</span>
+            <span className="hidden md:inline">📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <CurrencySwitcher />
-            <LanguageSwitcher />
+          <div className="flex items-center space-x-4 ml-auto">
+            <div className="hidden sm:flex items-center space-x-4">
+              <CurrencySwitcher />
+              <LanguageSwitcher />
+            </div>
             {authLoading ? (
               <div className="flex items-center space-x-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
@@ -186,8 +188,8 @@ const Header = () => {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{logoSettings?.company_name || 'Alper Refrigerants'}</h1>
-              <p className="text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900 block">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
+              <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
             </div>
           </Link>
 
@@ -418,6 +420,15 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
+              {/* Mobile-only contact info and switchers */}
+              <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-787-965-8975'}</div>
+                <div className="text-sm text-gray-600">📧 {logoSettings?.header_email || 'info@alperrefrigas.com'}</div>
+                <div className="flex items-center space-x-4 pt-2">
+                  <CurrencySwitcher />
+                  <LanguageSwitcher />
+                </div>
+              </div>
               <div className="mt-4">
                 <QuoteTypeSelector>
                   <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
