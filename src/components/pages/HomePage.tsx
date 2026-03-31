@@ -516,18 +516,18 @@ const HomePage = () => {
               {/* How to Order Section */}
               <Card className="bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-2 border-green-500/30 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-xl"></div>
-                <CardContent className="p-8 relative z-10">
-                  <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full mb-6 shadow-lg shadow-green-500/25">
-                      <Package className="h-10 w-10 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8 relative z-10">
+                  <div className="text-center mb-6 sm:mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full mb-4 sm:mb-6 shadow-lg shadow-green-500/25">
+                      <Package className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                     </div>
-                    <h3 className="text-3xl font-bold text-white mb-4">How to Order</h3>
-                    <p className="text-white text-lg font-medium text-shadow-sm">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">How to Order</h3>
+                    <p className="text-white text-base sm:text-lg font-medium text-shadow-sm">
                       Simple steps to get your refrigerants delivered fast
                     </p>
                   </div>
                   
-                  <div className="grid md:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
                     <div className="text-center">
                       <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mb-4 shadow-lg">
                         <Search className="h-8 w-8 text-white" />
