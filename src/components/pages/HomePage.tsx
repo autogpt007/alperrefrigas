@@ -349,13 +349,13 @@ const HomePage = () => {
 
               {/* Product range highlight */}
               <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-blue-500/20 backdrop-blur-sm hover:border-blue-400/40 transition-all duration-300">
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                      <Package className="h-8 w-8 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <Package className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Comprehensive Freon & Refrigerant Inventory</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 text-shadow-sm">Comprehensive Freon & Refrigerant Inventory</h3>
                       <p className="text-enhanced-secondary leading-relaxed mb-4">
                         Our comprehensive freon and refrigerant inventory includes next-generation low-GWP refrigerants that meet the most stringent EPA regulations and environmental standards. Every freon product in our catalog undergoes rigorous quality testing to ensure optimal performance and purity levels that exceed industry benchmarks.
                       </p>
