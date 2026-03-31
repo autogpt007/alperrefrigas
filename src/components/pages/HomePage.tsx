@@ -427,9 +427,9 @@ const HomePage = () => {
                 </Card>
 
                 <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-orange-500/20 backdrop-blur-sm hover:border-orange-400/40 transition-all duration-300">
-                  <CardContent className="p-8">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                         <Truck className="h-6 w-6 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-white">Nationwide Distribution</h3>
