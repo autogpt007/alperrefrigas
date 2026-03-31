@@ -443,13 +443,13 @@ const HomePage = () => {
 
               {/* Quality assurance section */}
               <Card className="bg-gradient-to-br from-slate-800/95 to-slate-700/95 border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300">
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                      <CheckCircle className="h-8 w-8 text-white" />
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                      <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white mb-4">Uncompromising Quality Assurance</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">Uncompromising Quality Assurance</h3>
                       <p className="text-gray-100 leading-relaxed mb-4">
                         Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose Alper Refrigerant products, you're getting products that perform consistently and reliably in the field.
                       </p>
