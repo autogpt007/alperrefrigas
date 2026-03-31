@@ -593,11 +593,11 @@ const HomePage = () => {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-20 bg-slate-800/50">
+      <section className="py-10 sm:py-16 md:py-20 bg-slate-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Featured Refrigerants</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Featured Refrigerants</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
               Discover our most popular refrigerants trusted by HVAC professionals worldwide. All products are EPA approved and ready for immediate shipping.
             </p>
           </div>
