@@ -199,7 +199,7 @@ const OrderConfirmation = () => {
     return (
       <>
         <SEOComponent
-          title="Order Confirmation - Processing Your Order"
+          title="Order Processing | Alper"
           description="Your refrigerant order is being processed. Track your order status and get updates on delivery."
           keywords="order confirmation, refrigerant order tracking, HVAC order status, order processing"
           canonicalUrl="/order-confirmation"
