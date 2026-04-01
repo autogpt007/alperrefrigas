@@ -24,6 +24,8 @@ import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
 import ProductCategory from "./components/pages/ProductCategory";
+import R454BLandingPage from "./components/pages/R454BLandingPage";
+import HFOLandingPage from "./components/pages/HFOLandingPage";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
 import CartPage from "./components/pages/CartPage";
