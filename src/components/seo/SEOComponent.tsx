@@ -255,23 +255,10 @@ const SEOComponent: React.FC<SEOProps> = ({
     }))
   } : null;
 
-  // Merchant Return Policy (standalone for pages without product)
-  const merchantReturnPolicy = {
-    "@context": "https://schema.org",
-    "@type": "MerchantReturnPolicy",
-    "name": "Alper Refrigerants Return Policy",
-    "applicableCountry": "US",
-    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-    "merchantReturnDays": 30,
-    "returnMethod": "https://schema.org/ReturnByMail",
-    "returnFees": "https://schema.org/RestockingFees",
-    "url": `${siteUrl}/refund-policy`
-  };
-
-  // Enhanced Organization structured data with LocalBusiness
+  // Enhanced Organization structured data
   const organizationData = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "LocalBusiness"],
+    "@type": "Organization",
     "name": businessName,
     "legalName": legalName,
     "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
