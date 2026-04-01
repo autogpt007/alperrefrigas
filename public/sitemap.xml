@@ -225,6 +225,22 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- R-454B Landing Page -->
+  <url>
+    <loc>https://alperrefrigas.com/products/r-454b</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- HFO Refrigerants Landing Page -->
+  <url>
+    <loc>https://alperrefrigas.com/products/hfo-refrigerants</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Individual Product Pages -->
   <!-- Note: Product pages are dynamically generated via the admin sitemap generator -->
   <!-- which includes all current products with proper SEO-friendly URLs -->
