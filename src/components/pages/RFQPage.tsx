@@ -129,7 +129,7 @@ const RFQPage = () => {
   return (
     <>
       <SEOComponent
-        title="Request for Quote - Wholesale Refrigerant Pricing"
+        title="Wholesale Refrigerant Quote | Alper"
         description="Get custom pricing on bulk refrigerants. Professional wholesale quotes for HVAC contractors, distributors, and commercial customers."
         keywords="refrigerant quote, wholesale pricing, bulk refrigerant pricing, HVAC contractor pricing, commercial refrigerant quote, RFQ refrigerants"
         canonicalUrl="/rfq"

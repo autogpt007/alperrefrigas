@@ -51,7 +51,7 @@ const ProductCategory = () => {
     };
     
     return categoryData[cat] || {
-      title: 'Professional Refrigerant Products Catalog | Alper Refrigerants',
+      title: 'Refrigerant Products Catalog | Alper',
       description: 'Browse our complete refrigerant catalog. HFC, HFO, natural refrigerants with EPA certification. Wholesale pricing, MOQ 40 cylinders, expert technical support.',
       keywords: 'refrigerant products, HVAC refrigerants, professional distribution, EPA certified, wholesale pricing'
     };

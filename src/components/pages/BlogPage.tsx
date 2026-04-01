@@ -74,7 +74,7 @@ const BlogPage = () => {
   return (
     <>
       <Helmet>
-        <title>Refrigerant Industry News & HVAC Updates | Alper Refrigerants Blog</title>
+        <title>Refrigerant News & HVAC Updates | Alper</title>
         <meta name="description" content="Stay informed with refrigerant industry news, EPA regulation updates, HVAC technology trends, and expert insights from Alper Refrigerants. Professional resources for contractors." />
         <meta name="keywords" content="refrigerant news, HVAC industry updates, EPA regulations, refrigerant technology, contractor resources, industry insights" />
         <link rel="canonical" href="https://alperrefrigas.com/blog" />

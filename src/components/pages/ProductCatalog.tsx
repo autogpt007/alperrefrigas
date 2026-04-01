@@ -390,15 +390,15 @@ const ProductCatalog = () => {
   // Generate unique SEO title based on product type and category for no duplicates
   const getSEOTitle = () => {
     if (productType === 'refrigerant') {
-      return `${getPageTitle()} - ${getCategoryDisplayName()} | EPA Certified Bulk Refrigerants | Alper Refrigerants`;
+      return `${getCategoryDisplayName()} Refrigerants | Alper`;
     }
     if (productType === 'accessory') {
-      return `${getPageTitle()} - ${getCategoryDisplayName()} | Professional HVAC Equipment | Alper Refrigerants`;
+      return `HVAC Accessories & Tools | Alper`;
     }
     if (productType === 'air_conditioner') {
-      return `${getPageTitle()} - ${getCategoryDisplayName()} | Container Pricing Available | Alper Refrigerants`;
+      return `Wholesale Air Conditioners | Alper`;
     }
-    return `${getPageTitle()} | MOQ 40 Cylinders | Wholesale Bulk Orders | Alper Refrigerants`;
+    return `Wholesale Products | Alper`;
   };
 
   // Generate unique SEO description based on product type for no duplicates
