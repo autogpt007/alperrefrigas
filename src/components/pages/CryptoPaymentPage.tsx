@@ -207,6 +207,7 @@ const CryptoPaymentPage = () => {
           </Button>
 
           <div className="max-w-2xl mx-auto space-y-6">
+            <h1 className="text-2xl font-bold text-foreground">Complete Your Crypto Payment</h1>
             {/* Order Summary */}
             <Card>
               <CardHeader>
