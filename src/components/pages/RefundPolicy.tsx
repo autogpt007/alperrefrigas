@@ -8,7 +8,7 @@ const RefundPolicy = () => {
   return (
     <>
       <SEOComponent
-        title="Refund & Return Policy - Customer Protection"
+        title="Refund & Return Policy | Alper"
         description="Comprehensive refund and return policy for refrigerant orders. Learn about our customer protection policies and return procedures."
         keywords="refund policy, return policy, refrigerant returns, customer protection, money back guarantee, EPA compliance returns"
         canonicalUrl="/refund-policy"

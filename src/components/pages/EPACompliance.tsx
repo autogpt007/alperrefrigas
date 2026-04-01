@@ -10,7 +10,7 @@ const EPACompliance = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title="EPA Compliance - Refrigerant Regulations & Certification"
+        title="EPA Compliance & Certification | Alper"
         description="Learn about EPA 608 certification requirements, Clean Air Act compliance, and proper refrigerant handling procedures. Stay compliant with federal regulations."
         keywords="EPA 608, Clean Air Act, refrigerant certification, HVAC certification, ozone depletion, GWP regulations"
         canonicalUrl="/compliance"

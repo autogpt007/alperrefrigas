@@ -410,7 +410,7 @@ const ProductDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
-        title={`${product.name} - Premium Refrigerant | MOQ 40 Cylinders | Alper Refrigerants`}
+        title={`${product.name} | Wholesale | Alper`}
         description={enhancedDescription}
         keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`}
         canonicalUrl={canonicalUrl}

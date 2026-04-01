@@ -36,7 +36,7 @@ const AirConditionersPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Wholesale Air Conditioners - Bulk AC Units | Alper Refrigerants</title>
+        <title>Wholesale Air Conditioners | Bulk AC | Alper</title>
         <meta 
           name="description" 
           content="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. MOQ 5 units." 
