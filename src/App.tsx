@@ -24,6 +24,8 @@ import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
 import HomePage from "./components/pages/HomePage";
 import ProductCategory from "./components/pages/ProductCategory";
+import R454BLandingPage from "./components/pages/R454BLandingPage";
+import HFOLandingPage from "./components/pages/HFOLandingPage";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import ProductDetails from "./components/pages/ProductDetails";
 import CartPage from "./components/pages/CartPage";
@@ -153,9 +155,11 @@ function App() {
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
                                 <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
-                                <Route path="/products/category/:category" element={<ProductCategory />} />
-                                <Route path="/products/accessories/:category" element={<ProductCategory />} />
-                                <Route path="/products/:productSlug" element={<ProductDetails />} />
+                                 <Route path="/products/r-454b" element={<R454BLandingPage />} />
+                                 <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
+                                 <Route path="/products/category/:category" element={<ProductCategory />} />
+                                 <Route path="/products/accessories/:category" element={<ProductCategory />} />
+                                 <Route path="/products/:productSlug" element={<ProductDetails />} />
                                 <Route path="/products/:id" element={<ProductDetails />} />
                                <Route path="/cart" element={<CartPage />} />
                                <Route path="/bulk-pricing" element={<BulkPricing />} />
