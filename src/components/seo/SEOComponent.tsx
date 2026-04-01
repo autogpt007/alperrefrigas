@@ -255,23 +255,10 @@ const SEOComponent: React.FC<SEOProps> = ({
     }))
   } : null;
 
-  // Merchant Return Policy (standalone for pages without product)
-  const merchantReturnPolicy = {
-    "@context": "https://schema.org",
-    "@type": "MerchantReturnPolicy",
-    "name": "Alper Refrigerants Return Policy",
-    "applicableCountry": "US",
-    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-    "merchantReturnDays": 30,
-    "returnMethod": "https://schema.org/ReturnByMail",
-    "returnFees": "https://schema.org/RestockingFees",
-    "url": `${siteUrl}/refund-policy`
-  };
-
-  // Enhanced Organization structured data with LocalBusiness
+  // Enhanced Organization structured data
   const organizationData = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "LocalBusiness"],
+    "@type": "Organization",
     "name": businessName,
     "legalName": legalName,
     "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
@@ -279,7 +266,6 @@ const SEOComponent: React.FC<SEOProps> = ({
     "logo": `${siteUrl}/logo.svg`,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
     "foundingDate": "2020",
-    "priceRange": "$$$",
     "serviceArea": [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -370,7 +356,6 @@ const SEOComponent: React.FC<SEOProps> = ({
     ],
     "keywords": "refrigerant, wholesale, EPA approved, HVAC, R134a, R410A, R404A, R22, bulk refrigerant, industrial refrigerant, commercial refrigerant, B2B refrigerant supplier",
     "slogan": "Professional Refrigerant Solutions with Bulk Pricing and Fast Shipping",
-    "hasMerchantReturnPolicy": merchantReturnPolicy,
     "potentialAction": {
       "@type": "SearchAction",
       "target": `${siteUrl}/products?search={search_term_string}`,

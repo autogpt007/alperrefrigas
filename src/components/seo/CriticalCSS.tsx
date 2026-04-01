@@ -65,17 +65,6 @@ const CriticalCSS: React.FC = () => {
   return (
     <Helmet>
       <style type="text/css">{criticalStyles}</style>
-      <link 
-        rel="preload" 
-        href="/src/index.css" 
-        as="style" 
-        onLoad={(e) => {
-          const target = e.target as HTMLLinkElement;
-          target.onload = null;
-          target.rel = 'stylesheet';
-        }}
-      />
-      <noscript>{`<link rel="stylesheet" href="/src/index.css" />`}</noscript>
     </Helmet>
   );
 };
