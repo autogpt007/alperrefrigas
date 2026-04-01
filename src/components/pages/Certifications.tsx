@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/contexts/ProductsContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 interface Certificate {
   id: string;
