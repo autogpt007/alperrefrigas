@@ -63,7 +63,7 @@ const TestimonialsPage = () => {
   return (
     <>
       <SEOComponent
-        title="Customer Testimonials | Alper Refrigerants Reviews"
+        title="Customer Reviews | Alper Refrigerants"
         description="Read what HVAC professionals say about Alper Refrigerants. See testimonials from contractors who trust us for their refrigerant supply needs."
         keywords="customer testimonials, HVAC reviews, refrigerant supplier reviews, Alper Refrigerants feedback, contractor testimonials"
         canonicalUrl="/testimonials"
