@@ -555,6 +555,7 @@ const Certifications = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
