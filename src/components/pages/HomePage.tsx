@@ -224,13 +224,12 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="Wholesale Refrigerants | R-410A, R-134a Bulk | Alper"
-        description="⭐ Leading wholesale refrigerant distributor since 2020. EPA certified bulk supplier of R-410A, R-134a, R-22, R-404A with 99.9% purity guarantee. MOQ 40 cylinders. Same-day shipping from TX, FL, CA distribution centers. Professional HVAC supply partner for contractors & distributors nationwide."
-        keywords="alper refrigerants, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, HVAC supplies, EPA certified refrigerants, commercial refrigeration, automotive refrigerants, refrigerant bulk sales, MOQ 40 cylinders, fast shipping, distribution centers, professional HVAC supplier"
+        title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
+        description="Leading wholesale refrigerant distributor. EPA-certified bulk supplier of R-410A, R-134a, R-22, R-404A, HFO-1234yf with 99.9% purity. MOQ 40 cylinders. Same-day shipping from TX, FL, CA."
+        keywords="hfo refrigerant for sale, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, buy hfo 1234yf, EPA certified refrigerants, bulk r-454b, r-513a supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
         faq={homepageFAQ}
-        ogImage="/placeholder.svg"
         ogType="website"
       />
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">

@@ -14,6 +14,7 @@ const EPACompliance = () => {
         description="Learn about EPA 608 certification requirements, Clean Air Act compliance, and proper refrigerant handling procedures. Stay compliant with federal regulations."
         keywords="EPA 608, Clean Air Act, refrigerant certification, HVAC certification, ozone depletion, GWP regulations"
         canonicalUrl="/compliance"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "EPA Compliance", url: "/compliance" }]}
       />
 
       {/* Hero Section */}

@@ -140,7 +140,8 @@ const AboutUs = () => {
     <>
       <SEOComponent
         title="About Us | 13+ Years in Refrigerants | Alper"
-        description="⭐ Established 2011. Turkey's most trusted refrigerant distributor with 13+ years experience. 500+ satisfied customers, 99.9% purity guarantee, ISO certified facility. Expert team serving HVAC professionals, contractors & industrial clients nationwide."
+        description="Established 2011. Trusted refrigerant distributor with 13+ years experience. 500+ satisfied customers, 99.9% purity guarantee, ISO certified facility. Expert team serving HVAC professionals and contractors."
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "About Us", url: "/about" }]}
         keywords="about alper refrigerants, refrigerant distributor turkey history, EPA certified company, professional HVAC supplier, wholesale refrigerant company turkey, HVAC contractor supplier, refrigerant distribution services, refrigerant company since 2011"
         canonicalUrl="/about"
         structuredData={aboutPageStructuredData}

@@ -73,12 +73,13 @@ const BlogPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Refrigerant News & HVAC Updates | Alper</title>
-        <meta name="description" content="Stay informed with refrigerant industry news, EPA regulation updates, HVAC technology trends, and expert insights from Alper Refrigerants. Professional resources for contractors." />
-        <meta name="keywords" content="refrigerant news, HVAC industry updates, EPA regulations, refrigerant technology, contractor resources, industry insights" />
-        <link rel="canonical" href="https://alperrefrigas.com/blog" />
-      </Helmet>
+      <SEOComponent
+        title="Refrigerant News & HVAC Updates | Alper"
+        description="Stay informed with refrigerant industry news, EPA regulation updates, HVAC technology trends, and expert insights from Alper Refrigerants."
+        keywords="refrigerant news, HVAC industry updates, EPA regulations, refrigerant technology, contractor resources, industry insights"
+        canonicalUrl="/blog"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Blog", url: "/blog" }]}
+      />
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4">

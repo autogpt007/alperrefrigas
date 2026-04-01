@@ -67,6 +67,7 @@ const TestimonialsPage = () => {
         description="Read what HVAC professionals say about Alper Refrigerants. See testimonials from contractors who trust us for their refrigerant supply needs."
         keywords="customer testimonials, HVAC reviews, refrigerant supplier reviews, Alper Refrigerants feedback, contractor testimonials"
         canonicalUrl="/testimonials"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Testimonials", url: "/testimonials" }]}
       />
 
       <div className="min-h-screen bg-gray-50">

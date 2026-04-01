@@ -160,7 +160,7 @@ const FreonWholesalePage = () => {
         title="Bulk Freon Wholesale | R-22, R-410A, R-134a | Alper"
         description="HVAC contractor specialists. Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%, same-day shipping, EPA certified."
         keywords="bulk freon distributor contractors, R-22 R-410A R-134a wholesale, commercial refrigerant wholesale, HVAC contractor pricing, EPA certified bulk freon"
-        canonicalUrl="/freon-wholesale"
+        canonicalUrl="/products"
         structuredData={enhancedStructuredData}
         ogImage="/freon-wholesale-og.jpg"
         ogType="website"

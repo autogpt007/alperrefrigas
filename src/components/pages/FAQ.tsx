@@ -138,6 +138,7 @@ const FAQ = () => {
         keywords="refrigerant FAQ, EPA 608 certification, HFC refrigerants, HFO refrigerants, HVAC contractor questions, refrigerant compliance, bulk refrigerant pricing, hazmat shipping"
         canonicalUrl="/faq"
         structuredData={faqStructuredData}
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "FAQ", url: "/faq" }]}
       />
 
       {/* Hero Section */}

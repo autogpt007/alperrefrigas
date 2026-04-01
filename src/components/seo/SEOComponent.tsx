@@ -58,7 +58,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   description,
   keywords,
   canonicalUrl,
-  ogImage = '/placeholder.svg',
+  ogImage = '/logo.svg',
   ogType = 'website',
   structuredData,
   robotsContent,
