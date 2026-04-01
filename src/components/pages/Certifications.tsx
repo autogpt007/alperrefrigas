@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/contexts/ProductsContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 interface Certificate {
   id: string;
@@ -147,6 +148,14 @@ const Certifications = () => {
   }
 
   return (
+    <>
+    <SEOComponent
+      title="EPA Certifications & Compliance | Alper"
+      description="View our EPA Section 608 certifications, ISO accreditations, and authorized distributor agreements. Independently verifiable compliance documentation for HVAC professionals."
+      keywords="EPA certification, refrigerant compliance, ISO certified, AHRI membership, authorized distributor, HVAC certification, Section 608"
+      canonicalUrl="/certifications"
+      breadcrumbs={[{ name: "Home", url: "/" }, { name: "Certifications", url: "/certifications" }]}
+    />
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Business Identity Banner */}
@@ -546,6 +555,7 @@ const Certifications = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
