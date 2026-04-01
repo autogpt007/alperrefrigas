@@ -1,42 +1,44 @@
 
 
-## Enable Netlify Prerendering for SEO Crawlers
+## Fix All 6 SEMrush Errors
 
-### Problem
-The site is a React SPA — crawlers that don't execute JavaScript see an empty HTML shell, causing Apex and SEMrush to report missing titles, meta descriptions, and canonicals.
+### Priority Order (by ranking impact)
 
-### Solution
-Enable the **Netlify Prerender plugin**, which intercepts bot requests and serves a fully-rendered HTML snapshot via Prerender.io's free tier (up to 1,000 pages/month).
+**1. Fix 91 broken CSS references**
+- `src/components/seo/CriticalCSS.tsx`: Remove the `/src/index.css` preload and noscript fallback. Vite bundles CSS into hashed `/assets/*.css` files — this source path doesn't exist in production.
 
-### Build Error
-The `aws s3 cp exit 127` error is a **transient Lovable infrastructure issue** — not caused by code. Retry publishing after this change.
+**2. Fix 85 duplicate canonicals**
+- `index.html`: Remove the hardcoded `<link rel="canonical" href="https://alperrefrigas.com/" />` — it conflicts with the page-specific canonical that `react-helmet-async` injects per page.
 
-### Changes
+**3. Fix 72 slow load speed — remove TinyMCE from public pages**
+- `index.html`: Remove the TinyMCE `<script>` tag (line 66). It's only needed in the admin panel.
+- Load TinyMCE dynamically only in admin components that use it (lazy import).
 
-**1. `netlify.toml`** — Add the prerender plugin:
-```toml
-[[plugins]]
-  package = "@netlify/plugin-prerender"
+**4. Fix 55 hreflang conflicts**
+- `index.html`: Add fallback hreflang tags matching what SEOComponent injects:
+  ```html
+  <link rel="alternate" hreflang="en" href="https://alperrefrigas.com/" />
+  <link rel="alternate" hreflang="x-default" href="https://alperrefrigas.com/" />
+  ```
+  These will be overridden by react-helmet-async per page, but provide a consistent fallback.
 
-  [plugins.inputs]
-    prerenderToken = ""
-    botHeaderKey = "X-Prerender"
-```
+**5. Fix 81 invalid structured data**
+- `src/components/seo/SEOComponent.tsx`:
+  - Change `"@type": ["Organization", "LocalBusiness"]` to just `"@type": "Organization"` (not a physical storefront)
+  - Remove the standalone `merchantReturnPolicy` object with its own `@context` from inside the Organization — it's already embedded in product offers
+  - Remove `priceRange` (only valid for LocalBusiness)
+  - Ensure `MerchantReturnPolicy` referenced in product offers doesn't have nested `@context`
 
-The empty `prerenderToken` uses Netlify's built-in bot detection (no Prerender.io account needed for basic use). For full control, sign up at prerender.io and add the token.
+**6. Fix 19 incorrect sitemap URLs**
+- `public/sitemap.xml`:
+  - Change `/shipping` → `/shipping-policy`
+  - Remove `/freon-wholesale` (redirects to `/products`, which is already listed)
+  - Change `/products/air-conditioners` → `/products/accessories`
 
-**2. `package.json`** — Add the plugin dependency:
-```
-"@netlify/plugin-prerender": "^2.0.0"
-```
-
-**3. `index.html`** — Enhance the fallback `<head>` so even pre-render-less crawlers get basic metadata:
-- Move the existing `<title>` and `<meta name="description">` to be more descriptive defaults
-- Add `<meta name="robots" content="index, follow">` as a fallback
-
-### What This Fixes
-All 7 Apex scan issues (missing title, meta description, canonical, OG tags, H1) resolve because bots now receive the fully-rendered page with all `react-helmet-async` injections applied.
-
-### Alternative (if plugin doesn't work on Lovable's build system)
-Add a `<meta name="fragment" content="!">` tag to `index.html` — this signals to Google's crawler to fetch the `#!` escaped fragment version, and modern Googlebot already renders JS natively.
+### Files Changed
+1. `src/components/seo/CriticalCSS.tsx` — remove broken preload
+2. `index.html` — remove hardcoded canonical, remove TinyMCE, add hreflang fallbacks
+3. `src/components/seo/SEOComponent.tsx` — fix structured data types
+4. `public/sitemap.xml` — fix redirect URLs
+5. Admin component(s) using TinyMCE — add dynamic import
 
