@@ -217,17 +217,9 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Freon Wholesale Page -->
+  <!-- Accessories Page -->
   <url>
-    <loc>https://alperrefrigas.com/freon-wholesale</loc>
-    <lastmod>2026-01-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Air Conditioners Page -->
-  <url>
-    <loc>https://alperrefrigas.com/products/air-conditioners</loc>
+    <loc>https://alperrefrigas.com/products/accessories</loc>
     <lastmod>2026-01-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
