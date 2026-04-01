@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Calendar, User, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import SEOComponent from '@/components/seo/SEOComponent';
 
 interface BlogPost {
   id: string;
