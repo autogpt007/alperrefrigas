@@ -266,7 +266,6 @@ const SEOComponent: React.FC<SEOProps> = ({
     "logo": `${siteUrl}/logo.svg`,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
     "foundingDate": "2020",
-    "priceRange": "$$$",
     "serviceArea": [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
