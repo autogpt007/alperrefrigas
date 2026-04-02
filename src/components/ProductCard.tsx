@@ -70,9 +70,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     // Refrigerant 3-tier pricing
     const basePrice = product.price;
     switch (packageType) {
-      case '1-5 Pallets':
+      case '1-10 Pallets':
         return (basePrice + 20) * CYLINDERS_PER_PALLET * quantity;
-      case '5-10 Pallets':
+      case '10-20 Pallets':
         return (basePrice + 15) * CYLINDERS_PER_PALLET * quantity;
       case '20ft Container':
         return basePrice * CONTAINER_20FT_CYL;
