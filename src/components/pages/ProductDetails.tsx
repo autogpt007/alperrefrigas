@@ -150,8 +150,8 @@ const ProductDetails = () => {
 
   // Reset pallet quantity when packaging changes
   React.useEffect(() => {
-    if (packaging === '1-5 Pallets') setPalletQuantity(1);
-    else if (packaging === '5-10 Pallets') setPalletQuantity(5);
+    if (packaging === '1-10 Pallets') setPalletQuantity(1);
+    else if (packaging === '10-20 Pallets') setPalletQuantity(10);
   }, [packaging]);
 
   const getCurrentPrice = (): number => {
