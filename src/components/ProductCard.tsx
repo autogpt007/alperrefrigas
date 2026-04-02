@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [selectedPackaging, setSelectedPackaging] = useState(
-    product.packaging_options?.[0] || (product.product_type === 'accessory' ? 'Individual' : '1-5 Pallets')
+    product.packaging_options?.[0] || (product.product_type === 'accessory' ? 'Individual' : '1-10 Pallets')
   );
 
   const existingItem = items.find(item => item.id === product.id);
