@@ -2,7 +2,7 @@
   package = "@netlify/plugin-prerender"
 
   [plugins.inputs]
-    prerenderToken = ""
+    prerenderToken = "PRERENDER_TOKEN"
     botHeaderKey = "X-Prerender"
 
 [[redirects]]
