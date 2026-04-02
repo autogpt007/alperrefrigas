@@ -383,8 +383,7 @@ const SEOComponent: React.FC<SEOProps> = ({
       {/* Canonical URL */}
       <link rel="canonical" href={`${siteUrl}${canonicalUrl || ''}`} />
       
-      {/* Hreflang Tags - Single language, single URL */}
-      <link rel="alternate" hrefLang="en" href={`${siteUrl}${canonicalUrl || ''}`} />
+      {/* Hreflang Tag - Single language site, x-default only */}
       <link rel="alternate" hrefLang="x-default" href={`${siteUrl}${canonicalUrl || ''}`} />
       
       {/* Open Graph Tags */}
