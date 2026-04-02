@@ -700,18 +700,12 @@ const ProductDetails = () => {
                                   <span>{pkg}</span>
                                   <div className="ml-4 text-right">
                                     <span className="font-semibold text-blue-600">
-                                      {formatPrice(calculateBulkPrice(pkg))}
+                                      {formatPrice(calculateBulkPrice(pkg, pkg === '5-10 Pallets' ? 5 : 1))}
                                     </span>
                                     {product.product_type === 'accessory' ? (
                                       pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
                                       pkg === '10-Pack' ? <div className="text-xs text-green-600">15% OFF</div> : null
-                                    ) : (
-                                      pkg !== '1 Pallet' && (
-                                        <div className="text-xs text-green-600">
-                                          {pkg === '20ft Container' ? '30% OFF' : '45% OFF'}
-                                        </div>
-                                      )
-                                    )}
+                                    ) : null}
                                   </div>
                                 </div>
                               </SelectItem>
@@ -720,20 +714,44 @@ const ProductDetails = () => {
                         </Select>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Quantity
-                        </label>
-                        <div className="flex items-center space-x-3">
-                          <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                            -
-                          </Button>
-                          <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                          <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                            +
-                          </Button>
+                      {/* Pallet quantity selector for tier 1 and 2 */}
+                      {product.product_type === 'refrigerant' && (packaging === '1-5 Pallets' || packaging === '5-10 Pallets') && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Number of Pallets
+                          </label>
+                          <div className="flex items-center space-x-3">
+                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '5-10 Pallets' ? 5 : 1, palletQuantity - 1))}>
+                              -
+                            </Button>
+                            <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
+                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-5 Pallets' ? 5 : 10, palletQuantity + 1))}>
+                              +
+                            </Button>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
+                          </p>
                         </div>
-                      </div>
+                      )}
+
+                      {/* Quantity selector - for accessories and legacy */}
+                      {product.product_type !== 'refrigerant' && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Quantity
+                          </label>
+                          <div className="flex items-center space-x-3">
+                            <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                              -
+                            </Button>
+                            <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
+                            <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
+                              +
+                            </Button>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="space-y-3">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
