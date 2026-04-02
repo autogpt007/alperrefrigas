@@ -108,9 +108,9 @@ const ProductDetails = () => {
     const basePrice = product.price; // Base price per cylinder (container-load price)
     
     switch (packageType) {
-      case '1-5 Pallets':
+      case '1-10 Pallets':
         return (basePrice + 20) * CYLINDERS_PER_PALLET * palletQty;
-      case '5-10 Pallets':
+      case '10-20 Pallets':
         return (basePrice + 15) * CYLINDERS_PER_PALLET * palletQty;
       case '20ft Container':
         return basePrice * CONTAINER_20FT.cylinders;
@@ -127,8 +127,8 @@ const ProductDetails = () => {
   const getPerCylinderPrice = (packageType: string): number => {
     if (!product) return 0;
     switch (packageType) {
-      case '1-5 Pallets': return product.price + 20;
-      case '5-10 Pallets': return product.price + 15;
+      case '1-10 Pallets': return product.price + 20;
+      case '10-20 Pallets': return product.price + 15;
       case '20ft Container':
       case '40ft Container':
       case 'Truck Load (53ft)': return product.price;
@@ -139,8 +139,8 @@ const ProductDetails = () => {
   // Get packaging description text
   const getPackagingDescription = (packageType: string): string => {
     switch (packageType) {
-      case '1-5 Pallets': return `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
-      case '5-10 Pallets': return `${palletQuantity} pallets · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
+      case '1-10 Pallets': return `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
+      case '10-20 Pallets': return `${palletQuantity} pallets · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
       case '20ft Container': return `${CONTAINER_20FT.pallets} pallets · ${CONTAINER_20FT.cylinders.toLocaleString()} cylinders`;
       case '40ft Container': return `${CONTAINER_40FT.pallets} pallets · ${CONTAINER_40FT.cylinders.toLocaleString()} cylinders`;
       case 'Truck Load (53ft)': return `${TRUCK_LOAD.pallets} pallets · ${TRUCK_LOAD.cylinders.toLocaleString()} cylinders`;
@@ -150,8 +150,8 @@ const ProductDetails = () => {
 
   // Reset pallet quantity when packaging changes
   React.useEffect(() => {
-    if (packaging === '1-5 Pallets') setPalletQuantity(1);
-    else if (packaging === '5-10 Pallets') setPalletQuantity(5);
+    if (packaging === '1-10 Pallets') setPalletQuantity(1);
+    else if (packaging === '10-20 Pallets') setPalletQuantity(10);
   }, [packaging]);
 
   const getCurrentPrice = (): number => {
@@ -594,48 +594,50 @@ const ProductDetails = () => {
               {product.product_type === 'refrigerant' && (
                 <div className="mb-4">
                   {packaging ? (
-                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge className="bg-blue-600 text-white text-xs">{packaging}</Badge>
-                        {(packaging === '1-5 Pallets' || packaging === '5-10 Pallets') && (
-                          <span className="text-sm text-muted-foreground">× {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''}</span>
-                        )}
-                      </div>
-                      <p className="text-4xl font-bold text-blue-700 mb-1">
-                        {formatPrice(getCurrentPrice())}
-                      </p>
-                      <p className="text-lg text-blue-600 font-medium mb-2">
-                        {formatPrice(getPerCylinderPrice(packaging))}/cylinder
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {getPackagingDescription(packaging)}
-                      </p>
-                      {packaging !== '20ft Container' && packaging !== '40ft Container' && packaging !== 'Truck Load (53ft)' && (
-                        <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
-                          💡 Best price at full load: {formatPrice(product.price)}/cyl
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                      <p className="text-sm font-semibold text-blue-800 mb-3">Volume Pricing (per cylinder)</p>
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                          <span className="text-sm text-muted-foreground">1–5 Pallets</span>
-                          <span className="font-semibold text-foreground">{formatPrice(product.price + 20)}/cyl</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                          <span className="text-sm text-muted-foreground">5–10 Pallets</span>
-                          <span className="font-semibold text-foreground">{formatPrice(product.price + 15)}/cyl</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-sm text-muted-foreground">Full Load</span>
-                          <span className="font-bold text-emerald-700">{formatPrice(product.price)}/cyl</span>
-                        </div>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-3 text-center">Select a packaging option below to see your total</p>
-                    </div>
-                  )}
+                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                       <div className="flex items-center gap-2 mb-3">
+                         <Badge className="bg-blue-600 text-white text-xs">{packaging}</Badge>
+                         {(packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
+                           <span className="text-sm text-muted-foreground">× {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''}</span>
+                         )}
+                       </div>
+                       {/* Per-cylinder price is the HERO */}
+                       <p className="text-4xl font-bold text-blue-700 mb-1">
+                         {formatPrice(getPerCylinderPrice(packaging))}<span className="text-lg font-medium text-blue-500">/cylinder</span>
+                       </p>
+                       {/* Total cost shown second */}
+                       <p className="text-lg text-muted-foreground font-medium mb-2">
+                         Total: {formatPrice(getCurrentPrice())}
+                       </p>
+                       <p className="text-sm text-muted-foreground">
+                         {getPackagingDescription(packaging)}
+                       </p>
+                       {packaging !== '20ft Container' && packaging !== '40ft Container' && packaging !== 'Truck Load (53ft)' && (
+                         <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
+                           💡 Best price at full load: {formatPrice(product.price)}/cyl
+                         </p>
+                       )}
+                     </div>
+                   ) : (
+                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                       <p className="text-sm font-semibold text-blue-800 mb-3">Volume Pricing (per cylinder)</p>
+                       <div className="space-y-2">
+                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                           <span className="text-sm text-muted-foreground">1–10 Pallets</span>
+                           <span className="font-semibold text-foreground">{formatPrice(product.price + 20)}/cyl</span>
+                         </div>
+                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                           <span className="text-sm text-muted-foreground">10–20 Pallets</span>
+                           <span className="font-semibold text-foreground">{formatPrice(product.price + 15)}/cyl</span>
+                         </div>
+                         <div className="flex justify-between items-center py-2">
+                           <span className="text-sm text-muted-foreground">Full Load</span>
+                           <span className="font-bold text-emerald-700">{formatPrice(product.price)}/cyl</span>
+                         </div>
+                       </div>
+                       <p className="text-xs text-muted-foreground mt-3 text-center">Select a packaging option below to see your total</p>
+                     </div>
+                   )}
                 </div>
               )}
 
@@ -749,25 +751,25 @@ const ProductDetails = () => {
                       </div>
 
                       {/* Pallet quantity selector for tier 1 and 2 */}
-                      {product.product_type === 'refrigerant' && (packaging === '1-5 Pallets' || packaging === '5-10 Pallets') && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Number of Pallets
-                          </label>
-                          <div className="flex items-center space-x-3">
-                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '5-10 Pallets' ? 5 : 1, palletQuantity - 1))}>
-                              -
-                            </Button>
-                            <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
-                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-5 Pallets' ? 5 : 10, palletQuantity + 1))}>
-                              +
-                            </Button>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
-                          </p>
-                        </div>
-                      )}
+                      {product.product_type === 'refrigerant' && (packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">
+                             Number of Pallets
+                           </label>
+                           <div className="flex items-center space-x-3">
+                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '10-20 Pallets' ? 10 : 1, palletQuantity - 1))}>
+                               -
+                             </Button>
+                             <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
+                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-10 Pallets' ? 10 : 20, palletQuantity + 1))}>
+                               +
+                             </Button>
+                           </div>
+                           <p className="text-xs text-gray-500 mt-1">
+                             {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
+                           </p>
+                         </div>
+                       )}
 
                       {/* Quantity selector - for accessories and legacy */}
                       {product.product_type !== 'refrigerant' && (

@@ -147,12 +147,12 @@ serve(async (req: Request) => {
             // Build all valid total prices for any pallet quantity
             const validPrices: number[] = [];
             
-            // Tier 1: 1-5 pallets
-            for (let pq = 1; pq <= 5; pq++) {
+            // Tier 1: 1-10 pallets
+            for (let pq = 1; pq <= 10; pq++) {
               validPrices.push((basePrice + 20) * CYLINDERS_PER_PALLET * pq);
             }
-            // Tier 2: 5-10 pallets
-            for (let pq = 5; pq <= 10; pq++) {
+            // Tier 2: 10-20 pallets
+            for (let pq = 10; pq <= 20; pq++) {
               validPrices.push((basePrice + 15) * CYLINDERS_PER_PALLET * pq);
             }
             // Tier 3: containers/truck
