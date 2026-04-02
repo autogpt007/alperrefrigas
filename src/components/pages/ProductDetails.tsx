@@ -127,8 +127,8 @@ const ProductDetails = () => {
   const getPerCylinderPrice = (packageType: string): number => {
     if (!product) return 0;
     switch (packageType) {
-      case '1-5 Pallets': return product.price + 20;
-      case '5-10 Pallets': return product.price + 15;
+      case '1-10 Pallets': return product.price + 20;
+      case '10-20 Pallets': return product.price + 15;
       case '20ft Container':
       case '40ft Container':
       case 'Truck Load (53ft)': return product.price;
