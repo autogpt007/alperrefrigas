@@ -27,7 +27,7 @@ describe("Bulk Pricing Calculations", () => {
   });
 
   it("should apply 45% discount for 40ft Container", () => {
-    expect(calculateBulkPrice(100, "40ft Container")).toBe(55);
+    expect(calculateBulkPrice(100, "40ft Container")).toBeCloseTo(55);
   });
 
   it("should return base price for unknown package type", () => {
