@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -22,72 +22,83 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
-import HomePage from "./components/pages/HomePage";
-import ProductCategory from "./components/pages/ProductCategory";
-import R454BLandingPage from "./components/pages/R454BLandingPage";
-import HFOLandingPage from "./components/pages/HFOLandingPage";
-import ProductCatalog from "./components/pages/ProductCatalog";
-import ProductDetails from "./components/pages/ProductDetails";
-import CartPage from "./components/pages/CartPage";
-import RFQPage from "./components/pages/RFQPage";
-import CheckoutPage from "./components/pages/CheckoutPage";
-import BulkPricing from "./pages/BulkPricing";
-import Health from "./pages/Health";
-import OrderConfirmation from "./components/pages/OrderConfirmation";
-import AboutUs from "./components/pages/AboutUs";
-import ContactUs from "./components/pages/ContactUs";
-import FAQ from "./components/pages/FAQ";
-import ShippingCalculator from "./components/pages/ShippingCalculator";
-import EPACompliance from "./components/pages/EPACompliance";
-import Certifications from "./components/pages/Certifications";
-import PrivacyPolicy from "./components/pages/PrivacyPolicy";
-import TermsOfService from "./components/pages/TermsOfService";
-import CookiePolicy from "./components/pages/CookiePolicy";
-import RefundPolicy from "./components/pages/RefundPolicy";
-import ShippingPolicy from "./components/pages/ShippingPolicy";
-import PaymentInformation from "./components/pages/PaymentInformation";
-import Sitemap from "./components/pages/Sitemap";
-import CustomerSupport from "./components/pages/CustomerSupport";
-import CryptoPaymentPage from "./components/pages/CryptoPaymentPage";
-import AdminDashboard from "./components/pages/AdminDashboard";
-import MyAccount from "./components/pages/MyAccount";
-import AuthPage from "./components/auth/AuthPage";
-import UserAuthPage from "./components/auth/UserAuthPage";
-import AdminLayout from "./components/admin/AdminLayout";
-import Dashboard from "./components/admin/Dashboard";
-import EnhancedProductManagement from "./components/admin/EnhancedProductManagement";
-import ACProductManagement from "./components/admin/ACProductManagement";
-import PricingTiersManagement from "./components/admin/PricingTiersManagement";
-import AccessoryManagement from "./components/admin/AccessoryManagement";
-import OrderManagement from "./components/admin/OrderManagement";
-import BlogPostManagement from "./components/admin/BlogPostManagement";
-import LogoManagement from "./components/admin/LogoManagement";
-import ContactManagement from "./components/admin/ContactManagement";
-import ContactInfoManagement from "./components/admin/ContactInfoManagement";
-import AdminSettings from "./components/admin/AdminSettings";
-import PaymentManagement from "./components/admin/PaymentManagement";
-import TeamManagement from "./components/admin/TeamManagement";
-import CertificationManagement from "./components/admin/CertificationManagement";
-import ContentManagement from "./components/admin/ContentManagement";
-import FeaturedProductManagement from "./components/admin/FeaturedProductManagement";
-import TestimonialsPage from "./components/pages/TestimonialsPage";
-import TestimonialManagement from "./components/admin/TestimonialManagement";
-import HeroImageManagement from "./components/admin/HeroImageManagement";
-import AdvertManagement from "./components/admin/AdvertManagement";
-import CouponManagement from "./components/admin/CouponManagement";
-import NewsletterManagement from "./components/admin/NewsletterManagement";
-import SitemapGenerator from "./components/admin/SitemapGenerator";
-import PageContentManagement from "./components/admin/PageContentManagement";
-import TaxRatesManagement from "./components/admin/TaxRatesManagement";
-import InternationalTaxManagement from "./components/admin/InternationalTaxManagement";
-import ExchangeRateManagement from "./components/admin/ExchangeRateManagement";
-import ShippingManagement from "./components/admin/ShippingManagement";
-import BlogPage from "./components/pages/BlogPage";
-import BlogPostDetail from "./components/pages/BlogPostDetail";
-import BlogPostRedirect from "./components/pages/BlogPostRedirect";
 import "./App.css";
 
+// Critical path - eagerly loaded
+import HomePage from "./components/pages/HomePage";
+import ProductCatalog from "./components/pages/ProductCatalog";
+import ProductDetails from "./components/pages/ProductDetails";
+
+// Lazy-loaded routes
+const R454BLandingPage = lazy(() => import("./components/pages/R454BLandingPage"));
+const HFOLandingPage = lazy(() => import("./components/pages/HFOLandingPage"));
+const ProductCategory = lazy(() => import("./components/pages/ProductCategory"));
+const CartPage = lazy(() => import("./components/pages/CartPage"));
+const RFQPage = lazy(() => import("./components/pages/RFQPage"));
+const CheckoutPage = lazy(() => import("./components/pages/CheckoutPage"));
+const BulkPricing = lazy(() => import("./pages/BulkPricing"));
+const Health = lazy(() => import("./pages/Health"));
+const OrderConfirmation = lazy(() => import("./components/pages/OrderConfirmation"));
+const AboutUs = lazy(() => import("./components/pages/AboutUs"));
+const ContactUs = lazy(() => import("./components/pages/ContactUs"));
+const FAQ = lazy(() => import("./components/pages/FAQ"));
+const ShippingCalculator = lazy(() => import("./components/pages/ShippingCalculator"));
+const EPACompliance = lazy(() => import("./components/pages/EPACompliance"));
+const Certifications = lazy(() => import("./components/pages/Certifications"));
+const PrivacyPolicy = lazy(() => import("./components/pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./components/pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("./components/pages/CookiePolicy"));
+const RefundPolicy = lazy(() => import("./components/pages/RefundPolicy"));
+const ShippingPolicy = lazy(() => import("./components/pages/ShippingPolicy"));
+const PaymentInformation = lazy(() => import("./components/pages/PaymentInformation"));
+const Sitemap = lazy(() => import("./components/pages/Sitemap"));
+const CustomerSupport = lazy(() => import("./components/pages/CustomerSupport"));
+const CryptoPaymentPage = lazy(() => import("./components/pages/CryptoPaymentPage"));
+const MyAccount = lazy(() => import("./components/pages/MyAccount"));
+const AuthPage = lazy(() => import("./components/auth/AuthPage"));
+const UserAuthPage = lazy(() => import("./components/auth/UserAuthPage"));
+const TestimonialsPage = lazy(() => import("./components/pages/TestimonialsPage"));
+const BlogPage = lazy(() => import("./components/pages/BlogPage"));
+const BlogPostDetail = lazy(() => import("./components/pages/BlogPostDetail"));
+const BlogPostRedirect = lazy(() => import("./components/pages/BlogPostRedirect"));
+
+// Admin lazy-loaded
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const Dashboard = lazy(() => import("./components/admin/Dashboard"));
+const EnhancedProductManagement = lazy(() => import("./components/admin/EnhancedProductManagement"));
+const ACProductManagement = lazy(() => import("./components/admin/ACProductManagement"));
+const PricingTiersManagement = lazy(() => import("./components/admin/PricingTiersManagement"));
+const AccessoryManagement = lazy(() => import("./components/admin/AccessoryManagement"));
+const OrderManagement = lazy(() => import("./components/admin/OrderManagement"));
+const BlogPostManagement = lazy(() => import("./components/admin/BlogPostManagement"));
+const LogoManagement = lazy(() => import("./components/admin/LogoManagement"));
+const ContactManagement = lazy(() => import("./components/admin/ContactManagement"));
+const ContactInfoManagement = lazy(() => import("./components/admin/ContactInfoManagement"));
+const AdminSettings = lazy(() => import("./components/admin/AdminSettings"));
+const PaymentManagement = lazy(() => import("./components/admin/PaymentManagement"));
+const TeamManagement = lazy(() => import("./components/admin/TeamManagement"));
+const CertificationManagement = lazy(() => import("./components/admin/CertificationManagement"));
+const ContentManagement = lazy(() => import("./components/admin/ContentManagement"));
+const FeaturedProductManagement = lazy(() => import("./components/admin/FeaturedProductManagement"));
+const TestimonialManagement = lazy(() => import("./components/admin/TestimonialManagement"));
+const HeroImageManagement = lazy(() => import("./components/admin/HeroImageManagement"));
+const AdvertManagement = lazy(() => import("./components/admin/AdvertManagement"));
+const CouponManagement = lazy(() => import("./components/admin/CouponManagement"));
+const NewsletterManagement = lazy(() => import("./components/admin/NewsletterManagement"));
+const SitemapGenerator = lazy(() => import("./components/admin/SitemapGenerator"));
+const PageContentManagement = lazy(() => import("./components/admin/PageContentManagement"));
+const TaxRatesManagement = lazy(() => import("./components/admin/TaxRatesManagement"));
+const InternationalTaxManagement = lazy(() => import("./components/admin/InternationalTaxManagement"));
+const ExchangeRateManagement = lazy(() => import("./components/admin/ExchangeRateManagement"));
+const ShippingManagement = lazy(() => import("./components/admin/ShippingManagement"));
+
 const queryClient = new QueryClient();
+
+const PageFallback = () => (
+  <div className="min-h-[50vh] flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 function App() {
   useFavicon();
@@ -110,6 +121,7 @@ function App() {
                           <Toaster />
                          <BrowserRouter>
                           <MetaRedirects />
+                    <Suspense fallback={<PageFallback />}>
                     <Routes>
                       {/* Admin Routes */}
                        <Route path="/admin" element={<AdminLayout />}>
@@ -198,6 +210,7 @@ function App() {
                         </div>
                       } />
                     </Routes>
+                    </Suspense>
                         </BrowserRouter>
                       </ResourceOptimizer>
                     </OrdersProvider>

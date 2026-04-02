@@ -373,7 +373,6 @@ const SEOComponent: React.FC<SEOProps> = ({
       <meta httpEquiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
       
       {/* Preload critical resources */}
-      <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       
