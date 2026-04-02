@@ -578,24 +578,69 @@ const ProductDetails = () => {
                     Tiered bulk pricing: MOQ 5 units. Best price at full container quantities.
                   </p>
                 </div>
-              ) : (
+              ) : product.product_type === 'accessory' ? (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 mb-1">
-                    {product.product_type === 'accessory' ? 'Starting Price' : 'Best Price (Full Load)'}
-                  </p>
+                  <p className="text-sm text-blue-800 mb-1">Starting Price</p>
                   <p className="text-lg font-semibold text-blue-900">
-                    {formatPrice(product.price)}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
+                    {formatPrice(product.price)}/piece
                   </p>
                   <p className="text-xs text-blue-600">
-                    {product.product_type === 'accessory' 
-                      ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' 
-                      : 'Volume pricing available — order more pallets for better rates'}
+                    Quantity discounts available (5% for 5-pack, 15% for 10-pack)
                   </p>
                 </div>
+              ) : null}
+
+              {/* Refrigerant Pricing Display */}
+              {product.product_type === 'refrigerant' && (
+                <div className="mb-4">
+                  {packaging ? (
+                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge className="bg-blue-600 text-white text-xs">{packaging}</Badge>
+                        {(packaging === '1-5 Pallets' || packaging === '5-10 Pallets') && (
+                          <span className="text-sm text-muted-foreground">× {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''}</span>
+                        )}
+                      </div>
+                      <p className="text-4xl font-bold text-blue-700 mb-1">
+                        {formatPrice(getCurrentPrice())}
+                      </p>
+                      <p className="text-lg text-blue-600 font-medium mb-2">
+                        {formatPrice(getPerCylinderPrice(packaging))}/cylinder
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {getPackagingDescription(packaging)}
+                      </p>
+                      {packaging !== '20ft Container' && packaging !== '40ft Container' && packaging !== 'Truck Load (53ft)' && (
+                        <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
+                          💡 Best price at full load: {formatPrice(product.price)}/cyl
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                      <p className="text-sm font-semibold text-blue-800 mb-3">Volume Pricing (per cylinder)</p>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                          <span className="text-sm text-muted-foreground">1–5 Pallets</span>
+                          <span className="font-semibold text-foreground">{formatPrice(product.price + 20)}/cyl</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                          <span className="text-sm text-muted-foreground">5–10 Pallets</span>
+                          <span className="font-semibold text-foreground">{formatPrice(product.price + 15)}/cyl</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2">
+                          <span className="text-sm text-muted-foreground">Full Load</span>
+                          <span className="font-bold text-emerald-700">{formatPrice(product.price)}/cyl</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3 text-center">Select a packaging option below to see your total</p>
+                    </div>
+                  )}
+                </div>
               )}
-              
-              {/* Pricing Display - Skip for AC products as they use ACBulkPricing component */}
-              {product.product_type !== 'air_conditioner' && (
+
+              {/* Accessory Pricing Display */}
+              {product.product_type === 'accessory' && (
                 <div className="mb-4">
                   {packaging ? (
                     <div className="space-y-2">
@@ -604,18 +649,8 @@ const ProductDetails = () => {
                           {formatPrice(getCurrentPrice())}
                         </p>
                         {getDiscountPercentage() > 0 && (
-                          <div className="flex items-center gap-2">
-                            <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
-                              {getDiscountPercentage()}% OFF
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {product.product_type !== 'accessory' && getPackagingDescription(packaging)}
-                        {product.product_type !== 'accessory' && packaging && (
-                          <span className="ml-2 text-gray-400">
-                            ({formatPrice(getPerCylinderPrice(packaging))}/cylinder)
+                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
+                            {getDiscountPercentage()}% OFF
                           </span>
                         )}
                       </div>
@@ -623,7 +658,6 @@ const ProductDetails = () => {
                   ) : (
                     <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                       <p className="text-gray-500 text-lg font-medium">Select packaging to see pricing</p>
-                      <p className="text-sm text-gray-400 mt-1">Volume pricing available</p>
                     </div>
                   )}
                 </div>

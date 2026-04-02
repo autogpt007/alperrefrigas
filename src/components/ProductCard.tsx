@@ -221,11 +221,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="flex items-center justify-between mb-3">
             <div className="space-y-1">
-              <div className="flex items-baseline gap-2">
-                <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                  {formatPrice(getCurrentPrice())}
-                </div>
+              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                {formatPrice(getCurrentPrice())}
               </div>
+              {product.product_type !== 'accessory' && (
+                <div className="text-sm text-cyan-300 font-medium">
+                  {formatPrice(
+                    selectedPackaging === '1-5 Pallets' ? product.price + 20 :
+                    selectedPackaging === '5-10 Pallets' ? product.price + 15 :
+                    product.price
+                  )}/cyl
+                </div>
+              )}
               <div className="text-xs text-gray-400 leading-tight">
                 {product.product_type === 'accessory' ? (
                   selectedPackaging === 'Individual' ? 'Per piece' :
@@ -240,6 +247,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   `${quantity} pallet${quantity > 1 ? 's' : ''} · ${quantity * 40} cylinders`
                 )}
               </div>
+              {product.product_type !== 'accessory' && selectedPackaging !== '20ft Container' && selectedPackaging !== '40ft Container' && selectedPackaging !== 'Truck Load (53ft)' && (
+                <div className="text-xs text-emerald-400">
+                  From {formatPrice(product.price)}/cyl at full load
+                </div>
+              )}
               {getDiscountPercentage() > 0 && (
                 <div className="flex items-center gap-1 text-green-400">
                   <TrendingUp className="h-3 w-3" />
