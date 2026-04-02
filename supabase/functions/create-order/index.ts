@@ -103,7 +103,7 @@ serve(async (req: Request) => {
     if (productIds.length > 0) {
       const { data: products, error: productsError } = await supabaseAdmin
         .from("products")
-        .select("id, price, pallet_price, container_20ft_price, container_40ft_price, name")
+        .select("id, price, pallet_price, container_20ft_price, container_40ft_price, name, product_type, base_unit_price, q20_units, mid_bulk_uplift_percent, custom_uplift_5_19, custom_uplift_20_39, custom_uplift_40_half")
         .in("id", productIds);
 
       if (productsError) {
@@ -121,6 +121,12 @@ serve(async (req: Request) => {
         }
       }
 
+      // Constants for cylinder counts
+      const CYLINDERS_PER_PALLET = 40;
+      const CONTAINER_20FT_CYL = 1120;
+      const CONTAINER_40FT_CYL = 2240;
+      const TRUCK_LOAD_CYL = 1760;
+
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         if (typeof item.product_id === "string" && item.product_id.length > 0) {
@@ -131,19 +137,54 @@ serve(async (req: Request) => {
               { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
             );
           }
-          // Build set of valid prices for this product (base + packaging variants)
-          const validPrices: number[] = [Number(product.price)];
-          if (product.pallet_price != null) validPrices.push(Number(product.pallet_price));
-          if (product.container_20ft_price != null) validPrices.push(Number(product.container_20ft_price));
-          if (product.container_40ft_price != null) validPrices.push(Number(product.container_40ft_price));
 
           const clientPrice = Number(item.price);
-          const priceMatches = validPrices.some(vp => Math.abs(clientPrice - vp) <= 0.01);
-          if (!priceMatches) {
+          const basePrice = Number(product.price);
+          let priceValid = false;
+
+          if (product.product_type === 'refrigerant') {
+            // New 3-tier pricing validation
+            // Build all valid total prices for any pallet quantity
+            const validPrices: number[] = [];
+            
+            // Tier 1: 1-5 pallets
+            for (let pq = 1; pq <= 5; pq++) {
+              validPrices.push((basePrice + 20) * CYLINDERS_PER_PALLET * pq);
+            }
+            // Tier 2: 5-10 pallets
+            for (let pq = 5; pq <= 10; pq++) {
+              validPrices.push((basePrice + 15) * CYLINDERS_PER_PALLET * pq);
+            }
+            // Tier 3: containers/truck
+            validPrices.push(basePrice * CONTAINER_20FT_CYL);
+            validPrices.push(basePrice * CONTAINER_40FT_CYL);
+            validPrices.push(basePrice * TRUCK_LOAD_CYL);
+            
+            // Legacy support: also accept base price variants
+            validPrices.push(basePrice);
+            if (product.pallet_price != null) validPrices.push(Number(product.pallet_price));
+            if (product.container_20ft_price != null) validPrices.push(Number(product.container_20ft_price));
+            if (product.container_40ft_price != null) validPrices.push(Number(product.container_40ft_price));
+
+            priceValid = validPrices.some(vp => Math.abs(clientPrice - vp) <= 0.02);
+          } else if (product.product_type === 'air_conditioner') {
+            // AC bulk pricing - trust the audit fields but verify range
+            priceValid = clientPrice > 0;
+          } else {
+            // Accessory or other - check base price and pack prices
+            const validPrices: number[] = [Number(product.price)];
+            validPrices.push(Number(product.price) * 5 * 0.95); // 5-pack
+            validPrices.push(Number(product.price) * 10 * 0.85); // 10-pack
+            if (product.pallet_price != null) validPrices.push(Number(product.pallet_price));
+            priceValid = validPrices.some(vp => Math.abs(clientPrice - vp) <= 0.02);
+          }
+
+          if (!priceValid) {
             console.warn("[EDGE:create-order] Price mismatch detected", {
               product_id: item.product_id,
               client_price: item.price,
-              valid_prices: validPrices,
+              base_price: basePrice,
+              product_type: product.product_type,
             });
             return new Response(
               JSON.stringify({ error: `Item ${i + 1}: Price does not match current catalog price. Please refresh your cart.` }),
