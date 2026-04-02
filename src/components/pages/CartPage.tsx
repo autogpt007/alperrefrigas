@@ -133,7 +133,7 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
-      <Helmet>
+      <>
         <meta name="robots" content="noindex, nofollow" />
         <title>Shopping Cart | Alper Refrigerants</title>
         <link rel="alternate" hrefLang="x-default" href="https://alperrefrigas.com/cart" />
