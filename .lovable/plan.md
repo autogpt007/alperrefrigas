@@ -1,85 +1,71 @@
 
 
-## Full SEO Gap Analysis & Optimization Plan
+## Refrigerant Pricing Restructure: 3-Tier Pallet-Based System
 
-### Goal: Rank 50+ keywords on Google page 1
+### Current State
+Refrigerant products use per-cylinder pricing with packaging options: **1 Pallet** (40 cylinders, no discount), **20ft Container** (1,140 cylinders, 30% off), **40ft Container** (2,280 cylinders, 45% off). The base `price` field stores the per-cylinder price.
 
----
+### New Pricing Model
 
-### Critical Gaps Found
+The `price` field on each product becomes the **true base price per cylinder** (the container-load price). All tiers are derived from it:
 
-**GAP 1: Certifications page has NO SEO metadata**
-`Certifications.tsx` has zero `SEOComponent` or `Helmet` usage — no title, description, canonical, or structured data. This is an important E-E-A-T page.
+| Tier | Packaging Options | Price Logic |
+|------|-------------------|-------------|
+| **Tier 1** | 1–5 Pallets (40–200 cylinders) | `price + $20` per cylinder |
+| **Tier 2** | 5–10 Pallets (200–400 cylinders) | `price + $15` per cylinder |
+| **Tier 3** | Full Container Load / Truck Load | `price` (base, no markup) |
 
-**GAP 2: Missing `<h1>` on Certifications page**
-No `<h1>` tag exists — only `<h2>` elements. This hurts relevance signals.
+Container/Truck details shown to customer:
+- **20ft Container**: 28 pallets / 1,120 cylinders
+- **40ft Container**: 56 pallets / 2,240 cylinders  
+- **Truck Load (53ft)**: 44 pallets / 1,760 cylinders
 
-**GAP 3: FreonWholesalePage canonical points to `/freon-wholesale` (a 301 redirect)**
-The canonical URL should be `/products` since that's where the redirect sends users, or the page should be removed from the router entirely.
+### How to Make It "Invisible"
+We adjust the stored `price` downward by $10 from current values (since you said "current price deduction of $10" for container). Then Tier 1 shows `price + $20` and Tier 2 shows `price + $15`. The customer sees natural-looking tiered pricing — never sees a "price change" or discount percentage.
 
-**GAP 4: ShippingCalculator canonical is `/shipping` (a redirect URL)**
-Should be `/shipping-policy` or its own dedicated URL.
+### Implementation Steps
 
-**GAP 5: Homepage has TWO competing SEOComponents**
-Both `Index.tsx` and `HomePage.tsx` inject `SEOComponent` with different titles/descriptions. `react-helmet-async` uses last-in-wins, so `HomePage.tsx` overrides `Index.tsx`, meaning the carefully crafted HFO-focused meta from Index is wasted.
+**1. Update packaging options in the database**
+- Change each refrigerant product's `packaging_options` from `["1 Pallet", "20ft Container", "40ft Container"]` to `["1-5 Pallets", "5-10 Pallets", "20ft Container", "40ft Container", "Truck Load (53ft)"]`
+- Reduce each product's `price` by $10 (this becomes the container/truck base)
+- Remove `discount_20ft` and `discount_40ft` fields (no longer needed — container prices = base price × cylinder count)
 
-**GAP 6: robots.txt is too minimal**
-The generated `generateRobotsTxt()` function has comprehensive bot rules, but the actual `public/robots.txt` is only 4 lines. Missing: admin disallow, AI crawler rules, crawl-delay.
+**2. Update `calculateBulkPrice` in ProductDetails.tsx**
+New logic:
+- **1-5 Pallets**: quantity selector (1–5), total = (price + $20) × 40 × palletQty
+- **5-10 Pallets**: quantity selector (5–10), total = (price + $15) × 40 × palletQty
+- **20ft Container**: (price) × 1,120 — show "28 pallets / 1,120 cylinders"
+- **40ft Container**: (price) × 2,240 — show "56 pallets / 2,240 cylinders"
+- **Truck Load**: (price) × 1,760 — show "44 pallets / 1,760 cylinders"
 
-**GAP 7: Missing breadcrumb structured data on most pages**
-Only `ProductCatalog` passes breadcrumbs to `SEOComponent`. Key pages (About, FAQ, Contact, Blog, Certifications, Shipping) have no breadcrumb schema.
+**3. Update `calculateBulkPrice` in ProductCard.tsx**
+Same pricing logic mirrored for the catalog card view.
 
-**GAP 8: No internal linking strategy**
-Pages don't cross-link to each other. Footer and navigation are the only linking paths. Key money pages (products, freon-wholesale) need contextual internal links from content pages.
+**4. Add pallet quantity selector**
+When "1-5 Pallets" or "5-10 Pallets" is selected, show a quantity input (number of pallets). The total updates dynamically.
 
-**GAP 9: Description contains emoji (⭐) on HomePage and AboutUs**
-Google strips or ignores emojis in meta descriptions. The `⭐` wastes character space and looks unprofessional in SERPs.
+**5. Update the create-order edge function**
+Add the new packaging types to the server-side price verification. The valid prices will be computed from the base `price` + tier markup × cylinder count rather than from static DB columns.
 
-**GAP 10: `og:image` is `/placeholder.svg` on most pages**
-No real Open Graph image for social sharing — reduces CTR from social/referral traffic.
+**6. Update ProductDetails UI text**
+- Remove discount percentage badges (no more "30% OFF" / "45% OFF")
+- Show container/truck details: pallet count, cylinder count
+- Starting price label changes to show per-cylinder price for the best tier
+- FAQ text updated for new packaging tiers
 
-**GAP 11: Duplicate structured data on homepage**
-`Index.tsx` injects a `WholesaleStore` schema, `HomePage.tsx` injects a `WebSite` schema, and `SEOComponent` always injects an `Organization` schema. Three conflicting entities on one page.
+**7. Update CartPage display**
+Ensure cart items with new packaging labels display correctly.
 
----
+### Files to Modify
+- **Migration SQL**: Update `price`, `packaging_options` for all refrigerant products; nullify discount columns
+- **`src/components/pages/ProductDetails.tsx`**: New `calculateBulkPrice`, pallet qty selector, updated UI
+- **`src/components/ProductCard.tsx`**: Matching pricing logic
+- **`supabase/functions/create-order/index.ts`**: Server-side verification for new tier structure
+- **`src/components/pages/ProductCatalog.tsx`**: Minor text updates if needed
 
-### Implementation Plan (by impact)
-
-#### Phase 1 — Fix broken/conflicting metadata (highest impact)
-
-1. **Remove duplicate SEOComponent from `Index.tsx`** — let `HomePage.tsx` be the single source. Move the HFO-focused title/description into `HomePage.tsx` and merge the `WholesaleStore` schema into the existing homepage structured data.
-
-2. **Add SEOComponent to `Certifications.tsx`** with title "EPA Certifications & Compliance | Alper", description targeting "refrigerant EPA certification", canonical `/certifications`, and add an `<h1>`.
-
-3. **Fix canonical on `ShippingCalculator.tsx`** — change from `/shipping` to `/shipping-calculator` or remove the component if it's redundant with `ShippingPolicy.tsx`.
-
-4. **Fix or remove `FreonWholesalePage.tsx`** — since `/freon-wholesale` 301s to `/products`, this page is unreachable. Either remove the canonical conflict or make it a real landing page at a non-redirected URL like `/wholesale`.
-
-5. **Remove emojis from meta descriptions** in `HomePage.tsx` and `AboutUs.tsx`.
-
-#### Phase 2 — Enhance robots.txt & structured data
-
-6. **Replace `public/robots.txt`** with the comprehensive version from `generateRobotsTxt()` — add admin disallow, AI crawler rules, crawl-delay.
-
-7. **Add breadcrumb structured data** to About, FAQ, Contact, Blog, Certifications, Shipping Policy, EPA Compliance, Testimonials pages.
-
-8. **Clean up homepage structured data** — consolidate to one `Organization` + one `WebSite` + FAQ schema. Remove the competing `WholesaleStore` from Index.tsx.
-
-#### Phase 3 — Content & linking signals
-
-9. **Add contextual internal links** — add "Related" sections at the bottom of content pages (FAQ, About, EPA, Blog) linking to product catalog, certifications, and contact pages.
-
-10. **Add a real `og:image`** — use the site logo or a branded hero image URL instead of `/placeholder.svg` for the default `ogImage` in `SEOComponent.tsx`.
-
-### Files Changed
-1. `src/pages/Index.tsx` — remove duplicate SEOComponent, keep only the wrapper
-2. `src/components/pages/HomePage.tsx` — merge HFO title, remove emoji from description
-3. `src/components/pages/Certifications.tsx` — add SEOComponent + `<h1>`
-4. `src/components/pages/AboutUs.tsx` — remove emoji from description
-5. `src/components/pages/ShippingCalculator.tsx` — fix canonical
-6. `src/components/pages/FreonWholesalePage.tsx` — fix canonical or update route
-7. `public/robots.txt` — replace with comprehensive version
-8. `src/components/seo/SEOComponent.tsx` — change default `ogImage`
-9. ~8 page components — add `breadcrumbs` prop to SEOComponent calls
-10. ~5 page components — add internal link sections
+### What the Customer Sees
+- Clean tiered pricing by volume — no indication prices changed
+- New "Truck Load" option alongside containers
+- Detailed breakdown (pallets × cylinders) for each option
+- Higher per-cylinder price for small orders, best price at full loads
 
