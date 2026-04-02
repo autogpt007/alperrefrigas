@@ -81,109 +81,78 @@ const ProductDetails = () => {
     }
   }, [product, id]);
 
+  // Pallet quantity for tier 1 and tier 2
+  const [palletQuantity, setPalletQuantity] = useState(1);
+
+  // Container/Truck constants
+  const CYLINDERS_PER_PALLET = 40;
+  const CONTAINER_20FT = { pallets: 28, cylinders: 1120 };
+  const CONTAINER_40FT = { pallets: 56, cylinders: 2240 };
+  const TRUCK_LOAD = { pallets: 44, cylinders: 1760 };
+
   // Bulk pricing calculation functions
-  const calculateBulkPrice = (packageType: string): number => {
+  const calculateBulkPrice = (packageType: string, palletQty: number = palletQuantity): number => {
     if (!product) return 0;
 
     // Accessory pricing: per piece with quantity discounts
     if (product.product_type === 'accessory') {
       const basePrice = product.price;
       let price = basePrice;
-      if (packageType === '5-Pack') price = basePrice * 5 * 0.95; // 5% off
-      else if (packageType === '10-Pack') price = basePrice * 10 * 0.85; // 15% off
-      else price = basePrice; // Individual
-      console.log('Accessory calculateBulkPrice:', { packageType, basePrice, price, productName: product.name });
+      if (packageType === '5-Pack') price = basePrice * 5 * 0.95;
+      else if (packageType === '10-Pack') price = basePrice * 10 * 0.85;
+      else price = basePrice;
       return price;
     }
     
-    // Refrigerant pricing: pallet/container logic
-    const cylinderPrice = product.price; // Base price is per cylinder
-    const discount20ft = product.discount_20ft || 0.30;
-    const discount40ft = product.discount_40ft || 0.45;
-    
-    console.log('calculateBulkPrice called:', {
-      packageType,
-      cylinderPrice,
-      discount20ft,
-      discount40ft,
-      productName: product.name
-    });
-    
-    let calculatedPrice = 0;
+    // Refrigerant pricing: 3-tier pallet-based system
+    const basePrice = product.price; // Base price per cylinder (container-load price)
     
     switch (packageType) {
-      case '1 Pallet':
-        // 40 cylinders per pallet - always calculate from cylinder price
-        calculatedPrice = cylinderPrice * 40;
-        console.log('1 Pallet calculation:', cylinderPrice, '* 40 =', calculatedPrice);
-        break;
+      case '1-5 Pallets':
+        return (basePrice + 20) * CYLINDERS_PER_PALLET * palletQty;
+      case '5-10 Pallets':
+        return (basePrice + 15) * CYLINDERS_PER_PALLET * palletQty;
       case '20ft Container':
-        // 1140 cylinders per 20ft container with discount
-        const fullPrice20ft = cylinderPrice * 1140;
-        calculatedPrice = fullPrice20ft * (1 - discount20ft);
-        console.log('20ft Container calculation:', fullPrice20ft, '* (1 -', discount20ft, ') =', calculatedPrice);
-        break;
+        return basePrice * CONTAINER_20FT.cylinders;
       case '40ft Container':
-        // 2280 cylinders per 40ft container with discount
-        const fullPrice40ft = cylinderPrice * 2280;
-        calculatedPrice = fullPrice40ft * (1 - discount40ft);
-        console.log('40ft Container calculation:', fullPrice40ft, '* (1 -', discount40ft, ') =', calculatedPrice);
-        break;
+        return basePrice * CONTAINER_40FT.cylinders;
+      case 'Truck Load (53ft)':
+        return basePrice * TRUCK_LOAD.cylinders;
       default:
-        calculatedPrice = cylinderPrice * 40; // Default to pallet pricing
+        return basePrice * CYLINDERS_PER_PALLET;
     }
-    
-    console.log('Final calculated price:', calculatedPrice);
-    return calculatedPrice;
   };
 
-  const getCurrentPrice = (): number => {
+  // Get per-cylinder price for the selected tier
+  const getPerCylinderPrice = (packageType: string): number => {
     if (!product) return 0;
-    
-    // AC products use tiered pricing
-    if (product.product_type === 'air_conditioner') {
-      const tier = calculateACPricingTier(product, acQuantity);
-      return tier ? tier.total : 0;
+    switch (packageType) {
+      case '1-5 Pallets': return product.price + 20;
+      case '5-10 Pallets': return product.price + 15;
+      case '20ft Container':
+      case '40ft Container':
+      case 'Truck Load (53ft)': return product.price;
+      default: return product.price + 20;
     }
-    
-    if (!packaging) {
-      console.log('getCurrentPrice: No packaging or product', { packaging, hasProduct: !!product });
-      return product?.price || 0;
-    }
-    const price = calculateBulkPrice(packaging);
-    console.log('getCurrentPrice result:', price, 'for packaging:', packaging);
-    return price;
   };
 
-  // Get AC unit price for display
-  const getACUnitPrice = (): number => {
-    if (!product || product.product_type !== 'air_conditioner') return 0;
-    const tier = calculateACPricingTier(product, acQuantity);
-    return tier ? tier.unitPrice : 0;
+  // Get packaging description text
+  const getPackagingDescription = (packageType: string): string => {
+    switch (packageType) {
+      case '1-5 Pallets': return `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
+      case '5-10 Pallets': return `${palletQuantity} pallets · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
+      case '20ft Container': return `${CONTAINER_20FT.pallets} pallets · ${CONTAINER_20FT.cylinders.toLocaleString()} cylinders`;
+      case '40ft Container': return `${CONTAINER_40FT.pallets} pallets · ${CONTAINER_40FT.cylinders.toLocaleString()} cylinders`;
+      case 'Truck Load (53ft)': return `${TRUCK_LOAD.pallets} pallets · ${TRUCK_LOAD.cylinders.toLocaleString()} cylinders`;
+      default: return '';
+    }
   };
 
-  const getDiscountPercentage = (): number => {
-    if (!packaging || !product) return 0;
-
-    // Accessory discount percentages
-    if (product.product_type === 'accessory') {
-      if (packaging === '5-Pack') return 5;
-      if (packaging === '10-Pack') return 15;
-      return 0;
-    }
-    
-    const currentPrice = getCurrentPrice();
-    // Calculate discount percentage based on equivalent cylinder pricing
-    if (packaging === '20ft Container') {
-      const equivalentPrice = product.price * 1140;
-      return Math.round(((equivalentPrice - currentPrice) / equivalentPrice) * 100);
-    } else if (packaging === '40ft Container') {
-      const equivalentPrice = product.price * 2280;
-      return Math.round(((equivalentPrice - currentPrice) / equivalentPrice) * 100);
-    }
-    
-    return 0; // No discount for pallet
-  };
+  // Reset pallet quantity when packaging changes
+  React.useEffect(() => {
+    if (packaging === '1-5 Pallets') setPalletQuantity(1);
+    else if (packaging === '5-10 Pallets') setPalletQuantity(5);
+  }, [packaging]);
 
   // Show loading state while products are being fetched
   if (products.length === 0) {

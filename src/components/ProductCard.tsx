@@ -43,64 +43,56 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [selectedPackaging, setSelectedPackaging] = useState(
-    product.packaging_options?.[0] || (product.product_type === 'accessory' ? 'Individual' : '1 Pallet')
+    product.packaging_options?.[0] || (product.product_type === 'accessory' ? 'Individual' : '1-5 Pallets')
   );
 
   const existingItem = items.find(item => item.id === product.id);
   const cartQuantity = existingItem?.quantity || 0;
+
+  // Container/Truck constants
+  const CYLINDERS_PER_PALLET = 40;
+  const CONTAINER_20FT_CYL = 1120;
+  const CONTAINER_40FT_CYL = 2240;
+  const TRUCK_LOAD_CYL = 1760;
 
   const calculateBulkPrice = (packageType: string): number => {
     // Handle accessories differently
     if (product.product_type === 'accessory') {
       const basePrice = product.price;
       switch (packageType) {
-        case 'Individual':
-          return basePrice;
-        case '5-Pack':
-          return basePrice * 5 * 0.95; // 5% discount for 5 units
-        case '10-Pack':
-          return basePrice * 10 * 0.85; // 15% discount for 10+ units
-        default:
-          return basePrice;
+        case 'Individual': return basePrice;
+        case '5-Pack': return basePrice * 5 * 0.95;
+        case '10-Pack': return basePrice * 10 * 0.85;
+        default: return basePrice;
       }
     }
     
-    // Original refrigerant logic
-    const cylinderPrice = product.price; // Base price is per cylinder
-    const discount20ft = product.discount_20ft || 0.30;
-    const discount40ft = product.discount_40ft || 0.45;
-    
+    // Refrigerant 3-tier pricing
+    const basePrice = product.price;
     switch (packageType) {
-      case '1 Pallet':
-        // 40 cylinders per pallet - use custom pallet price if available, otherwise calculate
-        return product.pallet_price || (cylinderPrice * 40);
+      case '1-5 Pallets':
+        return (basePrice + 20) * CYLINDERS_PER_PALLET * quantity;
+      case '5-10 Pallets':
+        return (basePrice + 15) * CYLINDERS_PER_PALLET * quantity;
       case '20ft Container':
-        // 1140 cylinders per 20ft container with discount
-        const fullPrice20ft = cylinderPrice * 1140;
-        return product.container_20ft_price || (fullPrice20ft * (1 - discount20ft));
+        return basePrice * CONTAINER_20FT_CYL;
       case '40ft Container':
-        // 2280 cylinders per 40ft container with discount
-        const fullPrice40ft = cylinderPrice * 2280;
-        return product.container_40ft_price || (fullPrice40ft * (1 - discount40ft));
+        return basePrice * CONTAINER_40FT_CYL;
+      case 'Truck Load (53ft)':
+        return basePrice * TRUCK_LOAD_CYL;
       default:
-        return cylinderPrice * 40; // Default to pallet pricing
+        return (basePrice + 20) * CYLINDERS_PER_PALLET;
     }
   };
 
   const getCurrentPrice = () => calculateBulkPrice(selectedPackaging);
   const getDiscountPercentage = () => {
-    // Handle accessories differently
     if (product.product_type === 'accessory') {
       if (selectedPackaging === '5-Pack') return 5;
       if (selectedPackaging === '10-Pack') return 15;
       return 0;
     }
-    
-    // Original refrigerant logic
-    const discount20ft = product.discount_20ft || 0.30;
-    const discount40ft = product.discount_40ft || 0.45;
-    if (selectedPackaging === '20ft Container') return Math.round(discount20ft * 100);
-    if (selectedPackaging === '40ft Container') return Math.round(discount40ft * 100);
+    // No discount percentages shown for refrigerants in new pricing
     return 0;
   };
 
