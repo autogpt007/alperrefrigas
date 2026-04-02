@@ -383,7 +383,7 @@ const ProductDetails = () => {
     : [
         {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "Our minimum order quantity (MOQ) is 40 cylinders per pallet. We also offer 20ft containers (1,140 cylinders) and 40ft containers (2,280 cylinders) with bulk discounts."
+          answer: "Our minimum order is 1 pallet (40 cylinders). We offer tiered volume pricing: 1-5 pallets, 5-10 pallets, 20ft containers (28 pallets / 1,120 cylinders), 40ft containers (56 pallets / 2,240 cylinders), and truck loads (44 pallets / 1,760 cylinders)."
         },
         {
           question: `Is ${product.name} EPA approved?`,
