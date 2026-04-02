@@ -133,6 +133,7 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
+      <>
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
         <title>Shopping Cart | Alper Refrigerants</title>
@@ -152,6 +153,7 @@ const CartPage = () => {
           </Link>
         </div>
       </div>
+      </>
     );
   }
 
