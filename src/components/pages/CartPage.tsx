@@ -264,6 +264,7 @@ const CartPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
