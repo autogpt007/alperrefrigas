@@ -280,7 +280,6 @@ const SEOComponent: React.FC<SEOProps> = ({
       { "@type": "Country", "name": "Australia" },
       { "@type": "AdministrativeArea", "name": "European Union" }
     ],
-    "currenciesAccepted": ["USD", "EUR", "GBP", "AUD", "CAD"],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Refrigerant Products",
