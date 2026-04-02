@@ -580,12 +580,16 @@ const ProductDetails = () => {
                 </div>
               ) : (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 mb-1">Starting Price</p>
+                  <p className="text-sm text-blue-800 mb-1">
+                    {product.product_type === 'accessory' ? 'Starting Price' : 'Best Price (Full Load)'}
+                  </p>
                   <p className="text-lg font-semibold text-blue-900">
                     {formatPrice(product.price)}/{product.product_type === 'accessory' ? 'piece' : 'cylinder'}
                   </p>
                   <p className="text-xs text-blue-600">
-                    {product.product_type === 'accessory' ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' : 'Bulk discounts available for containers'}
+                    {product.product_type === 'accessory' 
+                      ? 'Quantity discounts available (5% for 5-pack, 15% for 10-pack)' 
+                      : 'Volume pricing available — order more pallets for better rates'}
                   </p>
                 </div>
               )}
@@ -604,27 +608,22 @@ const ProductDetails = () => {
                             <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium">
                               {getDiscountPercentage()}% OFF
                             </span>
-                            <span className="text-lg text-gray-500 line-through">
-                              {product.product_type === 'accessory' ? (
-                                packaging === '5-Pack' ? formatPrice(product.price * 5) :
-                                packaging === '10-Pack' ? formatPrice(product.price * 10) : formatPrice(product.price)
-                              ) : (
-                                formatPrice(product.price * (packaging === '1 Pallet' ? 40 : packaging === '20ft Container' ? 1140 : 2280))
-                              )}
-                            </span>
                           </div>
                         )}
                       </div>
                       <div className="text-sm text-gray-600">
-                        {packaging === '1 Pallet' && '40 cylinders per pallet'}
-                        {packaging === '20ft Container' && '1,140 cylinders per container'}  
-                        {packaging === '40ft Container' && '2,280 cylinders per container'}
+                        {product.product_type !== 'accessory' && getPackagingDescription(packaging)}
+                        {product.product_type !== 'accessory' && packaging && (
+                          <span className="ml-2 text-gray-400">
+                            ({formatPrice(getPerCylinderPrice(packaging))}/cylinder)
+                          </span>
+                        )}
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                       <p className="text-gray-500 text-lg font-medium">Select packaging to see pricing</p>
-                      <p className="text-sm text-gray-400 mt-1">Bulk discounts available</p>
+                      <p className="text-sm text-gray-400 mt-1">Volume pricing available</p>
                     </div>
                   )}
                 </div>
