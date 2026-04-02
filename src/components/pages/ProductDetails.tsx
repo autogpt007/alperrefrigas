@@ -154,6 +154,31 @@ const ProductDetails = () => {
     else if (packaging === '5-10 Pallets') setPalletQuantity(5);
   }, [packaging]);
 
+  const getCurrentPrice = (): number => {
+    if (!product) return 0;
+    if (product.product_type === 'air_conditioner') {
+      const tier = calculateACPricingTier(product, acQuantity);
+      return tier ? tier.total : 0;
+    }
+    if (!packaging) return product?.price || 0;
+    return calculateBulkPrice(packaging, palletQuantity);
+  };
+
+  const getACUnitPrice = (): number => {
+    if (!product || product.product_type !== 'air_conditioner') return 0;
+    const tier = calculateACPricingTier(product, acQuantity);
+    return tier ? tier.unitPrice : 0;
+  };
+
+  const getDiscountPercentage = (): number => {
+    if (!packaging || !product) return 0;
+    if (product.product_type === 'accessory') {
+      if (packaging === '5-Pack') return 5;
+      if (packaging === '10-Pack') return 15;
+    }
+    return 0;
+  };
+
   // Show loading state while products are being fetched
   if (products.length === 0) {
     return (
