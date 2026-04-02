@@ -133,6 +133,11 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Shopping Cart | Alper Refrigerants</title>
+        <link rel="alternate" hrefLang="x-default" href="https://alperrefrigas.com/cart" />
+      </Helmet>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto text-center">
           <ShoppingCart className="h-24 w-24 text-gray-400 mx-auto mb-6" />
