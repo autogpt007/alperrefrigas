@@ -751,25 +751,25 @@ const ProductDetails = () => {
                       </div>
 
                       {/* Pallet quantity selector for tier 1 and 2 */}
-                      {product.product_type === 'refrigerant' && (packaging === '1-5 Pallets' || packaging === '5-10 Pallets') && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Number of Pallets
-                          </label>
-                          <div className="flex items-center space-x-3">
-                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '5-10 Pallets' ? 5 : 1, palletQuantity - 1))}>
-                              -
-                            </Button>
-                            <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
-                            <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-5 Pallets' ? 5 : 10, palletQuantity + 1))}>
-                              +
-                            </Button>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
-                          </p>
-                        </div>
-                      )}
+                      {product.product_type === 'refrigerant' && (packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
+                         <div>
+                           <label className="block text-sm font-medium text-gray-700 mb-2">
+                             Number of Pallets
+                           </label>
+                           <div className="flex items-center space-x-3">
+                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '10-20 Pallets' ? 10 : 1, palletQuantity - 1))}>
+                               -
+                             </Button>
+                             <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
+                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-10 Pallets' ? 10 : 20, palletQuantity + 1))}>
+                               +
+                             </Button>
+                           </div>
+                           <p className="text-xs text-gray-500 mt-1">
+                             {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
+                           </p>
+                         </div>
+                       )}
 
                       {/* Quantity selector - for accessories and legacy */}
                       {product.product_type !== 'refrigerant' && (
