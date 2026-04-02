@@ -280,7 +280,6 @@ const SEOComponent: React.FC<SEOProps> = ({
       { "@type": "Country", "name": "Australia" },
       { "@type": "AdministrativeArea", "name": "European Union" }
     ],
-    "currenciesAccepted": ["USD", "EUR", "GBP", "AUD", "CAD"],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Refrigerant Products",
@@ -354,8 +353,6 @@ const SEOComponent: React.FC<SEOProps> = ({
       "https://www.facebook.com/alperrefrigerants",
       "https://www.linkedin.com/company/alperrefrigerants"
     ],
-    "keywords": "refrigerant, wholesale, EPA approved, HVAC, R134a, R410A, R404A, R22, bulk refrigerant, industrial refrigerant, commercial refrigerant, B2B refrigerant supplier",
-    "slogan": "Professional Refrigerant Solutions with Bulk Pricing and Fast Shipping",
     "potentialAction": {
       "@type": "SearchAction",
       "target": `${siteUrl}/products?search={search_term_string}`,
