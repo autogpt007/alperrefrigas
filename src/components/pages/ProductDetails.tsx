@@ -688,56 +688,40 @@ const ProductDetails = () => {
                 </div>
               ) : null}
 
-              {/* Refrigerant Pricing Display */}
-              {product.product_type === 'refrigerant' && (
-                <div className="mb-4">
-                  {packaging ? (
-                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                       <div className="flex items-center gap-2 mb-3">
-                         <Badge className="bg-blue-600 text-white text-xs">{packaging}</Badge>
-                         {(packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
-                           <span className="text-sm text-muted-foreground">× {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''}</span>
-                         )}
-                       </div>
-                       {/* Per-cylinder price is the HERO */}
-                       <p className="text-4xl font-bold text-blue-700 mb-1">
-                         {formatPrice(getPerCylinderPrice(packaging))}<span className="text-lg font-medium text-blue-500">/cylinder</span>
-                       </p>
-                       {/* Total cost shown second */}
-                       <p className="text-lg text-muted-foreground font-medium mb-2">
-                         Total: {formatPrice(getCurrentPrice())}
-                       </p>
-                       <p className="text-sm text-muted-foreground">
-                         {getPackagingDescription(packaging)}
-                       </p>
-                       {packaging !== '20ft Container' && packaging !== '40ft Container' && packaging !== 'Truck Load (53ft)' && (
-                         <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
-                           💡 Best price at full load: {formatPrice(product.price)}/cyl
-                         </p>
-                       )}
-                     </div>
-                   ) : (
-                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                       <p className="text-sm font-semibold text-blue-800 mb-3">Volume Pricing (per cylinder)</p>
-                       <div className="space-y-2">
-                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                           <span className="text-sm text-muted-foreground">1–10 Pallets</span>
-                           <span className="font-semibold text-foreground">{formatPrice(product.price + 20)}/cyl</span>
-                         </div>
-                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                           <span className="text-sm text-muted-foreground">10–20 Pallets</span>
-                           <span className="font-semibold text-foreground">{formatPrice(product.price + 15)}/cyl</span>
-                         </div>
-                         <div className="flex justify-between items-center py-2">
-                           <span className="text-sm text-muted-foreground">Full Load</span>
-                           <span className="font-bold text-emerald-700">{formatPrice(product.price)}/cyl</span>
-                         </div>
-                       </div>
-                       <p className="text-xs text-muted-foreground mt-3 text-center">Select a packaging option below to see your total</p>
-                     </div>
-                   )}
-                </div>
-              )}
+              {/* Refrigerant Pricing Display — driven by palletQuantity */}
+              {product.product_type === 'refrigerant' && (() => {
+                const tier = getTierFromPalletCount(palletQuantity);
+                return (
+                  <div className="mb-4">
+                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge className="bg-primary text-primary-foreground text-xs">{tier.label}</Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''} · {tier.cylinders?.toLocaleString()} cylinders
+                        </span>
+                      </div>
+                      {/* Per-cylinder price is the HERO */}
+                      <p className="text-4xl font-bold text-primary mb-1">
+                        {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
+                      </p>
+                      {/* Total cost shown second */}
+                      <p className="text-lg text-muted-foreground font-medium mb-2">
+                        Total: {formatPrice(tier.total)}
+                      </p>
+                      {tier.markup > 0 && (
+                        <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
+                          💡 Best price at 28+ pallets: {formatPrice(product.price)}/cyl
+                        </p>
+                      )}
+                      {tier.tierHint && (
+                        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                          🚀 {tier.tierHint}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Accessory Pricing Display */}
               {product.product_type === 'accessory' && (
