@@ -143,25 +143,25 @@ serve(async (req: Request) => {
           let priceValid = false;
 
           if (product.product_type === 'refrigerant') {
-            // New 3-tier pricing validation
-            // Build all valid total prices for any pallet quantity
+            // Pallet-count-based pricing validation
+            // Derive pallet count from total: total = (base + markup) * 40 * palletQty
+            const CYLS_PER_PALLET = 40;
             const validPrices: number[] = [];
-            
-            // Tier 1: 1-10 pallets
+
+            // Tier 1: 1-10 pallets → base + $20/cyl
             for (let pq = 1; pq <= 10; pq++) {
-              validPrices.push((basePrice + 20) * CYLINDERS_PER_PALLET * pq);
+              validPrices.push((basePrice + 20) * CYLS_PER_PALLET * pq);
             }
-            // Tier 2: 10-20 pallets
-            for (let pq = 10; pq <= 20; pq++) {
-              validPrices.push((basePrice + 15) * CYLINDERS_PER_PALLET * pq);
+            // Tier 2: 11-27 pallets → base + $15/cyl
+            for (let pq = 11; pq <= 27; pq++) {
+              validPrices.push((basePrice + 15) * CYLS_PER_PALLET * pq);
             }
-            // Tier 3: containers/truck
-            validPrices.push(basePrice * CONTAINER_20FT_CYL);
-            validPrices.push(basePrice * CONTAINER_40FT_CYL);
-            validPrices.push(basePrice * TRUCK_LOAD_CYL);
-            
-            // Legacy support: also accept base price variants
-            validPrices.push(basePrice);
+            // Tier 3: 28-56 pallets → base price (container/truck rates)
+            for (let pq = 28; pq <= 56; pq++) {
+              validPrices.push(basePrice * CYLS_PER_PALLET * pq);
+            }
+
+            // Legacy support: also accept old fixed container prices
             if (product.pallet_price != null) validPrices.push(Number(product.pallet_price));
             if (product.container_20ft_price != null) validPrices.push(Number(product.container_20ft_price));
             if (product.container_40ft_price != null) validPrices.push(Number(product.container_40ft_price));
