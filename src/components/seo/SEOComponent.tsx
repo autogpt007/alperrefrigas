@@ -74,7 +74,8 @@ const SEOComponent: React.FC<SEOProps> = ({
   product,
   faq,
   faqData,
-  productData
+  productData,
+  aggregateRating
 }) => {
   const siteUrl = 'https://alperrefrigas.com';
   const businessName = 'Alper Refrigerants';
