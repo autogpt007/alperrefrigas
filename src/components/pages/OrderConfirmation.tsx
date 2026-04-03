@@ -222,6 +222,7 @@ const OrderConfirmation = () => {
           description="Your refrigerant order has been confirmed. Thank you for choosing our professional refrigerant distribution services."
           keywords="order confirmed, refrigerant purchase confirmation, thank you order, HVAC order complete"
           canonicalUrl="/order-confirmation"
+          robotsContent="noindex, nofollow"
         />
         <div className="container mx-auto px-4 py-8 text-center">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
