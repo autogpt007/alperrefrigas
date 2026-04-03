@@ -653,6 +653,7 @@ const CustomerPortal = () => {
         </Tabs>
       </div>
     </div>
+    </>
   );
 };
 

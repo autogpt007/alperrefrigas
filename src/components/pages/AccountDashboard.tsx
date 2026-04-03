@@ -462,6 +462,7 @@ const AccountDashboard = () => {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 };
 
