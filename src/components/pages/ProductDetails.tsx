@@ -359,6 +359,32 @@ const ProductDetails = () => {
       return;
     }
     
+    // Refrigerant: derive from pallet count
+    if (product.product_type === 'refrigerant') {
+      const tier = getTierFromPalletCount(palletQuantity);
+      const packagingLabel = getPalletPackagingLabel(palletQuantity);
+      const cartItemId = `${product.id}-refrigerant-${palletQuantity}p`;
+
+      addToCart({
+        id: cartItemId,
+        name: product.name,
+        price: tier.total,
+        image: product.image || '/placeholder.svg',
+        sku: product.sku || 'N/A',
+        epaApproved: product.epaApproved || false,
+        packaging: packagingLabel,
+        product_type: 'refrigerant'
+      });
+      toast({
+        title: "Added to Cart",
+        description: `${packagingLabel} of ${product.name} added to your cart.`,
+        action: <Button variant="outline" size="sm" onClick={() => navigate('/cart')}>
+            View Cart
+          </Button>
+      });
+      return;
+    }
+
     if (!packaging) {
       toast({
         title: "Please select packaging",
