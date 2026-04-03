@@ -193,6 +193,7 @@ const CryptoPaymentPage = () => {
         title="Complete Your Crypto Payment | Alper"
         description="Complete your cryptocurrency payment securely"
         canonicalUrl="/crypto-payment"
+        robotsContent="noindex, nofollow"
       />
       
       <div className="min-h-screen bg-background">

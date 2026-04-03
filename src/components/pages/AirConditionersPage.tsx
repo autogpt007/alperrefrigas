@@ -35,15 +35,17 @@ const subcategories = [
 const AirConditionersPage: React.FC = () => {
   return (
     <>
-      <Helmet>
-        <title>Wholesale Air Conditioners | Bulk AC | Alper</title>
-        <meta 
-          name="description" 
-          content="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. MOQ 5 units." 
-        />
-        <meta name="keywords" content="wholesale air conditioners, bulk AC units, mini splits wholesale, window AC bulk, portable air conditioner wholesale" />
-        <link rel="canonical" href="https://alperrefrigas.com/products/air-conditioners" />
-      </Helmet>
+      <SEOComponent
+        title="Wholesale Air Conditioners | Bulk AC"
+        description="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. MOQ 5 units."
+        keywords="wholesale air conditioners, bulk AC units, mini splits wholesale, window AC bulk, portable air conditioner wholesale"
+        canonicalUrl="/products/air-conditioners"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Products', url: '/products' },
+          { name: 'Air Conditioners', url: '/products/air-conditioners' }
+        ]}
+      />
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
         {/* Hero Section */}
