@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle, CheckCircle, Minus } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
 import { useCart } from '../../contexts/CartContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
@@ -92,7 +93,47 @@ const ProductDetails = () => {
   const CONTAINER_40FT = { pallets: 56, cylinders: 2240 };
   const TRUCK_LOAD = { pallets: 44, cylinders: 1760 };
 
-  // Bulk pricing calculation functions
+  // --- New pallet-based tier pricing for refrigerants ---
+  const getTierFromPalletCount = (qty: number) => {
+    if (!product) return { markup: 20, label: '1–10 Pallets', perCylinder: 0, total: 0, tierHint: '' };
+    const base = product.price;
+    let markup = 20;
+    let label = '1–10 Pallets';
+    let tierHint = '';
+
+    if (qty >= 28) {
+      markup = 0;
+      if (qty === 28) label = '20ft Container';
+      else if (qty === 44) label = 'Truck Load';
+      else if (qty === 56) label = '40ft Container';
+      else label = `${qty} Pallets (Container Rate)`;
+    } else if (qty >= 11) {
+      markup = 15;
+      label = '11–27 Pallets';
+      const needed = 28 - qty;
+      tierHint = `Add ${needed} more pallet${needed > 1 ? 's' : ''} to unlock container pricing`;
+    } else {
+      markup = 20;
+      label = '1–10 Pallets';
+      if (qty >= 8) {
+        tierHint = `Add ${11 - qty} more pallet${11 - qty > 1 ? 's' : ''} to get the mid-volume rate`;
+      }
+    }
+    const perCylinder = base + markup;
+    const cylinders = qty * CYLINDERS_PER_PALLET;
+    const total = perCylinder * cylinders;
+    return { markup, label, perCylinder, total, tierHint, cylinders };
+  };
+
+  // Derive packaging label from pallet count
+  const getPalletPackagingLabel = (qty: number): string => {
+    if (qty === 28) return '20ft Container (1,120 cylinders)';
+    if (qty === 44) return 'Truck Load (1,760 cylinders)';
+    if (qty === 56) return '40ft Container (2,240 cylinders)';
+    return `${qty} Pallet${qty > 1 ? 's' : ''} (${qty * CYLINDERS_PER_PALLET} cylinders)`;
+  };
+
+  // Legacy bulk pricing for accessories
   const calculateBulkPrice = (packageType: string, palletQty: number = palletQuantity): number => {
     if (!product) return 0;
 
@@ -106,61 +147,18 @@ const ProductDetails = () => {
       return price;
     }
     
-    // Refrigerant pricing: 3-tier pallet-based system
-    const basePrice = product.price; // Base price per cylinder (container-load price)
-    
-    switch (packageType) {
-      case '1-10 Pallets':
-        return (basePrice + 20) * CYLINDERS_PER_PALLET * palletQty;
-      case '10-20 Pallets':
-        return (basePrice + 15) * CYLINDERS_PER_PALLET * palletQty;
-      case '20ft Container':
-        return basePrice * CONTAINER_20FT.cylinders;
-      case '40ft Container':
-        return basePrice * CONTAINER_40FT.cylinders;
-      case 'Truck Load (53ft)':
-        return basePrice * TRUCK_LOAD.cylinders;
-      default:
-        return basePrice * CYLINDERS_PER_PALLET;
-    }
+    // Refrigerant: use new tier system
+    return getTierFromPalletCount(palletQty).total;
   };
-
-  // Get per-cylinder price for the selected tier
-  const getPerCylinderPrice = (packageType: string): number => {
-    if (!product) return 0;
-    switch (packageType) {
-      case '1-10 Pallets': return product.price + 20;
-      case '10-20 Pallets': return product.price + 15;
-      case '20ft Container':
-      case '40ft Container':
-      case 'Truck Load (53ft)': return product.price;
-      default: return product.price + 20;
-    }
-  };
-
-  // Get packaging description text
-  const getPackagingDescription = (packageType: string): string => {
-    switch (packageType) {
-      case '1-10 Pallets': return `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
-      case '10-20 Pallets': return `${palletQuantity} pallets · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
-      case '20ft Container': return `${CONTAINER_20FT.pallets} pallets · ${CONTAINER_20FT.cylinders.toLocaleString()} cylinders`;
-      case '40ft Container': return `${CONTAINER_40FT.pallets} pallets · ${CONTAINER_40FT.cylinders.toLocaleString()} cylinders`;
-      case 'Truck Load (53ft)': return `${TRUCK_LOAD.pallets} pallets · ${TRUCK_LOAD.cylinders.toLocaleString()} cylinders`;
-      default: return '';
-    }
-  };
-
-  // Reset pallet quantity when packaging changes
-  React.useEffect(() => {
-    if (packaging === '1-10 Pallets') setPalletQuantity(1);
-    else if (packaging === '10-20 Pallets') setPalletQuantity(10);
-  }, [packaging]);
 
   const getCurrentPrice = (): number => {
     if (!product) return 0;
     if (product.product_type === 'air_conditioner') {
       const tier = calculateACPricingTier(product, acQuantity);
       return tier ? tier.total : 0;
+    }
+    if (product.product_type === 'refrigerant') {
+      return getTierFromPalletCount(palletQuantity).total;
     }
     if (!packaging) return product?.price || 0;
     return calculateBulkPrice(packaging, palletQuantity);
@@ -248,6 +246,23 @@ const ProductDetails = () => {
   // Create SEO-friendly canonical URL
   const canonicalUrl = `/products/${createProductSlug(product.name)}`;
   const handleAddToRFQ = () => {
+    // Refrigerants derive packaging from pallet count
+    if (product.product_type === 'refrigerant') {
+      const packagingLabel = getPalletPackagingLabel(palletQuantity);
+      addToRFQ({
+        productId: product.id,
+        productName: product.name,
+        quantity: 1,
+        packaging: packagingLabel,
+        imageUrl: product.image
+      });
+      toast({
+        title: "Added to Quote Request",
+        description: `${packagingLabel} of ${product.name} added to your quote request.`
+      });
+      return;
+    }
+
     if (!packaging) {
       toast({
         title: "Please select packaging",
@@ -344,6 +359,32 @@ const ProductDetails = () => {
       return;
     }
     
+    // Refrigerant: derive from pallet count
+    if (product.product_type === 'refrigerant') {
+      const tier = getTierFromPalletCount(palletQuantity);
+      const packagingLabel = getPalletPackagingLabel(palletQuantity);
+      const cartItemId = `${product.id}-refrigerant-${palletQuantity}p`;
+
+      addToCart({
+        id: cartItemId,
+        name: product.name,
+        price: tier.total,
+        image: product.image || '/placeholder.svg',
+        sku: product.sku || 'N/A',
+        epaApproved: product.epaApproved || false,
+        packaging: packagingLabel,
+        product_type: 'refrigerant'
+      });
+      toast({
+        title: "Added to Cart",
+        description: `${packagingLabel} of ${product.name} added to your cart.`,
+        action: <Button variant="outline" size="sm" onClick={() => navigate('/cart')}>
+            View Cart
+          </Button>
+      });
+      return;
+    }
+
     if (!packaging) {
       toast({
         title: "Please select packaging",
@@ -647,56 +688,40 @@ const ProductDetails = () => {
                 </div>
               ) : null}
 
-              {/* Refrigerant Pricing Display */}
-              {product.product_type === 'refrigerant' && (
-                <div className="mb-4">
-                  {packaging ? (
-                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                       <div className="flex items-center gap-2 mb-3">
-                         <Badge className="bg-blue-600 text-white text-xs">{packaging}</Badge>
-                         {(packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
-                           <span className="text-sm text-muted-foreground">× {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''}</span>
-                         )}
-                       </div>
-                       {/* Per-cylinder price is the HERO */}
-                       <p className="text-4xl font-bold text-blue-700 mb-1">
-                         {formatPrice(getPerCylinderPrice(packaging))}<span className="text-lg font-medium text-blue-500">/cylinder</span>
-                       </p>
-                       {/* Total cost shown second */}
-                       <p className="text-lg text-muted-foreground font-medium mb-2">
-                         Total: {formatPrice(getCurrentPrice())}
-                       </p>
-                       <p className="text-sm text-muted-foreground">
-                         {getPackagingDescription(packaging)}
-                       </p>
-                       {packaging !== '20ft Container' && packaging !== '40ft Container' && packaging !== 'Truck Load (53ft)' && (
-                         <p className="text-xs text-emerald-600 mt-3 flex items-center gap-1">
-                           💡 Best price at full load: {formatPrice(product.price)}/cyl
-                         </p>
-                       )}
-                     </div>
-                   ) : (
-                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
-                       <p className="text-sm font-semibold text-blue-800 mb-3">Volume Pricing (per cylinder)</p>
-                       <div className="space-y-2">
-                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                           <span className="text-sm text-muted-foreground">1–10 Pallets</span>
-                           <span className="font-semibold text-foreground">{formatPrice(product.price + 20)}/cyl</span>
-                         </div>
-                         <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                           <span className="text-sm text-muted-foreground">10–20 Pallets</span>
-                           <span className="font-semibold text-foreground">{formatPrice(product.price + 15)}/cyl</span>
-                         </div>
-                         <div className="flex justify-between items-center py-2">
-                           <span className="text-sm text-muted-foreground">Full Load</span>
-                           <span className="font-bold text-emerald-700">{formatPrice(product.price)}/cyl</span>
-                         </div>
-                       </div>
-                       <p className="text-xs text-muted-foreground mt-3 text-center">Select a packaging option below to see your total</p>
-                     </div>
-                   )}
-                </div>
-              )}
+              {/* Refrigerant Pricing Display — driven by palletQuantity */}
+              {product.product_type === 'refrigerant' && (() => {
+                const tier = getTierFromPalletCount(palletQuantity);
+                return (
+                  <div className="mb-4">
+                    <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge className="bg-primary text-primary-foreground text-xs">{tier.label}</Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''} · {tier.cylinders?.toLocaleString()} cylinders
+                        </span>
+                      </div>
+                      {/* Per-cylinder price is the HERO */}
+                      <p className="text-4xl font-bold text-primary mb-1">
+                        {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
+                      </p>
+                      {/* Total cost shown second */}
+                      <p className="text-lg text-muted-foreground font-medium mb-2">
+                        Total: {formatPrice(tier.total)}
+                      </p>
+                      {tier.markup > 0 && (
+                        <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
+                          💡 Best price at 28+ pallets: {formatPrice(product.price)}/cyl
+                        </p>
+                      )}
+                      {tier.tierHint && (
+                        <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                          🚀 {tier.tierHint}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Accessory Pricing Display */}
               {product.product_type === 'accessory' && (
@@ -775,11 +800,88 @@ const ProductDetails = () => {
                         </Button>
                       </div>
                     </>
+                  ) : product.product_type === 'refrigerant' ? (
+                    <>
+                      {/* Refrigerant: Pallet quantity slider */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          How many pallets do you need?
+                        </label>
+                        <div className="flex items-center space-x-3 mb-3">
+                          <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(1, palletQuantity - 1))}>
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="text-2xl font-bold w-16 text-center text-foreground">{palletQuantity}</span>
+                          <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(56, palletQuantity + 1))}>
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Slider
+                          value={[palletQuantity]}
+                          onValueChange={(val) => setPalletQuantity(val[0])}
+                          min={1}
+                          max={56}
+                          step={1}
+                          className="mb-2"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {palletQuantity * CYLINDERS_PER_PALLET} cylinders · {CYLINDERS_PER_PALLET} per pallet
+                        </p>
+                      </div>
+
+                      {/* Full Load quick-select buttons */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Or choose a full load
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                          <Button
+                            variant={palletQuantity === 28 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(28)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            20ft (28)
+                          </Button>
+                          <Button
+                            variant={palletQuantity === 56 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(56)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            40ft (56)
+                          </Button>
+                          <Button
+                            variant={palletQuantity === 44 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(44)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            Truck (44)
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 pt-4 border-t">
+                        <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
+                        </Button>
+
+                        <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Request Quote
+                        </Button>
+                      </div>
+                    </>
                   ) : (
                     <>
-                      {/* Non-AC products: Packaging selector */}
+                      {/* Accessory products: Packaging selector */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-foreground mb-2">
                           Packaging Type *
                         </label>
                         <Select value={packaging} onValueChange={setPackaging}>
@@ -792,8 +894,8 @@ const ProductDetails = () => {
                                 <div className="flex justify-between items-center w-full">
                                   <span>{pkg}</span>
                                   <div className="ml-4 text-right">
-                                    <span className="font-semibold text-blue-600">
-                                      {formatPrice(calculateBulkPrice(pkg, pkg === '5-10 Pallets' ? 5 : 1))}
+                                    <span className="font-semibold text-primary">
+                                      {formatPrice(calculateBulkPrice(pkg, 1))}
                                     </span>
                                     {product.product_type === 'accessory' ? (
                                       pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
@@ -807,44 +909,21 @@ const ProductDetails = () => {
                         </Select>
                       </div>
 
-                      {/* Pallet quantity selector for tier 1 and 2 */}
-                      {product.product_type === 'refrigerant' && (packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
-                         <div>
-                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                             Number of Pallets
-                           </label>
-                           <div className="flex items-center space-x-3">
-                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '10-20 Pallets' ? 10 : 1, palletQuantity - 1))}>
-                               -
-                             </Button>
-                             <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
-                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-10 Pallets' ? 10 : 20, palletQuantity + 1))}>
-                               +
-                             </Button>
-                           </div>
-                           <p className="text-xs text-gray-500 mt-1">
-                             {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
-                           </p>
-                         </div>
-                       )}
-
-                      {/* Quantity selector - for accessories and legacy */}
-                      {product.product_type !== 'refrigerant' && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Quantity
-                          </label>
-                          <div className="flex items-center space-x-3">
-                            <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                              -
-                            </Button>
-                            <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                            <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                              +
-                            </Button>
-                          </div>
+                      {/* Quantity selector - for accessories */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Quantity
+                        </label>
+                        <div className="flex items-center space-x-3">
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                            -
+                          </Button>
+                          <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
+                            +
+                          </Button>
                         </div>
-                      )}
+                      </div>
 
                       <div className="space-y-3">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
