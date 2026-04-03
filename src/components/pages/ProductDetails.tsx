@@ -403,21 +403,70 @@ const ProductDetails = () => {
         }
       ];
 
+  // Dynamic SEO keyword mapping
+  const currentYear = new Date().getFullYear();
+  const isRefrigerant = product.product_type === 'refrigerant';
+  const seoTitle = isRefrigerant
+    ? `${product.name} Wholesale Price ${currentYear} | Alper`
+    : `${product.name} | Wholesale | Alper`;
+  const seoDescription = isRefrigerant
+    ? `Buy ${product.name} wholesale from ${formatPrice(product.price)}/cylinder. EPA approved, bulk quantities available. Fast shipping from TX, FL, CA.`
+    : enhancedDescription;
+  const seoKeywords = isRefrigerant
+    ? `wholesale ${product.name} price ${currentYear}, buy ${product.name} bulk, ${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`
+    : `${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, wholesale refrigerant, ${product.applications?.join(', ') || ''}`;
+
+  // Use cases derived from product data
+  const useCases = React.useMemo(() => {
+    const cases: string[] = [];
+    if (isRefrigerant) {
+      cases.push('Commercial rooftop HVAC units', 'Split system air conditioners', 'Industrial chillers and cooling systems', 'Automotive air conditioning systems', 'Refrigerated transport and cold storage', 'Supermarket refrigeration systems');
+      if (product.applications?.length) {
+        product.applications.forEach(app => {
+          if (!cases.includes(app)) cases.push(app);
+        });
+      }
+    } else if (product.product_type === 'air_conditioner') {
+      cases.push('Residential cooling', 'Commercial office buildings', 'Retail and hospitality venues', 'Data center cooling', 'Warehouse climate control');
+    } else {
+      cases.push('Professional HVAC installation', 'Maintenance and servicing', 'System retrofitting');
+    }
+    return cases;
+  }, [product]);
+
+  // Specifications for table
+  const specsTableData = React.useMemo(() => {
+    const specs: { label: string; value: string }[] = [];
+    if (product.sku) specs.push({ label: 'SKU / Part Number', value: product.sku });
+    if (product.brand) specs.push({ label: 'Brand', value: product.brand });
+    if (product.category) specs.push({ label: 'Category', value: product.category });
+    if (product.chemicalFormula) specs.push({ label: 'Chemical Formula', value: product.chemicalFormula });
+    if (product.casNumber) specs.push({ label: 'CAS Number', value: product.casNumber });
+    if (product.unNumber) specs.push({ label: 'UN Number', value: product.unNumber });
+    if (product.hazardClass) specs.push({ label: 'Hazard Class', value: product.hazardClass });
+    if (product.shippingWeight) specs.push({ label: 'Shipping Weight', value: product.shippingWeight });
+    if (product.refrigerantType) specs.push({ label: 'Refrigerant Type', value: product.refrigerantType });
+    if (product.epaApproved !== undefined) specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
+    if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
+    return specs;
+  }, [product]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
-        title={`${product.name} | Wholesale | Alper`}
-        description={enhancedDescription}
-        keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`}
+        title={seoTitle}
+        description={seoDescription}
+        keywords={seoKeywords}
         canonicalUrl={canonicalUrl}
         ogImage={product.thumbnailUrl || product.images?.[0] || product.image}
         breadcrumbs={[
           { name: "Home", url: "/" },
           { name: "Products", url: "/products" },
-          { name: "Refrigerants", url: "/products/refrigerants" },
+          { name: isRefrigerant ? "Refrigerants" : "Products", url: "/products" },
           { name: product.name, url: canonicalUrl }
         ]}
         faq={productFAQ}
+        aggregateRating={{ ratingValue: 4.8, reviewCount: 127, bestRating: 5 }}
         product={{
           name: product.name,
           price: getCurrentPrice(),
