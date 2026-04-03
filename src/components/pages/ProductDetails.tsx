@@ -913,6 +913,88 @@ const ProductDetails = () => {
               </Card>}
           </div>
         </div>
+
+        {/* SEO Content Sections - Use Cases, Specs Table, FAQ */}
+        <div className="mt-12 space-y-8">
+          {/* Use Cases & Compatibility */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                Use Cases &amp; Compatibility — {product.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                {isRefrigerant
+                  ? `${product.name} is a ${product.category || 'professional-grade'} refrigerant widely used across residential, commercial, and industrial HVAC-R systems. It is compatible with a broad range of equipment from major manufacturers and is suitable for both new installations and retrofit applications.`
+                  : `${product.name} is designed for professional HVAC applications, delivering reliable performance across a range of commercial and residential systems.`}
+              </p>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {useCases.map((useCase, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>{useCase}</span>
+                  </li>
+                ))}
+              </ul>
+              {isRefrigerant && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  All {product.name} shipments comply with DOT hazardous materials regulations (49 CFR) and EPA Section 608 requirements. Purchasers must hold valid EPA certification.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Full Specifications Table */}
+          {specsTableData.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Complete Specifications — {product.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-1/3">Specification</TableHead>
+                      <TableHead>Value</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {specsTableData.map((spec, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">{spec.label}</TableCell>
+                        <TableCell>{spec.value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* FAQ Accordion */}
+          {productFAQ.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Frequently Asked Questions — {product.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {productFAQ.map((faqItem, idx) => (
+                    <AccordionItem key={idx} value={`faq-${idx}`}>
+                      <AccordionTrigger>{faqItem.question}</AccordionTrigger>
+                      <AccordionContent>{faqItem.answer}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
