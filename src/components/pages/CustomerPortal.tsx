@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import SEOComponent from '../seo/SEOComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -159,6 +159,13 @@ const CustomerPortal = () => {
   }
 
   return (
+    <>
+    <SEOComponent
+      title="Customer Portal"
+      description="Access your orders, quotes, and account settings at Alper Refrigerants."
+      robotsContent="noindex, nofollow"
+      canonicalUrl="/customer-portal"
+    />
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -646,6 +653,7 @@ const CustomerPortal = () => {
         </Tabs>
       </div>
     </div>
+    </>
   );
 };
 

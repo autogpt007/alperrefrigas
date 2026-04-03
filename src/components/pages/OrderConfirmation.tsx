@@ -203,6 +203,7 @@ const OrderConfirmation = () => {
           description="Your refrigerant order is being processed. Track your order status and get updates on delivery."
           keywords="order confirmation, refrigerant order tracking, HVAC order status, order processing"
           canonicalUrl="/order-confirmation"
+          robotsContent="noindex, nofollow"
         />
         <div className="container mx-auto px-4 py-8 text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -221,6 +222,7 @@ const OrderConfirmation = () => {
           description="Your refrigerant order has been confirmed. Thank you for choosing our professional refrigerant distribution services."
           keywords="order confirmed, refrigerant purchase confirmation, thank you order, HVAC order complete"
           canonicalUrl="/order-confirmation"
+          robotsContent="noindex, nofollow"
         />
         <div className="container mx-auto px-4 py-8 text-center">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
@@ -260,6 +262,7 @@ const OrderConfirmation = () => {
         description={`${isQuote ? 'Your quote request has been submitted' : 'Your order has been confirmed'}. Track your ${isQuote ? 'quote status' : 'order status'} and get updates.`}
         keywords={`${isQuote ? 'quote confirmation' : 'order confirmation'}, refrigerant ${isQuote ? 'quote tracking' : 'order tracking'}, HVAC ${isQuote ? 'quote' : 'order'} status`}
         canonicalUrl="/order-confirmation"
+        robotsContent="noindex, nofollow"
       />
       <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">

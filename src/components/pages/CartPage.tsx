@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEOComponent from '../seo/SEOComponent';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -134,11 +134,12 @@ const CartPage = () => {
   if (items.length === 0) {
     return (
       <>
-      <Helmet>
-        <meta name="robots" content="noindex, nofollow" />
-        <title>Shopping Cart | Alper Refrigerants</title>
-        <link rel="alternate" hrefLang="x-default" href="https://alperrefrigas.com/cart" />
-      </Helmet>
+      <SEOComponent
+        title="Shopping Cart"
+        description="View and manage items in your shopping cart."
+        robotsContent="noindex, nofollow"
+        canonicalUrl="/cart"
+      />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto text-center">
           <ShoppingCart className="h-24 w-24 text-gray-400 mx-auto mb-6" />
@@ -159,11 +160,12 @@ const CartPage = () => {
 
   return (
     <>
-    <Helmet>
-      <meta name="robots" content="noindex, nofollow" />
-      <title>Shopping Cart | Alper Refrigerants</title>
-      <link rel="alternate" hrefLang="x-default" href="https://alperrefrigas.com/cart" />
-    </Helmet>
+    <SEOComponent
+      title="Shopping Cart"
+      description="View and manage items in your shopping cart."
+      robotsContent="noindex, nofollow"
+      canonicalUrl="/cart"
+    />
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">

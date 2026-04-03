@@ -672,6 +672,8 @@ const CheckoutPage = () => {
         title="Secure Checkout - Alper Refrigerant"
         description="Complete your refrigerant order with our secure checkout process. Multiple payment options available including credit card, Zelle, and CashApp."
         keywords="secure checkout, refrigerant purchase, credit card payment, Zelle payment, CashApp payment"
+        robotsContent="noindex, nofollow"
+        canonicalUrl="/checkout"
       />
       
       <div className="container mx-auto px-4 py-8">
