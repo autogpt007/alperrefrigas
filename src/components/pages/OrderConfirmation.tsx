@@ -203,6 +203,7 @@ const OrderConfirmation = () => {
           description="Your refrigerant order is being processed. Track your order status and get updates on delivery."
           keywords="order confirmation, refrigerant order tracking, HVAC order status, order processing"
           canonicalUrl="/order-confirmation"
+          robotsContent="noindex, nofollow"
         />
         <div className="container mx-auto px-4 py-8 text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
