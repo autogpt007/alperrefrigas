@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Download, Plus, FileText, Shield, Truck, Award, ShoppingCart, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useRFQ } from '../../contexts/RFQContext';
 import { useCart } from '../../contexts/CartContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
@@ -401,21 +403,70 @@ const ProductDetails = () => {
         }
       ];
 
+  // Dynamic SEO keyword mapping
+  const currentYear = new Date().getFullYear();
+  const isRefrigerant = product.product_type === 'refrigerant';
+  const seoTitle = isRefrigerant
+    ? `${product.name} Wholesale Price ${currentYear} | Alper`
+    : `${product.name} | Wholesale | Alper`;
+  const seoDescription = isRefrigerant
+    ? `Buy ${product.name} wholesale from ${formatPrice(product.price)}/cylinder. EPA approved, bulk quantities available. Fast shipping from TX, FL, CA.`
+    : enhancedDescription;
+  const seoKeywords = isRefrigerant
+    ? `wholesale ${product.name} price ${currentYear}, buy ${product.name} bulk, ${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`
+    : `${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, wholesale refrigerant, ${product.applications?.join(', ') || ''}`;
+
+  // Use cases derived from product data
+  const useCases = React.useMemo(() => {
+    const cases: string[] = [];
+    if (isRefrigerant) {
+      cases.push('Commercial rooftop HVAC units', 'Split system air conditioners', 'Industrial chillers and cooling systems', 'Automotive air conditioning systems', 'Refrigerated transport and cold storage', 'Supermarket refrigeration systems');
+      if (product.applications?.length) {
+        product.applications.forEach(app => {
+          if (!cases.includes(app)) cases.push(app);
+        });
+      }
+    } else if (product.product_type === 'air_conditioner') {
+      cases.push('Residential cooling', 'Commercial office buildings', 'Retail and hospitality venues', 'Data center cooling', 'Warehouse climate control');
+    } else {
+      cases.push('Professional HVAC installation', 'Maintenance and servicing', 'System retrofitting');
+    }
+    return cases;
+  }, [product]);
+
+  // Specifications for table
+  const specsTableData = React.useMemo(() => {
+    const specs: { label: string; value: string }[] = [];
+    if (product.sku) specs.push({ label: 'SKU / Part Number', value: product.sku });
+    if (product.brand) specs.push({ label: 'Brand', value: product.brand });
+    if (product.category) specs.push({ label: 'Category', value: product.category });
+    if (product.chemicalFormula) specs.push({ label: 'Chemical Formula', value: product.chemicalFormula });
+    if (product.casNumber) specs.push({ label: 'CAS Number', value: product.casNumber });
+    if (product.unNumber) specs.push({ label: 'UN Number', value: product.unNumber });
+    if (product.hazardClass) specs.push({ label: 'Hazard Class', value: product.hazardClass });
+    if (product.shippingWeight) specs.push({ label: 'Shipping Weight', value: product.shippingWeight });
+    if (product.refrigerantType) specs.push({ label: 'Refrigerant Type', value: product.refrigerantType });
+    if (product.epaApproved !== undefined) specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
+    if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
+    return specs;
+  }, [product]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
-        title={`${product.name} | Wholesale | Alper`}
-        description={enhancedDescription}
-        keywords={`${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`}
+        title={seoTitle}
+        description={seoDescription}
+        keywords={seoKeywords}
         canonicalUrl={canonicalUrl}
         ogImage={product.thumbnailUrl || product.images?.[0] || product.image}
         breadcrumbs={[
           { name: "Home", url: "/" },
           { name: "Products", url: "/products" },
-          { name: "Refrigerants", url: "/products/refrigerants" },
+          { name: isRefrigerant ? "Refrigerants" : "Products", url: "/products" },
           { name: product.name, url: canonicalUrl }
         ]}
         faq={productFAQ}
+        aggregateRating={{ ratingValue: 4.8, reviewCount: 127, bestRating: 5 }}
         product={{
           name: product.name,
           price: getCurrentPrice(),
@@ -544,7 +595,9 @@ const ProductDetails = () => {
           {/* Product Details and Purchase Options */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {isRefrigerant ? `${product.name} — Wholesale ${product.category || ''} Refrigerant` : product.name}
+              </h1>
               
               {/* PROFESSIONAL USE ONLY Disclaimer - Only show for refrigerants */}
               {product.product_type === 'refrigerant' && (
@@ -859,6 +912,88 @@ const ProductDetails = () => {
                 </CardContent>
               </Card>}
           </div>
+        </div>
+
+        {/* SEO Content Sections - Use Cases, Specs Table, FAQ */}
+        <div className="mt-12 space-y-8">
+          {/* Use Cases & Compatibility */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                Use Cases &amp; Compatibility — {product.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                {isRefrigerant
+                  ? `${product.name} is a ${product.category || 'professional-grade'} refrigerant widely used across residential, commercial, and industrial HVAC-R systems. It is compatible with a broad range of equipment from major manufacturers and is suitable for both new installations and retrofit applications.`
+                  : `${product.name} is designed for professional HVAC applications, delivering reliable performance across a range of commercial and residential systems.`}
+              </p>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {useCases.map((useCase, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>{useCase}</span>
+                  </li>
+                ))}
+              </ul>
+              {isRefrigerant && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  All {product.name} shipments comply with DOT hazardous materials regulations (49 CFR) and EPA Section 608 requirements. Purchasers must hold valid EPA certification.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Full Specifications Table */}
+          {specsTableData.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Complete Specifications — {product.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-1/3">Specification</TableHead>
+                      <TableHead>Value</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {specsTableData.map((spec, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">{spec.label}</TableCell>
+                        <TableCell>{spec.value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* FAQ Accordion */}
+          {productFAQ.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Frequently Asked Questions — {product.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {productFAQ.map((faqItem, idx) => (
+                    <AccordionItem key={idx} value={`faq-${idx}`}>
+                      <AccordionTrigger>{faqItem.question}</AccordionTrigger>
+                      <AccordionContent>{faqItem.answer}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

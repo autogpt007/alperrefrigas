@@ -35,6 +35,11 @@ interface SEOProps {
     category?: string;
     specifications?: Record<string, any>;
   };
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+    bestRating?: number;
+  };
   faq?: Array<{
     question: string;
     answer: string;
@@ -69,7 +74,8 @@ const SEOComponent: React.FC<SEOProps> = ({
   product,
   faq,
   faqData,
-  productData
+  productData,
+  aggregateRating
 }) => {
   const siteUrl = 'https://alperrefrigas.com';
   const businessName = 'Alper Refrigerants';
@@ -225,6 +231,14 @@ const SEOComponent: React.FC<SEOProps> = ({
         "@type": "PropertyValue",
         "name": "Minimum Order Quantity",
         "value": `${product.moq} cylinders`
+      }
+    }),
+    ...(aggregateRating && {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": aggregateRating.ratingValue,
+        "reviewCount": aggregateRating.reviewCount,
+        "bestRating": aggregateRating.bestRating || 5
       }
     })
   } : null;
