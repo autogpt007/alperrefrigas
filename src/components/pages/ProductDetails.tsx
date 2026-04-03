@@ -800,11 +800,88 @@ const ProductDetails = () => {
                         </Button>
                       </div>
                     </>
+                  ) : product.product_type === 'refrigerant' ? (
+                    <>
+                      {/* Refrigerant: Pallet quantity slider */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          How many pallets do you need?
+                        </label>
+                        <div className="flex items-center space-x-3 mb-3">
+                          <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(1, palletQuantity - 1))}>
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="text-2xl font-bold w-16 text-center text-foreground">{palletQuantity}</span>
+                          <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(56, palletQuantity + 1))}>
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Slider
+                          value={[palletQuantity]}
+                          onValueChange={(val) => setPalletQuantity(val[0])}
+                          min={1}
+                          max={56}
+                          step={1}
+                          className="mb-2"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {palletQuantity * CYLINDERS_PER_PALLET} cylinders · {CYLINDERS_PER_PALLET} per pallet
+                        </p>
+                      </div>
+
+                      {/* Full Load quick-select buttons */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Or choose a full load
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                          <Button
+                            variant={palletQuantity === 28 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(28)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            20ft (28)
+                          </Button>
+                          <Button
+                            variant={palletQuantity === 56 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(56)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            40ft (56)
+                          </Button>
+                          <Button
+                            variant={palletQuantity === 44 ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPalletQuantity(44)}
+                            className="text-xs"
+                          >
+                            <Truck className="h-3 w-3 mr-1" />
+                            Truck (44)
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 pt-4 border-t">
+                        <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
+                        </Button>
+
+                        <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Request Quote
+                        </Button>
+                      </div>
+                    </>
                   ) : (
                     <>
-                      {/* Non-AC products: Packaging selector */}
+                      {/* Accessory products: Packaging selector */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-foreground mb-2">
                           Packaging Type *
                         </label>
                         <Select value={packaging} onValueChange={setPackaging}>
@@ -817,8 +894,8 @@ const ProductDetails = () => {
                                 <div className="flex justify-between items-center w-full">
                                   <span>{pkg}</span>
                                   <div className="ml-4 text-right">
-                                    <span className="font-semibold text-blue-600">
-                                      {formatPrice(calculateBulkPrice(pkg, pkg === '5-10 Pallets' ? 5 : 1))}
+                                    <span className="font-semibold text-primary">
+                                      {formatPrice(calculateBulkPrice(pkg, 1))}
                                     </span>
                                     {product.product_type === 'accessory' ? (
                                       pkg === '5-Pack' ? <div className="text-xs text-green-600">5% OFF</div> :
@@ -832,44 +909,21 @@ const ProductDetails = () => {
                         </Select>
                       </div>
 
-                      {/* Pallet quantity selector for tier 1 and 2 */}
-                      {product.product_type === 'refrigerant' && (packaging === '1-10 Pallets' || packaging === '10-20 Pallets') && (
-                         <div>
-                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                             Number of Pallets
-                           </label>
-                           <div className="flex items-center space-x-3">
-                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.max(packaging === '10-20 Pallets' ? 10 : 1, palletQuantity - 1))}>
-                               -
-                             </Button>
-                             <span className="text-xl font-semibold w-12 text-center">{palletQuantity}</span>
-                             <Button variant="outline" size="sm" onClick={() => setPalletQuantity(Math.min(packaging === '1-10 Pallets' ? 10 : 20, palletQuantity + 1))}>
-                               +
-                             </Button>
-                           </div>
-                           <p className="text-xs text-gray-500 mt-1">
-                             {palletQuantity * CYLINDERS_PER_PALLET} cylinders total ({CYLINDERS_PER_PALLET} per pallet)
-                           </p>
-                         </div>
-                       )}
-
-                      {/* Quantity selector - for accessories and legacy */}
-                      {product.product_type !== 'refrigerant' && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Quantity
-                          </label>
-                          <div className="flex items-center space-x-3">
-                            <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                              -
-                            </Button>
-                            <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
-                            <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                              +
-                            </Button>
-                          </div>
+                      {/* Quantity selector - for accessories */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Quantity
+                        </label>
+                        <div className="flex items-center space-x-3">
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                            -
+                          </Button>
+                          <span className="text-xl font-semibold w-12 text-center">{quantity}</span>
+                          <Button variant="outline" size="sm" onClick={() => setQuantity(quantity + 1)}>
+                            +
+                          </Button>
                         </div>
-                      )}
+                      </div>
 
                       <div className="space-y-3">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
