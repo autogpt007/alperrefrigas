@@ -35,6 +35,11 @@ interface SEOProps {
     category?: string;
     specifications?: Record<string, any>;
   };
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+    bestRating?: number;
+  };
   faq?: Array<{
     question: string;
     answer: string;
