@@ -232,6 +232,14 @@ const SEOComponent: React.FC<SEOProps> = ({
         "name": "Minimum Order Quantity",
         "value": `${product.moq} cylinders`
       }
+    }),
+    ...(aggregateRating && {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": aggregateRating.ratingValue,
+        "reviewCount": aggregateRating.reviewCount,
+        "bestRating": aggregateRating.bestRating || 5
+      }
     })
   } : null;
 
