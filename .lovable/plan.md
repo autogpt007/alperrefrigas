@@ -1,36 +1,52 @@
 
 
-## Improve Refrigerant Pricing UI — Make Selected Tier Price Prominent
+## SEO Optimization — 3 Phases, Executed Sequentially
 
-### Problem
-When a customer selects a packaging tier (e.g., "1-5 Pallets"), the total price for their selection is shown at the same visual weight as the "Best Price (Full Load)" label. The per-cylinder price is buried as small gray text. Buyers cannot immediately confirm what they will pay.
+### Phase 1: Enhance index.html Fallback Metadata
 
-### Solution
-Redesign the pricing display section for refrigerants so that:
+**Why:** Non-JS crawlers (Bing, social previews, some SEO tools) only see the raw HTML shell. Right now `index.html` has a single generic title and description — no structured data, no OG image, minimal content.
 
-1. **Selected tier price is the hero** — large, bold, unmissable total with per-cylinder breakdown
-2. **Best price shown as a secondary reference** — smaller "Best price at full load: $X/cyl" hint below, encouraging upsell without competing visually
-3. **Pricing tier card** — a styled card that shows the tier name, total price, per-cylinder price, and cylinder count in a clear layout
-4. **Before packaging is selected** — show a clean pricing tier table so buyers see all tiers at a glance
+**Changes to `index.html`:**
+- Add Organization JSON-LD structured data inline (same data as SEOComponent but static)
+- Add WebSite schema with SearchAction for sitelinks search box
+- Add comprehensive OG tags (og:image pointing to logo/banner, og:type, og:site_name)
+- Add Twitter card meta tags
+- Add a `<noscript>` content block inside `<body>` with key business info, product categories, and contact details — gives non-JS crawlers actual text content instead of an empty div
+- Add ItemList structured data covering top product categories (HFC, HFO, Natural refrigerants)
 
-### Changes
+### Phase 2: Audit and Fix All Pages for SEO Completeness
 
-**File: `src/components/pages/ProductDetails.tsx`**
+**Pages missing SEOComponent (currently using raw Helmet or nothing):**
+- `CartPage.tsx` — uses raw `<Helmet>`, convert to `SEOComponent` with noindex
+- `AirConditionersPage.tsx` — uses raw `<Helmet>`, convert to `SEOComponent` with proper title/description/breadcrumbs
+- `AccountDashboard.tsx` — add `SEOComponent` with noindex
+- `CustomerPortal.tsx` — add `SEOComponent` with noindex
+- `AdminDashboard.tsx` — already behind auth, add noindex
+- `BlogPostDetail.tsx` — uses `BlogSEO` (fine, no change needed)
+- `Index.tsx` — wrapper component, delegates to HomePage (fine)
 
-- **Remove** the static "Best Price (Full Load)" blue box at the top (lines 581-594) for refrigerants — move it inline as a subtle hint
-- **Replace** the pricing display block (lines 598-629) with a prominent pricing card:
-  - When a tier is selected: large total price (e.g., "$3,400"), tier label badge, per-cylinder price in medium text, cylinder/pallet breakdown, and a small "Best price at full load: $X/cyl" upsell note
-  - When no tier selected: show a 3-row pricing summary table (Tier 1 / Tier 2 / Full Load) with per-cylinder prices and total ranges so buyers see the spread immediately
-- **Style**: use a gradient-bordered card similar to the existing site aesthetic (blue/cyan tones), with the total in `text-4xl font-bold text-blue-600` and per-cylinder in `text-lg`
+**Fixes across existing pages:**
+- Ensure every public-facing page has `canonicalUrl` set (many currently omit it)
+- Ensure every public page has `breadcrumbs` data for breadcrumb rich snippets
+- Add `keywords` prop to pages that currently omit it (ProductCatalog, landing pages)
+- Set `robotsContent="noindex, nofollow"` on utility/auth pages (Cart, Checkout, Account, Admin, OrderConfirmation, CryptoPayment)
 
-**File: `src/components/ProductCard.tsx`**
+### Phase 3: Create 5 Long-Tail SEO Blog Posts
 
-- Make the displayed price on the catalog card reflect the selected packaging's total in larger text
-- Show per-cylinder price more visibly beneath it
-- Add a small "From $X/cyl at full load" line to encourage clicks
+**Target keywords (realistic page-1 candidates within 30 days):**
 
-### What the Customer Sees
-- Before selecting: a clean tier comparison showing price-per-cylinder at each level
-- After selecting: their exact total is the biggest number on the page, with clear unit breakdown
-- A subtle nudge toward full-load pricing without hiding their current tier cost
+1. **"R-454B refrigerant wholesale price 2026"** — emerging replacement refrigerant, low competition
+2. **"R-410A phase down schedule commercial HVAC"** — informational, buyers researching transition timelines
+3. **"HFO-1234yf bulk supplier USA"** — transactional long-tail, aligns with existing product
+4. **"refrigerant container load pricing guide"** — matches your pricing structure, attracts bulk buyers
+5. **"EPA 608 certification requirements refrigerant purchase"** — educational, captures top-of-funnel HVAC contractors
+
+**Implementation:** Create blog posts via Supabase insert (the blog system already reads from the `blog_posts` table). Each post will include:
+- SEO-optimized title, meta description, and excerpt
+- 800-1200 words of original content with proper H2/H3 structure
+- Internal links to relevant product pages
+- FAQ section at the bottom (triggers FAQ rich snippets via BlogSEO component)
+
+### Execution Order
+Phase 1 first (index.html, single file, immediate impact). Phase 2 next (audit ~6 files). Phase 3 last (blog content insertion).
 
