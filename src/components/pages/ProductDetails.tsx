@@ -93,7 +93,47 @@ const ProductDetails = () => {
   const CONTAINER_40FT = { pallets: 56, cylinders: 2240 };
   const TRUCK_LOAD = { pallets: 44, cylinders: 1760 };
 
-  // Bulk pricing calculation functions
+  // --- New pallet-based tier pricing for refrigerants ---
+  const getTierFromPalletCount = (qty: number) => {
+    if (!product) return { markup: 20, label: '1–10 Pallets', perCylinder: 0, total: 0, tierHint: '' };
+    const base = product.price;
+    let markup = 20;
+    let label = '1–10 Pallets';
+    let tierHint = '';
+
+    if (qty >= 28) {
+      markup = 0;
+      if (qty === 28) label = '20ft Container';
+      else if (qty === 44) label = 'Truck Load';
+      else if (qty === 56) label = '40ft Container';
+      else label = `${qty} Pallets (Container Rate)`;
+    } else if (qty >= 11) {
+      markup = 15;
+      label = '11–27 Pallets';
+      const needed = 28 - qty;
+      tierHint = `Add ${needed} more pallet${needed > 1 ? 's' : ''} to unlock container pricing`;
+    } else {
+      markup = 20;
+      label = '1–10 Pallets';
+      if (qty >= 8) {
+        tierHint = `Add ${11 - qty} more pallet${11 - qty > 1 ? 's' : ''} to get the mid-volume rate`;
+      }
+    }
+    const perCylinder = base + markup;
+    const cylinders = qty * CYLINDERS_PER_PALLET;
+    const total = perCylinder * cylinders;
+    return { markup, label, perCylinder, total, tierHint, cylinders };
+  };
+
+  // Derive packaging label from pallet count
+  const getPalletPackagingLabel = (qty: number): string => {
+    if (qty === 28) return '20ft Container (1,120 cylinders)';
+    if (qty === 44) return 'Truck Load (1,760 cylinders)';
+    if (qty === 56) return '40ft Container (2,240 cylinders)';
+    return `${qty} Pallet${qty > 1 ? 's' : ''} (${qty * CYLINDERS_PER_PALLET} cylinders)`;
+  };
+
+  // Legacy bulk pricing for accessories
   const calculateBulkPrice = (packageType: string, palletQty: number = palletQuantity): number => {
     if (!product) return 0;
 
@@ -107,61 +147,18 @@ const ProductDetails = () => {
       return price;
     }
     
-    // Refrigerant pricing: 3-tier pallet-based system
-    const basePrice = product.price; // Base price per cylinder (container-load price)
-    
-    switch (packageType) {
-      case '1-10 Pallets':
-        return (basePrice + 20) * CYLINDERS_PER_PALLET * palletQty;
-      case '10-20 Pallets':
-        return (basePrice + 15) * CYLINDERS_PER_PALLET * palletQty;
-      case '20ft Container':
-        return basePrice * CONTAINER_20FT.cylinders;
-      case '40ft Container':
-        return basePrice * CONTAINER_40FT.cylinders;
-      case 'Truck Load (53ft)':
-        return basePrice * TRUCK_LOAD.cylinders;
-      default:
-        return basePrice * CYLINDERS_PER_PALLET;
-    }
+    // Refrigerant: use new tier system
+    return getTierFromPalletCount(palletQty).total;
   };
-
-  // Get per-cylinder price for the selected tier
-  const getPerCylinderPrice = (packageType: string): number => {
-    if (!product) return 0;
-    switch (packageType) {
-      case '1-10 Pallets': return product.price + 20;
-      case '10-20 Pallets': return product.price + 15;
-      case '20ft Container':
-      case '40ft Container':
-      case 'Truck Load (53ft)': return product.price;
-      default: return product.price + 20;
-    }
-  };
-
-  // Get packaging description text
-  const getPackagingDescription = (packageType: string): string => {
-    switch (packageType) {
-      case '1-10 Pallets': return `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
-      case '10-20 Pallets': return `${palletQuantity} pallets · ${palletQuantity * CYLINDERS_PER_PALLET} cylinders`;
-      case '20ft Container': return `${CONTAINER_20FT.pallets} pallets · ${CONTAINER_20FT.cylinders.toLocaleString()} cylinders`;
-      case '40ft Container': return `${CONTAINER_40FT.pallets} pallets · ${CONTAINER_40FT.cylinders.toLocaleString()} cylinders`;
-      case 'Truck Load (53ft)': return `${TRUCK_LOAD.pallets} pallets · ${TRUCK_LOAD.cylinders.toLocaleString()} cylinders`;
-      default: return '';
-    }
-  };
-
-  // Reset pallet quantity when packaging changes
-  React.useEffect(() => {
-    if (packaging === '1-10 Pallets') setPalletQuantity(1);
-    else if (packaging === '10-20 Pallets') setPalletQuantity(10);
-  }, [packaging]);
 
   const getCurrentPrice = (): number => {
     if (!product) return 0;
     if (product.product_type === 'air_conditioner') {
       const tier = calculateACPricingTier(product, acQuantity);
       return tier ? tier.total : 0;
+    }
+    if (product.product_type === 'refrigerant') {
+      return getTierFromPalletCount(palletQuantity).total;
     }
     if (!packaging) return product?.price || 0;
     return calculateBulkPrice(packaging, palletQuantity);
