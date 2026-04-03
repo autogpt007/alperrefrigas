@@ -262,6 +262,7 @@ const OrderConfirmation = () => {
         description={`${isQuote ? 'Your quote request has been submitted' : 'Your order has been confirmed'}. Track your ${isQuote ? 'quote status' : 'order status'} and get updates.`}
         keywords={`${isQuote ? 'quote confirmation' : 'order confirmation'}, refrigerant ${isQuote ? 'quote tracking' : 'order tracking'}, HVAC ${isQuote ? 'quote' : 'order'} status`}
         canonicalUrl="/order-confirmation"
+        robotsContent="noindex, nofollow"
       />
       <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
