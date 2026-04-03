@@ -481,18 +481,50 @@ const ProductDetails = () => {
         }
       ];
 
-  // Dynamic SEO keyword mapping
+  // Dynamic SEO keyword mapping with short-form aliases
   const currentYear = new Date().getFullYear();
   const isRefrigerant = product.product_type === 'refrigerant';
-  const seoTitle = isRefrigerant
-    ? `${product.name} Wholesale Price ${currentYear} | Alper`
-    : `${product.name} | Wholesale | Alper`;
+  const isAC = product.product_type === 'air_conditioner';
+  
+  // Extract short-form name for SEO (e.g., "R-134A" from "R-134A Refrigerant Gas | Alper Refrigerant Gas")
+  const shortName = (() => {
+    const name = product.name;
+    // Match R-XXX pattern or brand model pattern
+    const rMatch = name.match(/R-?\d{2,4}[A-Za-z]*/i);
+    if (rMatch) return rMatch[0].toUpperCase();
+    // For Freon products, extract the trade name
+    const freonMatch = name.match(/Freon[™\s]*([^\(]+)/i);
+    if (freonMatch) return freonMatch[0].replace(/[™]/g, '').trim();
+    // For accessories, extract brand + model
+    const words = name.split(/[\s|–—-]+/).filter(Boolean);
+    return words.slice(0, 3).join(' ');
+  })();
+  
+  // Build concise SEO title under 60 chars
+  const seoTitle = (() => {
+    if (isRefrigerant) {
+      const candidate = `${shortName} Wholesale Price ${currentYear} | Alper`;
+      return candidate.length <= 60 ? candidate : `${shortName} Bulk Price ${currentYear} | Alper`;
+    }
+    if (isAC) {
+      const candidate = `${shortName} Wholesale ${currentYear} | Alper`;
+      return candidate.length <= 60 ? candidate : `${product.name.substring(0, 35)} | Alper`;
+    }
+    // Accessories: use brand + model
+    const candidate = `${shortName} — Buy Wholesale | Alper`;
+    return candidate.length <= 60 ? candidate : `${product.name.substring(0, 35)} | Alper`;
+  })();
+
   const seoDescription = isRefrigerant
-    ? `Buy ${product.name} wholesale from ${formatPrice(product.price)}/cylinder. EPA approved, bulk quantities available. Fast shipping from TX, FL, CA.`
-    : enhancedDescription;
+    ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
+    : isAC
+    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. MOQ 5 units. Fast shipping across the US.`
+    : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
+    
+  // Include both full name AND short aliases for keyword coverage
   const seoKeywords = isRefrigerant
-    ? `wholesale ${product.name} price ${currentYear}, buy ${product.name} bulk, ${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, MOQ 40 cylinders, wholesale refrigerant, ${product.applications?.join(', ') || ''}, refrigerant distributor, fast shipping`
-    : `${product.name}, ${product.category} refrigerant, EPA approved refrigerant, HVAC, ${product.sku}, bulk refrigerant, wholesale refrigerant, ${product.applications?.join(', ') || ''}`;
+    ? `${shortName}, ${product.name}, ${shortName} refrigerant, ${shortName} price, wholesale ${shortName} ${currentYear}, buy ${shortName} bulk, ${product.sku}, ${product.category} refrigerant, EPA approved, HVAC refrigerant, bulk refrigerant, ${product.applications?.join(', ') || ''}`
+    : `${product.name}, ${shortName}, ${product.sku}, ${product.category}, wholesale HVAC, ${product.applications?.join(', ') || ''}`;
 
   // useCases and specsTableData hooks moved above early returns
 
