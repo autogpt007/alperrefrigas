@@ -112,7 +112,7 @@ export const generateSitemap = (products: Product[]): SitemapEntry[] => {
       priority: 0.7
     },
     {
-      url: `${baseUrl}/shipping`,
+      url: `${baseUrl}/shipping-policy`,
       lastmod: currentDate,
       changefreq: 'monthly',
       priority: 0.6
