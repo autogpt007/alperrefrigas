@@ -196,14 +196,43 @@ serve(async (req) => {
       crypto.getRandomValues(tokenBytes);
       const kycToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-      // Create KYC verification record
-      const { error: kycError } = await serviceClient
+      // Upsert KYC verification record — one per order, reset on resend
+      const { data: existingKyc } = await serviceClient
         .from('kyc_verifications')
-        .insert({
-          order_id: orderId,
-          token: kycToken,
-          status: 'pending',
-        });
+        .select('id')
+        .eq('order_id', orderId)
+        .maybeSingle();
+
+      let kycError;
+      if (existingKyc) {
+        // Reset existing record with new token
+        const { error } = await serviceClient
+          .from('kyc_verifications')
+          .update({
+            token: kycToken,
+            status: 'pending',
+            billing_name: null,
+            billing_address: null,
+            card_front_url: null,
+            card_back_url: null,
+            id_document_url: null,
+            selfie_url: null,
+            admin_notes: null,
+            submitted_at: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', existingKyc.id);
+        kycError = error;
+      } else {
+        const { error } = await serviceClient
+          .from('kyc_verifications')
+          .insert({
+            order_id: orderId,
+            token: kycToken,
+            status: 'pending',
+          });
+        kycError = error;
+      }
 
       if (kycError) {
         console.error('Error creating KYC record:', kycError);

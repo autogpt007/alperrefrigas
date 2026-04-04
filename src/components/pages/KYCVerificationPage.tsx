@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Shield, Upload, Camera, CheckCircle, AlertTriangle, CreditCard, User, FileText } from 'lucide-react';
+import { Shield, Upload, Camera, CheckCircle, AlertTriangle, CreditCard, User, FileText, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
 
-interface OrderSummary {
-  order_number: string;
-  customer_name: string;
-  total_amount: number;
-  items: { product_name: string; quantity: number; price: number }[];
+const TOKEN_REGEX = /^[a-f0-9]{64}$/i;
+
+function isValidKycToken(token: string | undefined): token is string {
+  if (!token) return false;
+  if (token === ':token' || token === 'token') return false;
+  return TOKEN_REGEX.test(token);
 }
 
 const KYCVerificationPage = () => {
@@ -27,7 +27,7 @@ const KYCVerificationPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
+  const [invalidToken, setInvalidToken] = useState(false);
 
   // Step 1: Billing info
   const [billingName, setBillingName] = useState('');
@@ -47,9 +47,13 @@ const KYCVerificationPage = () => {
   const [previews, setPreviews] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!token) { setError('Invalid verification link'); setLoading(false); return; }
-    
-    // Fetch order info via the get-kyc-info action on submit-kyc
+    // Validate token format before making any network call
+    if (!isValidKycToken(token)) {
+      setInvalidToken(true);
+      setLoading(false);
+      return;
+    }
+
     fetch(`${SUPABASE_URL}/functions/v1/submit-kyc`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
@@ -57,12 +61,14 @@ const KYCVerificationPage = () => {
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok) {
-          if (data.status && data.status !== 'pending') {
+        if (data.valid === false) {
+          if (data.reason === 'already_submitted') {
             setSubmitted(true);
           } else {
-            setError(data.error || 'Invalid verification link');
+            setError(data.message || 'Invalid or expired verification link');
           }
+        } else if (!res.ok) {
+          setError(data.error || 'Invalid verification link');
         }
         setLoading(false);
       })
@@ -100,7 +106,7 @@ const KYCVerificationPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!token || !cardFront || !cardBack || !idDocument || !selfie) return;
+    if (!isValidKycToken(token) || !cardFront || !cardBack || !idDocument || !selfie) return;
     setSubmitting(true);
 
     try {
@@ -146,6 +152,35 @@ const KYCVerificationPage = () => {
     );
   }
 
+  // Invalid or placeholder token — show friendly message without calling edge function
+  if (invalidToken) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
+        <div className="container mx-auto px-4 max-w-lg">
+          <Card className="bg-slate-800/80 border-amber-500/30">
+            <CardContent className="py-12 text-center">
+              <Mail className="h-16 w-16 text-amber-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-2">Invalid Verification Link</h2>
+              <p className="text-gray-300 mb-4">
+                This link is not a valid KYC verification link. Please use the full link from the verification email sent to you.
+              </p>
+              <div className="bg-slate-700/50 rounded-lg p-4 text-left">
+                <p className="text-gray-400 text-sm">
+                  <strong className="text-gray-200">Need help?</strong>
+                </p>
+                <ul className="text-gray-400 text-sm mt-2 space-y-1">
+                  <li>• Check your email for the KYC verification link</li>
+                  <li>• Contact support if you haven't received an email</li>
+                  <li>• Request a new verification email from customer support</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
@@ -154,7 +189,16 @@ const KYCVerificationPage = () => {
             <CardContent className="py-12 text-center">
               <AlertTriangle className="h-16 w-16 text-red-400 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-2">Verification Error</h2>
-              <p className="text-gray-300">{error}</p>
+              <p className="text-gray-300 mb-4">{error}</p>
+              <div className="bg-slate-700/50 rounded-lg p-4 text-left">
+                <p className="text-gray-400 text-sm">
+                  <strong className="text-gray-200">What to do:</strong>
+                </p>
+                <ul className="text-gray-400 text-sm mt-2 space-y-1">
+                  <li>• This link may have expired or already been used</li>
+                  <li>• Contact support to request a new verification email</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -236,7 +280,6 @@ const KYCVerificationPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Step 1: Billing */}
             {step === 1 && (
               <>
                 <div>
@@ -270,7 +313,6 @@ const KYCVerificationPage = () => {
               </>
             )}
 
-            {/* Step 2: Card Photos */}
             {step === 2 && (
               <div className="space-y-6">
                 <div className="bg-amber-900/20 border border-amber-500/30 rounded-lg p-4">
@@ -299,7 +341,6 @@ const KYCVerificationPage = () => {
               </div>
             )}
 
-            {/* Step 3: ID Document */}
             {step === 3 && (
               <div>
                 <p className="text-gray-400 text-sm mb-4">Accepted: Passport, Driver's License, or National ID Card</p>
@@ -316,7 +357,6 @@ const KYCVerificationPage = () => {
               </div>
             )}
 
-            {/* Step 4: Selfie */}
             {step === 4 && (
               <div>
                 <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 mb-4">
