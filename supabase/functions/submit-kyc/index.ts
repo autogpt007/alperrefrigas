@@ -21,6 +21,40 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Handle JSON token verification requests
+    const contentType = req.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      const body = await req.json();
+      if (body.action === "verify-token" && body.token) {
+        const { data: kyc, error: kycError } = await serviceClient
+          .from("kyc_verifications")
+          .select("status, order_id")
+          .eq("token", body.token)
+          .maybeSingle();
+
+        if (kycError || !kyc) {
+          return new Response(
+            JSON.stringify({ error: "Invalid or expired verification link" }),
+            { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (kyc.status !== "pending") {
+          return new Response(
+            JSON.stringify({ error: "This verification has already been submitted", status: kyc.status }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        return new Response(
+          JSON.stringify({ valid: true, status: kyc.status }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      return new Response(
+        JSON.stringify({ error: "Invalid request" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const formData = await req.formData();
     const token = formData.get("token") as string;
     const billingName = formData.get("billing_name") as string;
