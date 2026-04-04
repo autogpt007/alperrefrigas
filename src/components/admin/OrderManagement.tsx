@@ -191,6 +191,58 @@ const OrderManagement = () => {
     }
   });
 
+  // Send KYC request mutation
+  const sendKycMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const { data, error } = await supabase.functions.invoke('admin-orders-access', {
+        body: { action: 'send-kyc', orderId }
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'], refetchType: 'all' });
+      toast({ title: 'KYC verification request sent!' });
+    },
+    onError: (error: any) => {
+      toast({ title: 'Error sending KYC request', description: error.message, variant: 'destructive' });
+    }
+  });
+
+  // KYC review functions
+  const loadKycData = async (orderId: string) => {
+    setKycLoading(true);
+    setKycReviewOrder(orderId);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-kyc-access', {
+        body: { action: 'view', orderId }
+      });
+      if (error) throw error;
+      setKycData(data?.kyc || null);
+      setKycSignedUrls(data?.signedUrls || null);
+    } catch (err: any) {
+      toast({ title: 'Error loading KYC data', description: err.message, variant: 'destructive' });
+    } finally {
+      setKycLoading(false);
+    }
+  };
+
+  const handleKycAction = async (action: 'approve' | 'reject', orderId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('admin-kyc-access', {
+        body: { action, orderId, notes: kycNotes }
+      });
+      if (error) throw error;
+      toast({ title: `KYC ${action === 'approve' ? 'approved' : 'rejected'}` });
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'], refetchType: 'all' });
+      setKycReviewOrder(null);
+      setKycData(null);
+      setKycNotes('');
+    } catch (err: any) {
+      toast({ title: `Error ${action}ing KYC`, description: err.message, variant: 'destructive' });
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
