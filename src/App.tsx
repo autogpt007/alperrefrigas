@@ -61,6 +61,7 @@ const TestimonialsPage = lazy(() => import("./components/pages/TestimonialsPage"
 const BlogPage = lazy(() => import("./components/pages/BlogPage"));
 const BlogPostDetail = lazy(() => import("./components/pages/BlogPostDetail"));
 const BlogPostRedirect = lazy(() => import("./components/pages/BlogPostRedirect"));
+const KYCVerificationPage = lazy(() => import("./components/pages/KYCVerificationPage"));
 
 // Admin lazy-loaded
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
