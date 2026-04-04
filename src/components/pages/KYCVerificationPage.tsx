@@ -146,7 +146,23 @@ const KYCVerificationPage = () => {
     );
   }
 
-  if (submitted) {
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
+        <div className="container mx-auto px-4 max-w-lg">
+          <Card className="bg-slate-800/80 border-red-500/30">
+            <CardContent className="py-12 text-center">
+              <AlertTriangle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-2">Verification Error</h2>
+              <p className="text-gray-300">{error}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4 max-w-lg">
