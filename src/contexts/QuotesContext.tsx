@@ -163,6 +163,22 @@ export const QuotesProvider = ({ children }: { children: ReactNode }) => {
 
       setQuotes(prev => [formattedQuote, ...prev]);
 
+      // Send quote confirmation email to customer
+      try {
+        await supabase.functions.invoke('send-customer-email', {
+          body: {
+            type: 'quote-confirmation',
+            to: formattedQuote.customer_email,
+            data: {
+              customerName: formattedQuote.customer_name,
+              quoteNumber: formattedQuote.quote_number,
+            },
+          },
+        });
+      } catch (emailErr) {
+        console.error('Quote confirmation email failed:', emailErr);
+      }
+
       toast({
         title: "Quote request submitted!",
         description: `Quote ${formattedQuote.quote_number} has been created.`
