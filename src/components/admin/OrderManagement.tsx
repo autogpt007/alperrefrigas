@@ -10,9 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2, Snowflake, Zap } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2, Snowflake, Zap, UserCheck, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-// Removed SecureCardViewer import
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 
 interface ACConfiguration {
   btu?: number;
