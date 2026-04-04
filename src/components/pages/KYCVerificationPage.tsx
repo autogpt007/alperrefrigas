@@ -56,12 +56,18 @@ const KYCVerificationPage = () => {
       body: JSON.stringify({ action: 'verify-token', token }),
     })
       .then(async (res) => {
-        // The submit-kyc function uses formData, so we'll validate token differently
-        // For now, just mark as loaded - the actual validation happens on submit
+        const data = await res.json();
+        if (!res.ok) {
+          if (data.status && data.status !== 'pending') {
+            setSubmitted(true);
+          } else {
+            setError(data.error || 'Invalid verification link');
+          }
+        }
         setLoading(false);
-        // We'll show a generic view since we can't fetch order details from the public endpoint
       })
       .catch(() => {
+        setError('Unable to verify link. Please try again.');
         setLoading(false);
       });
   }, [token]);
