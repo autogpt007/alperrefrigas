@@ -8,6 +8,14 @@ const corsHeaders = {
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const TOKEN_REGEX = /^[a-f0-9]{64}$/i;
+
+function jsonResponse(body: Record<string, unknown>, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -25,38 +33,43 @@ serve(async (req) => {
     const contentType = req.headers.get("content-type") || "";
     if (contentType.includes("application/json")) {
       const body = await req.json();
-      if (body.action === "verify-token" && body.token) {
+      if (body.action === "verify-token" && body.token !== undefined) {
+        const token = body.token;
+
+        // Validate token format first — return 200 with structured payload
+        if (!token || typeof token !== "string" || !TOKEN_REGEX.test(token)) {
+          return jsonResponse({ valid: false, reason: "invalid_token", message: "Invalid verification link format" });
+        }
+
         const { data: kyc, error: kycError } = await serviceClient
           .from("kyc_verifications")
           .select("status, order_id")
-          .eq("token", body.token)
+          .eq("token", token)
           .maybeSingle();
 
         if (kycError || !kyc) {
-          return new Response(
-            JSON.stringify({ error: "Invalid or expired verification link" }),
-            { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
+          return jsonResponse({ valid: false, reason: "not_found", message: "Verification link not found or expired" });
         }
-        if (kyc.status !== "pending") {
-          return new Response(
-            JSON.stringify({ error: "This verification has already been submitted", status: kyc.status }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
+        if (kyc.status === "submitted" || kyc.status === "approved") {
+          return jsonResponse({ valid: false, reason: "already_submitted", status: kyc.status, message: "This verification has already been completed" });
         }
-        return new Response(
-          JSON.stringify({ valid: true, status: kyc.status }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        if (kyc.status === "rejected") {
+          return jsonResponse({ valid: false, reason: "rejected", status: kyc.status, message: "This verification was rejected. Please contact support." });
+        }
+        return jsonResponse({ valid: true, status: kyc.status });
       }
-      return new Response(
-        JSON.stringify({ error: "Invalid request" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Invalid request" }, 400);
     }
 
+    // Handle multipart form submission
     const formData = await req.formData();
     const token = formData.get("token") as string;
+
+    // Validate token format
+    if (!token || !TOKEN_REGEX.test(token)) {
+      return jsonResponse({ error: "Invalid token format" }, 400);
+    }
+
     const billingName = formData.get("billing_name") as string;
     const billingStreet = formData.get("billing_street") as string;
     const billingCity = formData.get("billing_city") as string;
@@ -68,28 +81,14 @@ serve(async (req) => {
     const idDocument = formData.get("id_document") as File | null;
     const selfie = formData.get("selfie") as File | null;
 
-    // Validate token
-    if (!token) {
-      return new Response(
-        JSON.stringify({ error: "Token is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     // Validate billing info
     if (!billingName || !billingStreet || !billingCity || !billingState || !billingZip || !billingCountry) {
-      return new Response(
-        JSON.stringify({ error: "All billing fields are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "All billing fields are required" }, 400);
     }
 
     // Validate files
     if (!cardFront || !cardBack || !idDocument || !selfie) {
-      return new Response(
-        JSON.stringify({ error: "All document uploads are required (card front, card back, ID, selfie)" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "All document uploads are required (card front, card back, ID, selfie)" }, 400);
     }
 
     const files = [
@@ -101,16 +100,10 @@ serve(async (req) => {
 
     for (const { file, name } of files) {
       if (file.size > MAX_FILE_SIZE) {
-        return new Response(
-          JSON.stringify({ error: `${name} exceeds maximum file size of 10MB` }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: `${name} exceeds maximum file size of 10MB` }, 400);
       }
       if (!ALLOWED_TYPES.includes(file.type)) {
-        return new Response(
-          JSON.stringify({ error: `${name} must be JPEG, PNG, or WebP` }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: `${name} must be JPEG, PNG, or WebP` }, 400);
       }
     }
 
@@ -123,10 +116,7 @@ serve(async (req) => {
       .maybeSingle();
 
     if (kycError || !kyc) {
-      return new Response(
-        JSON.stringify({ error: "Invalid or expired verification link" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Invalid or expired verification link" }, 404);
     }
 
     // Upload files to kyc-documents bucket
@@ -145,10 +135,7 @@ serve(async (req) => {
 
       if (uploadError) {
         console.error(`Upload error for ${name}:`, uploadError);
-        return new Response(
-          JSON.stringify({ error: `Failed to upload ${name}` }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: `Failed to upload ${name}` }, 500);
       }
       uploadedUrls[name] = path;
     }
@@ -176,22 +163,13 @@ serve(async (req) => {
 
     if (updateError) {
       console.error("KYC update error:", updateError);
-      return new Response(
-        JSON.stringify({ error: "Failed to save verification data" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Failed to save verification data" }, 500);
     }
 
     console.log(`KYC submitted for order ${kyc.order_id}, kyc_id=${kyc.id}`);
-    return new Response(
-      JSON.stringify({ success: true }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ success: true });
   } catch (error) {
     console.error("Submit KYC error:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ error: "Internal server error" }, 500);
   }
 });
