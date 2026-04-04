@@ -205,6 +205,7 @@ function App() {
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />
                                <Route path="/news/:slug" element={<BlogPostRedirect />} />
                                <Route path="/kyc/:token" element={<KYCVerificationPage />} />
+                               <Route path="/unsubscribe" element={<UnsubscribePage />} />
                              </Routes>
                           </main>
                            <Footer />
