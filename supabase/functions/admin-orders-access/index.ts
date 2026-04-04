@@ -190,6 +190,71 @@ serve(async (req) => {
       );
     }
 
+    if (action === 'send-kyc' && orderId) {
+      // Generate secure token
+      const tokenBytes = new Uint8Array(32);
+      crypto.getRandomValues(tokenBytes);
+      const kycToken = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Create KYC verification record
+      const { error: kycError } = await serviceClient
+        .from('kyc_verifications')
+        .insert({
+          order_id: orderId,
+          token: kycToken,
+          status: 'pending',
+        });
+
+      if (kycError) {
+        console.error('Error creating KYC record:', kycError);
+        return new Response(
+          JSON.stringify({ error: 'Failed to create KYC verification' }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Update order status to pending
+      await serviceClient.from('orders').update({ status: 'pending', updated_at: new Date().toISOString() }).eq('id', orderId);
+
+      // Fetch order details for email
+      const { data: orderData } = await serviceClient
+        .from('orders')
+        .select('*, order_items(product_name, quantity, price)')
+        .eq('id', orderId)
+        .single();
+
+      if (orderData) {
+        // Determine the site URL for the KYC link
+        const siteUrl = 'https://alperrefrigas.lovable.app';
+        const kycLink = `${siteUrl}/kyc/${kycToken}`;
+
+        // Send KYC email via send-customer-email
+        try {
+          await supabaseClient.functions.invoke('send-customer-email', {
+            body: {
+              type: 'kyc-request',
+              to: orderData.customer_email,
+              data: {
+                customerName: orderData.customer_name,
+                orderNumber: orderData.order_number,
+                totalAmount: orderData.total_amount,
+                items: orderData.order_items || [],
+                kycLink,
+              },
+            },
+          });
+        } catch (emailErr) {
+          console.error('KYC email send error:', emailErr);
+        }
+      }
+
+      console.log(`KYC request sent for order ${orderId}`);
+      return new Response(
+        JSON.stringify({ success: true, token: kycToken }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     if (action === 'delete' && orderId) {
       // First delete all order items
       const { error: itemsError } = await serviceClient
