@@ -401,6 +401,16 @@ const OrderManagement = () => {
                               <Eye className="h-4 w-4 mr-1" />
                               View Details
                             </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => sendKycMutation.mutate(order.id)}
+                              disabled={sendKycMutation.isPending}
+                              className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                            >
+                              <UserCheck className="h-4 w-4 mr-1" />
+                              KYC
+                            </Button>
                             <Select
                               value={order.status}
                               onValueChange={(value) => handleStatusUpdate(order.id, value)}
