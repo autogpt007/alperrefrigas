@@ -62,6 +62,7 @@ const BlogPage = lazy(() => import("./components/pages/BlogPage"));
 const BlogPostDetail = lazy(() => import("./components/pages/BlogPostDetail"));
 const BlogPostRedirect = lazy(() => import("./components/pages/BlogPostRedirect"));
 const KYCVerificationPage = lazy(() => import("./components/pages/KYCVerificationPage"));
+const UnsubscribePage = lazy(() => import("./components/pages/UnsubscribePage"));
 
 // Admin lazy-loaded
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
@@ -204,6 +205,7 @@ function App() {
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />
                                <Route path="/news/:slug" element={<BlogPostRedirect />} />
                                <Route path="/kyc/:token" element={<KYCVerificationPage />} />
+                               <Route path="/unsubscribe" element={<UnsubscribePage />} />
                              </Routes>
                           </main>
                            <Footer />

@@ -102,11 +102,12 @@ serve(async (req) => {
           .from("orders").select("*").eq("id", orderId).single();
 
         if (order) {
-          await supabaseClient.functions.invoke("send-customer-email", {
+          await supabaseClient.functions.invoke("send-transactional-email", {
             body: {
-              type: "kyc-approved",
-              to: order.customer_email,
-              data: { customerName: order.customer_name, orderNumber: order.order_number },
+              templateName: "kyc-approved",
+              recipientEmail: order.customer_email,
+              idempotencyKey: `kyc-approved-${orderId}`,
+              templateData: { customerName: order.customer_name, orderNumber: order.order_number },
             },
           });
         }
@@ -133,11 +134,12 @@ serve(async (req) => {
           .from("orders").select("*").eq("id", orderId).single();
 
         if (order) {
-          await supabaseClient.functions.invoke("send-customer-email", {
+          await supabaseClient.functions.invoke("send-transactional-email", {
             body: {
-              type: "kyc-rejected",
-              to: order.customer_email,
-              data: { customerName: order.customer_name, orderNumber: order.order_number, reason: notes },
+              templateName: "kyc-rejected",
+              recipientEmail: order.customer_email,
+              idempotencyKey: `kyc-rejected-${orderId}`,
+              templateData: { customerName: order.customer_name, orderNumber: order.order_number, reason: notes },
             },
           });
         }

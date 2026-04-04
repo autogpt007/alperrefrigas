@@ -228,13 +228,14 @@ serve(async (req) => {
         const siteUrl = 'https://alperrefrigas.lovable.app';
         const kycLink = `${siteUrl}/kyc/${kycToken}`;
 
-        // Send KYC email via send-customer-email
+        // Send KYC email via send-transactional-email
         try {
-          await supabaseClient.functions.invoke('send-customer-email', {
+          await supabaseClient.functions.invoke('send-transactional-email', {
             body: {
-              type: 'kyc-request',
-              to: orderData.customer_email,
-              data: {
+              templateName: 'kyc-request',
+              recipientEmail: orderData.customer_email,
+              idempotencyKey: `kyc-request-${orderId}`,
+              templateData: {
                 customerName: orderData.customer_name,
                 orderNumber: orderData.order_number,
                 totalAmount: orderData.total_amount,

@@ -165,11 +165,12 @@ export const QuotesProvider = ({ children }: { children: ReactNode }) => {
 
       // Send quote confirmation email to customer
       try {
-        await supabase.functions.invoke('send-customer-email', {
+        await supabase.functions.invoke('send-transactional-email', {
           body: {
-            type: 'quote-confirmation',
-            to: formattedQuote.customer_email,
-            data: {
+            templateName: 'quote-confirmation',
+            recipientEmail: formattedQuote.customer_email,
+            idempotencyKey: `quote-confirm-${formattedQuote.id}`,
+            templateData: {
               customerName: formattedQuote.customer_name,
               quoteNumber: formattedQuote.quote_number,
             },
