@@ -210,6 +210,24 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       // Send notification to admin
       await sendOrderNotification(formattedOrder);
 
+      // Send order confirmation email to customer
+      try {
+        await supabase.functions.invoke('send-customer-email', {
+          body: {
+            type: 'order-confirmation',
+            to: formattedOrder.customer_email,
+            data: {
+              customerName: formattedOrder.customer_name,
+              orderNumber: formattedOrder.order_number,
+              totalAmount: formattedOrder.total_amount,
+              items: formattedOrder.items,
+            },
+          },
+        });
+      } catch (emailErr) {
+        console.error('Order confirmation email failed:', emailErr);
+      }
+
       toast({
         title: 'Order placed successfully!',
         description: `Order ${formattedOrder.order_number} has been created.`,

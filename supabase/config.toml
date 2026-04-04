@@ -20,3 +20,15 @@ verify_jwt = false
 
 [functions.health-check]
 verify_jwt = false
+
+[functions.send-customer-email]
+verify_jwt = false
+
+[functions.submit-kyc]
+verify_jwt = false
+
+[functions.admin-kyc-access]
+verify_jwt = true
+
+[functions.generate-sitemap]
+verify_jwt = false

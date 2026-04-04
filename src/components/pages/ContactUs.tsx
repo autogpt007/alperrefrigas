@@ -83,18 +83,21 @@ const ContactUs = () => {
 
       if (submitError) throw submitError;
 
-      // Send notification email - DISABLED for now to prevent blocking
-      // try {
-      //   await supabase.functions.invoke('send-notification-email', {
-      //     body: {
-      //       type: 'contact',
-      //       data: sanitizedData
-      //     }
-      //   });
-      // } catch (emailError) {
-      //   console.error('Error sending notification email:', emailError);
-      //   // Don't fail the whole process if email fails
-      // }
+      // Send contact confirmation email to customer
+      try {
+        await supabase.functions.invoke('send-customer-email', {
+          body: {
+            type: 'contact-confirmation',
+            to: sanitizedData.email,
+            data: {
+              name: sanitizedData.name,
+              subject: sanitizedData.subject,
+            },
+          },
+        });
+      } catch (emailErr) {
+        console.error('Contact confirmation email failed:', emailErr);
+      }
 
       toast({
         title: "Message Sent Successfully!",
