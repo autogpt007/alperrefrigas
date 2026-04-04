@@ -70,7 +70,6 @@ const UnsubscribePage = () => {
       <SEOComponent
         title="Unsubscribe — Alper Refrigerants"
         description="Manage your email preferences"
-        noindex
       />
       <Card className="max-w-md w-full">
         <CardContent className="pt-6 text-center space-y-4">
