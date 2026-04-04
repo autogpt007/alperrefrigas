@@ -85,11 +85,13 @@ const ContactUs = () => {
 
       // Send contact confirmation email to customer
       try {
-        await supabase.functions.invoke('send-customer-email', {
+        const contactId = submitData?.id || crypto.randomUUID();
+        await supabase.functions.invoke('send-transactional-email', {
           body: {
-            type: 'contact-confirmation',
-            to: sanitizedData.email,
-            data: {
+            templateName: 'contact-confirmation',
+            recipientEmail: sanitizedData.email,
+            idempotencyKey: `contact-confirm-${contactId}`,
+            templateData: {
               name: sanitizedData.name,
               subject: sanitizedData.subject,
             },
