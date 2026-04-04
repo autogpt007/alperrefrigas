@@ -574,6 +574,65 @@ export type Database = {
         }
         Relationships: []
       }
+      kyc_verifications: {
+        Row: {
+          admin_notes: string | null
+          billing_address: Json | null
+          billing_name: string | null
+          card_back_url: string | null
+          card_front_url: string | null
+          created_at: string
+          id: string
+          id_document_url: string | null
+          order_id: string
+          selfie_url: string | null
+          status: string
+          submitted_at: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          billing_address?: Json | null
+          billing_name?: string | null
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          order_id: string
+          selfie_url?: string | null
+          status?: string
+          submitted_at?: string | null
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          billing_address?: Json | null
+          billing_name?: string | null
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          order_id?: string
+          selfie_url?: string | null
+          status?: string
+          submitted_at?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       miner_ownerships: {
         Row: {
           created_at: string
