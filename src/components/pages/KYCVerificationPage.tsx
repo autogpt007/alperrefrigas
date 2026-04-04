@@ -56,12 +56,18 @@ const KYCVerificationPage = () => {
       body: JSON.stringify({ action: 'verify-token', token }),
     })
       .then(async (res) => {
-        // The submit-kyc function uses formData, so we'll validate token differently
-        // For now, just mark as loaded - the actual validation happens on submit
+        const data = await res.json();
+        if (!res.ok) {
+          if (data.status && data.status !== 'pending') {
+            setSubmitted(true);
+          } else {
+            setError(data.error || 'Invalid verification link');
+          }
+        }
         setLoading(false);
-        // We'll show a generic view since we can't fetch order details from the public endpoint
       })
       .catch(() => {
+        setError('Unable to verify link. Please try again.');
         setLoading(false);
       });
   }, [token]);
@@ -140,7 +146,23 @@ const KYCVerificationPage = () => {
     );
   }
 
-  if (submitted) {
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
+        <div className="container mx-auto px-4 max-w-lg">
+          <Card className="bg-slate-800/80 border-red-500/30">
+            <CardContent className="py-12 text-center">
+              <AlertTriangle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-2">Verification Error</h2>
+              <p className="text-gray-300">{error}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-16">
         <div className="container mx-auto px-4 max-w-lg">
