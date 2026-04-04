@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const FROM_EMAIL = "Alper Refrigerants <noreply@alperrefrigas.com>";
+const FROM_EMAIL = "Alper Refrigerants <onboarding@resend.dev>";
 
 function orderConfirmationHtml(data: any): string {
   const itemsHtml = (data.items || []).map((item: any) =>
