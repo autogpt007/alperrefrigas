@@ -64,6 +64,12 @@ const OrderManagement = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [showCardNumber, setShowCardNumber] = useState(false);
   const [showCVV, setShowCVV] = useState(false);
+  const [kycDialogOpen, setKycDialogOpen] = useState(false);
+  const [kycReviewOrder, setKycReviewOrder] = useState<string | null>(null);
+  const [kycData, setKycData] = useState<any>(null);
+  const [kycSignedUrls, setKycSignedUrls] = useState<any>(null);
+  const [kycLoading, setKycLoading] = useState(false);
+  const [kycNotes, setKycNotes] = useState('');
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
