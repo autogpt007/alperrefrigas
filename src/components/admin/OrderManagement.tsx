@@ -812,6 +812,115 @@ const OrderManagement = () => {
                       }}
                     />
                   </div>
+
+                  {/* KYC Verification Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-white font-medium flex items-center gap-2">
+                        <UserCheck className="h-5 w-5 text-amber-400" />
+                        KYC Verification
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => sendKycMutation.mutate(selectedOrder.id)}
+                          disabled={sendKycMutation.isPending}
+                          className="bg-amber-600 hover:bg-amber-700"
+                        >
+                          Send KYC Request
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => loadKycData(selectedOrder.id)}
+                          className="border-cyan-500/50 text-cyan-400"
+                        >
+                          View KYC
+                        </Button>
+                      </div>
+                    </div>
+
+                    {kycReviewOrder === selectedOrder.id && (
+                      <div className="bg-slate-700/50 rounded-lg p-4 space-y-4">
+                        {kycLoading ? (
+                          <p className="text-gray-400">Loading KYC data...</p>
+                        ) : !kycData ? (
+                          <p className="text-gray-400">No KYC verification record found for this order.</p>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-400">Status:</span>
+                              <Badge className={
+                                kycData.status === 'approved' ? 'bg-green-600' :
+                                kycData.status === 'submitted' ? 'bg-blue-600' :
+                                kycData.status === 'rejected' ? 'bg-red-600' : 'bg-yellow-600'
+                              }>
+                                {kycData.status}
+                              </Badge>
+                            </div>
+
+                            {kycData.billing_name && (
+                              <div>
+                                <span className="text-gray-400 text-sm">Billing Name:</span>
+                                <p className="text-white">{kycData.billing_name}</p>
+                              </div>
+                            )}
+
+                            {kycData.billing_address && (
+                              <div>
+                                <span className="text-gray-400 text-sm">Billing Address:</span>
+                                <p className="text-white">
+                                  {kycData.billing_address.street}, {kycData.billing_address.city}, {kycData.billing_address.state} {kycData.billing_address.zip}, {kycData.billing_address.country}
+                                </p>
+                              </div>
+                            )}
+
+                            {kycSignedUrls && (
+                              <div className="grid grid-cols-2 gap-4">
+                                {[
+                                  { label: 'Card Front', url: kycSignedUrls.card_front_url },
+                                  { label: 'Card Back', url: kycSignedUrls.card_back_url },
+                                  { label: 'Government ID', url: kycSignedUrls.id_document_url },
+                                  { label: 'Selfie with ID', url: kycSignedUrls.selfie_url },
+                                ].map(({ label, url }) => (
+                                  <div key={label}>
+                                    <span className="text-gray-400 text-xs block mb-1">{label}</span>
+                                    {url ? (
+                                      <a href={url} target="_blank" rel="noopener noreferrer">
+                                        <img src={url} alt={label} className="w-full h-32 object-cover rounded border border-slate-600 hover:border-cyan-500 transition-colors" />
+                                      </a>
+                                    ) : (
+                                      <div className="w-full h-32 bg-slate-600 rounded flex items-center justify-center text-gray-500 text-sm">Not uploaded</div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {kycData.status === 'submitted' && (
+                              <div className="pt-4 border-t border-slate-600 space-y-3">
+                                <Textarea
+                                  value={kycNotes}
+                                  onChange={(e) => setKycNotes(e.target.value)}
+                                  placeholder="Admin notes (optional)..."
+                                  className="bg-slate-600 border-slate-500 text-white"
+                                  rows={2}
+                                />
+                                <div className="flex gap-2">
+                                  <Button onClick={() => handleKycAction('approve', selectedOrder.id)} className="bg-green-600 hover:bg-green-700">
+                                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                                  </Button>
+                                  <Button onClick={() => handleKycAction('reject', selectedOrder.id)} variant="destructive">
+                                    <XCircle className="h-4 w-4 mr-1" /> Reject
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
