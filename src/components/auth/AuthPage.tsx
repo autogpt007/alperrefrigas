@@ -108,6 +108,11 @@ const AuthPage = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-4">
+                {authError && !error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{authError}</AlertDescription>
+                  </Alert>
+                )}
                 {error && (
                   <Alert variant="destructive">
                     <AlertDescription>{error}</AlertDescription>
@@ -163,6 +168,16 @@ const AuthPage = () => {
                     'Sign in'
                   )}
                 </Button>
+
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => resetLocalSession()}
+                    className="text-xs text-gray-400 hover:text-cyan-300 underline underline-offset-2"
+                  >
+                    Having trouble signing in? Reset session
+                  </button>
+                </div>
               </form>
             </CardContent>
           </Card>
