@@ -308,16 +308,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAdmin = profile?.role === 'admin';
 
-  const value = {
+  const value: AuthContextType = {
     user,
     session,
     profile,
     isAdmin,
     isLoading,
+    authError,
     signOut,
     login,
     register,
     logout,
+    resetLocalSession,
   };
 
   console.log('AuthProvider render:', { 
@@ -347,10 +349,12 @@ export const useAuth = () => {
       profile: null,
       isAdmin: false,
       isLoading: true,
+      authError: null,
       signOut: async () => {},
       login: async () => ({ error: { message: 'Auth not initialized' } }),
       register: async () => ({ error: { message: 'Auth not initialized' }, needsEmailConfirmation: false }),
       logout: async () => {},
+      resetLocalSession: async () => {},
     } as AuthContextType;
   }
   return context;
