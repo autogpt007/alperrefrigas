@@ -16,11 +16,31 @@ interface AuthContextType {
   profile: Profile | null;
   isAdmin: boolean;
   isLoading: boolean;
+  authError: string | null;
   signOut: () => Promise<void>;
   login: (email: string, password: string) => Promise<{ error: any }>;
   register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
   logout: () => Promise<void>;
+  resetLocalSession: () => Promise<void>;
 }
+
+// Max time we will keep the app in a "loading auth" state before giving up
+// and surfacing a non-blocking error. Prevents infinite spinners when the
+// Supabase auth service is briefly unreachable (e.g. during a GoTrue restart).
+const AUTH_LOAD_TIMEOUT_MS = 8000;
+
+const isNetworkAuthError = (err: unknown): boolean => {
+  if (!err) return false;
+  const anyErr = err as any;
+  const name = anyErr?.name || '';
+  const message = String(anyErr?.message || '');
+  return (
+    name === 'AuthRetryableFetchError' ||
+    name === 'TypeError' ||
+    /failed to fetch/i.test(message) ||
+    /network/i.test(message)
+  );
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -29,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -81,56 +102,76 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
+    // Safety net: if auth init takes too long (e.g. GoTrue restart),
+    // stop the loader so the UI can render an error state instead of spinning forever.
+    const loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth loading timeout reached — forcing loader off.');
+        setAuthError(
+          'Authentication service is taking longer than usual to respond. Please try again.'
+        );
+        setIsLoading(false);
+      }
+    }, AUTH_LOAD_TIMEOUT_MS);
+
     const initializeAuth = async () => {
       try {
         console.log('Initializing auth...');
-        
-        // Get initial session
+
         const { data: { session: initialSession }, error } = await supabase.auth.getSession();
-        
+
         if (error) {
           console.error('Error getting session:', error);
           if (mounted) {
+            if (isNetworkAuthError(error)) {
+              setAuthError(
+                'Authentication service is temporarily unavailable. Please try again in a moment.'
+              );
+            }
             setIsLoading(false);
           }
           return;
         }
 
         console.log('Initial session:', initialSession?.user?.id || 'no session');
-        
+
         if (mounted) {
           setSession(initialSession);
           setUser(initialSession?.user ?? null);
-          
+
           if (initialSession?.user) {
             const profileData = await fetchProfile(initialSession.user.id);
             if (mounted) {
               setProfile(profileData);
             }
           }
-          
+
           setIsLoading(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
         if (mounted) {
+          if (isNetworkAuthError(error)) {
+            setAuthError(
+              'Authentication service is temporarily unavailable. Please try again in a moment.'
+            );
+          }
           setIsLoading(false);
         }
       }
     };
 
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state change:', event, session?.user?.id || 'no session');
-        
+
         if (!mounted) return;
-        
+
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
-          // Fetch profile without blocking the auth state
+          setAuthError(null);
           setTimeout(async () => {
             if (mounted) {
               const profileData = await fetchProfile(session.user.id);
@@ -142,20 +183,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setProfile(null);
         }
-        
-        // Set loading to false immediately after handling auth state
+
         setIsLoading(false);
       }
     );
 
-    // Initialize auth
     initializeAuth();
 
     return () => {
       mounted = false;
+      clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };
   }, []);
+
+  const resetLocalSession = async () => {
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch (err) {
+      console.warn('Local sign-out failed, clearing storage manually:', err);
+    }
+    try {
+      Object.keys(localStorage).forEach((k) => {
+        if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+          localStorage.removeItem(k);
+        }
+      });
+    } catch {
+      /* no-op */
+    }
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  };
 
   const login = async (email: string, password: string) => {
     console.log('AuthContext login attempt for:', email);
@@ -287,16 +347,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAdmin = profile?.role === 'admin';
 
-  const value = {
+  const value: AuthContextType = {
     user,
     session,
     profile,
     isAdmin,
     isLoading,
+    authError,
     signOut,
     login,
     register,
     logout,
+    resetLocalSession,
   };
 
   console.log('AuthProvider render:', { 
@@ -326,10 +388,12 @@ export const useAuth = () => {
       profile: null,
       isAdmin: false,
       isLoading: true,
+      authError: null,
       signOut: async () => {},
       login: async () => ({ error: { message: 'Auth not initialized' } }),
       register: async () => ({ error: { message: 'Auth not initialized' }, needsEmailConfirmation: false }),
       logout: async () => {},
+      resetLocalSession: async () => {},
     } as AuthContextType;
   }
   return context;
