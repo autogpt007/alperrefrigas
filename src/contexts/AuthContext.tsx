@@ -102,56 +102,76 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
+    // Safety net: if auth init takes too long (e.g. GoTrue restart),
+    // stop the loader so the UI can render an error state instead of spinning forever.
+    const loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth loading timeout reached — forcing loader off.');
+        setAuthError(
+          'Authentication service is taking longer than usual to respond. Please try again.'
+        );
+        setIsLoading(false);
+      }
+    }, AUTH_LOAD_TIMEOUT_MS);
+
     const initializeAuth = async () => {
       try {
         console.log('Initializing auth...');
-        
-        // Get initial session
+
         const { data: { session: initialSession }, error } = await supabase.auth.getSession();
-        
+
         if (error) {
           console.error('Error getting session:', error);
           if (mounted) {
+            if (isNetworkAuthError(error)) {
+              setAuthError(
+                'Authentication service is temporarily unavailable. Please try again in a moment.'
+              );
+            }
             setIsLoading(false);
           }
           return;
         }
 
         console.log('Initial session:', initialSession?.user?.id || 'no session');
-        
+
         if (mounted) {
           setSession(initialSession);
           setUser(initialSession?.user ?? null);
-          
+
           if (initialSession?.user) {
             const profileData = await fetchProfile(initialSession.user.id);
             if (mounted) {
               setProfile(profileData);
             }
           }
-          
+
           setIsLoading(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
         if (mounted) {
+          if (isNetworkAuthError(error)) {
+            setAuthError(
+              'Authentication service is temporarily unavailable. Please try again in a moment.'
+            );
+          }
           setIsLoading(false);
         }
       }
     };
 
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state change:', event, session?.user?.id || 'no session');
-        
+
         if (!mounted) return;
-        
+
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
-          // Fetch profile without blocking the auth state
+          setAuthError(null);
           setTimeout(async () => {
             if (mounted) {
               const profileData = await fetchProfile(session.user.id);
@@ -163,20 +183,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setProfile(null);
         }
-        
-        // Set loading to false immediately after handling auth state
+
         setIsLoading(false);
       }
     );
 
-    // Initialize auth
     initializeAuth();
 
     return () => {
       mounted = false;
+      clearTimeout(loadingTimeout);
       subscription.unsubscribe();
     };
   }, []);
+
+  const resetLocalSession = async () => {
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch (err) {
+      console.warn('Local sign-out failed, clearing storage manually:', err);
+    }
+    try {
+      Object.keys(localStorage).forEach((k) => {
+        if (k.startsWith('sb-') && k.endsWith('-auth-token')) {
+          localStorage.removeItem(k);
+        }
+      });
+    } catch {
+      /* no-op */
+    }
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  };
 
   const login = async (email: string, password: string) => {
     console.log('AuthContext login attempt for:', email);
