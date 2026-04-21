@@ -11,7 +11,7 @@ import { Loader2, Shield, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
-  const { user, isLoading, isAdmin, login } = useAuth();
+  const { user, isLoading, isAdmin, login, authError, resetLocalSession } = useAuth();
   const [authLoading, setAuthLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,12 +48,24 @@ const AuthPage = () => {
 
     try {
       const result = await login(email, password);
-      
+
       if (result?.error) {
-        setError(result.error.message || 'Login failed');
+        const rawMsg = String(result.error.message || '');
+        const friendly =
+          /failed to fetch/i.test(rawMsg) || result.error.name === 'AuthRetryableFetchError'
+            ? 'Authentication service is temporarily unavailable. Please try again in a moment.'
+            : /invalid login credentials/i.test(rawMsg)
+              ? 'Incorrect email or password.'
+              : rawMsg || 'Login failed';
+        setError(friendly);
       }
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+      const rawMsg = String(err?.message || '');
+      setError(
+        /failed to fetch/i.test(rawMsg)
+          ? 'Authentication service is temporarily unavailable. Please try again in a moment.'
+          : rawMsg || 'An unexpected error occurred'
+      );
     } finally {
       setAuthLoading(false);
     }
