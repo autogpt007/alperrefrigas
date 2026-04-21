@@ -1,70 +1,83 @@
 
-Fix the KYC flow in 3 layers so it stops breaking in preview and becomes stable in production.
 
-1. Confirmed root cause
-- The browser request is sending `{"action":"verify-token","token":":token"}`.
-- Real KYC tokens in the database are 64-character hex strings.
-- So the page is currently calling the edge function with the route placeholder `:token`, not a real verification token.
-- That guarantees the `submit-kyc` function returns `404 {"error":"Invalid or expired verification link"}`.
-- I also found a second reliability issue: `admin-orders-access` inserts a new `kyc_verifications` row every time “Send KYC” is clicked, so one order can end up with multiple valid records and inconsistent links.
+## Diagnosis: Admin Login Issue
 
-2. Frontend fix: stop calling the edge function with fake tokens
-Files:
-- `src/components/pages/KYCVerificationPage.tsx`
+### Root cause
 
-Changes:
-- Validate the route param before any network call.
-- Reject empty tokens, placeholder tokens like `:token`, and anything not matching the generated token format (`/^[a-f0-9]{64}$/i`).
-- If invalid, show a friendly “Use the full verification link from the email” state instead of hitting the edge function.
-- Keep this as a normal page state, not an exception path, so no blank screen/runtime noise.
+The admin login is **not broken in code**. The console logs reveal the actual problem:
 
-3. Edge function fix: make token verification safe and non-noisy
-Files:
-- `supabase/functions/submit-kyc/index.ts`
+```
+TypeError: Failed to fetch
+  at SupabaseAuthClient._refreshAccessToken
+  at SupabaseAuthClient._recoverAndRefresh
+AuthRetryableFetchError: Failed to fetch
+```
 
-Changes:
-- Add early token format validation for both JSON verify requests and multipart submit requests.
-- For `action: "verify-token"`, return a non-error payload for invalid/used links, for example:
-  - `{ valid: false, reason: "invalid_token" }`
-  - `{ valid: false, reason: "already_submitted", status: "submitted" }`
-- Reserve 4xx/5xx only for real request failures, not expected business states.
-- Keep full CORS headers on every response.
-- This permanently prevents expected invalid-link cases from surfacing as runtime errors.
+These errors occurred between **16:40–16:41 UTC**. Looking at the Supabase auth service logs, GoTrue (the auth service) went through a **graceful shutdown and restart** at exactly **16:57 UTC**, with similar restart cycles earlier. During those restart windows, the browser cannot reach the auth endpoint, so:
 
-4. Backend fix: enforce one KYC record per order
-Files:
-- `supabase/functions/admin-orders-access/index.ts`
-- new migration in `supabase/migrations/`
+1. The session cannot be refreshed → user appears stuck on the login screen.
+2. New `signInWithPassword` calls fail with `Failed to fetch`.
+3. The auth state never settles, so the admin layout stays in "Loading admin panel..." forever.
 
-Changes:
-- Change “send-kyc” from blind insert to “create or replace/reset” for the order’s existing KYC record.
-- On resend:
-  - generate a fresh token
-  - update the existing row to `pending`
-  - clear old uploaded document paths, notes, and `submitted_at`
-- Add a database uniqueness rule on `kyc_verifications.order_id` so one order cannot accumulate multiple KYC rows.
-- Add a migration step to deduplicate existing rows before adding the unique constraint, keeping the newest row per order.
+This is the same class of transient platform event noted in your project memory under `infrastructure/deployment-troubleshooting`.
 
-5. UX hardening
-Files:
-- `src/components/pages/KYCVerificationPage.tsx`
-- optionally `src/components/admin/OrderManagement.tsx`
+### Confirmed working
 
-Changes:
-- Show a clearer invalid-link message with next steps: “Request a new verification email” / “Contact support”.
-- If the token is a route placeholder in preview, explain that a real emailed link is required.
-- Optionally expose the generated KYC link in admin after “Send KYC” so testing is direct and reliable.
+- Admin users exist in the database with the correct `admin` role:
+  - `eddy3597@gmail.com` (Admin User)
+  - `eddy35@gmail.com` (Jones Truett)
+  - `alicemarcurzo782@gmail.com`
+- `user_roles` table, `has_role()` function, and `AuthContext` role-fetch logic are all correct.
+- Supabase URL and anon key in `src/integrations/supabase/client.ts` match `.env`.
+- No edge function 4xx/5xx errors in recent logs.
+- GoTrue is currently up and healthy (latest restart finished cleanly).
 
-6. Regression checks after implementation
-- Open `/kyc/:token` in preview: page shows friendly invalid-link state and makes no verify request.
-- Open a real emailed KYC link: form loads normally.
-- Submit KYC documents: record moves to `submitted`.
-- Click “Send KYC” multiple times for the same order: only one DB row exists for that order, newest link is the active one.
-- Verify no runtime error is emitted for invalid placeholder tokens.
+### What to do right now (no code change required)
 
-Technical details
-- The current failure is not a missing route; it is a bad token value reaching the function.
-- The real permanent fix is not just “handle the error better” — it is:
-  1) block placeholder tokens in the client,
-  2) stop using 404 for expected invalid verification states,
-  3) prevent duplicate KYC records per order.
+1. Hard-refresh the admin page (Ctrl/Cmd + Shift + R) to drop any stale failed-refresh state from local storage.
+2. If still stuck, open DevTools → Application → Local Storage → clear the `sb-ohfkcxwwvksrjymkgloo-auth-token` entry, then reload and sign in again.
+3. Sign in using one of the known admin emails above with the correct password.
+
+### Defensive code improvements to make the admin login resilient
+
+Even though the underlying cause was infrastructure, the UI handles the failure poorly: it shows an infinite "Loading admin panel..." spinner with no recovery path. Plan to harden this:
+
+1. **Add fetch-failure handling in `AuthContext`**
+   - Detect `AuthRetryableFetchError` / `Failed to fetch` from `getSession` and `_refreshAccessToken`.
+   - Surface a non-blocking error state (e.g., `authError`) instead of leaving `isLoading` true.
+   - Stop the loader after a bounded retry window (e.g., 8 seconds) so the UI never hangs.
+
+2. **Improve `AdminLayout` loading UX**
+   - When auth has finished loading but `profile` is still null after a short timeout, show a "Could not reach authentication service. Retry" button instead of a perpetual spinner.
+   - Add a "Sign out and retry" escape hatch.
+
+3. **Add a "Forgot password / reset session" link on `AuthPage`**
+   - Lets a stuck admin clear local session and start fresh without DevTools.
+   - Wires `supabase.auth.signOut({ scope: 'local' })` + reload.
+
+4. **Surface the real error on login failure**
+   - Currently `setError(result?.error?.message)` will say "Failed to fetch" with no context. Map network errors to: "Authentication service is temporarily unavailable. Please try again in a moment."
+
+5. **Optional: password reset flow**
+   - If the admin genuinely forgot the password, add `resetPasswordForEmail` + a `/reset-password` route (currently missing). This is the recommended flow per the auth knowledge.
+
+### Files that will change
+
+- `src/contexts/AuthContext.tsx` — bounded loading, fetch-error detection, friendlier error mapping.
+- `src/components/admin/AdminLayout.tsx` — timeout-based fallback UI with retry/sign-out actions.
+- `src/components/auth/AuthPage.tsx` — friendlier error messages, "Reset session" helper, optional "Forgot password" link.
+- (Optional) `src/components/auth/ResetPasswordPage.tsx` + route in `App.tsx` for password reset.
+
+### What this will NOT do
+
+- It will not change Supabase project configuration, RLS, or the `user_roles` table.
+- It will not bypass authentication or weaken security.
+- It will not fix a forgotten password by itself — only the optional reset flow does that.
+
+### Verification after implementation
+
+- Simulate offline (DevTools → Network → Offline) on the admin login page → UI shows clear error and recovery, not infinite spinner.
+- Sign in with a valid admin account → dashboard loads.
+- Sign in with a non-admin account → "Access Denied" card (existing behavior preserved).
+- Trigger a stale token by editing the auth token in localStorage → "Reset session" button clears it cleanly.
+
