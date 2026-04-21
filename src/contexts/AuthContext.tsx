@@ -16,11 +16,31 @@ interface AuthContextType {
   profile: Profile | null;
   isAdmin: boolean;
   isLoading: boolean;
+  authError: string | null;
   signOut: () => Promise<void>;
   login: (email: string, password: string) => Promise<{ error: any }>;
   register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
   logout: () => Promise<void>;
+  resetLocalSession: () => Promise<void>;
 }
+
+// Max time we will keep the app in a "loading auth" state before giving up
+// and surfacing a non-blocking error. Prevents infinite spinners when the
+// Supabase auth service is briefly unreachable (e.g. during a GoTrue restart).
+const AUTH_LOAD_TIMEOUT_MS = 8000;
+
+const isNetworkAuthError = (err: unknown): boolean => {
+  if (!err) return false;
+  const anyErr = err as any;
+  const name = anyErr?.name || '';
+  const message = String(anyErr?.message || '');
+  return (
+    name === 'AuthRetryableFetchError' ||
+    name === 'TypeError' ||
+    /failed to fetch/i.test(message) ||
+    /network/i.test(message)
+  );
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
