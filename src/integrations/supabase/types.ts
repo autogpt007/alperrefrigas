@@ -14,6 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_assets: {
+        Row: {
+          ad_group: string | null
+          asset_type: string
+          campaign_id: string
+          compliance_status: string
+          created_at: string
+          id: string
+          payload_json: Json
+        }
+        Insert: {
+          ad_group?: string | null
+          asset_type: string
+          campaign_id: string
+          compliance_status?: string
+          created_at?: string
+          id?: string
+          payload_json?: Json
+        }
+        Update: {
+          ad_group?: string | null
+          asset_type?: string
+          campaign_id?: string
+          compliance_status?: string
+          created_at?: string
+          id?: string
+          payload_json?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_assets_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_campaigns: {
+        Row: {
+          brief_json: Json
+          created_at: string
+          created_by: string
+          goal: string | null
+          id: string
+          name: string
+          product_type: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brief_json?: Json
+          created_at?: string
+          created_by: string
+          goal?: string | null
+          id?: string
+          name: string
+          product_type?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brief_json?: Json
+          created_at?: string
+          created_by?: string
+          goal?: string | null
+          id?: string
+          name?: string
+          product_type?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ad_generations: {
+        Row: {
+          ai_response: Json
+          campaign_id: string
+          compliance_report: Json
+          created_at: string
+          id: string
+          model: string | null
+          prompt_payload: Json
+        }
+        Insert: {
+          ai_response?: Json
+          campaign_id: string
+          compliance_report?: Json
+          created_at?: string
+          id?: string
+          model?: string | null
+          prompt_payload?: Json
+        }
+        Update: {
+          ai_response?: Json
+          campaign_id?: string
+          compliance_report?: Json
+          created_at?: string
+          id?: string
+          model?: string | null
+          prompt_payload?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_generations_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       adverts: {
         Row: {
           content: string
