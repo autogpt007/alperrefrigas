@@ -93,6 +93,7 @@ const TaxRatesManagement = lazy(() => import("./components/admin/TaxRatesManagem
 const InternationalTaxManagement = lazy(() => import("./components/admin/InternationalTaxManagement"));
 const ExchangeRateManagement = lazy(() => import("./components/admin/ExchangeRateManagement"));
 const ShippingManagement = lazy(() => import("./components/admin/ShippingManagement"));
+const GoogleAdsEngine = lazy(() => import("./components/admin/GoogleAdsEngine"));
 
 const queryClient = new QueryClient();
 
@@ -137,6 +138,7 @@ function App() {
                          <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
                          <Route path="adverts" element={<AdvertManagement />} />
+                         <Route path="google-ads-engine" element={<GoogleAdsEngine />} />
                           <Route path="coupons" element={<CouponManagement />} />
                           <Route path="payment-methods" element={<PaymentManagement />} />
                           <Route path="tax-rates" element={<TaxRatesManagement />} />

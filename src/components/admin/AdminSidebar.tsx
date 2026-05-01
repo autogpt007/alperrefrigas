@@ -24,7 +24,8 @@ import {
   Calculator,
   Truck,
   Wind,
-  DollarSign
+  DollarSign,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -57,6 +58,7 @@ const AdminSidebar = () => {
     { icon: Truck, label: 'Shipping', path: '/admin/shipping' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
+    { icon: Sparkles, label: 'Google Ads Engine', path: '/admin/google-ads-engine' },
     { icon: Tag, label: 'Coupons', path: '/admin/coupons' },
     { icon: CreditCard, label: 'Payment Methods', path: '/admin/payment-methods' },
     { icon: Calculator, label: 'US Tax Rates', path: '/admin/tax-rates' },
