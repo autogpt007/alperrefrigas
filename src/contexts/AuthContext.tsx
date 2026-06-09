@@ -114,6 +114,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }, AUTH_LOAD_TIMEOUT_MS);
 
+    const clearLoadingTimeout = () => clearTimeout(loadingTimeout);
+
     const initializeAuth = async () => {
       try {
         console.log('Initializing auth...');
@@ -123,6 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (error) {
           console.error('Error getting session:', error);
           if (mounted) {
+            clearLoadingTimeout();
             if (isNetworkAuthError(error)) {
               setAuthError(
                 'Authentication service is temporarily unavailable. Please try again in a moment.'
@@ -136,6 +139,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('Initial session:', initialSession?.user?.id || 'no session');
 
         if (mounted) {
+          clearLoadingTimeout();
+          setAuthError(null);
           setSession(initialSession);
           setUser(initialSession?.user ?? null);
 
@@ -151,6 +156,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error('Error initializing auth:', error);
         if (mounted) {
+          clearLoadingTimeout();
           if (isNetworkAuthError(error)) {
             setAuthError(
               'Authentication service is temporarily unavailable. Please try again in a moment.'
@@ -167,6 +173,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (!mounted) return;
 
+        clearLoadingTimeout();
         setSession(session);
         setUser(session?.user ?? null);
 
