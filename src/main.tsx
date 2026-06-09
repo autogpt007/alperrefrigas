@@ -118,6 +118,37 @@ if (typeof window !== 'undefined') {
   );
 }
 
+// Handle stale dynamic-import chunks after a redeploy.
+// When the user has an old index.html cached, dynamically imported chunk hashes
+// no longer exist on the server and Vite throws "Importing a module script failed"
+// or "Failed to fetch dynamically imported module". Force a one-time reload.
+const isChunkLoadError = (message: string) =>
+  /Importing a module script failed/i.test(message) ||
+  /Failed to fetch dynamically imported module/i.test(message) ||
+  /error loading dynamically imported module/i.test(message);
+
+const tryReloadOnce = () => {
+  if (typeof sessionStorage === 'undefined') return;
+  const key = '__chunk_reload__';
+  if (sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key, '1');
+  window.location.reload();
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    if (event?.message && isChunkLoadError(event.message)) {
+      tryReloadOnce();
+    }
+  });
+  window.addEventListener('unhandledrejection', (event) => {
+    const msg = event?.reason?.message || String(event?.reason || '');
+    if (isChunkLoadError(msg)) {
+      tryReloadOnce();
+    }
+  });
+}
+
 // Initialize i18n after React is set up
 import('./i18n/i18n').then(() => {
   const container = document.getElementById("root");
