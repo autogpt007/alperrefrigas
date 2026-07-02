@@ -22,6 +22,7 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
 import { TawkToChat } from "./components/ui/TawkToChat";
+import ScrollToTop from "./components/ScrollToTop";
 import "./App.css";
 
 // Critical path - eagerly loaded
@@ -122,8 +123,9 @@ function App() {
                         <ResourceOptimizer>
                           <CriticalCSS />
                           <Toaster />
-                         <BrowserRouter>
-                          <MetaRedirects />
+                          <BrowserRouter>
+                           <ScrollToTop />
+                           <MetaRedirects />
                     <Suspense fallback={<PageFallback />}>
                     <Routes>
                       {/* Admin Routes */}
