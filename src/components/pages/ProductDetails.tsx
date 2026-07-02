@@ -897,7 +897,7 @@ const ProductDetails = () => {
                       <div className="space-y-3 pt-4 border-t">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).perCylinder)}/cyl
+                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
                         </Button>
 
                         <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
