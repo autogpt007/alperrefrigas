@@ -546,7 +546,8 @@ const ProductDetails = () => {
         aggregateRating={{ ratingValue: 4.8, reviewCount: 127, bestRating: 5 }}
         product={{
           name: product.name,
-          price: getCurrentPrice(),
+          // Per-unit price to match Google Merchant Center feed (per-cylinder for refrigerants, per-piece for accessories, per-unit for AC)
+          price: isRefrigerant ? product.price : (product.base_unit_price || product.price),
           currency: 'USD',
           availability: product.availability === 'in_stock' ? 'InStock' : 'OutOfStock',
           brand: product.brand || 'Alper Refrigerant',
