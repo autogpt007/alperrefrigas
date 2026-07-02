@@ -737,10 +737,6 @@ const ProductDetails = () => {
                       <p className="text-4xl font-bold text-primary mb-1">
                         {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
                       </p>
-                      {/* Total cost shown second */}
-                      <p className="text-lg text-muted-foreground font-medium mb-2">
-                        Total: {formatPrice(tier.total)}
-                      </p>
                       {tier.markup > 0 && (
                         <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
                           💡 Best price at 28+ pallets: {formatPrice(product.price)}/cyl
@@ -901,7 +897,7 @@ const ProductDetails = () => {
                       <div className="space-y-3 pt-4 border-t">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
+                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).perCylinder)}/cyl
                         </Button>
 
                         <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
