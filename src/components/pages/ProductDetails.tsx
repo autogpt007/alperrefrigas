@@ -737,10 +737,6 @@ const ProductDetails = () => {
                       <p className="text-4xl font-bold text-primary mb-1">
                         {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
                       </p>
-                      {/* Total cost shown second */}
-                      <p className="text-lg text-muted-foreground font-medium mb-2">
-                        Total: {formatPrice(tier.total)}
-                      </p>
                       {tier.markup > 0 && (
                         <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
                           💡 Best price at 28+ pallets: {formatPrice(product.price)}/cyl
