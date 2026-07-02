@@ -122,8 +122,9 @@ function App() {
                         <ResourceOptimizer>
                           <CriticalCSS />
                           <Toaster />
-                         <BrowserRouter>
-                          <MetaRedirects />
+                          <BrowserRouter>
+                           <ScrollToTop />
+                           <MetaRedirects />
                     <Suspense fallback={<PageFallback />}>
                     <Routes>
                       {/* Admin Routes */}
