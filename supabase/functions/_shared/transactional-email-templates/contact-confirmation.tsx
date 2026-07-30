@@ -22,7 +22,7 @@ const ContactConfirmationEmail = ({ name, subject }: ContactConfirmationProps) =
         <Section style={contentSection}>
           <Text style={text}>We've received your message and our team will respond within 4 hours during business hours.</Text>
           {subject && <Text style={text}><strong>Subject:</strong> {subject}</Text>}
-          <Text style={text}>If your matter is urgent, please call us at +1-787-965-8975.</Text>
+          <Text style={text}>If your matter is urgent, please call us at +1-682-215-2974.</Text>
         </Section>
         <Hr style={hr} />
         <Text style={footer}>Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</Text>

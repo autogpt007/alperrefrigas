@@ -1,0 +1,2 @@
+UPDATE public.site_settings SET setting_value = replace(replace(setting_value,'787-965-8975','682-215-2974'),'7879658975','6822152974'), updated_at = now() WHERE setting_value LIKE '%787%965%8975%' OR setting_value LIKE '%7879658975%';
+UPDATE public.contact_info SET value = replace(replace(value,'787-965-8975','682-215-2974'),'7879658975','6822152974'), updated_at = now() WHERE value LIKE '%787%965%8975%' OR value LIKE '%7879658975%';

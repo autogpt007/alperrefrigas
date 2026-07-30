@@ -28,7 +28,7 @@ const PaymentInformation = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-787-965-8975 | Email: sales@alperrefrigerants.com<br />
+              Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -265,7 +265,7 @@ const PaymentInformation = () => {
                 <br />
                 <strong>Email:</strong> billing@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> +1-787-965-8975
+                <strong>Phone:</strong> +1-682-215-2974
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 7:00 AM - 6:00 PM EST
               </p>

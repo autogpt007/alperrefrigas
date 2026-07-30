@@ -34,7 +34,7 @@ const Footer = () => {
       return {
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distribution',
-        main_phone: settingsMap.main_phone || '1-787-965-8975'
+        main_phone: settingsMap.main_phone || '1-682-215-2974'
       };
     },
   });
@@ -127,7 +127,7 @@ const Footer = () => {
                 <Phone className="h-4 w-4 text-blue-400" />
                 <div>
                   <div className="font-medium">Sales & Support</div>
-                  <div className="text-sm text-gray-300">{companyInfo?.main_phone || '1-787-965-8975'}</div>
+                  <div className="text-sm text-gray-300">{companyInfo?.main_phone || '1-682-215-2974'}</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
