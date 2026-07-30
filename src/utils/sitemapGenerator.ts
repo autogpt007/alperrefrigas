@@ -1,6 +1,7 @@
 // Dynamic sitemap generator for enhanced SEO
 import { Product } from '@/contexts/ProductsContext';
 import { createProductSlug } from '@/lib/slugs';
+import { SITE_URL } from '@/config/site';
 
 export interface SitemapEntry {
   url: string;
@@ -10,7 +11,7 @@ export interface SitemapEntry {
 }
 
 export const generateSitemap = (products: Product[]): SitemapEntry[] => {
-  const baseUrl = 'https://alperrefrigerants.com';
+  const baseUrl = SITE_URL;
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
   
   const staticPages: SitemapEntry[] = [
@@ -249,7 +250,7 @@ Disallow: /auth
 Disallow: /admin-auth
 
 # Sitemap location
-Sitemap: https://alperrefrigerants.com/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1`;

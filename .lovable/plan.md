@@ -1,38 +1,34 @@
-## Goal
+## What I checked
 
-Replace every reference to `alperrefrigas.com` with `alperrefrigerants.com` across code, config, SEO metadata, structured data, emails, and stored settings. Business name, phone (`1-787-965-8975`), and the Miami address stay exactly as they are.
+I scanned the whole codebase, all edge functions, and every content table in the database for the old domain.
 
-Scope confirmed by a repo-wide search: 37 files contain the old domain, plus 59 email addresses on `@alperrefrigas.com`.
+**Already correct — no change needed:**
+- No `alperrefrigas.com` link remains anywhere in `src/`, `supabase/functions/`, `index.html`, `robots.txt`, `sitemap.xml`, or in the `products`, `blog_posts`, `contact_info`, `adverts`, `certificates`, `hero_images`, `testimonials`, or `page_content_blocks` tables.
+- All in-app navigation (Header, Footer, product cards, product pages) uses **relative** paths (`/products`, `/about`, …), so it follows whatever domain the site is served on automatically. Nothing to migrate there.
+- Canonicals, og:url, and product JSON-LD already resolve against `https://alperrefrigerants.com`.
+- The only remaining `alperrefrigas` string is the X/Twitter handle `twitter.com/alperrefrigas` (in `site_settings.twitter_url` and `SocialMediaLinks.tsx`) — that's your real social handle, not a domain, so it stays until you rename it on X.
 
-## 1. Base URL, config, and crawler files
+## What is actually broken
 
-- `index.html` (17 refs): `og:url`, `og:image`, `twitter:image`, hreflang `x-default`, JSON-LD `url`/`logo`, noscript fallback links and emails.
-- `public/robots.txt` — `Sitemap:` directive.
-- `public/sitemap.xml` (99 refs) — all `<loc>` entries.
-- `public/_redirects` and `public/.htaccess` — canonicalization rules rewritten to force `https://alperrefrigerants.com` (non-www), and add 301s from both `alperrefrigas.com` and `www.alperrefrigas.com` to the new apex so old inbound links and Google's index migrate without 404s.
-- `public/llms.txt` (13 refs).
-- `src/utils/sitemapGenerator.ts`, `supabase/functions/generate-sitemap/index.ts` — base URL constants.
+The `ItemList` structured data in `index.html` points Google at **three URLs that don't exist or redirect**:
 
-## 2. Structured data and meta tags
+| JSON-LD URL | Reality |
+|---|---|
+| `/hfo-refrigerants` | 404 — real route is `/products/hfo-refrigerants` |
+| `/r454b` | 404 — real route is `/products/r-454b` |
+| `/products/air-conditioners` | 301 to `/products/accessories` |
 
-- `src/components/seo/SEOComponent.tsx` — canonical/og default base URL.
-- JSON-LD generators across `HomePage`, `ProductDetails`, `FreonWholesalePage`, `HFOLandingPage`, `Certifications`, `AboutUs`, `BulkPricing`, `Sitemap` — update `url`, `@id`, `logo`, `sameAs` (site links only) and breadcrumb item URLs. `name` / `legalName` untouched.
-- Static Organization, WebSite (incl. `SearchAction` target) and ItemList schemas in `index.html`.
+Also, the domain string `https://alperrefrigerants.com` is hardcoded in five separate places (`index.html`, `SEOComponent.tsx`, `src/utils/sitemapGenerator.ts`, `src/pages/BulkPricing.tsx`, `supabase/functions/generate-sitemap`), so a future domain change means another manual sweep.
 
-## 3. Emails
+## Plan
 
-Every `@alperrefrigas.com` address keeps its local part and moves to the new domain (`sales@`, `support@`, `info@`, `wholesale@`, `legal@`, `privacy@`, `dpo@`, `compliance@`, `hazmat@`, `credit@`, `billing@`, `shipping@`, `technical@`, `certifications@`, `admin@`). Affected: Footer, Header, ContactUs, all policy pages (Privacy, Terms, Shipping, Refund, Cookie, Payment Information, EPA Compliance, Certifications, FAQ, Support), plus edge functions `send-transactional-email`, `send-customer-email`, `send-notification-email`, `send-order-notification`, and the shared email templates (order/quote confirmation, KYC).
+1. **Fix the stale structured-data links in `index.html`** — point the ItemList entries at the live routes (`/products/hfo-refrigerants`, `/products/r-454b`, `/products/accessories`) so Merchant Center and Search Console stop seeing 404/redirect targets.
+2. **Fix the footer link `/shipping`** → `/shipping-policy` to remove an unnecessary 301 hop.
+3. **Add a single source of truth `src/config/site.ts`** exporting `SITE_URL` / `SITE_DOMAIN` (reading `VITE_SITE_URL` with the new domain as fallback), and use it in `SEOComponent.tsx`, `src/utils/sitemapGenerator.ts`, and `src/pages/BulkPricing.tsx` instead of hardcoded strings.
+4. **Extend the existing build validator** (`scripts/generate-redirects.ts`) with a link audit that fails the build if any absolute URL in `index.html` or `src/` uses a non-primary domain, or if a JSON-LD `url` points at a path that isn't a real route or is a known redirect source.
 
-## 4. Database-stored values
+## Technical notes
 
-A migration will update `site_settings` rows that hold the old domain or email (contact email, admin email, website URL), so admin-managed content matches the code. The Twitter handle `twitter.com/alperrefrigas` is a social account name, not a domain — left unchanged unless you say otherwise.
-
-## 5. Internal links
-
-Sweep for hardcoded absolute in-app links (e.g. `https://alperrefrigas.com/products`) and convert them to relative router paths so they never depend on the host. External-facing URLs (canonical, og, sitemap, schema, emails) stay absolute on the new domain.
-
-## Technical notes / things outside the code
-
-- Resend sending domain must be verified for `alperrefrigerants.com` or outbound transactional email will start failing; I'll flag the exact from-addresses used.
-- `alperrefrigerants.com` needs to be connected in Project Settings → Domains (both apex and `www`) and set as primary; keep `alperrefrigas.com` connected pointing at the same project so the 301s can fire.
-- After deploy: resubmit the sitemap in Search Console, add the new domain in Merchant Center, and re-verify the site (Bing `msvalidate.01` and Apex tags are domain-agnostic and stay as-is).
+- `index.html` is static and can't read Vite env vars, so its domain stays literal; the new validator is what keeps it honest.
+- No database writes are needed — content tables are already clean.
+- The edge function `generate-sitemap` keeps its own `BASE_URL` constant (functions can't import from `src/`); the validator will check it too.

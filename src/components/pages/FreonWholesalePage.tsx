@@ -19,7 +19,7 @@ const FreonWholesalePage = () => {
         "@id": "https://alperrefrigerants.com/#business",
         "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
         "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
-        "url": "https://alperrefrigerants.com/freon-wholesale",
+        "url": "https://alperrefrigerants.com/products",
         "telephone": "+1-210-939-1115",
         "email": "wholesale@alperrefrigerants.com",
         "address": {
@@ -120,7 +120,7 @@ const FreonWholesalePage = () => {
   const breadcrumbs = [
     { name: "Home", url: "https://alperrefrigerants.com" },
     { name: "Wholesale", url: "https://alperrefrigerants.com/bulk-pricing" },
-    { name: "Freon Wholesale", url: "https://alperrefrigerants.com/freon-wholesale" }
+    { name: "Freon Wholesale", url: "https://alperrefrigerants.com/products" }
   ];
 
   const freonProducts = [
