@@ -1,50 +1,27 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export interface SendInvoiceEmailArgs {
+  /** Row id in generated_documents — the PDF is pulled server-side from storage. */
+  documentId: string;
   recipientEmail: string;
-  buyerName: string;
-  docNumber: string;
-  docType: "invoice" | "quote";
-  total: number;
-  currency: string;
-  pdfUrl: string;
-  paymentTerms?: string | null;
-  paymentNotes?: string | null;
-  idempotencyKey?: string;
 }
 
 /**
- * Queues the branded delivery email containing a secure download link to the
- * generated quote / invoice PDF.
+ * Emails the buyer the generated quote / invoice with the PDF attached
+ * directly to the message (no download link).
  */
 export const sendInvoiceEmail = async (args: SendInvoiceEmailArgs) => {
-  const total = Number(args.total || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  const { data, error } = await supabase.functions.invoke("send-transactional-email", {
+  const { data, error } = await supabase.functions.invoke("send-invoice-document", {
     body: {
-      templateName: "invoice-delivery",
+      documentId: args.documentId,
       recipientEmail: args.recipientEmail,
-      idempotencyKey:
-        args.idempotencyKey || `invoice-${args.docNumber}-${args.recipientEmail}-${Date.now()}`,
-      templateData: {
-        buyerName: args.buyerName,
-        docNumber: args.docNumber,
-        docType: args.docType,
-        total,
-        currency: args.currency,
-        pdfUrl: args.pdfUrl,
-        paymentTerms: args.paymentTerms || null,
-        paymentNotes: args.paymentNotes || null,
-      },
     },
   });
 
   if (error) throw error;
   if (data && data.success === false) {
-    throw new Error(data.reason || "Email was not sent");
+    throw new Error(data.error || "Email was not sent");
   }
+  if (data && data.error) throw new Error(data.error);
   return data;
 };
