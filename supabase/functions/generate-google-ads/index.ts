@@ -177,7 +177,7 @@ OUTPUT REQUIREMENTS:
 - Return EXACTLY 15 headlines, 4 descriptions, 2 display paths per ad group.
 - Provide 3-6 themed ad groups covering different intent stages.
 - Each ad group includes: 6 sitelinks, 8 callouts, 2 structured snippets, 2-4 promotions, 10-20 keywords (mixed match types), 8+ negatives, full SEO meta.
-- finalUrl must be a relative path on alperrefrigas.com (e.g. /products/r-454b).
+- finalUrl must be a relative path on alperrefrigerants.com (e.g. /products/r-454b).
 - Suggest a Schema.org type (Product, Service, or Offer).
 
 ${productType === "refrigerant" ? refrigerantRules : ""}

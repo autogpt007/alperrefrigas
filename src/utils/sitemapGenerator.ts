@@ -10,7 +10,7 @@ export interface SitemapEntry {
 }
 
 export const generateSitemap = (products: Product[]): SitemapEntry[] => {
-  const baseUrl = 'https://alperrefrigas.com';
+  const baseUrl = 'https://alperrefrigerants.com';
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
   
   const staticPages: SitemapEntry[] = [
@@ -249,7 +249,7 @@ Disallow: /auth
 Disallow: /admin-auth
 
 # Sitemap location
-Sitemap: https://alperrefrigas.com/sitemap.xml
+Sitemap: https://alperrefrigerants.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1`;

@@ -346,7 +346,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.headerEmail ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., info@alperrefrigas.com"
+                placeholder="e.g., info@alperrefrigerants.com"
               />
               {validationErrors.headerEmail && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.headerEmail}</p>
@@ -368,7 +368,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.notificationEmail ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., admin@alperrefrigas.com"
+                placeholder="e.g., admin@alperrefrigerants.com"
               />
               {validationErrors.notificationEmail && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.notificationEmail}</p>

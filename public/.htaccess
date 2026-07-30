@@ -1,4 +1,4 @@
-# URL Canonicalization - Force HTTPS and non-www (primary host: https://alperrefrigas.com)
+# URL Canonicalization - Force HTTPS and non-www (primary host: https://alperrefrigerants.com)
 RewriteEngine On
 
 # Force HTTPS

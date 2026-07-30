@@ -193,11 +193,11 @@ const Sitemap = () => {
                     </li>
                     <li className="flex justify-between">
                       <span>EPA Compliance:</span>
-                      <strong>compliance@alperrefrigas.com</strong>
+                      <strong>compliance@alperrefrigerants.com</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>Hazmat Transportation:</span>
-                      <strong>hazmat@alperrefrigas.com</strong>
+                      <strong>hazmat@alperrefrigerants.com</strong>
                     </li>
                   </ul>
                 </div>
@@ -227,12 +227,12 @@ const Sitemap = () => {
             <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-700">
               <div>
                 <strong>General Support:</strong><br />
-                Email: support@alperrefrigas.com<br />
+                Email: support@alperrefrigerants.com<br />
                 Phone: 1-800-734-7443
               </div>
               <div>
                 <strong>Technical Questions:</strong><br />
-                Email: technical@alperrefrigas.com<br />
+                Email: technical@alperrefrigerants.com<br />
                 Live Chat: Available 8 AM - 6 PM EST
               </div>
             </div>

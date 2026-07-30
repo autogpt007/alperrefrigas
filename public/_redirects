@@ -1,9 +1,15 @@
 # Netlify redirects for URL canonicalization and clean URLs
 
-# Force HTTPS and non-www (primary host: https://alperrefrigas.com)
-http://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
-https://www.alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
-http://alperrefrigas.com/* https://alperrefrigas.com/:splat 301!
+# Force HTTPS and non-www (primary host: https://alperrefrigerants.com)
+http://www.alperrefrigerants.com/* https://alperrefrigerants.com/:splat 301!
+https://www.alperrefrigerants.com/* https://alperrefrigerants.com/:splat 301!
+http://alperrefrigerants.com/* https://alperrefrigerants.com/:splat 301!
+
+# Legacy domain -> new primary domain
+http://alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
+https://alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
+http://www.alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
+https://www.alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
 
 # Apex SEO redirects
 /products/air-conditioners /products/accessories 301!

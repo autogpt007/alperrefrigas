@@ -77,7 +77,7 @@ const NotFound = () => {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <Mail className="h-4 w-4" />
-                <EmailObfuscator email="support@alperrefrigas.com" className="hover:text-foreground transition-colors" />
+                <EmailObfuscator email="support@alperrefrigerants.com" className="hover:text-foreground transition-colors" />
               </div>
             </div>
           </CardContent>

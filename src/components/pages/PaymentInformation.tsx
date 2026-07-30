@@ -28,7 +28,7 @@ const PaymentInformation = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-787-965-8975 | Email: sales@alperrefrigas.com<br />
+              Tel: +1-787-965-8975 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -165,7 +165,7 @@ const PaymentInformation = () => {
                   <li><strong>Late Payment:</strong> 1.5% monthly finance charge on overdue balances</li>
                 </ul>
                 <p className="text-sm mt-4">
-                  To apply for commercial credit terms, contact: <strong>credit@alperrefrigas.com</strong>
+                  To apply for commercial credit terms, contact: <strong>credit@alperrefrigerants.com</strong>
                 </p>
               </CardContent>
             </Card>
@@ -263,7 +263,7 @@ const PaymentInformation = () => {
               <p className="text-blue-800">
                 For billing inquiries or payment assistance:
                 <br />
-                <strong>Email:</strong> billing@alperrefrigas.com
+                <strong>Email:</strong> billing@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> +1-787-965-8975
                 <br />

@@ -25,7 +25,7 @@ const HFOLandingPage = () => {
     "@type": "CollectionPage",
     "name": "HFO & Low-GWP Refrigerants Wholesale",
     "description": "Complete range of HFO and low-GWP refrigerants for environmental compliance. R-1234yf, R-1234ze, R-454B, R-513A at wholesale pricing.",
-    "url": "https://alperrefrigas.com/products/hfo-refrigerants",
+    "url": "https://alperrefrigerants.com/products/hfo-refrigerants",
     "mainEntity": {
       "@type": "ItemList",
       "name": "HFO Refrigerant Products",

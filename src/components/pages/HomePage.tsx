@@ -174,11 +174,11 @@ const HomePage = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Alper Refrigerant - Professional Refrigerant Distributor",
-    "url": "https://alperrefrigas.com",
+    "url": "https://alperrefrigerants.com",
     "description": "Leading wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC professionals, contractors, and industrial facilities.",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://alperrefrigas.com/products?search={search_term_string}",
+      "target": "https://alperrefrigerants.com/products?search={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "mainEntity": {

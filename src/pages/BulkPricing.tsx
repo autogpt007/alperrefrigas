@@ -9,7 +9,7 @@ const BulkPricing = () => {
     "@type": "WebPage",
     "name": "Bulk Refrigerant Pricing - Container & Wholesale Quotes",
     "description": "Get competitive bulk pricing on refrigerant containers and large volume orders. Volume discounts available for HVAC contractors and distributors.",
-    "url": "https://alperrefrigas.com/bulk-pricing",
+    "url": "https://alperrefrigerants.com/bulk-pricing",
     "mainEntity": {
       "@type": "Service",
       "name": "Bulk Refrigerant Pricing",
