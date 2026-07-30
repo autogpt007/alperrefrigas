@@ -148,7 +148,56 @@ function validate(redirects: string): Problem[] {
     });
   });
 
+  // 4. Absolute links in the app must use the primary domain and must not
+  //    point at a path that is itself a redirect source.
+  const redirectSources = new Set(PATH_REDIRECTS.map(([from]) => from));
+  const linkPattern = /https?:\/\/([a-z0-9.-]*alperrefrig[a-z0-9.-]*)((?:\/[^\s"'`)<>\\]*)?)/gi;
+
+  auditFiles().forEach((file) => {
+    const contents = readFileSync(resolve(file), "utf8");
+    contents.split("\n").forEach((line, index) => {
+      for (const match of line.matchAll(linkPattern)) {
+        const [, host, path = ""] = match;
+        if (host !== PRIMARY_DOMAIN && !host.endsWith(`.${PRIMARY_DOMAIN}`)) {
+          problems.push({
+            file,
+            message: `line ${index + 1}: absolute link uses "${host}" instead of ${PRIMARY_DOMAIN}`,
+          });
+        }
+        const cleanPath = path.replace(/[.,;)]+$/, "");
+        if (redirectSources.has(cleanPath)) {
+          problems.push({
+            file,
+            message: `line ${index + 1}: link points at "${cleanPath}", which 301-redirects to "${
+              PATH_REDIRECTS.find(([from]) => from === cleanPath)?.[1]
+            }"`,
+          });
+        }
+      }
+    });
+  });
+
   return problems;
+}
+
+/** Files that may contain absolute site links. */
+function auditFiles(): string[] {
+  const roots = ["index.html", "src", "supabase/functions"];
+  const exts = [".ts", ".tsx", ".html", ".json", ".txt"];
+  const out: string[] = [];
+
+  const walk = (rel: string) => {
+    const abs = resolve(rel);
+    if (!existsSync(abs)) return;
+    if (statSync(abs).isDirectory()) {
+      readdirSync(abs).forEach((child) => walk(`${rel}/${child}`));
+      return;
+    }
+    if (exts.some((ext) => rel.endsWith(ext))) out.push(rel);
+  };
+
+  roots.forEach(walk);
+  return out;
 }
 
 function main() {
