@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/config/site';
 
 interface SEOProps {
   title: string;
