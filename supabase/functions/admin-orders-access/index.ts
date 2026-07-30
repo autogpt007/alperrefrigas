@@ -254,7 +254,7 @@ serve(async (req) => {
 
       if (orderData) {
         // Determine the site URL for the KYC link
-        const siteUrl = 'https://alperrefrigas.lovable.app';
+        const siteUrl = 'https://alperrefrigerants.com';
         const kycLink = `${siteUrl}/kyc/${kycToken}`;
 
         // Send KYC email via send-transactional-email
