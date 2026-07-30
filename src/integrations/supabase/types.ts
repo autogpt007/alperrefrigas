@@ -617,6 +617,105 @@ export type Database = {
           },
         ]
       }
+      generated_documents: {
+        Row: {
+          amount_paid: number
+          buyer_address: string | null
+          buyer_company: string | null
+          buyer_country: string | null
+          buyer_email: string | null
+          buyer_name: string
+          buyer_phone: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          discount_percent: number
+          document_number: string
+          document_type: string
+          due_date: string | null
+          id: string
+          items: Json
+          notes: string | null
+          order_id: string | null
+          payment_method: string | null
+          payment_terms: string | null
+          pdf_path: string | null
+          pdf_url: string | null
+          po_number: string | null
+          ship_to_address: string | null
+          shipping_cost: number
+          subtotal: number
+          tax_amount: number
+          total: number
+          updated_at: string
+          validity_days: number
+        }
+        Insert: {
+          amount_paid?: number
+          buyer_address?: string | null
+          buyer_company?: string | null
+          buyer_country?: string | null
+          buyer_email?: string | null
+          buyer_name: string
+          buyer_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          discount_percent?: number
+          document_number: string
+          document_type: string
+          due_date?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_terms?: string | null
+          pdf_path?: string | null
+          pdf_url?: string | null
+          po_number?: string | null
+          ship_to_address?: string | null
+          shipping_cost?: number
+          subtotal?: number
+          tax_amount?: number
+          total?: number
+          updated_at?: string
+          validity_days?: number
+        }
+        Update: {
+          amount_paid?: number
+          buyer_address?: string | null
+          buyer_company?: string | null
+          buyer_country?: string | null
+          buyer_email?: string | null
+          buyer_name?: string
+          buyer_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          discount_percent?: number
+          document_number?: string
+          document_type?: string
+          due_date?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_terms?: string | null
+          pdf_path?: string | null
+          pdf_url?: string | null
+          po_number?: string | null
+          ship_to_address?: string | null
+          shipping_cost?: number
+          subtotal?: number
+          tax_amount?: number
+          total?: number
+          updated_at?: string
+          validity_days?: number
+        }
+        Relationships: []
+      }
       hero_images: {
         Row: {
           alt_text: string | null
