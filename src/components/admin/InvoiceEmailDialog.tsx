@@ -29,24 +29,17 @@ const InvoiceEmailDialog = ({ open, onOpenChange, document: doc, onSent }: Props
 
   const handleSend = async () => {
     if (!doc || !valid) return;
-    if (!doc.pdf_url) {
+    if (!doc.pdf_path && !doc.pdf_url) {
       toast.error('No PDF on file — re-save the document first.');
       return;
     }
     setSending(true);
     try {
       await sendInvoiceEmail({
+        documentId: doc.id,
         recipientEmail: effectiveRecipient.trim(),
-        buyerName: doc.buyer_name,
-        docNumber: doc.document_number,
-        docType: doc.document_type as 'invoice' | 'quote',
-        total: Number(doc.total),
-        currency: doc.currency,
-        pdfUrl: doc.pdf_url,
-        paymentTerms: doc.payment_terms,
-        paymentNotes: doc.notes,
       });
-      toast.success(`${label} emailed to ${effectiveRecipient.trim()}`);
+      toast.success(`${label} PDF emailed to ${effectiveRecipient.trim()}`);
       onSent?.();
       onOpenChange(false);
     } catch (e: any) {
