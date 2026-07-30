@@ -123,7 +123,7 @@ const Header = () => {
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
           <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
-            <span>📞 {logoSettings?.main_phone || '1-800-REFRIGERANT'}</span>
+            <span>📞 {logoSettings?.main_phone || '1-787-965-8975'}</span>
             <span className="hidden md:inline">📧 {logoSettings?.header_email || 'info@alperrefrigerants.com'}</span>
           </div>
           <div className="flex items-center space-x-4 ml-auto">
