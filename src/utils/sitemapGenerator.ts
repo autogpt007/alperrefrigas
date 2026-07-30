@@ -250,7 +250,7 @@ Disallow: /auth
 Disallow: /admin-auth
 
 # Sitemap location
-Sitemap: https://alperrefrigerants.com/sitemap.xml
+Sitemap: ${SITE_URL}/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1`;
