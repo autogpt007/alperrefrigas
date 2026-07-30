@@ -167,7 +167,7 @@ const CookiePolicy = () => {
                 <br />
                 <strong>Email:</strong> privacy@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> 1-800-734-7443
+                <strong>Phone:</strong> 1-787-965-8975
                 <br />
                 <strong>Data Protection Officer:</strong> dpo@alperrefrigerants.com
                 <br />

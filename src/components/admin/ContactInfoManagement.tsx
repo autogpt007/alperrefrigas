@@ -271,7 +271,7 @@ const ContactInfoManagement = () => {
                   value={editingItem.value}
                   onChange={(e) => setEditingItem({...editingItem, value: e.target.value})}
                   className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="e.g., 1-800-734-HELP"
+                  placeholder="e.g., 1-787-965-8975"
                 />
               </div>
 

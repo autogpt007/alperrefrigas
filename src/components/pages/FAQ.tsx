@@ -275,10 +275,10 @@ const FAQ = () => {
                 Contact Support
               </a>
               <a
-                href="tel:1-800-734-7443"
+                href="tel:+17879658975"
                 className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center"
               >
-                Call 1-800-REFRIGERANT
+                Call 1-787-965-8975
               </a>
             </div>
           </CardContent>
