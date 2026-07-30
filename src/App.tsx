@@ -95,6 +95,7 @@ const InternationalTaxManagement = lazy(() => import("./components/admin/Interna
 const ExchangeRateManagement = lazy(() => import("./components/admin/ExchangeRateManagement"));
 const ShippingManagement = lazy(() => import("./components/admin/ShippingManagement"));
 const GoogleAdsEngine = lazy(() => import("./components/admin/GoogleAdsEngine"));
+const DomainLaunchChecklist = lazy(() => import("./components/admin/DomainLaunchChecklist"));
 
 const queryClient = new QueryClient();
 
@@ -157,6 +158,7 @@ function App() {
                           <Route path="hero-images" element={<HeroImageManagement />} />
                           <Route path="page-content" element={<PageContentManagement />} />
                           <Route path="sitemap" element={<SitemapGenerator />} />
+                          <Route path="domain-setup" element={<DomainLaunchChecklist />} />
                           <Route path="settings" element={<AdminSettings />} />
                        </Route>
                       

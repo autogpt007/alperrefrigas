@@ -1,20 +1,21 @@
 User-agent: *
 Allow: /
 
-# Allow search engine crawlers
+# Search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
+# Social preview crawlers
 User-agent: facebookexternalhit
 Allow: /
 
 User-agent: Twitterbot
 Allow: /
 
-# Allow AI crawlers for better discoverability
+# AI crawlers
 User-agent: GPTBot
 Allow: /
 
@@ -30,19 +31,19 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
-User-agent: Claude-Web
+User-agent: PerplexityBot
 Allow: /
 
-# Disallow admin areas
+# Private / utility areas
 Disallow: /admin
-Disallow: /admin/*
+Disallow: /admin/
+Disallow: /account
+Disallow: /checkout
+Disallow: /cart
+Disallow: /order-confirmation
+Disallow: /kyc/
+Disallow: /crypto-payment
+Disallow: /unsubscribe
+Disallow: /health
 
-# Disallow authentication pages
-Disallow: /auth
-Disallow: /admin-auth
-
-# Sitemap location
 Sitemap: https://alperrefrigerants.com/sitemap.xml
-
-# Crawl-delay for respectful crawling
-Crawl-delay: 1

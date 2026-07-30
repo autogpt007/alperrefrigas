@@ -25,7 +25,8 @@ import {
   Truck,
   Wind,
   DollarSign,
-  Sparkles
+  Sparkles,
+  ListChecks
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -75,6 +76,7 @@ const AdminSidebar = () => {
     { icon: FileText, label: 'Page Content', path: '/admin/page-content' },
     { icon: Palette, label: 'Logo & Branding', path: '/admin/logo' },
     { icon: Map, label: 'SEO & Sitemap', path: '/admin/sitemap' },
+    { icon: ListChecks, label: 'Domain Launch', path: '/admin/domain-setup' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
 
