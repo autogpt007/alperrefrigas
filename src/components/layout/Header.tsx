@@ -55,7 +55,7 @@ const Header = () => {
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distributor',
-        main_phone: settingsMap.main_phone || '1-787-965-8975',
+        main_phone: settingsMap.main_phone || '1-682-215-2974',
         header_email: settingsMap.header_email || 'info@alperrefrigerants.com'
       };
     },
@@ -123,7 +123,7 @@ const Header = () => {
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
           <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
-            <span>📞 {logoSettings?.main_phone || '1-787-965-8975'}</span>
+            <span>📞 {logoSettings?.main_phone || '1-682-215-2974'}</span>
             <span className="hidden md:inline">📧 {logoSettings?.header_email || 'info@alperrefrigerants.com'}</span>
           </div>
           <div className="flex items-center space-x-4 ml-auto">
@@ -422,7 +422,7 @@ const Header = () => {
               ))}
               {/* Mobile-only contact info and switchers */}
               <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
-                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-787-965-8975'}</div>
+                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-682-215-2974'}</div>
                 <div className="text-sm text-gray-600">📧 {logoSettings?.header_email || 'info@alperrefrigerants.com'}</div>
                 <div className="flex items-center space-x-4 pt-2">
                   <CurrencySwitcher />

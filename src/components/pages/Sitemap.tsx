@@ -185,11 +185,11 @@ const Sitemap = () => {
                   <ul className="space-y-2 text-sm">
                     <li className="flex justify-between">
                       <span>Emergency Hotline:</span>
-                      <strong className="text-red-600">1-787-965-8975</strong>
+                      <strong className="text-red-600">1-682-215-2974</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>Technical Support:</span>
-                      <strong>1-787-965-8975</strong>
+                      <strong>1-682-215-2974</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>EPA Compliance:</span>
@@ -228,7 +228,7 @@ const Sitemap = () => {
               <div>
                 <strong>General Support:</strong><br />
                 Email: support@alperrefrigerants.com<br />
-                Phone: 1-787-965-8975
+                Phone: 1-682-215-2974
               </div>
               <div>
                 <strong>Technical Questions:</strong><br />

@@ -71,7 +71,7 @@ const NotFound = () => {
             <div className="mt-6 pt-6 border-t space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center justify-center gap-2">
                 <Phone className="h-4 w-4" />
-                <a href="tel:+17879658975" className="hover:text-foreground transition-colors">
+                <a href="tel:+16822152974" className="hover:text-foreground transition-colors">
                   +1 (787) 965-8975
                 </a>
               </div>

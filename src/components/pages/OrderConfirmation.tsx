@@ -602,8 +602,8 @@ const OrderConfirmation = () => {
             <Link to="/support">
               <Button variant="outline">Contact Support</Button>
             </Link>
-            <a href="tel:+17879658975" className="text-blue-600 hover:underline font-medium">
-              📞 1-787-965-8975
+            <a href="tel:+16822152974" className="text-blue-600 hover:underline font-medium">
+              📞 1-682-215-2974
             </a>
           </div>
         </div>

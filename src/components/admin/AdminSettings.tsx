@@ -324,7 +324,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.mainPhone ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., 1-787-965-8975"
+                placeholder="e.g., 1-682-215-2974"
               />
               {validationErrors.mainPhone && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.mainPhone}</p>

@@ -58,7 +58,7 @@ function quoteConfirmationHtml(data: any): string {
         <p style="margin:4px 0 0;color:#64748b;font-size:14px;">Status: Under Review</p>
       </div>
       <p style="color:#334155;font-size:14px;">Our team is reviewing your request and will provide competitive wholesale pricing within 4 business hours.</p>
-      <p style="color:#64748b;font-size:14px;">For urgent inquiries, contact us at sales@alperrefrigerants.com or +1-787-965-8975.</p>
+      <p style="color:#64748b;font-size:14px;">For urgent inquiries, contact us at sales@alperrefrigerants.com or +1-682-215-2974.</p>
     </div>
     <div style="background:#f8fafc;padding:16px;text-align:center;border-top:1px solid #e2e8f0;">
       <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>
@@ -76,7 +76,7 @@ function contactConfirmationHtml(data: any): string {
     <div style="padding:24px;">
       <p style="color:#334155;font-size:14px;">We've received your message and our team will respond within 4 hours during business hours.</p>
       ${data.subject ? `<p style="color:#64748b;font-size:14px;"><strong>Subject:</strong> ${data.subject}</p>` : ''}
-      <p style="color:#64748b;font-size:14px;">If your matter is urgent, please call us at +1-787-965-8975.</p>
+      <p style="color:#64748b;font-size:14px;">If your matter is urgent, please call us at +1-682-215-2974.</p>
     </div>
     <div style="background:#f8fafc;padding:16px;text-align:center;border-top:1px solid #e2e8f0;">
       <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>
@@ -166,7 +166,7 @@ function kycRejectedHtml(data: any): string {
     <div style="padding:24px;">
       <p style="color:#334155;font-size:14px;">Dear ${data.customerName},</p>
       <p style="color:#334155;font-size:14px;">Unfortunately, we were unable to verify your identity for Order #${data.orderNumber}. ${data.reason || 'The documents provided did not meet our verification requirements.'}</p>
-      <p style="color:#334155;font-size:14px;">Please contact us at sales@alperrefrigerants.com or +1-787-965-8975 to resolve this issue.</p>
+      <p style="color:#334155;font-size:14px;">Please contact us at sales@alperrefrigerants.com or +1-682-215-2974 to resolve this issue.</p>
     </div>
     <div style="background:#f8fafc;padding:16px;text-align:center;border-top:1px solid #e2e8f0;">
       <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>
