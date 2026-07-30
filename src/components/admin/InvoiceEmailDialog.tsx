@@ -29,24 +29,17 @@ const InvoiceEmailDialog = ({ open, onOpenChange, document: doc, onSent }: Props
 
   const handleSend = async () => {
     if (!doc || !valid) return;
-    if (!doc.pdf_url) {
+    if (!doc.pdf_path && !doc.pdf_url) {
       toast.error('No PDF on file — re-save the document first.');
       return;
     }
     setSending(true);
     try {
       await sendInvoiceEmail({
+        documentId: doc.id,
         recipientEmail: effectiveRecipient.trim(),
-        buyerName: doc.buyer_name,
-        docNumber: doc.document_number,
-        docType: doc.document_type as 'invoice' | 'quote',
-        total: Number(doc.total),
-        currency: doc.currency,
-        pdfUrl: doc.pdf_url,
-        paymentTerms: doc.payment_terms,
-        paymentNotes: doc.notes,
       });
-      toast.success(`${label} emailed to ${effectiveRecipient.trim()}`);
+      toast.success(`${label} PDF emailed to ${effectiveRecipient.trim()}`);
       onSent?.();
       onOpenChange(false);
     } catch (e: any) {
@@ -64,7 +57,7 @@ const InvoiceEmailDialog = ({ open, onOpenChange, document: doc, onSent }: Props
             <Mail className="h-5 w-5" /> Send {label.toLowerCase()} to buyer
           </DialogTitle>
           <DialogDescription>
-            The buyer receives a branded email with a secure download link to the PDF.
+            The buyer receives a branded email with the PDF attached directly — no links or logins.
           </DialogDescription>
         </DialogHeader>
 
@@ -96,8 +89,8 @@ const InvoiceEmailDialog = ({ open, onOpenChange, document: doc, onSent }: Props
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Paperclip className="h-3.5 w-3.5" />
-              {doc.pdf_url ? (
-                <Badge variant="secondary">Secure PDF download link included</Badge>
+              {doc.pdf_path || doc.pdf_url ? (
+                <Badge variant="secondary">PDF attached to the email</Badge>
               ) : (
                 <Badge variant="destructive">No PDF on file</Badge>
               )}
@@ -109,7 +102,7 @@ const InvoiceEmailDialog = ({ open, onOpenChange, document: doc, onSent }: Props
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={sending}>
             Cancel
           </Button>
-          <Button onClick={handleSend} disabled={sending || !valid || !doc?.pdf_url} className="gap-2">
+          <Button onClick={handleSend} disabled={sending || !valid || !(doc?.pdf_path || doc?.pdf_url)} className="gap-2">
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
             Send
           </Button>
