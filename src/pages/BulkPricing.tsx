@@ -1,6 +1,7 @@
 import React from 'react';
 import BulkQuoteForm from '@/components/ui/BulkQuoteForm';
 import SEOComponent from '@/components/seo/SEOComponent';
+import { absoluteUrl } from '@/config/site';
 
 const BulkPricing = () => {
   // Structured data for bulk pricing page
@@ -9,7 +10,7 @@ const BulkPricing = () => {
     "@type": "WebPage",
     "name": "Bulk Refrigerant Pricing - Container & Wholesale Quotes",
     "description": "Get competitive bulk pricing on refrigerant containers and large volume orders. Volume discounts available for HVAC contractors and distributors.",
-    "url": "https://alperrefrigerants.com/bulk-pricing",
+    "url": absoluteUrl('/bulk-pricing'),
     "mainEntity": {
       "@type": "Service",
       "name": "Bulk Refrigerant Pricing",
