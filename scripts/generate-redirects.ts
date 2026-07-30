@@ -18,7 +18,7 @@
  *   3. DEFAULT_SITE_URL below
  */
 
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "fs";
 import { resolve } from "path";
 
 const DEFAULT_SITE_URL = "https://alperrefrigerants.com";
