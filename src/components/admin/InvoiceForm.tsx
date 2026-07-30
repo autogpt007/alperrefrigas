@@ -42,6 +42,7 @@ export interface GeneratedDocumentRow {
   po_number: string | null;
   due_date: string | null;
   pdf_url: string | null;
+  pdf_path?: string | null;
   created_at?: string;
 }
 
