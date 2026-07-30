@@ -24,7 +24,7 @@ const QuoteConfirmationEmail = ({ customerName, quoteNumber }: QuoteConfirmation
           <Text style={infoSubtext}>Status: Under Review</Text>
         </Section>
         <Text style={text}>Our team is reviewing your request and will provide competitive wholesale pricing within 4 business hours.</Text>
-        <Text style={text}>For urgent inquiries, contact us at sales@alperrefrigas.com or +1-787-965-8975.</Text>
+        <Text style={text}>For urgent inquiries, contact us at sales@alperrefrigerants.com or +1-787-965-8975.</Text>
         <Hr style={hr} />
         <Text style={footer}>Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</Text>
       </Container>

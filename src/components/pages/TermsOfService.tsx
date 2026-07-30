@@ -29,7 +29,7 @@ const TermsOfService = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-787-965-8975 | Email: legal@alperrefrigas.com<br />
+              Tel: +1-787-965-8975 | Email: legal@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -201,13 +201,13 @@ const TermsOfService = () => {
               <p className="text-blue-800">
                 For questions about these terms, regulatory compliance, or technical support, contact us at:
                 <br />
-                <strong>Email:</strong> legal@alperrefrigas.com
+                <strong>Email:</strong> legal@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> +1-787-965-8975
                 <br />
                 <strong>Address:</strong> 382 NE 191st St, Miami, FL 33179, United States
                 <br />
-                <strong>EPA Compliance:</strong> compliance@alperrefrigas.com
+                <strong>EPA Compliance:</strong> compliance@alperrefrigerants.com
               </p>
             </div>
           </div>

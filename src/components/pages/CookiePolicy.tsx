@@ -165,11 +165,11 @@ const CookiePolicy = () => {
               <p className="text-blue-800">
                 If you have questions about our use of cookies or need assistance with cookie settings, please contact us at:
                 <br />
-                <strong>Email:</strong> privacy@alperrefrigas.com
+                <strong>Email:</strong> privacy@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> 1-800-734-7443
                 <br />
-                <strong>Data Protection Officer:</strong> dpo@alperrefrigas.com
+                <strong>Data Protection Officer:</strong> dpo@alperrefrigerants.com
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 8:00 AM - 6:00 PM EST
               </p>

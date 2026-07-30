@@ -37,7 +37,7 @@ const OrderConfirmationEmail = ({ customerName, orderNumber, totalAmount, items 
           </Section>
         )}
         <Hr style={hr} />
-        <Text style={text}>We'll notify you when your order ships. For questions, reply to this email or contact sales@alperrefrigas.com.</Text>
+        <Text style={text}>We'll notify you when your order ships. For questions, reply to this email or contact sales@alperrefrigerants.com.</Text>
         <Text style={footer}>Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</Text>
       </Container>
     </Body>

@@ -42,7 +42,7 @@ Disallow: /auth
 Disallow: /admin-auth
 
 # Sitemap location
-Sitemap: https://alperrefrigas.com/sitemap.xml
+Sitemap: https://alperrefrigerants.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

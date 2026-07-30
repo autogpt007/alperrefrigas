@@ -210,7 +210,7 @@ const ContactUs = () => {
           "@type": "ContactPoint",
           "contactType": "sales",
           "telephone": "+1-787-965-8975",
-          "email": "sales@alperrefrigas.com",
+          "email": "sales@alperrefrigerants.com",
           "areaServed": "US",
           "availableLanguage": ["English", "Spanish"]
         },
@@ -218,7 +218,7 @@ const ContactUs = () => {
           "@type": "ContactPoint", 
           "contactType": "customer service",
           "telephone": "+1-787-965-8975",
-          "email": "support@alperrefrigas.com",
+          "email": "support@alperrefrigerants.com",
           "hoursAvailable": "Mo-Fr 07:00-18:00"
         }
       ]
@@ -244,7 +244,7 @@ const ContactUs = () => {
               <h2 className="text-xl font-bold text-white mb-2">Alper Chemical Group</h2>
               <p className="text-blue-200 text-sm">
                 382 NE 191st St, Miami, FL 33179, United States<br />
-                Tel: +1-787-965-8975 | Email: sales@alperrefrigas.com
+                Tel: +1-787-965-8975 | Email: sales@alperrefrigerants.com
               </p>
               <p className="text-cyan-400 text-xs mt-2 font-medium">
                 B2B Supplier – Sales to EPA-certified HVAC professionals only

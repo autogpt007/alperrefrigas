@@ -16,12 +16,12 @@ const FreonWholesalePage = () => {
     "@graph": [
       {
         "@type": "LocalBusiness",
-        "@id": "https://alperrefrigas.com/#business",
+        "@id": "https://alperrefrigerants.com/#business",
         "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
         "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
-        "url": "https://alperrefrigas.com/freon-wholesale",
+        "url": "https://alperrefrigerants.com/freon-wholesale",
         "telephone": "+1-210-939-1115",
-        "email": "wholesale@alperrefrigas.com",
+        "email": "wholesale@alperrefrigerants.com",
         "address": {
           "@type": "PostalAddress",
           "addressCountry": "US",
@@ -46,15 +46,15 @@ const FreonWholesalePage = () => {
       },
       {
         "@type": "Organization",
-        "@id": "https://alperrefrigas.com/#organization", 
+        "@id": "https://alperrefrigerants.com/#organization", 
         "name": "Alper Refrigerants",
-        "url": "https://alperrefrigas.com",
-        "logo": "https://alperrefrigas.com/logo.svg",
+        "url": "https://alperrefrigerants.com",
+        "logo": "https://alperrefrigerants.com/logo.svg",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+1-210-939-1115",
           "contactType": "wholesale sales",
-          "email": "wholesale@alperrefrigas.com"
+          "email": "wholesale@alperrefrigerants.com"
         }
       }
     ]
@@ -118,9 +118,9 @@ const FreonWholesalePage = () => {
 
   // Breadcrumb navigation schema
   const breadcrumbs = [
-    { name: "Home", url: "https://alperrefrigas.com" },
-    { name: "Wholesale", url: "https://alperrefrigas.com/bulk-pricing" },
-    { name: "Freon Wholesale", url: "https://alperrefrigas.com/freon-wholesale" }
+    { name: "Home", url: "https://alperrefrigerants.com" },
+    { name: "Wholesale", url: "https://alperrefrigerants.com/bulk-pricing" },
+    { name: "Freon Wholesale", url: "https://alperrefrigerants.com/freon-wholesale" }
   ];
 
   const freonProducts = [
@@ -202,7 +202,7 @@ const FreonWholesalePage = () => {
                   </Button>
                 </Link>
                 <EmailObfuscator 
-                  email="wholesale@alperrefrigas.com"
+                  email="wholesale@alperrefrigerants.com"
                   className="inline-block"
                 >
                   <Button 
@@ -542,10 +542,10 @@ const FreonWholesalePage = () => {
                     <Mail className="h-12 w-12 text-green-400 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-white mb-2">Email Wholesale Team</h3>
                     <EmailObfuscator 
-                      email="wholesale@alperrefrigas.com"
+                      email="wholesale@alperrefrigerants.com"
                       className="text-green-400 text-lg font-semibold hover:text-green-300"
                     >
-                      wholesale@alperrefrigas.com
+                      wholesale@alperrefrigerants.com
                     </EmailObfuscator>
                     <p className="text-gray-300 text-sm mt-2">24-hour response guaranteed</p>
                   </CardContent>

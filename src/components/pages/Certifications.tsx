@@ -175,7 +175,7 @@ const Certifications = () => {
                 </div>
                 <div className="flex items-center gap-2 text-blue-200">
                   <Mail className="h-4 w-4 flex-shrink-0" />
-                  <a href="mailto:certifications@alperrefrigas.com" className="hover:text-white transition-colors">certifications@alperrefrigas.com</a>
+                  <a href="mailto:certifications@alperrefrigerants.com" className="hover:text-white transition-colors">certifications@alperrefrigerants.com</a>
                 </div>
               </div>
             </div>
@@ -207,7 +207,7 @@ const Certifications = () => {
           <AlertDescription className="text-amber-800">
             <strong>Certification Verification Notice:</strong> All certifications listed below can be independently verified through official regulatory bodies. 
             Copies of current certificates are available upon request. Contact us at{' '}
-            <a href="mailto:certifications@alperrefrigas.com" className="underline font-semibold">certifications@alperrefrigas.com</a> for verification documentation.
+            <a href="mailto:certifications@alperrefrigerants.com" className="underline font-semibold">certifications@alperrefrigerants.com</a> for verification documentation.
           </AlertDescription>
         </Alert>
 
@@ -507,7 +507,7 @@ const Certifications = () => {
                   For certificate verification or audit requests:
                 </p>
                 <ul className="text-green-800 mt-2 space-y-1">
-                  <li>📧 Email: certifications@alperrefrigas.com</li>
+                  <li>📧 Email: certifications@alperrefrigerants.com</li>
                   <li>📞 Phone: +1-787-965-8975</li>
                   <li>🕒 Available: Monday-Friday, 8AM-6PM EST</li>
                 </ul>
@@ -549,7 +549,7 @@ const Certifications = () => {
             </p>
             <p>
               <strong>Documentation Availability:</strong> Physical or digital copies of all certificates are maintained on file and will be provided 
-              within 2 business days upon written request to <a href="mailto:certifications@alperrefrigas.com" className="text-blue-600 underline">certifications@alperrefrigas.com</a>.
+              within 2 business days upon written request to <a href="mailto:certifications@alperrefrigerants.com" className="text-blue-600 underline">certifications@alperrefrigerants.com</a>.
             </p>
           </div>
         </div>

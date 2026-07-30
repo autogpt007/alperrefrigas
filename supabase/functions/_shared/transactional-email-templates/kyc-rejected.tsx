@@ -23,7 +23,7 @@ const KycRejectedEmail = ({ customerName, orderNumber, reason }: KycRejectedProp
         <Section style={contentSection}>
           <Text style={text}>Dear {customerName || 'Customer'},</Text>
           <Text style={text}>Unfortunately, we were unable to verify your identity for Order #{orderNumber || 'N/A'}. {reason || 'The documents provided did not meet our verification requirements.'}</Text>
-          <Text style={text}>Please contact us at sales@alperrefrigas.com or +1-787-965-8975 to resolve this issue.</Text>
+          <Text style={text}>Please contact us at sales@alperrefrigerants.com or +1-787-965-8975 to resolve this issue.</Text>
         </Section>
         <Hr style={hr} />
         <Text style={footer}>Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</Text>

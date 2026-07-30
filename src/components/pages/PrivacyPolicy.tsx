@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-787-965-8975 | Email: privacy@alperrefrigas.com<br />
+              Tel: +1-787-965-8975 | Email: privacy@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -191,7 +191,7 @@ const PrivacyPolicy = () => {
               <p className="text-blue-800">
                 If you have any questions about this Privacy Policy or our data practices, please contact us at:
                 <br />
-                <strong>Email:</strong> privacy@alperrefrigas.com
+                <strong>Email:</strong> privacy@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> +1-787-965-8975
                 <br />
