@@ -6,7 +6,6 @@
 // GET /product-image/<path/inside/bucket>
 // or  /product-image?path=<path/inside/bucket>
 
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 const BUCKET = "images";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -20,7 +19,7 @@ const cors = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "GET" && req.method !== "HEAD") {
     return new Response("Method not allowed", { status: 405, headers: cors });

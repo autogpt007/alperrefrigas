@@ -2,7 +2,6 @@
 // Public endpoint — GMC fetches it on a schedule, so links always match the
 // live domain and there is nothing to update by hand after a domain change.
 
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 
 const corsHeaders = {
@@ -50,7 +49,7 @@ function absoluteImage(url: unknown): string | null {
   return `${BASE_URL}${raw.startsWith("/") ? raw : `/${raw}`}`;
 }
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
