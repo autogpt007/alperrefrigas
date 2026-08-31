@@ -143,6 +143,9 @@ function App() {
                          <Route path="featured-products" element={<FeaturedProductManagement />} />
                          <Route path="orders" element={<OrderManagement />} />
                          <Route path="invoices" element={<InvoicesManager />} />
+                         <Route path="customers" element={<CustomersManager />} />
+                         <Route path="inventory" element={<InventoryManager />} />
+                         <Route path="audit-log" element={<AuditLogManager />} />
                          <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
                          <Route path="adverts" element={<AdvertManagement />} />
