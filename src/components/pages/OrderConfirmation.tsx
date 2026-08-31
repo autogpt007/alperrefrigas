@@ -25,6 +25,7 @@ const OrderConfirmation = () => {
   const { formatPrice, currency, currencyName } = useCurrency();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const conversionTrackedRef = useRef(false);
   
   const orderNumber = searchParams.get('orderNumber');
