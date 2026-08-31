@@ -126,6 +126,45 @@ export type Database = {
           },
         ]
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_email: string | null
+          admin_id: string | null
+          created_at: string
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          resource_id: string | null
+          resource_label: string | null
+          resource_type: string
+        }
+        Insert: {
+          action: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          resource_id?: string | null
+          resource_label?: string | null
+          resource_type: string
+        }
+        Update: {
+          action?: string
+          admin_email?: string | null
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          resource_id?: string | null
+          resource_label?: string | null
+          resource_type?: string
+        }
+        Relationships: []
+      }
       adverts: {
         Row: {
           content: string
