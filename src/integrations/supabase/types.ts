@@ -233,6 +233,48 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_order_amount: number | null
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number | null
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number | null
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
       featured_products: {
         Row: {
           created_at: string
@@ -271,6 +313,113 @@ export type Database = {
           },
         ]
       }
+      generated_documents: {
+        Row: {
+          amount_paid: number
+          buyer_address: string | null
+          buyer_company: string | null
+          buyer_country: string | null
+          buyer_email: string | null
+          buyer_name: string
+          buyer_phone: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          discount_percent: number
+          document_number: string
+          document_type: string
+          due_date: string | null
+          id: string
+          items: Json
+          notes: string | null
+          order_id: string | null
+          payment_method: string | null
+          payment_terms: string | null
+          pdf_path: string | null
+          pdf_url: string | null
+          po_number: string | null
+          ship_to_address: string | null
+          shipping_cost: number
+          subtotal: number
+          tax_amount: number
+          total: number
+          updated_at: string
+          validity_days: number
+        }
+        Insert: {
+          amount_paid?: number
+          buyer_address?: string | null
+          buyer_company?: string | null
+          buyer_country?: string | null
+          buyer_email?: string | null
+          buyer_name: string
+          buyer_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          discount_percent?: number
+          document_number: string
+          document_type: string
+          due_date?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_terms?: string | null
+          pdf_path?: string | null
+          pdf_url?: string | null
+          po_number?: string | null
+          ship_to_address?: string | null
+          shipping_cost?: number
+          subtotal?: number
+          tax_amount?: number
+          total?: number
+          updated_at?: string
+          validity_days?: number
+        }
+        Update: {
+          amount_paid?: number
+          buyer_address?: string | null
+          buyer_company?: string | null
+          buyer_country?: string | null
+          buyer_email?: string | null
+          buyer_name?: string
+          buyer_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          discount_percent?: number
+          document_number?: string
+          document_type?: string
+          due_date?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_terms?: string | null
+          pdf_path?: string | null
+          pdf_url?: string | null
+          po_number?: string | null
+          ship_to_address?: string | null
+          shipping_cost?: number
+          subtotal?: number
+          tax_amount?: number
+          total?: number
+          updated_at?: string
+          validity_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hero_images: {
         Row: {
           alt_text: string | null
@@ -298,6 +447,191 @@ export type Database = {
           is_active?: boolean | null
           page_name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      kyc_verifications: {
+        Row: {
+          admin_notes: string | null
+          billing_address: Json | null
+          billing_name: string | null
+          card_back_url: string | null
+          card_front_url: string | null
+          created_at: string
+          id: string
+          id_document_url: string | null
+          order_id: string
+          selfie_url: string | null
+          status: string
+          submitted_at: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          billing_address?: Json | null
+          billing_name?: string | null
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          order_id: string
+          selfie_url?: string | null
+          status?: string
+          submitted_at?: string | null
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          billing_address?: Json | null
+          billing_name?: string | null
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          order_id?: string
+          selfie_url?: string | null
+          status?: string
+          submitted_at?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          configuration_json: Json | null
+          created_at: string | null
+          epa_approved: boolean | null
+          id: string
+          order_id: string
+          packaging: string | null
+          price: number
+          product_id: string | null
+          product_name: string
+          quantity: number
+          sku: string | null
+        }
+        Insert: {
+          configuration_json?: Json | null
+          created_at?: string | null
+          epa_approved?: boolean | null
+          id?: string
+          order_id: string
+          packaging?: string | null
+          price: number
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          sku?: string | null
+        }
+        Update: {
+          configuration_json?: Json | null
+          created_at?: string | null
+          epa_approved?: boolean | null
+          id?: string
+          order_id?: string
+          packaging?: string | null
+          price?: number
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          sku?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          cashapp_tag: string | null
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          id: string
+          items: Json | null
+          notes: string | null
+          order_number: string | null
+          payment_details: Json | null
+          payment_method: string | null
+          phone: string | null
+          shipping_address: Json | null
+          shipping_cost: number | null
+          status: string | null
+          tax_amount: number | null
+          total_amount: number
+          tracking_number: string | null
+          updated_at: string | null
+          user_id: string | null
+          zelle_tag: string | null
+        }
+        Insert: {
+          cashapp_tag?: string | null
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          id?: string
+          items?: Json | null
+          notes?: string | null
+          order_number?: string | null
+          payment_details?: Json | null
+          payment_method?: string | null
+          phone?: string | null
+          shipping_address?: Json | null
+          shipping_cost?: number | null
+          status?: string | null
+          tax_amount?: number | null
+          total_amount: number
+          tracking_number?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          zelle_tag?: string | null
+        }
+        Update: {
+          cashapp_tag?: string | null
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          items?: Json | null
+          notes?: string | null
+          order_number?: string | null
+          payment_details?: Json | null
+          payment_method?: string | null
+          phone?: string | null
+          shipping_address?: Json | null
+          shipping_cost?: number | null
+          status?: string | null
+          tax_amount?: number | null
+          total_amount?: number
+          tracking_number?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          zelle_tag?: string | null
         }
         Relationships: []
       }
@@ -544,6 +878,96 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      quote_items: {
+        Row: {
+          created_at: string
+          id: string
+          packaging: string | null
+          product_id: string | null
+          product_name: string
+          quantity: number
+          quote_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          packaging?: string | null
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          quote_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          packaging?: string | null
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          quote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          quote_number: string | null
+          shipping_address: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          quote_number?: string | null
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          quote_number?: string | null
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
