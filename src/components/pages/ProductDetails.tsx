@@ -543,7 +543,7 @@ const ProductDetails = () => {
           { name: product.name, url: canonicalUrl }
         ]}
         faq={productFAQ}
-        aggregateRating={{ ratingValue: 4.8, reviewCount: 127, bestRating: 5 }}
+        
         product={{
           name: product.name,
           // Per-unit price to match Google Merchant Center feed (per-cylinder for refrigerants, per-piece for accessories, per-unit for AC)
