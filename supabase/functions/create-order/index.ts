@@ -3,7 +3,7 @@
 // Verifies item prices server-side against the products table to prevent price manipulation
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,6 +41,7 @@ serve(async (req: Request) => {
       payment_details = null,
       cashapp_tag = null,
       zelle_tag = null,
+      coupon_code = null,
       items = [],
     } = await req.json();
 
@@ -200,7 +201,41 @@ serve(async (req: Request) => {
     for (const item of items) {
       computedItemsTotal += Number(item.price) * Number(item.quantity ?? 1);
     }
-    const computedTotal = computedItemsTotal + Number(shipping_cost) + Number(tax_amount);
+
+    // Server-side coupon validation (never trust a client-supplied discount)
+    let verifiedDiscount = 0;
+    let verifiedCoupon: any = null;
+    if (typeof coupon_code === "string" && coupon_code.trim().length > 0) {
+      const { data: coupon } = await supabaseAdmin
+        .from("coupons")
+        .select("id, code, discount_type, discount_value, is_active, expires_at, end_date, start_date, max_uses, current_uses, used_count, minimum_order_amount, min_order_amount")
+        .ilike("code", coupon_code.trim())
+        .maybeSingle();
+
+      const now = Date.now();
+      const notStarted = coupon?.start_date ? new Date(coupon.start_date).getTime() > now : false;
+      const expiry = coupon?.expires_at ?? coupon?.end_date ?? null;
+      const expired = expiry ? new Date(expiry).getTime() < now : false;
+      const uses = Number(coupon?.current_uses ?? coupon?.used_count ?? 0);
+      const maxUses = coupon?.max_uses != null ? Number(coupon.max_uses) : null;
+      const exhausted = maxUses != null && uses >= maxUses;
+      const minAmount = Number(coupon?.minimum_order_amount ?? coupon?.min_order_amount ?? 0);
+
+      if (coupon && coupon.is_active !== false && !notStarted && !expired && !exhausted && computedItemsTotal >= minAmount) {
+        verifiedCoupon = coupon;
+        verifiedDiscount = coupon.discount_type === "percentage"
+          ? computedItemsTotal * (Number(coupon.discount_value) / 100)
+          : Number(coupon.discount_value);
+        verifiedDiscount = Math.min(Math.max(verifiedDiscount, 0), computedItemsTotal);
+      } else {
+        console.warn("[EDGE:create-order] Coupon rejected", { coupon_code });
+      }
+    }
+
+    const computedTotal = Math.max(
+      0,
+      computedItemsTotal + Number(shipping_cost) + Number(tax_amount) - verifiedDiscount,
+    );
 
     // Allow tolerance of $0.02 for rounding across multiple items
     if (Math.abs(computedTotal - Number(total_amount)) > 0.02) {
@@ -236,7 +271,9 @@ serve(async (req: Request) => {
         shipping_address,
         notes,
         payment_method,
-        payment_details,
+        payment_details: verifiedCoupon
+          ? { ...(payment_details ?? {}), coupon_code: verifiedCoupon.code, discount_amount: Number(verifiedDiscount.toFixed(2)) }
+          : payment_details,
         cashapp_tag,
         zelle_tag,
       })

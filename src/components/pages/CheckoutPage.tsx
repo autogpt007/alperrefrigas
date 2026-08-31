@@ -36,11 +36,14 @@ const CheckoutPage = () => {
   const { t } = useTranslation();
   const { items, total, clearCart, freeShippingThreshold, shippingCost: cartShippingCost, finalTotal: cartFinalTotal } = useCart();
   const { createOrder } = useOrders();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { formatPrice: formatCurrency, currency, currencyName, currencySymbol } = useCurrency();
   const [searchParams] = useSearchParams();
-  const isGuest = searchParams.get('guest') === 'true';
+  // Guests can check out without an account. The ?guest=true flag lets a signed-in
+  // user deliberately place an order as a guest; otherwise anyone without a
+  // session is treated as a guest instead of being bounced to the login page.
+  const isGuest = searchParams.get('guest') === 'true' || (!authLoading && !user);
   
   // Handle direct checkout from Google Merchant Center links
   const { isLoading: isDirectCheckoutLoading, error: directCheckoutError } = useDirectCheckout();
@@ -503,6 +506,7 @@ const CheckoutPage = () => {
           phoneNumber: formData.phoneNumber
         },
         payment_method: formData.paymentMethod,
+        coupon_code: appliedCoupon?.code ?? null,
         notes: formData.notes,
         shipping_cost: shippingCost,
         tax_amount: taxAmount,

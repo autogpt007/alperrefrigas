@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from "npm:@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
         })
       }
 
-      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
+      const { createClient } = await import("npm:@supabase/supabase-js@2")
       const authClient = createClient(supabaseUrl, supabaseAnonKey, {
         global: { headers: { Authorization: authHeader } }
       })
