@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.log_card_access(UUID, TEXT) FROM authenticated;
