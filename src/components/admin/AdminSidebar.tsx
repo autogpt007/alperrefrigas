@@ -27,7 +27,9 @@ import {
   DollarSign,
   Sparkles,
   ListChecks,
-  Receipt
+  Receipt,
+  Boxes,
+  ScrollText
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -57,7 +59,10 @@ const AdminSidebar = () => {
     { icon: Wrench, label: 'Accessories', path: '/admin/accessories' },
     { icon: Star, label: 'Featured Products', path: '/admin/featured-products' },
     { icon: ShoppingCart, label: 'Orders', path: '/admin/orders' },
+    { icon: Users, label: 'Customers', path: '/admin/customers' },
+    { icon: Boxes, label: 'Inventory', path: '/admin/inventory' },
     { icon: Receipt, label: 'Quotes & Invoices', path: '/admin/invoices' },
+    { icon: ScrollText, label: 'Audit Log', path: '/admin/audit-log' },
     { icon: Truck, label: 'Shipping', path: '/admin/shipping' },
     { icon: FileText, label: 'Blog', path: '/admin/blog' },
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
