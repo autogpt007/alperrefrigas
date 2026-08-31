@@ -238,10 +238,12 @@ export type Database = {
           category: string | null
           contact_type: string
           created_at: string | null
+          description: string | null
           display_order: number | null
           id: string
           is_active: boolean | null
           label: string | null
+          order_index: number
           updated_at: string | null
           value: string
         }
@@ -249,10 +251,12 @@ export type Database = {
           category?: string | null
           contact_type: string
           created_at?: string | null
+          description?: string | null
           display_order?: number | null
           id?: string
           is_active?: boolean | null
           label?: string | null
+          order_index?: number
           updated_at?: string | null
           value: string
         }
@@ -260,10 +264,12 @@ export type Database = {
           category?: string | null
           contact_type?: string
           created_at?: string | null
+          description?: string | null
           display_order?: number | null
           id?: string
           is_active?: boolean | null
           label?: string | null
+          order_index?: number
           updated_at?: string | null
           value?: string
         }
@@ -273,39 +279,57 @@ export type Database = {
         Row: {
           code: string
           created_at: string
+          current_uses: number | null
+          description: string | null
           discount_type: string
           discount_value: number
+          end_date: string | null
           expires_at: string | null
           id: string
           is_active: boolean
           max_uses: number | null
           min_order_amount: number | null
+          minimum_order_amount: number | null
+          start_date: string | null
+          title: string
           updated_at: string
           used_count: number
         }
         Insert: {
           code: string
           created_at?: string
+          current_uses?: number | null
+          description?: string | null
           discount_type?: string
           discount_value?: number
+          end_date?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean
           max_uses?: number | null
           min_order_amount?: number | null
+          minimum_order_amount?: number | null
+          start_date?: string | null
+          title?: string
           updated_at?: string
           used_count?: number
         }
         Update: {
           code?: string
           created_at?: string
+          current_uses?: number | null
+          description?: string | null
           discount_type?: string
           discount_value?: number
+          end_date?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean
           max_uses?: number | null
           min_order_amount?: number | null
+          minimum_order_amount?: number | null
+          start_date?: string | null
+          title?: string
           updated_at?: string
           used_count?: number
         }
@@ -314,24 +338,42 @@ export type Database = {
       exchange_rates: {
         Row: {
           base_currency: string
+          country_codes: string[]
           created_at: string | null
+          currency_name: string
+          currency_symbol: string
+          flag_emoji: string | null
           id: string
+          is_active: boolean | null
+          last_updated: string | null
           rate: number
           target_currency: string
           updated_at: string | null
         }
         Insert: {
           base_currency?: string
+          country_codes?: string[]
           created_at?: string | null
+          currency_name?: string
+          currency_symbol?: string
+          flag_emoji?: string | null
           id?: string
+          is_active?: boolean | null
+          last_updated?: string | null
           rate?: number
           target_currency: string
           updated_at?: string | null
         }
         Update: {
           base_currency?: string
+          country_codes?: string[]
           created_at?: string | null
+          currency_name?: string
+          currency_symbol?: string
+          flag_emoji?: string | null
           id?: string
+          is_active?: boolean | null
+          last_updated?: string | null
           rate?: number
           target_currency?: string
           updated_at?: string | null
