@@ -56,29 +56,34 @@ serve(async (req: Request) => {
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    // Read over the REST API rather than the JS SDK: the SDK's esm.sh build
+    // pulls in a websocket shim that fails to boot in this runtime.
+    const columns = [
+      "id", "name", "description", "price", "sku", "gtin", "mpn", "brand", "condition",
+      "availability", "stock_quantity", "images", "thumbnail_url", "google_product_category",
+      "product_type", "weight_kg", "length_cm", "width_cm", "height_cm",
+      "identifier_exists", "updated_at",
+    ].join(",");
+
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const res = await fetch(
+      `${Deno.env.get("SUPABASE_URL")!}/rest/v1/products?select=${columns}&order=name.asc`,
+      { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } },
     );
 
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        "id, name, description, price, sku, gtin, mpn, brand, condition, availability, " +
-          "stock_quantity, images, thumbnail_url, google_product_category, product_type, " +
-          "weight_kg, length_cm, width_cm, height_cm, identifier_exists, updated_at",
-      )
-      .order("name");
-
-    if (error) {
-      console.error(`products query failed: ${error.message}`);
+    if (!res.ok) {
+      const details = await res.text();
+      console.error(`products query failed: ${res.status} ${details}`);
       return new Response(
-        JSON.stringify({ error: "Failed to load products", details: error.message }),
+        JSON.stringify({ error: "Failed to load products", details }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
+    const data = (await res.json()) as Record<string, unknown>[];
     const products = (data ?? []).filter((p) => Number(p.price) > 0);
+    const items: string[] = [];
+
     const items: string[] = [];
 
     for (const p of products) {
