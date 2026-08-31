@@ -243,10 +243,12 @@ const OrderConfirmation = () => {
             <>Reference Number: <span className="font-mono text-blue-600">{confirmationNumber}</span></>
           )}
         </p>
-        <p className="text-sm text-gray-500">Redirecting to your account...</p>
+        <p className="text-sm text-gray-500">
+          {isSignedIn ? 'Redirecting to your account...' : 'Keep this reference number for your records. Redirecting to the homepage...'}
+        </p>
         <div className="mt-6">
-          <Link to="/account">
-            <Button>Go to Account</Button>
+          <Link to={isSignedIn ? '/account' : '/'}>
+            <Button>{isSignedIn ? 'Go to Account' : 'Back to Home'}</Button>
           </Link>
         </div>
       </div>
