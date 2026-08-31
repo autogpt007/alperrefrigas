@@ -117,9 +117,12 @@ const OrderConfirmation = () => {
       setData(foundData);
       setLoading(false);
 
-      // If still no data found, redirect after showing message
+      // If still no data found, redirect after showing message.
+      // Guests have no account page, so send them home instead of the login wall.
       if (!foundData) {
-        setTimeout(() => navigate('/account'), 5000);
+        const { data: sessionData } = await supabase.auth.getSession();
+        const destination = sessionData?.session ? '/account' : '/';
+        setTimeout(() => navigate(destination), 5000);
       }
     };
 
