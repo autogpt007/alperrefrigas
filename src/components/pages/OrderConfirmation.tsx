@@ -122,8 +122,9 @@ const OrderConfirmation = () => {
       // Guests have no account page, so send them home instead of the login wall.
       if (!foundData) {
         const { data: sessionData } = await supabase.auth.getSession();
-        const destination = sessionData?.session ? '/account' : '/';
-        setTimeout(() => navigate(destination), 5000);
+        const signedIn = !!sessionData?.session;
+        setIsSignedIn(signedIn);
+        setTimeout(() => navigate(signedIn ? '/account' : '/'), 8000);
       }
     };
 
