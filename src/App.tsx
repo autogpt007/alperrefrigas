@@ -97,6 +97,9 @@ const ShippingManagement = lazy(() => import("./components/admin/ShippingManagem
 const GoogleAdsEngine = lazy(() => import("./components/admin/GoogleAdsEngine"));
 const DomainLaunchChecklist = lazy(() => import("./components/admin/DomainLaunchChecklist"));
 const InvoicesManager = lazy(() => import("./components/admin/InvoicesManager"));
+const CustomersManager = lazy(() => import("./components/admin/CustomersManager"));
+const InventoryManager = lazy(() => import("./components/admin/InventoryManager"));
+const AuditLogManager = lazy(() => import("./components/admin/AuditLogManager"));
 
 const queryClient = new QueryClient();
 
@@ -140,6 +143,9 @@ function App() {
                          <Route path="featured-products" element={<FeaturedProductManagement />} />
                          <Route path="orders" element={<OrderManagement />} />
                          <Route path="invoices" element={<InvoicesManager />} />
+                         <Route path="customers" element={<CustomersManager />} />
+                         <Route path="inventory" element={<InventoryManager />} />
+                         <Route path="audit-log" element={<AuditLogManager />} />
                          <Route path="shipping" element={<ShippingManagement />} />
                          <Route path="blog" element={<BlogPostManagement />} />
                          <Route path="adverts" element={<AdvertManagement />} />

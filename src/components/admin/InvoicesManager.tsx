@@ -160,7 +160,12 @@ const InvoicesManager = () => {
                         >
                           <Download className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" title="Email to buyer" onClick={() => setEmailDoc(row)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Email / resend PDF to buyer"
+                          onClick={() => setEmailDoc(row)}
+                        >
                           <Mail className="h-4 w-4" />
                         </Button>
                         <Button

@@ -6,7 +6,12 @@ const corsHeaders = {
 };
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const FROM_EMAIL = Deno.env.get("INVOICE_FROM_EMAIL") || "Alper Refrigerants <onboarding@resend.dev>";
+// Must stay in sync with supabase/functions/send-transactional-email/index.ts —
+// the verified sender subdomain is what Resend authorises the send against.
+const SENDER_DOMAIN = "notify.alperrefrigerants.com";
+const FROM_DOMAIN = "alperrefrigerants.com";
+const FROM_EMAIL =
+  Deno.env.get("INVOICE_FROM_EMAIL") || `Alper Refrigerants <invoices@${FROM_DOMAIN}>`;
 const REPLY_TO = "sales@alperrefrigerants.com";
 const BUCKET = "customer-invoices";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -137,6 +142,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
+        sender_domain: SENDER_DOMAIN,
         to: [recipientEmail],
         reply_to: REPLY_TO,
         subject: `${label} ${doc.document_number} from Alper Refrigerants`,
@@ -156,10 +162,28 @@ Deno.serve(async (req) => {
     const result = await emailResponse.json().catch(() => ({}));
     if (!emailResponse.ok) {
       console.error("Resend error", result);
-      return json({ error: "Failed to send email", details: result }, 502);
+      // Surface the provider's own wording so the admin sees the real cause
+      // (unverified sender domain, suppressed recipient, invalid address...).
+      const providerMessage =
+        (result as { message?: string; error?: string })?.message ||
+        (result as { error?: string })?.error ||
+        `Email provider rejected the send (${emailResponse.status})`;
+      return json({ error: providerMessage, stage: "provider", details: result }, 502);
     }
 
     console.log(`Invoice PDF emailed: ${doc.document_number} -> ${recipientEmail}`);
+
+    // Audit trail — written with the service role so it cannot be tampered with client-side.
+    await admin.from("admin_audit_log").insert({
+      admin_id: userData.user.id,
+      admin_email: userData.user.email,
+      action: "invoice.email_sent",
+      resource_type: "generated_document",
+      resource_id: doc.id,
+      resource_label: doc.document_number,
+      new_value: { recipient: recipientEmail, from: FROM_EMAIL, file_name: fileName },
+    });
+
     return json({ success: true, id: result.id, fileName });
   } catch (error) {
     console.error("send-invoice-document error", error);
