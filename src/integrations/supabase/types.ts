@@ -14,6 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_assets: {
+        Row: {
+          ad_group: string | null
+          asset_type: string
+          campaign_id: string
+          compliance_status: string
+          created_at: string
+          id: string
+          payload_json: Json
+        }
+        Insert: {
+          ad_group?: string | null
+          asset_type: string
+          campaign_id: string
+          compliance_status?: string
+          created_at?: string
+          id?: string
+          payload_json?: Json
+        }
+        Update: {
+          ad_group?: string | null
+          asset_type?: string
+          campaign_id?: string
+          compliance_status?: string
+          created_at?: string
+          id?: string
+          payload_json?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_assets_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_campaigns: {
+        Row: {
+          brief_json: Json
+          created_at: string
+          created_by: string | null
+          goal: string | null
+          id: string
+          name: string
+          product_type: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brief_json?: Json
+          created_at?: string
+          created_by?: string | null
+          goal?: string | null
+          id?: string
+          name: string
+          product_type?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brief_json?: Json
+          created_at?: string
+          created_by?: string | null
+          goal?: string | null
+          id?: string
+          name?: string
+          product_type?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ad_generations: {
+        Row: {
+          ai_response: Json
+          campaign_id: string
+          compliance_report: Json
+          created_at: string
+          id: string
+          model: string | null
+          prompt_payload: Json
+        }
+        Insert: {
+          ai_response?: Json
+          campaign_id: string
+          compliance_report?: Json
+          created_at?: string
+          id?: string
+          model?: string | null
+          prompt_payload?: Json
+        }
+        Update: {
+          ai_response?: Json
+          campaign_id?: string
+          compliance_report?: Json
+          created_at?: string
+          id?: string
+          model?: string | null
+          prompt_payload?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_generations_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       adverts: {
         Row: {
           content: string
@@ -52,6 +164,63 @@ export type Database = {
           start_date?: string | null
           title?: string
           type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      asic_miners: {
+        Row: {
+          available_units: number
+          brand: string
+          created_at: string
+          daily_earnings_btc: number
+          efficiency: number
+          hashrate_th: number
+          id: string
+          image_url: string | null
+          location: string
+          min_purchase_fraction: number
+          model: string
+          power_watts: number
+          price_per_unit: number
+          status: string
+          total_units: number
+          updated_at: string
+        }
+        Insert: {
+          available_units?: number
+          brand: string
+          created_at?: string
+          daily_earnings_btc?: number
+          efficiency?: number
+          hashrate_th?: number
+          id?: string
+          image_url?: string | null
+          location?: string
+          min_purchase_fraction?: number
+          model?: string
+          power_watts?: number
+          price_per_unit?: number
+          status?: string
+          total_units?: number
+          updated_at?: string
+        }
+        Update: {
+          available_units?: number
+          brand?: string
+          created_at?: string
+          daily_earnings_btc?: number
+          efficiency?: number
+          hashrate_th?: number
+          id?: string
+          image_url?: string | null
+          location?: string
+          min_purchase_fraction?: number
+          model?: string
+          power_watts?: number
+          price_per_unit?: number
+          status?: string
+          total_units?: number
           updated_at?: string
         }
         Relationships: []
@@ -272,6 +441,42 @@ export type Database = {
           order_index?: number
           updated_at?: string | null
           value?: string
+        }
+        Relationships: []
+      }
+      contact_submissions: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          status: string | null
+          subject: string | null
+          whatsapp_phone: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          status?: string | null
+          subject?: string | null
+          whatsapp_phone?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          status?: string | null
+          subject?: string | null
+          whatsapp_phone?: string | null
         }
         Relationships: []
       }
@@ -649,6 +854,120 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: true
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      miner_ownerships: {
+        Row: {
+          created_at: string
+          fraction_owned: number
+          id: string
+          miner_id: string
+          purchase_price: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fraction_owned?: number
+          id?: string
+          miner_id: string
+          purchase_price?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fraction_owned?: number
+          id?: string
+          miner_id?: string
+          purchase_price?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "miner_ownerships_miner_id_fkey"
+            columns: ["miner_id"]
+            isOneToOne: false
+            referencedRelation: "asic_miners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mining_payouts: {
+        Row: {
+          amount_btc: number
+          created_at: string
+          id: string
+          ownership_id: string | null
+          payout_date: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_btc?: number
+          created_at?: string
+          id?: string
+          ownership_id?: string | null
+          payout_date?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_btc?: number
+          created_at?: string
+          id?: string
+          ownership_id?: string | null
+          payout_date?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mining_payouts_ownership_id_fkey"
+            columns: ["ownership_id"]
+            isOneToOne: false
+            referencedRelation: "miner_ownerships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mining_stats: {
+        Row: {
+          created_at: string
+          hashrate_th: number
+          id: string
+          miner_id: string | null
+          recorded_at: string
+          uptime_percent: number
+        }
+        Insert: {
+          created_at?: string
+          hashrate_th?: number
+          id?: string
+          miner_id?: string | null
+          recorded_at?: string
+          uptime_percent?: number
+        }
+        Update: {
+          created_at?: string
+          hashrate_th?: number
+          id?: string
+          miner_id?: string | null
+          recorded_at?: string
+          uptime_percent?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mining_stats_miner_id_fkey"
+            columns: ["miner_id"]
+            isOneToOne: false
+            referencedRelation: "asic_miners"
             referencedColumns: ["id"]
           },
         ]
@@ -1202,6 +1521,75 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: string
+          target_user_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          risk_level: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       shipping_zones: {
         Row: {
           base_rate: number
@@ -1406,6 +1794,39 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_wallets: {
+        Row: {
+          created_at: string
+          id: string
+          is_primary: boolean
+          updated_at: string
+          user_id: string
+          verified: boolean
+          wallet_address: string
+          wallet_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+          wallet_address: string
+          wallet_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+          wallet_address?: string
+          wallet_type?: string
         }
         Relationships: []
       }
