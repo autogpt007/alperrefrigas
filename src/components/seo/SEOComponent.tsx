@@ -92,123 +92,31 @@ const SEOComponent: React.FC<SEOProps> = ({
   priceValidUntil.setDate(priceValidUntil.getDate() + 30);
   const priceValidUntilStr = priceValidUntil.toISOString().split('T')[0];
   
-  // Multi-currency exchange rates for GMC compliance
-  const exchangeRates = {
-    EUR: 0.92,
-    GBP: 0.79,
-    AUD: 1.57,
-    CAD: 1.44
-  };
-  
-  // Generate multi-currency offers for Google Merchant Center
-  const generateMultiCurrencyOffers = (basePrice: number, sku: string) => {
-    const offers = [
-      // Primary USD offer
-      {
-        "@type": "Offer",
-        "price": basePrice,
-        "priceCurrency": "USD",
-        "priceValidUntil": priceValidUntilStr,
-        "availability": "https://schema.org/InStock",
-        "itemCondition": "https://schema.org/NewCondition",
-        "url": `${siteUrl}/products/${sku?.toLowerCase() || ''}`,
-        "checkoutPageURLTemplate": `${siteUrl}/checkout?sku=${encodeURIComponent(sku)}&quantity=1`,
-        "seller": { "@type": "Organization", "name": businessName },
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "USD" },
-          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
-            "transitTime": { "@type": "QuantitativeValue", "minValue": 3, "maxValue": 7, "unitCode": "DAY" }
-          }
-        },
-        "hasMerchantReturnPolicy": {
-          "@type": "MerchantReturnPolicy",
-          "applicableCountry": "US",
-          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-          "merchantReturnDays": 30,
-          "returnMethod": "https://schema.org/ReturnByMail"
-        }
-      },
-      // EUR offer for EU countries
-      {
-        "@type": "Offer",
-        "price": (basePrice * exchangeRates.EUR).toFixed(2),
-        "priceCurrency": "EUR",
-        "priceValidUntil": priceValidUntilStr,
-        "availability": "https://schema.org/InStock",
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": { "@type": "MonetaryAmount", "value": "99.99", "currency": "EUR" },
-          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": ["DE", "FR", "IT", "ES", "NL", "BE", "AT", "PT", "IE"] },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
-            "transitTime": { "@type": "QuantitativeValue", "minValue": 7, "maxValue": 14, "unitCode": "DAY" }
-          }
-        }
-      },
-      // GBP offer for UK
-      {
-        "@type": "Offer",
-        "price": (basePrice * exchangeRates.GBP).toFixed(2),
-        "priceCurrency": "GBP",
-        "priceValidUntil": priceValidUntilStr,
-        "availability": "https://schema.org/InStock",
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": { "@type": "MonetaryAmount", "value": "79.99", "currency": "GBP" },
-          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "GB" },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
-            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 10, "unitCode": "DAY" }
-          }
-        }
-      },
-      // AUD offer for Australia
-      {
-        "@type": "Offer",
-        "price": (basePrice * exchangeRates.AUD).toFixed(2),
-        "priceCurrency": "AUD",
-        "priceValidUntil": priceValidUntilStr,
-        "availability": "https://schema.org/InStock",
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": { "@type": "MonetaryAmount", "value": "149.99", "currency": "AUD" },
-          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "AU" },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 3, "unitCode": "DAY" },
-            "transitTime": { "@type": "QuantitativeValue", "minValue": 10, "maxValue": 21, "unitCode": "DAY" }
-          }
-        }
-      },
-      // CAD offer for Canada
-      {
-        "@type": "Offer",
-        "price": (basePrice * exchangeRates.CAD).toFixed(2),
-        "priceCurrency": "CAD",
-        "priceValidUntil": priceValidUntilStr,
-        "availability": "https://schema.org/InStock",
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": { "@type": "MonetaryAmount", "value": "89.99", "currency": "CAD" },
-          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CA" },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
-            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 10, "unitCode": "DAY" }
-          }
-        }
-      }
-    ];
-    return offers;
+  // Single primary storefront offer (USD) so structured data matches the one price
+  // and one availability state shown on the product page and sent in the product feed.
+  const normalizeAvailability = (value?: string) => {
+    if (!value) return 'https://schema.org/InStock';
+    return value.startsWith('http') ? value : `https://schema.org/${value}`;
   };
 
-  // Generate product structured data for Google Merchant Center with multi-currency
+  const generatePrimaryOffer = (
+    basePrice: number,
+    sku: string,
+    availability?: string,
+    offerUrl?: string
+  ) => ({
+    "@type": "Offer",
+    "price": basePrice,
+    "priceCurrency": "USD",
+    "priceValidUntil": priceValidUntilStr,
+    "availability": normalizeAvailability(availability),
+    "itemCondition": "https://schema.org/NewCondition",
+    "url": offerUrl || `${siteUrl}/products/${sku?.toLowerCase() || ''}`,
+    "seller": { "@type": "Organization", "name": businessName }
+  });
+
+
+  // Product structured data: one offer, matching the price/availability shown on the page
   const productStructuredData = product ? {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -222,7 +130,13 @@ const SEOComponent: React.FC<SEOProps> = ({
     ...(product.gtin && { "gtin": product.gtin }),
     "image": product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
     "category": product.category || "Refrigerants",
-    "offers": generateMultiCurrencyOffers(product.price, product.sku),
+    "offers": generatePrimaryOffer(
+      product.price,
+      product.sku,
+      product.availability,
+      canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined
+    ),
+
     "audience": {
       "@type": "BusinessAudience",
       "audienceType": "B2B HVAC Professionals"
