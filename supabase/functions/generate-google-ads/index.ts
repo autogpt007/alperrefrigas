@@ -1,7 +1,7 @@
 // Edge function: generate Google Ads asset pack via Lovable AI Gateway.
 // Admin-only: requires authenticated admin user (verified via has_role).
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

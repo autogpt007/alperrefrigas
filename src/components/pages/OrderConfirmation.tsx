@@ -25,6 +25,7 @@ const OrderConfirmation = () => {
   const { formatPrice, currency, currencyName } = useCurrency();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const conversionTrackedRef = useRef(false);
   
   const orderNumber = searchParams.get('orderNumber');
@@ -117,9 +118,13 @@ const OrderConfirmation = () => {
       setData(foundData);
       setLoading(false);
 
-      // If still no data found, redirect after showing message
+      // If still no data found, redirect after showing message.
+      // Guests have no account page, so send them home instead of the login wall.
       if (!foundData) {
-        setTimeout(() => navigate('/account'), 5000);
+        const { data: sessionData } = await supabase.auth.getSession();
+        const signedIn = !!sessionData?.session;
+        setIsSignedIn(signedIn);
+        setTimeout(() => navigate(signedIn ? '/account' : '/'), 8000);
       }
     };
 
@@ -240,10 +245,12 @@ const OrderConfirmation = () => {
             <>Reference Number: <span className="font-mono text-blue-600">{confirmationNumber}</span></>
           )}
         </p>
-        <p className="text-sm text-gray-500">Redirecting to your account...</p>
+        <p className="text-sm text-gray-500">
+          {isSignedIn ? 'Redirecting to your account...' : 'Keep this reference number for your records. Redirecting to the homepage...'}
+        </p>
         <div className="mt-6">
-          <Link to="/account">
-            <Button>Go to Account</Button>
+          <Link to={isSignedIn ? '/account' : '/'}>
+            <Button>{isSignedIn ? 'Go to Account' : 'Back to Home'}</Button>
           </Link>
         </div>
       </div>
