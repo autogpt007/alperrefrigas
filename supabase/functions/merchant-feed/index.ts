@@ -85,7 +85,6 @@ Deno.serve(async (req: Request) => {
     const products = (data ?? []).filter((p) => Number(p.price) > 0);
     const items: string[] = [];
 
-    const items: string[] = [];
 
     for (const p of products) {
       const slug = createSlug(p.name);
