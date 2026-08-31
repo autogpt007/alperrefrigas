@@ -116,7 +116,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   });
 
 
-  // Generate product structured data for Google Merchant Center with multi-currency
+  // Product structured data: one offer, matching the price/availability shown on the page
   const productStructuredData = product ? {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -130,7 +130,13 @@ const SEOComponent: React.FC<SEOProps> = ({
     ...(product.gtin && { "gtin": product.gtin }),
     "image": product.image.startsWith('http') ? product.image : `${siteUrl}${product.image}`,
     "category": product.category || "Refrigerants",
-    "offers": generateMultiCurrencyOffers(product.price, product.sku),
+    "offers": generatePrimaryOffer(
+      product.price,
+      product.sku,
+      product.availability,
+      canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined
+    ),
+
     "audience": {
       "@type": "BusinessAudience",
       "audienceType": "B2B HVAC Professionals"
