@@ -181,10 +181,13 @@ const FeaturedProductManagement = () => {
     try {
       setSaving(true);
       
+      const { products: _omitProducts, ...dbUpdates } = updates as Partial<FeaturedProduct> & { products?: unknown };
+
       const { error } = await supabase
         .from('featured_products')
-        .update(updates)
+        .update(dbUpdates)
         .eq('id', featuredProductId);
+
 
       if (error) throw error;
 

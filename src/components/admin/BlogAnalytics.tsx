@@ -42,7 +42,8 @@ const BlogAnalytics = () => {
         total_views: post.blog_post_stats?.[0]?.total_views || 0,
         unique_views: post.blog_post_stats?.[0]?.unique_views || 0,
         country_stats: post.blog_post_stats?.[0]?.country_stats || {}
-      })) as BlogPostWithStats[];
+      })) as unknown as BlogPostWithStats[];
+
     }
   });
 
