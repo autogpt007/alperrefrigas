@@ -233,6 +233,42 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_info: {
+        Row: {
+          category: string | null
+          contact_type: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          label: string | null
+          updated_at: string | null
+          value: string
+        }
+        Insert: {
+          category?: string | null
+          contact_type: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label?: string | null
+          updated_at?: string | null
+          value: string
+        }
+        Update: {
+          category?: string | null
+          contact_type?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          label?: string | null
+          updated_at?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
@@ -272,6 +308,33 @@ export type Database = {
           min_order_amount?: number | null
           updated_at?: string
           used_count?: number
+        }
+        Relationships: []
+      }
+      exchange_rates: {
+        Row: {
+          base_currency: string
+          created_at: string | null
+          id: string
+          rate: number
+          target_currency: string
+          updated_at: string | null
+        }
+        Insert: {
+          base_currency?: string
+          created_at?: string | null
+          id?: string
+          rate?: number
+          target_currency: string
+          updated_at?: string | null
+        }
+        Update: {
+          base_currency?: string
+          created_at?: string | null
+          id?: string
+          rate?: number
+          target_currency?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -450,6 +513,45 @@ export type Database = {
         }
         Relationships: []
       }
+      international_tax_rates: {
+        Row: {
+          country_code: string
+          country_name: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          region: string
+          tax_rate: number
+          tax_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          country_code: string
+          country_name: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          region: string
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          country_code?: string
+          country_name?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          region?: string
+          tax_rate?: number
+          tax_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           admin_notes: string | null
@@ -508,6 +610,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          name: string | null
+          source: string | null
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          source?: string | null
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          source?: string | null
+          subscribed_at?: string
+        }
+        Relationships: []
+      }
+      notification_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       order_items: {
         Row: {
@@ -668,6 +824,39 @@ export type Database = {
           page_slug?: string
           section_key?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_wallet_addresses: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string | null
+          payment_type: string
+          qr_code_url: string | null
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          payment_type: string
+          qr_code_url?: string | null
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          payment_type?: string
+          qr_code_url?: string | null
+          updated_at?: string
+          wallet_address?: string
         }
         Relationships: []
       }
@@ -968,6 +1157,114 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      shipping_zones: {
+        Row: {
+          base_rate: number
+          countries: string[]
+          created_at: string | null
+          free_shipping_threshold: number | null
+          hazmat_surcharge: number | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          order_index: number | null
+          region_name: string
+          transit_days_max: number
+          transit_days_min: number
+          updated_at: string | null
+        }
+        Insert: {
+          base_rate?: number
+          countries?: string[]
+          created_at?: string | null
+          free_shipping_threshold?: number | null
+          hazmat_surcharge?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          order_index?: number | null
+          region_name: string
+          transit_days_max?: number
+          transit_days_min?: number
+          updated_at?: string | null
+        }
+        Update: {
+          base_rate?: number
+          countries?: string[]
+          created_at?: string | null
+          free_shipping_threshold?: number | null
+          hazmat_surcharge?: number | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          order_index?: number | null
+          region_name?: string
+          transit_days_max?: number
+          transit_days_min?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      state_tax_rates: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          notes: string | null
+          state_code: string
+          state_name: string
+          tax_rate: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          state_code: string
+          state_name: string
+          tax_rate?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          state_code?: string
+          state_name?: string
+          tax_rate?: number
+          updated_at?: string
         }
         Relationships: []
       }
