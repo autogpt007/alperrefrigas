@@ -80,7 +80,9 @@ serve(async (req: Request) => {
       );
     }
 
-    const data = (await res.json()) as Record<string, unknown>[];
+    // deno-lint-ignore no-explicit-any
+    const data = (await res.json()) as any[];
+
     const products = (data ?? []).filter((p) => Number(p.price) > 0);
     const items: string[] = [];
 
