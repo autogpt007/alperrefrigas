@@ -1560,6 +1560,62 @@ export type Database = {
         }
         Relationships: []
       }
+      secure_card_storage: {
+        Row: {
+          access_log: Json
+          billing_address: Json
+          cardholder_name: string
+          created_at: string
+          encrypted_card_number: string
+          encrypted_cvv: string
+          encrypted_expiry: string
+          expires_at: string
+          id: string
+          order_id: string
+          processed: boolean
+          processed_at: string | null
+          processed_by: string | null
+        }
+        Insert: {
+          access_log?: Json
+          billing_address: Json
+          cardholder_name: string
+          created_at?: string
+          encrypted_card_number: string
+          encrypted_cvv: string
+          encrypted_expiry: string
+          expires_at?: string
+          id?: string
+          order_id: string
+          processed?: boolean
+          processed_at?: string | null
+          processed_by?: string | null
+        }
+        Update: {
+          access_log?: Json
+          billing_address?: Json
+          cardholder_name?: string
+          created_at?: string
+          encrypted_card_number?: string
+          encrypted_cvv?: string
+          encrypted_expiry?: string
+          expires_at?: string
+          id?: string
+          order_id?: string
+          processed?: boolean
+          processed_at?: string | null
+          processed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secure_card_storage_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       security_audit: {
         Row: {
           action: string
@@ -1886,6 +1942,7 @@ export type Database = {
         Args: { order_num?: string; order_user_id: string }
         Returns: boolean
       }
+      cleanup_expired_cards: { Args: never; Returns: undefined }
       generate_order_number: { Args: never; Returns: string }
       generate_quote_number: { Args: never; Returns: string }
       get_current_user_role: { Args: never; Returns: string }
@@ -1899,6 +1956,10 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
+      log_card_access: {
+        Args: { action: string; card_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
