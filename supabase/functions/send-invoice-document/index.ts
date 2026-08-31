@@ -6,7 +6,12 @@ const corsHeaders = {
 };
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const FROM_EMAIL = Deno.env.get("INVOICE_FROM_EMAIL") || "Alper Refrigerants <onboarding@resend.dev>";
+// Must stay in sync with supabase/functions/send-transactional-email/index.ts —
+// the verified sender subdomain is what Resend authorises the send against.
+const SENDER_DOMAIN = "notify.alperrefrigerants.com";
+const FROM_DOMAIN = "alperrefrigerants.com";
+const FROM_EMAIL =
+  Deno.env.get("INVOICE_FROM_EMAIL") || `Alper Refrigerants <invoices@${FROM_DOMAIN}>`;
 const REPLY_TO = "sales@alperrefrigerants.com";
 const BUCKET = "customer-invoices";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
