@@ -298,7 +298,7 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Totals ----------
   const totalsX = pageW - M - 240;
   const rows: Array<[string, string, boolean?]> = [["Subtotal", money(subtotal, currency)]];
-  if (doc.discountPercent) rows.push([`Discount (${doc.discountPercent}%)`, `- ${money(discountAmount, currency)}`]);
+  if (effectiveDiscountPercent) rows.push([discountLabel, `- ${money(discountAmount, currency)}`]);
   if (doc.shippingCost) rows.push(["Shipping", money(Number(doc.shippingCost), currency)]);
   if (doc.taxAmount) rows.push(["Tax", money(Number(doc.taxAmount), currency)]);
   rows.push([doc.documentType === "invoice" ? "Total" : "Quoted Total", money(total, currency), true]);
