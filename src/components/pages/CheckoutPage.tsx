@@ -1423,10 +1423,16 @@ const CheckoutPage = () => {
                       </span>
                     </div>
                     
-                    {discountAmount > 0 && (
+                    {couponDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount:</span>
-                        <span>-{formatCurrency(discountAmount)}</span>
+                        <span>-{formatCurrency(couponDiscount)}</span>
+                      </div>
+                    )}
+                    {paymentDiscount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Bank wire / Zelle discount (15%):</span>
+                        <span>-{formatCurrency(paymentDiscount)}</span>
                       </div>
                     )}
                     <Separator />
