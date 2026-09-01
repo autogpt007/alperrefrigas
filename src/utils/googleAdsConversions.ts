@@ -45,13 +45,26 @@ export const trackGoogleAdsPurchase = (
   }
 
   try {
+    const sendTo = GOOGLE_ADS_CONVERSION_IDS.PURCHASE
+      ? `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`
+      : GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID;
+
     // Track conversion via gtag
     window.gtag('event', 'conversion', {
-      send_to: `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`,
+      send_to: sendTo,
       value: value,
       currency: currency,
       transaction_id: transactionId
     });
+
+    // Standard purchase event so Ads can attribute clicks -> orders
+    window.gtag('event', 'purchase', {
+      send_to: GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID,
+      transaction_id: transactionId,
+      value: value,
+      currency: currency
+    });
+
 
     // Also push to dataLayer for GTM
     pushToDataLayer('google_ads_conversion', {
