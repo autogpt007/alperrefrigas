@@ -161,7 +161,7 @@ const RefundPolicy = () => {
                 <CardTitle className="text-2xl">Refund Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3">Refund Timeline</h4>
@@ -176,11 +176,32 @@ const RefundPolicy = () => {
                       <h4 className="font-semibold text-gray-900 mb-3">Refund Method</h4>
                       <ul className="space-y-2 text-gray-700">
                         <li>• Same payment method as original purchase</li>
-                        <li>• Full product cost (minus shipping)</li>
-                        <li>• Return shipping costs deducted unless defective</li>
+                        <li>• Full product cost refunded (original outbound shipping is non-refundable except for defective, damaged, or incorrectly shipped orders)</li>
                         <li>• Restocking fee: 15% for opened packaging</li>
                       </ul>
                     </div>
+                  </div>
+
+                  {/* Who pays return shipping */}
+                  <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <h4 className="font-semibold text-gray-900 mb-3">Who Pays Return Shipping</h4>
+                    <ul className="space-y-2 text-gray-700">
+                      <li>
+                        • <strong>Alper Chemical Group pays return shipping</strong> when the product is defective, arrives damaged,
+                        or the wrong item was shipped. We email you a prepaid, DOT-compliant hazmat return label and no restocking fee applies.
+                      </li>
+                      <li>
+                        • <strong>The customer pays return shipping</strong> for change-of-mind returns, ordering errors, or no-longer-needed
+                        items. The actual return freight cost is deducted from the refund if we arrange the carrier, or you may ship at your own
+                        expense using an approved hazmat carrier.
+                      </li>
+                      <li>
+                        • A <strong>15% restocking fee</strong> applies only to customer-initiated returns where the original packaging has been opened.
+                      </li>
+                      <li>
+                        • Refused or undeliverable shipments are treated as customer-initiated returns; outbound and return freight are deducted from the refund.
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </CardContent>

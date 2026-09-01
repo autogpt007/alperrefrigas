@@ -25,12 +25,29 @@ const ShippingPolicy = () => {
           </div>
 
           {/* Business Identity */}
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6">
-            <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
+          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6" itemScope itemType="https://schema.org/Organization">
+            <h3 className="font-semibold text-blue-900 mb-2" itemProp="name">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
-              382 NE 191st St, Miami, FL 33179, United States<br />
+              <address className="not-italic inline" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+                <span itemProp="streetAddress">382 NE 191st St</span>,{' '}
+                <span itemProp="addressLocality">Miami</span>, <span itemProp="addressRegion">FL</span>{' '}
+                <span itemProp="postalCode">33179</span>, <span itemProp="addressCountry">United States</span>
+              </address><br />
               Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
+            </p>
+          </div>
+
+          {/* Return shipping responsibility (mirrors Refund & Return Policy) */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+            <h3 className="font-semibold text-gray-900 mb-2">Return Shipping Costs</h3>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>• <strong>We pay return shipping</strong> for defective, damaged, or incorrectly shipped orders (prepaid hazmat label provided, no restocking fee).</li>
+              <li>• <strong>The customer pays return shipping</strong> for change-of-mind returns or ordering errors; a 15% restocking fee applies if original packaging was opened.</li>
+              <li>• Original outbound shipping charges are non-refundable except where the fault is ours.</li>
+            </ul>
+            <p className="text-sm text-gray-500 mt-2">
+              Full terms: <a href="/refund-policy" className="text-blue-600 underline">Refund &amp; Return Policy</a>
             </p>
           </div>
 
