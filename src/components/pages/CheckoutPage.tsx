@@ -1466,7 +1466,8 @@ const CheckoutPage = () => {
                       <Info className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
                       <div className="text-xs text-gray-600">
                         <p className="font-medium mb-1">
-                          {taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
+                          {taxCalculation.isDDU ? 'Import Duties & Taxes' :
+                           taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
                            taxCalculation.taxType === 'GST' ? 'GST Information' : 
                            'Sales Tax Information'}
                         </p>
@@ -1481,6 +1482,8 @@ const CheckoutPage = () => {
                                 <span> Your order will be taxed at {taxCalculation.taxRate}%.</span>
                               )}
                             </>
+                          ) : taxCalculation.isDDU ? (
+                            <>{taxCalculation.taxNotice} Charges are set by {taxCalculation.countryName || 'your country'}'s customs authority and are the buyer's responsibility.</>
                           ) : taxCalculation.region === 'EU' ? (
                             <>
                               VAT is applied at the standard rate of {taxCalculation.taxRate}% for {taxCalculation.countryName}.
