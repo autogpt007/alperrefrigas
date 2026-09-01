@@ -257,27 +257,16 @@ const SEOComponent: React.FC<SEOProps> = ({
         }
       }
     ],
-    "address": [
-      {
-        "@type": "PostalAddress",
-        "addressCountry": "US",
-        "addressRegion": "TX",
-        "addressLocality": "Houston",
-        "postalCode": "77001"
-      },
-      {
-        "@type": "PostalAddress",
-        "addressCountry": "US",
-        "addressRegion": "FL", 
-        "addressLocality": "Miami"
-      },
-      {
-        "@type": "PostalAddress",
-        "addressCountry": "US",
-        "addressRegion": "CA",
-        "addressLocality": "Los Angeles"
-      }
-    ],
+    "telephone": "+1-682-215-2974",
+    "email": "sales@alperrefrigerants.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "382 NE 191st St",
+      "addressLocality": "Miami",
+      "addressRegion": "FL",
+      "postalCode": "33179",
+      "addressCountry": "US"
+    },
     "sameAs": [
       "https://www.facebook.com/alperrefrigerants",
       "https://www.linkedin.com/company/alperrefrigerants"
