@@ -30,6 +30,22 @@ const subcategories = [
     href: '/products/air-conditioners/portable-ac',
     features: ['Mobility', 'No Install Required', 'Dual Hose Options'],
   },
+  {
+    id: 'multi-zone',
+    title: 'Multi-Zone Mini-Split Systems',
+    description: 'Dual, tri and quad-zone condensers that cool multiple rooms from one outdoor unit. Ideal for whole-home and light commercial projects.',
+    icon: Wind,
+    href: '/products/air-conditioners/multi-zone',
+    features: ['2-4 Indoor Zones', 'Inverter Compressor', 'Heat Pump Ready'],
+  },
+  {
+    id: 'ptac-commercial',
+    title: 'PTAC & Commercial Units',
+    description: 'Packaged terminal air conditioners and ceiling cassettes for hotels, apartments and light commercial buildings.',
+    icon: Thermometer,
+    href: '/products/air-conditioners/ptac-commercial',
+    features: ['Hospitality Grade', 'Electric Heat Option', '208/230V'],
+  },
 ];
 
 const AirConditionersPage: React.FC = () => {
