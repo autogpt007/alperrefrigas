@@ -31,7 +31,7 @@ const STALE_BRANDING = ["alperrefrigas"];
 
 /** Path-level redirects (SEO consolidation + legacy URLs). */
 const PATH_REDIRECTS: Array<[from: string, to: string]> = [
-  ["/products/air-conditioners", "/products/accessories"],
+  
   ["/freon-wholesale", "/products"],
   ["/shipping", "/shipping-policy"],
   ["/products.html", "/products"],
