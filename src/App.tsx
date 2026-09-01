@@ -28,6 +28,7 @@ import "./App.css";
 // Critical path - eagerly loaded
 import HomePage from "./components/pages/HomePage";
 import ProductCatalog from "./components/pages/ProductCatalog";
+import AirConditionersPage from "./components/pages/AirConditionersPage";
 import ProductDetails from "./components/pages/ProductDetails";
 
 // Lazy-loaded routes
