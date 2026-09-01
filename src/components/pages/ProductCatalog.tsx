@@ -531,7 +531,7 @@ const ProductCatalog = () => {
 
           <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             <div className="text-gray-600 text-sm">
-              {t('products.productsFound', { count: sortedProducts.length })}
+              {sortedProducts.length} {t('products.productsFound', { count: sortedProducts.length })}
             </div>
             
             <div className="flex items-center gap-2">
