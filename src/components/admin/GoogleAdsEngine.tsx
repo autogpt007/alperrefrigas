@@ -10,7 +10,7 @@ import { GoalStep, initialGoal, type GoalState } from "./ads/GoalStep";
 import { BriefStep, initialBrief, type BriefState } from "./ads/BriefStep";
 import { AssetPackView } from "./ads/AssetPackView";
 import { CampaignHistory } from "./ads/CampaignHistory";
-import { validateAdPack, type AdPack, type ComplianceReport } from "@/lib/adsCompliance";
+import { validateAdPack, withBaseNegatives, type AdPack, type ComplianceReport } from "@/lib/adsCompliance";
 
 const GoogleAdsEngine: React.FC = () => {
   const [goal, setGoal] = useState<GoalState>(initialGoal);

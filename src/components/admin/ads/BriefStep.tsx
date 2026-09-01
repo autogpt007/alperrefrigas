@@ -20,13 +20,22 @@ export interface BriefState {
 export const initialBrief: BriefState = {
   productName: "",
   productType: "refrigerant",
-  audience: "HVAC contractors and EPA 608-certified technicians",
-  geography: "United States",
-  usps: "",
+  audience:
+    "EPA 608-certified HVAC contractors, licensed refrigeration technicians, and industrial/commercial bulk buyers (B2B only — no consumers or DIY)",
+  geography: "United States (Miami FL, TX and CA distribution centers) plus 54 export countries",
+  usps: [
+    "Wholesale pallet and 20ft/40ft container pricing",
+    "Extra 15% off on bank wire or Zelle payments",
+    "Same-day shipping from TX, FL and CA distribution centers",
+    "EPA Section 608 certified, DOT HazMat-compliant shipping",
+    "99.9% purity with SDS provided for every cylinder",
+    "Volume discounts up to 25% for contractors",
+  ].join("\n"),
   offer: "",
   tone: "professional",
-  bannedTerms: "",
-  freeText: "",
+  bannedTerms: "cheapest, guaranteed, #1, competitor brand names",
+  freeText:
+    "Target specific refrigerant gas codes (R-410A, R-22, R-454B, R-134a, R-32, R-513A, R-438A, R-422B, R-421A, R-452A, R-404A, R-407C, R-1234yf, R-290, R-744, R-507A) rather than broad head terms — see docs/google-ads-keyword-plan.md. Wholesale/bulk intent lands on /bulk-pricing; gas codes land on the matching product page.",
 };
 
 export const BriefStep: React.FC<{ value: BriefState; onChange: (v: BriefState) => void }> = ({ value, onChange }) => {
