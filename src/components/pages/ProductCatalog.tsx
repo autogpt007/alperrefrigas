@@ -280,7 +280,7 @@ const ProductCatalog = () => {
           {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
-              {product.product_type === 'accessory' ? product.category : `${product.category} Refrigerant`}
+              {product.product_type === 'refrigerant' ? `${product.category} Refrigerant` : product.category}
             </Badge>
           </div>
           
@@ -290,7 +290,9 @@ const ProductCatalog = () => {
               <span className="text-lg font-bold text-blue-600">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
+              <span className="text-xs text-gray-500">
+                {product.product_type === 'refrigerant' ? t('products.perCylinder') : 'per unit'}
+              </span>
             </div>
             
             <Link to={`/products/${createProductSlug(product.name)}`}>
