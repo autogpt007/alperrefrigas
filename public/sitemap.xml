@@ -175,8 +175,32 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://alperrefrigerants.com/products/amana-15000-btu-ptac-heat-pump</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/amana-9000-btu-ptac-with-electric-heat</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://alperrefrigerants.com/products/blackdecker-14000-btu-portable-ac</loc>
     <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/cooperhunter-36000-btu-ceiling-cassette-system</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/daikin-24000-btu-ductless-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -205,14 +229,74 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://alperrefrigerants.com/products/frigidaire-15000-btu-window-air-conditioner</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/ge-5000-btu-window-air-conditioner</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/gree-36000-btu-ductless-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/lg-12000-btu-window-air-conditioner</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://alperrefrigerants.com/products/lg-8000-btu-window-air-conditioner</loc>
     <lastmod>2026-08-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://alperrefrigerants.com/products/midea-8000-btu-portable-air-conditioner</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/midea-u-shaped-12000-btu-inverter-window-ac</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/mrcool-18000-btu-ductless-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/mrcool-36000-btu-quad-zone-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://alperrefrigerants.com/products/pioneer-12000-btu-ductless-mini-split</loc>
     <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/pioneer-27000-btu-tri-zone-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/pioneer-9000-btu-ductless-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -331,6 +415,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://alperrefrigerants.com/products/senville-18000-btu-dual-zone-mini-split</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://alperrefrigerants.com/products/senville-18000-btu-mini-split</loc>
     <lastmod>2026-08-31</lastmod>
     <changefreq>weekly</changefreq>
@@ -345,6 +435,12 @@
   <url>
     <loc>https://alperrefrigerants.com/products/whynter-12000-btu-portable-ac</loc>
     <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alperrefrigerants.com/products/whynter-14000-btu-dual-hose-portable-ac</loc>
+    <lastmod>2026-09-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
