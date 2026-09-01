@@ -180,6 +180,14 @@ OUTPUT REQUIREMENTS:
 - finalUrl must be a relative path on alperrefrigerants.com (e.g. /products/r-454b).
 - Suggest a Schema.org type (Product, Service, or Offer).
 
+KEYWORD STRATEGY (from validated Semrush research — follow this tiering):
+- Tier 1 (majority of keywords): specific refrigerant gas-code buying terms, which have real volume at low competition. Patterns: "<code> refrigerant for sale", "<code> price", "<code> freon for sale", "<code> near me". Use phrase AND exact match for these.
+- Tier 2: wholesale/distributor intent — "refrigerant supplier", "refrigerant distributor", "refrigerant wholesale", "bulk refrigerant", "wholesale freon", "hvac supplies wholesale", "refrigerant cylinder price". Phrase match, land on /bulk-pricing.
+- Tier 3: exact-match long-tail questions — "where can i buy <code>", "can i still buy <code> refrigerant", "what certification do i need to buy <code>", "epa 608 certified refrigerant supplier".
+- Prefer one ad group per gas code (R-410A, R-22, R-454B, R-134a, R-32, R-513A, R-438A, R-422B, R-421A, R-452A, R-404A, R-407C, R-1234yf, R-290, R-744, R-507A) over broad generic groups.
+- Avoid broad head terms like "refrigerant" or "freon" alone — established distributors own them.
+- Every ad group's negatives must include consumer/DIY/retail/informational filters: diy, home use, household, consumer, car, autozone, home depot, walmart, amazon, how to recharge, refill my car, jobs, training, pt chart, calculator, reddit, youtube.
+
 ${productType === "refrigerant" ? refrigerantRules : ""}
 ${productType === "air_conditioner" ? acRules : ""}
 
