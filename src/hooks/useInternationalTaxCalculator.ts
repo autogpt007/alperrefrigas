@@ -175,6 +175,8 @@ export const useInternationalTaxCalculator = (
       displayLabel: usTaxCalculation.stateCode 
         ? `Sales Tax (${usTaxCalculation.stateCode} @ ${usTaxCalculation.taxRate}%)`
         : 'Sales Tax',
+      isDDU: false,
+      taxNotice: null,
     };
   }
 
