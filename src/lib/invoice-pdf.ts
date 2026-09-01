@@ -253,7 +253,15 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Items table ----------
   const billable = doc.items.filter((i) => !i.isDetail);
   const subtotal = billable.reduce((s, i) => s + Number(i.quantity || 0) * Number(i.unitPrice || 0), 0);
-  const discountAmount = subtotal * (Number(doc.discountPercent || 0) / 100);
+  // Bank wire / Zelle orders earn a 15% settlement discount unless a manual
+  // discount was already entered on the document.
+  const wireOrZelle = isWire(doc.paymentMethod) || isZelle(doc.paymentMethod);
+  const effectiveDiscountPercent = Number(doc.discountPercent || 0) || (wireOrZelle ? 15 : 0);
+  const discountLabel =
+    !doc.discountPercent && wireOrZelle
+      ? `${isZelle(doc.paymentMethod) ? "Zelle" : "Bank wire"} discount (15%)`
+      : `Discount (${effectiveDiscountPercent}%)`;
+  const discountAmount = subtotal * (effectiveDiscountPercent / 100);
   const total =
     subtotal - discountAmount + Number(doc.shippingCost || 0) + Number(doc.taxAmount || 0);
   const balanceDue = Math.max(0, total - Number(doc.amountPaid || 0));
@@ -290,7 +298,7 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Totals ----------
   const totalsX = pageW - M - 240;
   const rows: Array<[string, string, boolean?]> = [["Subtotal", money(subtotal, currency)]];
-  if (doc.discountPercent) rows.push([`Discount (${doc.discountPercent}%)`, `- ${money(discountAmount, currency)}`]);
+  if (effectiveDiscountPercent) rows.push([discountLabel, `- ${money(discountAmount, currency)}`]);
   if (doc.shippingCost) rows.push(["Shipping", money(Number(doc.shippingCost), currency)]);
   if (doc.taxAmount) rows.push(["Tax", money(Number(doc.taxAmount), currency)]);
   rows.push([doc.documentType === "invoice" ? "Total" : "Quoted Total", money(total, currency), true]);

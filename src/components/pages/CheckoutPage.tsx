@@ -281,7 +281,13 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
-  const discountAmount = couponDiscount;
+  // Bank wire / Zelle settlement discount (applied after any coupon)
+  const PAYMENT_DISCOUNT_METHODS = ['bank_wire', 'zelle'];
+  const isPaymentDiscountEligible = PAYMENT_DISCOUNT_METHODS.includes(formData.paymentMethod);
+  const paymentDiscount = isPaymentDiscountEligible
+    ? Math.max(0, subtotal - couponDiscount) * 0.15
+    : 0;
+  const discountAmount = couponDiscount + paymentDiscount;
   const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
 
@@ -550,6 +556,12 @@ const CheckoutPage = () => {
           ...(formData.paymentMethod.startsWith('crypto_') ? {
             selected_wallet: selectedCryptoWallet,
             wallet_type: formData.paymentMethod.replace('crypto_', '')
+          } : {}),
+          // Settlement discount for bank wire / Zelle (server re-verifies)
+          ...(paymentDiscount > 0 ? {
+            payment_discount_percent: 15,
+            payment_discount_amount: Number(paymentDiscount.toFixed(2)),
+            payment_discount_reason: 'bank_wire_zelle'
           } : {})
         },
       };
@@ -1417,10 +1429,16 @@ const CheckoutPage = () => {
                       </span>
                     </div>
                     
-                    {discountAmount > 0 && (
+                    {couponDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount:</span>
-                        <span>-{formatCurrency(discountAmount)}</span>
+                        <span>-{formatCurrency(couponDiscount)}</span>
+                      </div>
+                    )}
+                    {paymentDiscount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Bank wire / Zelle discount (15%):</span>
+                        <span>-{formatCurrency(paymentDiscount)}</span>
                       </div>
                     )}
                     <Separator />

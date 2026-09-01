@@ -232,9 +232,16 @@ serve(async (req: Request) => {
       }
     }
 
+    // Bank wire / Zelle settlement discount (15%), recomputed server-side
+    const PAYMENT_DISCOUNT_METHODS = ["bank_wire", "zelle"];
+    const verifiedPaymentDiscount = PAYMENT_DISCOUNT_METHODS.includes(String(payment_method))
+      ? Math.max(0, computedItemsTotal - verifiedDiscount) * 0.15
+      : 0;
+    const totalDiscount = verifiedDiscount + verifiedPaymentDiscount;
+
     const computedTotal = Math.max(
       0,
-      computedItemsTotal + Number(shipping_cost) + Number(tax_amount) - verifiedDiscount,
+      computedItemsTotal + Number(shipping_cost) + Number(tax_amount) - totalDiscount,
     );
 
     // Allow tolerance of $0.02 for rounding across multiple items
@@ -271,9 +278,19 @@ serve(async (req: Request) => {
         shipping_address,
         notes,
         payment_method,
-        payment_details: verifiedCoupon
-          ? { ...(payment_details ?? {}), coupon_code: verifiedCoupon.code, discount_amount: Number(verifiedDiscount.toFixed(2)) }
-          : payment_details,
+        payment_details: {
+          ...(payment_details ?? {}),
+          ...(verifiedCoupon
+            ? { coupon_code: verifiedCoupon.code, discount_amount: Number(verifiedDiscount.toFixed(2)) }
+            : {}),
+          ...(verifiedPaymentDiscount > 0
+            ? {
+              payment_discount_percent: 15,
+              payment_discount_amount: Number(verifiedPaymentDiscount.toFixed(2)),
+              payment_discount_reason: "bank_wire_zelle",
+            }
+            : {}),
+        },
         cashapp_tag,
         zelle_tag,
       })
