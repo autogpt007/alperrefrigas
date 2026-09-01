@@ -556,6 +556,12 @@ const CheckoutPage = () => {
           ...(formData.paymentMethod.startsWith('crypto_') ? {
             selected_wallet: selectedCryptoWallet,
             wallet_type: formData.paymentMethod.replace('crypto_', '')
+          } : {}),
+          // Settlement discount for bank wire / Zelle (server re-verifies)
+          ...(paymentDiscount > 0 ? {
+            payment_discount_percent: 15,
+            payment_discount_amount: Number(paymentDiscount.toFixed(2)),
+            payment_discount_reason: 'bank_wire_zelle'
           } : {})
         },
       };
