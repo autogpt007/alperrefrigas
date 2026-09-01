@@ -13,7 +13,6 @@ http://www.alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
 https://www.alperrefrigas.com/* https://alperrefrigerants.com/:splat 301!
 
 # Path-level redirects
-/products/air-conditioners /products/accessories 301!
 /freon-wholesale /products 301!
 /shipping /shipping-policy 301!
 /products.html /products 301!
