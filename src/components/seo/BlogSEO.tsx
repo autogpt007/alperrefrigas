@@ -52,25 +52,25 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
     "@type": "Article",
     "headline": post.title,
     "description": post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, ''),
-    "image": post.banner_image_url || post.featured_image_url || "https://northamericanrefrigerants.com/logo.svg",
+    "image": post.banner_image_url || post.featured_image_url || "https://alperrefrigerants.com/logo.png",
     "author": {
       "@type": "Organization",
       "name": "North American Refrigerants",
-      "url": "https://northamericanrefrigerants.com"
+      "url": "https://alperrefrigerants.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "North American Refrigerants",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://northamericanrefrigerants.com/logo.svg"
+        "url": "https://alperrefrigerants.com/logo.png"
       }
     },
     "datePublished": post.created_at,
     "dateModified": post.updated_at,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`
+      "@id": canonical || `https://alperrefrigerants.com/blog/${post.slug}`
     },
     "articleSection": "Refrigerant Industry",
     "keywords": extractKeywords(),
@@ -92,25 +92,25 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://northamericanrefrigerants.com"
+        "item": "https://alperrefrigerants.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "News",
-        "item": "https://northamericanrefrigerants.com/blog"
+        "item": "https://alperrefrigerants.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": post.title,
-        "item": canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`
+        "item": canonical || `https://alperrefrigerants.com/blog/${post.slug}`
       }
     ]
   };
 
   const cleanExcerpt = post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, '');
-  const currentUrl = canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`;
+  const currentUrl = canonical || `https://alperrefrigerants.com/blog/${post.slug}`;
 
   return (
     <Helmet>

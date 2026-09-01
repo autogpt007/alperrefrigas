@@ -49,7 +49,7 @@ const FreonWholesalePage = () => {
         "@id": "https://alperrefrigerants.com/#organization", 
         "name": "Alper Refrigerants",
         "url": "https://alperrefrigerants.com",
-        "logo": "https://alperrefrigerants.com/logo.svg",
+        "logo": "https://alperrefrigerants.com/logo.png",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+1-682-215-2974",
