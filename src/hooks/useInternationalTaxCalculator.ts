@@ -178,18 +178,19 @@ export const useInternationalTaxCalculator = (
   // For international orders
   const rate = internationalTaxRate?.tax_rate || 0;
   const taxAmount = subtotal * (rate / 100);
-  const taxType = internationalTaxRate?.tax_type || 'VAT';
-  
+  const taxType = internationalTaxRate?.tax_type || 'DDU';
+  const isDDU = taxType === 'DDU' || rate === 0;
+
   // Generate display label
   let displayLabel = 'Tax';
-  if (internationalTaxRate) {
-    if (taxType === 'VAT') {
-      displayLabel = `VAT (${countryCode} @ ${rate}%)`;
-    } else if (taxType === 'GST') {
-      displayLabel = `GST (${countryCode} @ ${rate}%)`;
-    } else {
-      displayLabel = `Tax (${countryCode} @ ${rate}%)`;
-    }
+  if (isDDU) {
+    displayLabel = 'Import duties & taxes (paid on delivery)';
+  } else if (taxType === 'VAT') {
+    displayLabel = `VAT (${countryCode} @ ${rate}%)`;
+  } else if (taxType === 'GST') {
+    displayLabel = `GST (${countryCode} @ ${rate}%)`;
+  } else {
+    displayLabel = `Tax (${countryCode} @ ${rate}%)`;
   }
 
   return {
@@ -197,11 +198,13 @@ export const useInternationalTaxCalculator = (
     taxAmount: Math.round(taxAmount * 100) / 100,
     taxType,
     countryCode,
-    countryName: country?.name || '',
-    region: country?.region || '',
+    countryName: country?.name || internationalTaxRate?.country_name || '',
+    region: country?.region || internationalTaxRate?.region || '',
     isLoading: isLoadingInternational,
     error: null,
     displayLabel,
+    isDDU,
+    taxNotice: isDDU ? DDU_NOTICE : null,
   };
 };
 
