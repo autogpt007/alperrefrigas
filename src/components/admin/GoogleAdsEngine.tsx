@@ -10,7 +10,7 @@ import { GoalStep, initialGoal, type GoalState } from "./ads/GoalStep";
 import { BriefStep, initialBrief, type BriefState } from "./ads/BriefStep";
 import { AssetPackView } from "./ads/AssetPackView";
 import { CampaignHistory } from "./ads/CampaignHistory";
-import { validateAdPack, type AdPack, type ComplianceReport } from "@/lib/adsCompliance";
+import { validateAdPack, withBaseNegatives, type AdPack, type ComplianceReport } from "@/lib/adsCompliance";
 
 const GoogleAdsEngine: React.FC = () => {
   const [goal, setGoal] = useState<GoalState>(initialGoal);
@@ -42,6 +42,13 @@ const GoogleAdsEngine: React.FC = () => {
       if (data?.error) throw new Error(data.error);
 
       const generatedPack: AdPack = data.pack;
+      // Always enforce the campaign-level negative keyword list from the keyword plan.
+      if (Array.isArray((generatedPack as any)?.adGroups)) {
+        (generatedPack as any).adGroups = (generatedPack as any).adGroups.map((g: any) => ({
+          ...g,
+          negatives: withBaseNegatives(g?.negatives || []),
+        }));
+      }
       const localReport = validateAdPack(generatedPack, { productType: brief.productType });
       // Merge server-side report if present
       const finalReport: ComplianceReport = data.report

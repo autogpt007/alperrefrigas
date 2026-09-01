@@ -22,6 +22,35 @@ export const LIMITS = {
   metaDesc: 155,
 } as const;
 
+/**
+ * Campaign-level negative keywords for every Alper Google Ads campaign.
+ * Filters out consumer/DIY, retail, and informational traffic that cannot
+ * legally buy bulk refrigerant. Mirrors docs/google-ads-keyword-plan.md.
+ */
+export const BASE_NEGATIVE_KEYWORDS: string[] = [
+  "free", "diy", "home use", "household", "consumer", "free sample",
+  "car", "automotive recharge", "ac pro", "walmart", "home depot",
+  "autozone", "amazon", "jobs", "salary", "recycling",
+  "how to recharge", "refill my car", "leak sealant", "refrigerator",
+  "fridge", "water filter", "course", "certification exam", "training",
+  "epa test", "calculator", "chart", "pt chart", "msds pdf", "sds pdf",
+  "used", "rental", "repair near me", "technician jobs", "wikipedia",
+  "reddit", "forum", "youtube",
+];
+
+/** Merge generated negatives with the mandatory base list (deduped, case-insensitive). */
+export function withBaseNegatives(negatives: string[] = []): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const n of [...BASE_NEGATIVE_KEYWORDS, ...negatives]) {
+    const k = (n || "").trim().toLowerCase();
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(n.trim());
+  }
+  return out;
+}
+
 const PROHIBITED_SUPERLATIVES = [
   /\bcheapest\b/i,
   /\bbest in the world\b/i,
