@@ -278,9 +278,19 @@ serve(async (req: Request) => {
         shipping_address,
         notes,
         payment_method,
-        payment_details: verifiedCoupon
-          ? { ...(payment_details ?? {}), coupon_code: verifiedCoupon.code, discount_amount: Number(verifiedDiscount.toFixed(2)) }
-          : payment_details,
+        payment_details: {
+          ...(payment_details ?? {}),
+          ...(verifiedCoupon
+            ? { coupon_code: verifiedCoupon.code, discount_amount: Number(verifiedDiscount.toFixed(2)) }
+            : {}),
+          ...(verifiedPaymentDiscount > 0
+            ? {
+              payment_discount_percent: 15,
+              payment_discount_amount: Number(verifiedPaymentDiscount.toFixed(2)),
+              payment_discount_reason: "bank_wire_zelle",
+            }
+            : {}),
+        },
         cashapp_tag,
         zelle_tag,
       })
