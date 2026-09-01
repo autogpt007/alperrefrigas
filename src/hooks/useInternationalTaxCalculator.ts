@@ -13,6 +13,9 @@ export interface InternationalTaxCalculation {
   isLoading: boolean;
   error: string | null;
   displayLabel: string;
+  /** True when no tax is collected at checkout (duties payable on delivery). */
+  isDDU: boolean;
+  taxNotice: string | null;
 }
 
 interface InternationalTaxRate {
