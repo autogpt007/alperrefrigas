@@ -513,7 +513,7 @@ const CheckoutPage = () => {
         },
         payment_method: formData.paymentMethod,
         coupon_code: appliedCoupon?.code ?? null,
-        notes: formData.notes,
+        notes: [formData.notes, taxCalculation.taxNotice].filter(Boolean).join('\n\n'),
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
         zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
