@@ -13,6 +13,9 @@ export interface InternationalTaxCalculation {
   isLoading: boolean;
   error: string | null;
   displayLabel: string;
+  /** True when no tax is collected at checkout (duties payable on delivery). */
+  isDDU: boolean;
+  taxNotice: string | null;
 }
 
 interface InternationalTaxRate {
@@ -26,10 +29,15 @@ interface InternationalTaxRate {
   notes: string | null;
 }
 
-// Supported countries with their regions
+// Supported countries with their regions. Regions drive the tax label:
+// US = ZIP-based sales tax, EU/UK/AU = VAT/GST collected at checkout,
+// everything else = DDU (no tax at checkout, duties payable on delivery).
 export const SUPPORTED_COUNTRIES = [
   // US
   { code: 'US', name: 'United States', region: 'US' },
+  { code: 'PR', name: 'Puerto Rico', region: 'US Territory' },
+  // North America
+  { code: 'CA', name: 'Canada', region: 'CA' },
   // UK
   { code: 'GB', name: 'United Kingdom', region: 'UK' },
   // EU Countries
@@ -38,7 +46,7 @@ export const SUPPORTED_COUNTRIES = [
   { code: 'BG', name: 'Bulgaria', region: 'EU' },
   { code: 'HR', name: 'Croatia', region: 'EU' },
   { code: 'CY', name: 'Cyprus', region: 'EU' },
-  { code: 'CZ', name: 'Czech Republic', region: 'EU' },
+  { code: 'CZ', name: 'Czechia', region: 'EU' },
   { code: 'DK', name: 'Denmark', region: 'EU' },
   { code: 'EE', name: 'Estonia', region: 'EU' },
   { code: 'FI', name: 'Finland', region: 'EU' },
@@ -60,9 +68,50 @@ export const SUPPORTED_COUNTRIES = [
   { code: 'SI', name: 'Slovenia', region: 'EU' },
   { code: 'ES', name: 'Spain', region: 'EU' },
   { code: 'SE', name: 'Sweden', region: 'EU' },
-  // Australia
+  // Non-EU Europe
+  { code: 'CH', name: 'Switzerland', region: 'Non-EU Europe' },
+  { code: 'NO', name: 'Norway', region: 'Non-EU Europe' },
+  { code: 'UA', name: 'Ukraine', region: 'Non-EU Europe' },
+  { code: 'RU', name: 'Russia', region: 'Non-EU Europe' },
+  { code: 'GE', name: 'Georgia', region: 'Non-EU Europe' },
+  // Latin America & Caribbean
+  { code: 'MX', name: 'Mexico', region: 'LatAm' },
+  { code: 'BR', name: 'Brazil', region: 'LatAm' },
+  { code: 'AR', name: 'Argentina', region: 'LatAm' },
+  { code: 'CL', name: 'Chile', region: 'LatAm' },
+  { code: 'CO', name: 'Colombia', region: 'LatAm' },
+  { code: 'PE', name: 'Peru', region: 'LatAm' },
+  { code: 'EC', name: 'Ecuador', region: 'LatAm' },
+  { code: 'UY', name: 'Uruguay', region: 'LatAm' },
+  { code: 'PY', name: 'Paraguay', region: 'LatAm' },
+  { code: 'CR', name: 'Costa Rica', region: 'LatAm' },
+  { code: 'PA', name: 'Panama', region: 'LatAm' },
+  { code: 'SV', name: 'El Salvador', region: 'LatAm' },
+  { code: 'NI', name: 'Nicaragua', region: 'LatAm' },
+  { code: 'DO', name: 'Dominican Republic', region: 'LatAm' },
+  // Middle East
+  { code: 'AE', name: 'United Arab Emirates', region: 'Middle East' },
+  { code: 'SA', name: 'Saudi Arabia', region: 'Middle East' },
+  { code: 'KW', name: 'Kuwait', region: 'Middle East' },
+  { code: 'BH', name: 'Bahrain', region: 'Middle East' },
+  { code: 'OM', name: 'Oman', region: 'Middle East' },
+  { code: 'IL', name: 'Israel', region: 'Middle East' },
+  // Asia-Pacific
+  { code: 'HK', name: 'Hong Kong', region: 'Asia-Pacific' },
+  { code: 'MY', name: 'Malaysia', region: 'Asia-Pacific' },
+  { code: 'TH', name: 'Thailand', region: 'Asia-Pacific' },
+  { code: 'PH', name: 'Philippines', region: 'Asia-Pacific' },
+  // Oceania
   { code: 'AU', name: 'Australia', region: 'AU' },
+  { code: 'NZ', name: 'New Zealand', region: 'Oceania' },
+  // Africa
+  { code: 'ZA', name: 'South Africa', region: 'Africa' },
 ];
+
+/** Countries where no tax is collected at checkout (duties paid on delivery). */
+export const DDU_NOTICE =
+  'No tax charged at checkout — import VAT, duties and customs clearance fees are payable to the carrier on delivery.';
+
 
 export const getCountryByCode = (code: string) => {
   return SUPPORTED_COUNTRIES.find(c => c.code === code);
@@ -126,24 +175,27 @@ export const useInternationalTaxCalculator = (
       displayLabel: usTaxCalculation.stateCode 
         ? `Sales Tax (${usTaxCalculation.stateCode} @ ${usTaxCalculation.taxRate}%)`
         : 'Sales Tax',
+      isDDU: false,
+      taxNotice: null,
     };
   }
 
   // For international orders
   const rate = internationalTaxRate?.tax_rate || 0;
   const taxAmount = subtotal * (rate / 100);
-  const taxType = internationalTaxRate?.tax_type || 'VAT';
-  
+  const taxType = internationalTaxRate?.tax_type || 'DDU';
+  const isDDU = taxType === 'DDU' || rate === 0;
+
   // Generate display label
   let displayLabel = 'Tax';
-  if (internationalTaxRate) {
-    if (taxType === 'VAT') {
-      displayLabel = `VAT (${countryCode} @ ${rate}%)`;
-    } else if (taxType === 'GST') {
-      displayLabel = `GST (${countryCode} @ ${rate}%)`;
-    } else {
-      displayLabel = `Tax (${countryCode} @ ${rate}%)`;
-    }
+  if (isDDU) {
+    displayLabel = 'Import duties & taxes (paid on delivery)';
+  } else if (taxType === 'VAT') {
+    displayLabel = `VAT (${countryCode} @ ${rate}%)`;
+  } else if (taxType === 'GST') {
+    displayLabel = `GST (${countryCode} @ ${rate}%)`;
+  } else {
+    displayLabel = `Tax (${countryCode} @ ${rate}%)`;
   }
 
   return {
@@ -151,11 +203,13 @@ export const useInternationalTaxCalculator = (
     taxAmount: Math.round(taxAmount * 100) / 100,
     taxType,
     countryCode,
-    countryName: country?.name || '',
-    region: country?.region || '',
+    countryName: country?.name || internationalTaxRate?.country_name || '',
+    region: country?.region || internationalTaxRate?.region || '',
     isLoading: isLoadingInternational,
     error: null,
     displayLabel,
+    isDDU,
+    taxNotice: isDDU ? DDU_NOTICE : null,
   };
 };
 

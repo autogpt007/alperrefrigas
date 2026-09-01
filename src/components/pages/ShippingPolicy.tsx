@@ -140,50 +140,122 @@ const ShippingPolicy = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>We ship internationally to the following regions:</strong></p>
+                <p><strong>We ship to 54 countries.</strong> Rates below are per-order base rates; a HazMat surcharge applies to refrigerant shipments.</p>
                 <div className="bg-gray-50 p-4 rounded-lg mb-4 overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-2">Region</th>
+                        <th className="text-left py-2">Zone</th>
                         <th className="text-left py-2">Countries</th>
-                        <th className="text-left py-2">Processing</th>
                         <th className="text-left py-2">Transit</th>
                         <th className="text-left py-2">Base Rate</th>
+                        <th className="text-left py-2">HazMat</th>
                         <th className="text-left py-2">Free Shipping</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b">
-                        <td className="py-2 font-medium">🇬🇧 United Kingdom</td>
-                        <td className="py-2">GB</td>
-                        <td className="py-2">2-3 days</td>
+                        <td className="py-2 font-medium">United States (Continental)</td>
+                        <td className="py-2">US (48 states)</td>
+                        <td className="py-2">3-5 days</td>
+                        <td className="py-2">$45</td>
+                        <td className="py-2">+$25</td>
+                        <td className="py-2">Orders $500+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Alaska &amp; Hawaii</td>
+                        <td className="py-2">US-AK, US-HI</td>
                         <td className="py-2">5-10 days</td>
-                        <td className="py-2">$79.99</td>
+                        <td className="py-2">$89</td>
+                        <td className="py-2">+$45</td>
+                        <td className="py-2">Orders $1,000+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">US Territories</td>
+                        <td className="py-2">Puerto Rico</td>
+                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">$89</td>
+                        <td className="py-2">+$45</td>
+                        <td className="py-2">Orders $1,000+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Canada</td>
+                        <td className="py-2">Canada</td>
+                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">$75</td>
+                        <td className="py-2">+$35</td>
+                        <td className="py-2">Orders $750+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">United Kingdom</td>
+                        <td className="py-2">United Kingdom</td>
+                        <td className="py-2">7-14 days</td>
+                        <td className="py-2">$120</td>
+                        <td className="py-2">+$50</td>
+                        <td className="py-2">Orders $1,000+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">European Union</td>
+                        <td className="py-2">Austria, Belgium, Czechia, Denmark, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Netherlands, Poland, Portugal, Romania, Slovakia, Spain, Sweden and all other EU states</td>
+                        <td className="py-2">7-14 days</td>
+                        <td className="py-2">$150</td>
+                        <td className="py-2">+$60</td>
+                        <td className="py-2">Orders $1,500+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Non-EU Europe</td>
+                        <td className="py-2">Switzerland, Norway, Ukraine, Russia, Georgia</td>
+                        <td className="py-2">8-16 days</td>
+                        <td className="py-2">$165</td>
+                        <td className="py-2">+$65</td>
+                        <td className="py-2">Orders $1,500+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Latin America &amp; Caribbean</td>
+                        <td className="py-2">Mexico, Brazil, Argentina, Chile, Colombia, Peru, Ecuador, Uruguay, Paraguay, Costa Rica, Panama, El Salvador, Nicaragua, Dominican Republic</td>
+                        <td className="py-2">7-16 days</td>
+                        <td className="py-2">$145</td>
+                        <td className="py-2">+$70</td>
+                        <td className="py-2">Orders $1,500+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Middle East</td>
+                        <td className="py-2">United Arab Emirates, Saudi Arabia, Kuwait, Bahrain, Oman, Israel</td>
+                        <td className="py-2">10-18 days</td>
+                        <td className="py-2">$195</td>
+                        <td className="py-2">+$80</td>
                         <td className="py-2">Orders $2,000+</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-2 font-medium">🇪🇺 European Union</td>
-                        <td className="py-2">27 EU countries</td>
-                        <td className="py-2">2-3 days</td>
-                        <td className="py-2">7-14 days</td>
-                        <td className="py-2">$99.99</td>
-                        <td className="py-2">Orders $3,000+</td>
+                        <td className="py-2 font-medium">Asia-Pacific</td>
+                        <td className="py-2">Hong Kong, Malaysia, Thailand, Philippines</td>
+                        <td className="py-2">10-20 days</td>
+                        <td className="py-2">$185</td>
+                        <td className="py-2">+$80</td>
+                        <td className="py-2">Orders $2,000+</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-2 font-medium">Australia &amp; New Zealand</td>
+                        <td className="py-2">Australia, New Zealand</td>
+                        <td className="py-2">10-21 days</td>
+                        <td className="py-2">$180</td>
+                        <td className="py-2">+$75</td>
+                        <td className="py-2">Orders $2,000+</td>
                       </tr>
                       <tr>
-                        <td className="py-2 font-medium">🇦🇺 Australia</td>
-                        <td className="py-2">AU</td>
-                        <td className="py-2">3-5 days</td>
-                        <td className="py-2">10-21 days</td>
-                        <td className="py-2">$149.99</td>
-                        <td className="py-2">Orders $5,000+</td>
+                        <td className="py-2 font-medium">Africa</td>
+                        <td className="py-2">South Africa</td>
+                        <td className="py-2">12-22 days</td>
+                        <td className="py-2">$220</td>
+                        <td className="py-2">+$90</td>
+                        <td className="py-2">Orders $2,500+</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <p className="text-sm text-gray-600">
                   <strong>Note:</strong> International shipping rates are estimates. Actual rates may vary based on weight, dimensions, and customs requirements.
-                  Container shipments and pallet quantities require custom freight quotes.
+                  Container shipments and pallet quantities require custom freight quotes. Destinations outside the zones above are quoted individually before shipment.
                 </p>
               </CardContent>
             </Card>
@@ -214,29 +286,30 @@ const ShippingPolicy = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Calculator className="h-5 w-5 mr-2 text-yellow-600" />
-                  Customs, Duties & Import Taxes
+                  Customs, Duties &amp; Import Taxes
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
                 <p><strong>Import Responsibility:</strong> International buyers are responsible for all import-related costs:</p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li><strong>Import Duties:</strong> Tariffs based on product classification and country of import</li>
-                  <li><strong>VAT/GST:</strong> Value Added Tax (EU/UK) or Goods & Services Tax (Australia)</li>
+                  <li><strong>VAT/GST:</strong> Value Added Tax (EU/UK) or Goods &amp; Services Tax (Australia)</li>
                   <li><strong>Customs Clearance Fees:</strong> Broker fees and administrative charges</li>
                   <li><strong>Inspection Fees:</strong> Some countries require chemical product inspection</li>
                 </ul>
-                
+
                 <div className="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-200">
-                  <h4 className="font-semibold text-blue-900 mb-2">💡 Tax Payment Options at Checkout</h4>
-                  <p className="text-blue-800 text-sm mb-2">International customers have two options:</p>
+                  <h4 className="font-semibold text-blue-900 mb-2">How tax is handled at checkout</h4>
                   <ul className="list-disc pl-6 text-blue-800 text-sm space-y-1">
-                    <li><strong>Prepay at Checkout (DDP):</strong> Pay VAT/GST during checkout for faster customs clearance. Tax is included in your order total.</li>
-                    <li><strong>Pay at Customs (DDU):</strong> Choose to pay duties and taxes directly to customs upon delivery. Your invoice will show 0% tax.</li>
+                    <li><strong>United States:</strong> Sales tax is calculated from your shipping ZIP code and state rate.</li>
+                    <li><strong>European Union, United Kingdom, Australia:</strong> VAT or GST is charged at the standard rate for your country at checkout.</li>
+                    <li><strong>All other destinations (DDU):</strong> No tax is charged at checkout. Import VAT, duties and customs clearance fees are payable to the carrier or customs authority on delivery and are the buyer's responsibility.</li>
                   </ul>
                   <p className="text-blue-700 text-xs mt-2">
-                    <strong>DDP = Delivered Duty Paid</strong> (we handle customs) | <strong>DDU = Delivered Duty Unpaid</strong> (you handle customs)
+                    <strong>DDU = Delivered Duty Unpaid</strong> — the buyer settles import charges with customs.
                   </p>
                 </div>
+
 
                 <div className="bg-gray-100 p-4 rounded-lg mt-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Estimated Tax Rates</h4>
