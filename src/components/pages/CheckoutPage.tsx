@@ -281,7 +281,13 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
-  const discountAmount = couponDiscount;
+  // Bank wire / Zelle settlement discount (applied after any coupon)
+  const PAYMENT_DISCOUNT_METHODS = ['bank_wire', 'zelle'];
+  const isPaymentDiscountEligible = PAYMENT_DISCOUNT_METHODS.includes(formData.paymentMethod);
+  const paymentDiscount = isPaymentDiscountEligible
+    ? Math.max(0, subtotal - couponDiscount) * 0.15
+    : 0;
+  const discountAmount = couponDiscount + paymentDiscount;
   const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
 
