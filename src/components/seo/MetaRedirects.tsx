@@ -27,7 +27,7 @@ const MetaRedirects: React.FC = () => {
 
     // Apex SEO redirects
     const seoRedirects: Record<string, string> = {
-      '/products/air-conditioners': '/products/accessories',
+      
       '/freon-wholesale': '/products',
       '/shipping': '/shipping-policy',
     };

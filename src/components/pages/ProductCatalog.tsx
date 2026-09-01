@@ -85,7 +85,9 @@ const ProductCatalog = () => {
         { value: 'all', label: 'All Air Conditioners' },
         { value: 'mini-splits', label: 'Ductless Mini-Splits' },
         { value: 'window-ac', label: 'Window AC Units' },
-        { value: 'portable-ac', label: 'Portable AC Units' }
+        { value: 'portable-ac', label: 'Portable AC Units' },
+        { value: 'multi-zone', label: 'Multi-Zone Systems' },
+        { value: 'ptac-commercial', label: 'PTAC & Commercial' }
       ];
     } else {
       return [
@@ -278,7 +280,7 @@ const ProductCatalog = () => {
           {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
-              {product.product_type === 'accessory' ? product.category : `${product.category} Refrigerant`}
+              {product.product_type === 'refrigerant' ? `${product.category} Refrigerant` : product.category}
             </Badge>
           </div>
           
@@ -288,7 +290,9 @@ const ProductCatalog = () => {
               <span className="text-lg font-bold text-blue-600">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
+              <span className="text-xs text-gray-500">
+                {product.product_type === 'refrigerant' ? t('products.perCylinder') : 'per unit'}
+              </span>
             </div>
             
             <Link to={`/products/${createProductSlug(product.name)}`}>
@@ -450,6 +454,8 @@ const ProductCatalog = () => {
                 ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
                 : productType === 'accessory'
                 ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
+                : productType === 'air_conditioner'
+                ? 'Mini-splits, multi-zone systems, window, portable and PTAC units at container-load pricing. MOQ 5 units with tiered bulk discounts.'
                 : t('products.description')
               }
             </p>
@@ -525,7 +531,7 @@ const ProductCatalog = () => {
 
           <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             <div className="text-gray-600 text-sm">
-              {t('products.productsFound', { count: sortedProducts.length })}
+              {sortedProducts.length} {t('products.productsFound', { count: sortedProducts.length })}
             </div>
             
             <div className="flex items-center gap-2">

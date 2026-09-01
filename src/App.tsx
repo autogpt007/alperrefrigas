@@ -28,6 +28,7 @@ import "./App.css";
 // Critical path - eagerly loaded
 import HomePage from "./components/pages/HomePage";
 import ProductCatalog from "./components/pages/ProductCatalog";
+import AirConditionersPage from "./components/pages/AirConditionersPage";
 import ProductDetails from "./components/pages/ProductDetails";
 
 // Lazy-loaded routes
@@ -181,7 +182,7 @@ function App() {
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
-                                <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
+                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
