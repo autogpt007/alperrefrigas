@@ -64,7 +64,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   description,
   keywords,
   canonicalUrl,
-  ogImage = '/logo.svg',
+  ogImage = '/logo.png',
   ogType = 'website',
   structuredData,
   robotsContent,
@@ -192,7 +192,7 @@ const SEOComponent: React.FC<SEOProps> = ({
     "legalName": legalName,
     "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
     "url": siteUrl,
-    "logo": `${siteUrl}/logo.svg`,
+    "logo": `${siteUrl}/logo.png`,
     "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
     "foundingDate": "2020",
     "serviceArea": [
