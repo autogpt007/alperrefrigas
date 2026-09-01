@@ -144,15 +144,21 @@ const Footer = () => {
                   <div className="text-sm text-gray-300">Monday - Friday: 7:00 AM - 6:00 PM EST</div>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-3" itemScope itemType="https://schema.org/Organization">
                 <MapPin className="h-4 w-4 text-blue-400 mt-1" />
                 <div>
-                  <div className="font-medium">Alper Chemical Group</div>
-                  <div className="text-sm text-gray-300">
-                    382 NE 191st St<br />
-                    Miami, FL 33179<br />
-                    United States
-                  </div>
+                  <div className="font-medium" itemProp="name">Alper Chemical Group</div>
+                  <address
+                    className="text-sm text-gray-300 not-italic"
+                    itemProp="address"
+                    itemScope
+                    itemType="https://schema.org/PostalAddress"
+                  >
+                    <span itemProp="streetAddress">382 NE 191st St</span><br />
+                    <span itemProp="addressLocality">Miami</span>, <span itemProp="addressRegion">FL</span>{' '}
+                    <span itemProp="postalCode">33179</span><br />
+                    <span itemProp="addressCountry">United States</span>
+                  </address>
                 </div>
               </div>
             </div>
