@@ -8,15 +8,17 @@
 import { isGtagAvailable, pushToDataLayer } from './tracking';
 
 // GOOGLE ADS CONVERSION IDS
+// Must match the gtag.js tag loaded in index.html
 const GOOGLE_ADS_CONVERSION_IDS = {
-  CONVERSION_ID: 'AW-17583624817',
-  
-  // Conversion labels for different actions
-  PURCHASE: 'TTjaCLGmkM0bEPGkw8BB',
+  CONVERSION_ID: 'AW-18423146954',
+
+  // Conversion labels for different actions (from Google Ads > Goals > Conversions)
+  PURCHASE: '', // paste the purchase conversion label here
   ADD_TO_CART: '', // Optional - add label if needed
   BEGIN_CHECKOUT: '', // Optional - add label if needed
   LEAD: '', // For quote submissions - add label if needed
 };
+
 
 // Check if Google Ads is configured
 const isGoogleAdsConfigured = (): boolean => {
@@ -43,13 +45,26 @@ export const trackGoogleAdsPurchase = (
   }
 
   try {
+    const sendTo = GOOGLE_ADS_CONVERSION_IDS.PURCHASE
+      ? `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`
+      : GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID;
+
     // Track conversion via gtag
     window.gtag('event', 'conversion', {
-      send_to: `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`,
+      send_to: sendTo,
       value: value,
       currency: currency,
       transaction_id: transactionId
     });
+
+    // Standard purchase event so Ads can attribute clicks -> orders
+    window.gtag('event', 'purchase', {
+      send_to: GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID,
+      transaction_id: transactionId,
+      value: value,
+      currency: currency
+    });
+
 
     // Also push to dataLayer for GTM
     pushToDataLayer('google_ads_conversion', {
