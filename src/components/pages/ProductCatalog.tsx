@@ -454,6 +454,8 @@ const ProductCatalog = () => {
                 ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
                 : productType === 'accessory'
                 ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
+                : productType === 'air_conditioner'
+                ? 'Mini-splits, multi-zone systems, window, portable and PTAC units at container-load pricing. MOQ 5 units with tiered bulk discounts.'
                 : t('products.description')
               }
             </p>
