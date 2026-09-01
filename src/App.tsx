@@ -181,7 +181,7 @@ function App() {
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
-                                <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
+                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />

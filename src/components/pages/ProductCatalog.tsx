@@ -85,7 +85,9 @@ const ProductCatalog = () => {
         { value: 'all', label: 'All Air Conditioners' },
         { value: 'mini-splits', label: 'Ductless Mini-Splits' },
         { value: 'window-ac', label: 'Window AC Units' },
-        { value: 'portable-ac', label: 'Portable AC Units' }
+        { value: 'portable-ac', label: 'Portable AC Units' },
+        { value: 'multi-zone', label: 'Multi-Zone Systems' },
+        { value: 'ptac-commercial', label: 'PTAC & Commercial' }
       ];
     } else {
       return [
