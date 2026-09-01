@@ -42,6 +42,13 @@ const GoogleAdsEngine: React.FC = () => {
       if (data?.error) throw new Error(data.error);
 
       const generatedPack: AdPack = data.pack;
+      // Always enforce the campaign-level negative keyword list from the keyword plan.
+      if (Array.isArray((generatedPack as any)?.adGroups)) {
+        (generatedPack as any).adGroups = (generatedPack as any).adGroups.map((g: any) => ({
+          ...g,
+          negatives: withBaseNegatives(g?.negatives || []),
+        }));
+      }
       const localReport = validateAdPack(generatedPack, { productType: brief.productType });
       // Merge server-side report if present
       const finalReport: ComplianceReport = data.report
