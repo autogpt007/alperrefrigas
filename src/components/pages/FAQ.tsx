@@ -204,9 +204,9 @@ const FAQ = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <SEOComponent
-        title="Refrigerant FAQ | HVAC Questions | Alper"
-        description="Find answers to common refrigerant questions about EPA certification, HFC/HFO refrigerants, bulk pricing, shipping, and compliance. Expert guidance for HVAC contractors and technicians."
-        keywords="refrigerant FAQ, EPA 608 certification, HFC refrigerants, HFO refrigerants, HVAC contractor questions, refrigerant compliance, bulk refrigerant pricing, hazmat shipping"
+        title="Refrigerant FAQ: EPA, Shipping & Returns | Alper"
+        description="Answers on EPA 608 certification, refrigerant types, shipping costs and free-shipping thresholds, and who pays return shipping. Trade-only refrigerant supply."
+        keywords="refrigerant FAQ, EPA 608 certification, refrigerant types HFC HFO, refrigerant shipping cost, hazmat surcharge, refrigerant return policy, restocking fee, bulk refrigerant pricing"
         canonicalUrl="/faq"
         structuredData={faqStructuredData}
         breadcrumbs={[{ name: "Home", url: "/" }, { name: "FAQ", url: "/faq" }]}
