@@ -259,8 +259,8 @@ const FAQ = () => {
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-orange-600 mb-2">100%</div>
-              <p className="text-gray-600">Satisfaction</p>
+              <div className="text-3xl font-bold text-orange-600 mb-2">30-Day</div>
+              <p className="text-gray-600">Return Window</p>
             </CardContent>
           </Card>
         </div>
