@@ -155,13 +155,16 @@ const HomePage = () => {
           applications: item.products?.applications || [],
           stock_quantity: item.products?.stock_quantity,
           availability: item.products?.availability
-        })) || [];
+        })).filter(p => p.id) || [];
 
-        setFeaturedProducts(productList);
+        if (productList.length > 0) {
+          setFeaturedProducts(productList);
+        } else {
+          setFeaturedProducts(pickFallbackProducts(products));
+        }
       } catch (error) {
         console.error('Error fetching featured products:', error);
-        // Fallback to first 3 products from main products list
-        setFeaturedProducts(products.slice(0, 3));
+        setFeaturedProducts(pickFallbackProducts(products));
       }
     };
 
