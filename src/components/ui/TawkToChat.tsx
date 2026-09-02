@@ -147,6 +147,10 @@ export const TawkToChat: React.FC = () => {
 
       console.log('Loading Tawk.to with IDs:', { propertyId, widgetId });
 
+      // Inject positioning styles early so the Tawk.to iframe is placed
+      // on the bottom-left as soon as it renders, avoiding the WhatsApp button.
+      injectPositionStyles();
+
       // Initialize globals - Let Tawk.to widget show by default
       window.Tawk_API = window.Tawk_API || {};
       window.Tawk_LoadStart = new Date();
