@@ -20,6 +20,13 @@ import { useOrders } from '@/contexts/OrdersContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
+// Public fallback: show real catalog products when no curated selection exists
+const pickFallbackProducts = (products: any[]) => {
+  if (!products || products.length === 0) return [];
+  const refrigerants = products.filter((p: any) => p.product_type !== 'air_conditioner');
+  return (refrigerants.length > 0 ? refrigerants : products).slice(0, 3);
+};
+
 const HomePage = () => {
   const { t } = useTranslation();
   const { products, loading } = useProducts();
