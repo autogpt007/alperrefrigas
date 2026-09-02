@@ -634,10 +634,10 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No products available yet. Please add some products in the admin panel.</p>
-              <Link to="/admin" className="inline-block mt-4">
+              <p className="text-gray-400 text-lg">Our featured selection is being updated. Browse the full refrigerant catalog in the meantime.</p>
+              <Link to="/products" className="inline-block mt-4">
                 <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
-                  Go to Admin Panel
+                  View All Products
                 </Button>
               </Link>
             </div>
