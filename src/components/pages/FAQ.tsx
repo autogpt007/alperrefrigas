@@ -176,6 +176,8 @@ const FAQ = () => {
   ];
 
 
+  const totalQuestions = faqCategories.reduce((sum, c) => sum + c.questions.length, 0);
+
   const filteredFAQs = faqCategories.map(category => ({
     ...category,
     questions: category.questions.filter(
