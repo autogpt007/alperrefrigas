@@ -12,71 +12,141 @@ const FAQ = () => {
 
   const faqCategories = [
     {
+      icon: Snowflake,
+      title: 'Refrigerant Types',
+      color: 'bg-cyan-100 text-cyan-800',
+      questions: [
+        {
+          question: 'What refrigerant types do you carry?',
+          answer: 'We stock HFC blends (R-410A, R-134a, R-404A, R-407C, R-507A, R-422B, R-438A), low-GWP HFO and HFO blends (R-454B, R-32, R-1234yf, R-513A, R-452A), and natural refrigerants (R-290 propane, R-600a isobutane, R-744 CO2). All cylinders are factory-sealed and sourced from established manufacturers such as Chemours, Honeywell and Arkema.'
+        },
+        {
+          question: 'What is the difference between HFC, HFO and natural refrigerants?',
+          answer: 'HFCs (for example R-410A and R-134a) are non-flammable, widely supported blends that are being phased down under the AIM Act because of their high GWP. HFOs and HFO blends (for example R-454B, R-1234yf and R-513A) have far lower GWP and are the designated replacements in new equipment, though several are mildly flammable (A2L). Natural refrigerants such as R-290, R-600a and CO2 have the lowest GWP and are used in commercial and specialty systems where flammability or high pressure can be engineered for.'
+        },
+        {
+          question: 'Which refrigerant replaces R-410A in new systems?',
+          answer: 'R-454B is the primary A2L replacement for R-410A in new residential and light commercial equipment, with R-32 used by some manufacturers. R-410A is still legal to buy and use for servicing existing systems. See our R-454B page for pricing and availability.'
+        },
+        {
+          question: 'Can I substitute one refrigerant for another in an existing system?',
+          answer: 'Only with a refrigerant that the equipment manufacturer or an EPA SNAP-approved retrofit procedure lists for that system. Charging an A2L or hydrocarbon refrigerant into equipment not rated for it is unsafe and voids the equipment listing. Contact our technical team with the model number and we will confirm compatible options.'
+        },
+        {
+          question: 'What is the shelf life of refrigerants?',
+          answer: 'Stored properly in sealed cylinders at ambient temperature, refrigerants have an indefinite shelf life. Keep cylinders upright, out of direct sunlight, away from heat sources, and in a well-ventilated area.'
+        }
+      ]
+    },
+    {
       icon: Package,
       title: 'Orders & Products',
       color: 'bg-blue-100 text-blue-800',
       questions: [
         {
-          question: 'What refrigerants do you carry?',
-          answer: 'We carry a comprehensive selection of HFC, HFO, and natural refrigerants including R-410A, R-134a, R-404A, R-407C, R-507A, R-32, R-1234yf, R-290, and R-600a. All products are EPA-approved and sourced from leading manufacturers like Chemours, Honeywell, and Arkema.'
-        },
-        {
           question: 'What are your minimum order quantities?',
-          answer: 'We specialize in bulk quantities. Minimum orders are typically one pallet (20-30 cylinders) or 500+ lbs depending on the refrigerant type. Contact our sales team for specific quantity requirements for your needed products.'
+          answer: 'We sell in professional quantities. Refrigerants are priced per cylinder with pallet-level tiers (a full pallet is typically 20-40 cylinders depending on size), and air conditioning units have their own bulk tiers. The price shown on each product page updates as you increase quantity, so you can see the exact tier before checkout.'
         },
         {
           question: 'Do you provide SDS (Safety Data Sheets)?',
-          answer: 'Yes, Safety Data Sheets are available for all products. You can download them directly from each product page or request them from our customer service team. We also maintain a comprehensive SDS library on our website.'
+          answer: 'Yes. Safety Data Sheets are available for every product and can be requested from each product page or from our support team. Shipping documentation for hazardous materials is included with every order.'
         },
         {
-          question: 'What is the shelf life of refrigerants?',
-          answer: 'When stored properly in sealed containers at appropriate temperatures, refrigerants have an indefinite shelf life. Containers should be stored upright, away from heat sources, and in a well-ventilated area.'
-        }
-      ]
-    },
-    {
-      icon: Truck,
-      title: 'Shipping & Delivery',
-      color: 'bg-green-100 text-green-800',
-      questions: [
-        {
-          question: 'What are your shipping options?',
-          answer: 'We offer ground shipping via UPS, FedEx, and specialized freight carriers for bulk orders. All refrigerants ship as hazardous materials with proper documentation. Expedited shipping is available for urgent orders.'
+          question: 'Can I get a quote before ordering?',
+          answer: 'Yes. Use our RFQ form to request pricing for specific products and quantities, including container-load volumes. Our team responds with formal pricing within one business day.'
         },
         {
-          question: 'How long does shipping take?',
-          answer: 'Standard ground shipping takes 3-5 business days. Expedited options include next-day and 2-day delivery. Bulk freight shipments typically take 5-7 business days depending on destination.'
-        },
-        {
-          question: 'Do you ship to Canada?',
-          answer: 'Yes, we ship throughout Canada. Additional customs documentation and longer transit times apply. Canadian customers must provide import permits and comply with Environment Canada regulations.'
-        },
-        {
-          question: 'What are your hazmat shipping requirements?',
-          answer: 'All refrigerants ship as Class 2.2 non-flammable gases. Packages must be properly labeled, documented, and handled by certified personnel. Signature confirmation is required upon delivery.'
+          question: 'Who can buy from Alper?',
+          answer: 'We sell to HVAC/R contractors, wholesalers, OEMs and other trade buyers only. We do not sell to consumers for household or automotive DIY use.'
         }
       ]
     },
     {
       icon: Shield,
-      title: 'EPA Compliance',
+      title: 'EPA Certifications & Compliance',
       color: 'bg-purple-100 text-purple-800',
       questions: [
         {
           question: 'Do I need EPA certification to purchase refrigerants?',
-          answer: 'Yes, valid EPA 608 certification is required to purchase regulated refrigerants. You must provide certification details during account setup. We verify all certifications before processing orders.'
+          answer: 'Yes. Under Section 608 of the Clean Air Act, regulated refrigerants may only be sold to certified technicians or to businesses that employ them. You supply your EPA 608 certification details at checkout or during account setup, and we verify them before the order ships.'
         },
         {
           question: 'What EPA 608 certification level do I need?',
-          answer: 'The required certification level depends on your application: Type I for small appliances, Type II for high-pressure systems, Type III for low-pressure systems, or Universal for all types. Most professionals choose Universal certification.'
+          answer: 'Type I covers small appliances, Type II covers high-pressure and very high-pressure systems (most residential and commercial split systems), Type III covers low-pressure chillers, and Universal covers all three. Most contractors hold Universal certification.'
         },
         {
-          question: 'How do I verify my EPA certification?',
-          answer: 'Upload a clear photo or scan of your EPA 608 certificate during account registration, or email it to compliance@alperrefrigerants.com. Certification verification is typically completed within 24 hours.'
+          question: 'How do I submit and verify my EPA certification?',
+          answer: 'Upload a clear photo or scan of your EPA 608 card during registration or checkout, or email it to sales@alperrefrigerants.com. Verification is normally completed within one business day, and we keep the record on file so you do not need to resubmit for future orders.'
+        },
+        {
+          question: 'Do air conditioning units require EPA certification?',
+          answer: 'No. Complete air conditioning units and non-refrigerant accessories ship without EPA 608 verification or hazmat documentation. Only refrigerant cylinders trigger the certification and DOT hazardous materials requirements.'
+        },
+        {
+          question: 'What about F-Gas certification for orders in Europe?',
+          answer: 'EU F-Gas Regulation requires a valid company F-Gas certificate to receive fluorinated refrigerants. If your delivery address is in the EU, checkout asks for your F-Gas certificate number before the refrigerant order can be completed.'
         },
         {
           question: 'What records do I need to keep?',
-          answer: 'Maintain records of refrigerant purchases, usage, recovery, and disposal. Keep EPA certificates, purchase receipts, and service logs for at least 3 years. Documentation helps ensure compliance during inspections.'
+          answer: 'Keep records of refrigerant purchases, charging, recovery and disposal, along with your EPA certificate and invoices, for at least three years. These records are what inspectors ask for during a compliance audit.'
+        }
+      ]
+    },
+    {
+      icon: Truck,
+      title: 'Shipping Costs & Delivery',
+      color: 'bg-green-100 text-green-800',
+      questions: [
+        {
+          question: 'How much does shipping cost?',
+          answer: 'Continental US orders are $45 per order plus a $25 HazMat surcharge on refrigerant shipments, and shipping is free on orders over $500. Alaska, Hawaii and Puerto Rico are $89 plus a $45 HazMat surcharge, free over $1,000. Canada is $75 plus $35, free over $750. The United Kingdom and the European Union start at $120 plus a $50 HazMat surcharge, free over $1,000. Exact charges are calculated at checkout from your delivery address.'
+        },
+        {
+          question: 'Do you offer free shipping?',
+          answer: 'Yes, above the order thresholds for each zone: $500 in the continental US, $750 for Canada, and $1,000 for Alaska, Hawaii, Puerto Rico and international zones. HazMat surcharges still apply to refrigerant shipments where noted on our shipping policy page.'
+        },
+        {
+          question: 'How long does delivery take?',
+          answer: 'Continental US ground freight is 3-5 business days. Alaska, Hawaii, Puerto Rico and Canada take 5-10 business days. The UK, EU and other international zones take 7-14 business days, plus customs clearance time.'
+        },
+        {
+          question: 'Which countries do you ship to?',
+          answer: 'We ship to 54 countries across North America, Latin America, Europe, the Middle East, Asia-Pacific and Africa. Refrigerants move as Class 2.2 non-flammable gas (or the applicable class for A2L and hydrocarbon products) with full DOT and IATA/IMDG documentation.'
+        },
+        {
+          question: 'Who pays import duties and taxes?',
+          answer: 'International refrigerant orders ship DDU (Delivered Duty Unpaid) by default, which means import duties, VAT or GST are collected by the carrier or customs authority on arrival. Where a DDP option is available for your destination, you can select it at checkout and we prepay those charges.'
+        },
+        {
+          question: 'Can refrigerants be delivered to a residential address?',
+          answer: 'No. Hazardous materials shipments require a commercial delivery address with someone available to sign for and receive the freight.'
+        }
+      ]
+    },
+    {
+      icon: RotateCcw,
+      title: 'Returns & Refunds',
+      color: 'bg-amber-100 text-amber-800',
+      questions: [
+        {
+          question: 'What is your return policy?',
+          answer: 'Returns must be initiated within 30 calendar days of delivery. Cylinders must be unopened, undamaged and in original packaging with all documentation. After 30 days we only accept returns for defective or damaged product. Contact support to open a return authorization before shipping anything back.'
+        },
+        {
+          question: 'Who pays for return shipping?',
+          answer: 'Alper Chemical Group pays return shipping when a product is defective, arrives damaged, or the wrong item was shipped: we email a prepaid DOT-compliant hazmat return label and no restocking fee applies. The customer pays return shipping for change-of-mind returns, ordering errors or no-longer-needed product.'
+        },
+        {
+          question: 'Is there a restocking fee?',
+          answer: 'A 15% restocking fee applies only to customer-initiated returns where the original packaging has been opened. There is no restocking fee on defective, damaged or incorrectly shipped orders.'
+        },
+        {
+          question: 'How long do refunds take?',
+          answer: 'Once the returned shipment is received and inspected, refunds are issued to the original payment method. Card refunds typically post within 5-10 business days; bank wire and Zelle refunds are returned to the originating account. Return shipping costs are deducted from the refund on customer-initiated returns.'
+        },
+        {
+          question: 'What if my shipment arrives damaged?',
+          answer: 'Note the damage on the carrier delivery receipt, photograph the pallet and cylinders before moving them, and contact us within 48 hours. We file the freight claim and ship a replacement or issue a full refund at no cost to you.'
         }
       ]
     },
@@ -87,23 +157,24 @@ const FAQ = () => {
       questions: [
         {
           question: 'How is refrigerant pricing determined?',
-          answer: 'Pricing is based on current market conditions, quantity ordered, and refrigerant type. We offer volume discounts for large orders and contract pricing for regular customers. Request a quote for current pricing.'
+          answer: 'Pricing is per cylinder and depends on the refrigerant, current market conditions and the quantity tier you order. Larger pallet and container-load quantities move you into lower per-cylinder pricing automatically on the product page.'
         },
         {
           question: 'What payment methods do you accept?',
-          answer: 'We accept major credit cards, ACH bank transfers, wire transfers, and net-30 terms for qualified businesses. Payment is required before shipment unless credit terms have been established.'
+          answer: 'We accept major credit cards, bank wire transfer, Zelle and ACH. Net terms are available for qualified business accounts after credit review. Orders ship once payment clears unless terms are already established.'
+        },
+        {
+          question: 'Do you offer a discount for bank wire or Zelle?',
+          answer: 'Yes. Orders paid by bank wire or Zelle receive a 15% discount, applied automatically at checkout when you select either method.'
         },
         {
           question: 'Do you offer volume discounts?',
-          answer: 'Yes, we offer tiered pricing based on quantity. Larger orders receive better per-unit pricing. Contact our sales team to discuss volume pricing for your specific needs.'
-        },
-        {
-          question: 'Can I get a quote before ordering?',
-          answer: 'Absolutely! Use our RFQ system to request quotes for specific products and quantities. Our sales team will provide detailed pricing within 24 hours during business days.'
+          answer: 'Yes. Pricing is tiered by quantity, and contract pricing is available for recurring buyers. Submit an RFQ with your annual volume and we will quote accordingly.'
         }
       ]
     }
   ];
+
 
   const filteredFAQs = faqCategories.map(category => ({
     ...category,
