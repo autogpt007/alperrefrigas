@@ -332,6 +332,24 @@ const FAQ = () => {
           </Card>
         )}
 
+        {/* Related policy pages */}
+        <Card className="mt-12">
+          <CardHeader>
+            <CardTitle>Full policy details</CardTitle>
+            <CardDescription>The complete terms behind these answers</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="grid sm:grid-cols-2 gap-3 text-blue-700">
+              <li><a className="hover:underline" href="/shipping-policy">Shipping policy, zone rates and HazMat surcharges</a></li>
+              <li><a className="hover:underline" href="/refund-policy">Refund and return policy</a></li>
+              <li><a className="hover:underline" href="/compliance">EPA 608 and regulatory compliance</a></li>
+              <li><a className="hover:underline" href="/products/refrigerants">Browse refrigerants by type</a></li>
+              <li><a className="hover:underline" href="/bulk-pricing">Bulk and pallet pricing</a></li>
+              <li><a className="hover:underline" href="/rfq">Request a quote</a></li>
+            </ul>
+          </CardContent>
+        </Card>
+
         {/* Contact Support Section */}
         <Card className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50">
           <CardContent className="text-center py-12">
