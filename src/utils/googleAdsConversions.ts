@@ -13,7 +13,7 @@ const GOOGLE_ADS_CONVERSION_IDS = {
   CONVERSION_ID: 'AW-18423146954',
 
   // Conversion labels for different actions (from Google Ads > Goals > Conversions)
-  PURCHASE: '', // paste the purchase conversion label here
+  PURCHASE: 'wz62CIr4yewcEMrT69BE', // paste the purchase conversion label here
   ADD_TO_CART: '', // Optional - add label if needed
   BEGIN_CHECKOUT: '', // Optional - add label if needed
   LEAD: '', // For quote submissions - add label if needed
