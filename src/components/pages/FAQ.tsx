@@ -218,8 +218,8 @@ const FAQ = () => {
           <HelpCircle className="h-16 w-16 mx-auto mb-6 text-blue-400" />
           <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
           <p className="text-xl text-blue-200 max-w-3xl mx-auto mb-8">
-            Find answers to common questions about our refrigerants, EPA compliance, 
-            shipping, and ordering process.
+            Straight answers on EPA 608 certification, refrigerant types, shipping
+            costs and our return policy.
           </p>
           
           {/* Search Bar */}
