@@ -241,8 +241,8 @@ const FAQ = () => {
         <div className="grid md:grid-cols-4 gap-6 mb-12">
           <Card className="text-center">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
-              <p className="text-gray-600">Common Questions</p>
+              <div className="text-3xl font-bold text-blue-600 mb-2">{totalQuestions}</div>
+              <p className="text-gray-600">Answered Questions</p>
             </CardContent>
           </Card>
           <Card className="text-center">
