@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { MessageCircle, MessageSquare } from 'lucide-react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
