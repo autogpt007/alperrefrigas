@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 // Must stay in sync with supabase/functions/send-transactional-email/index.ts
-const EXPECTED_SENDER_DOMAIN = "notify.alperrefrigerants.com";
+const EXPECTED_SENDER_DOMAIN = "notify.alperrefrigas.com";
 const EXPECTED_FROM_DOMAIN = "alperrefrigerants.com";
 const EXPECTED_FROM_ADDRESS = `noreply@${EXPECTED_FROM_DOMAIN}`;
 

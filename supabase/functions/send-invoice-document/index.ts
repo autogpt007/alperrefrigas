@@ -8,7 +8,7 @@ const corsHeaders = {
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 // Must stay in sync with supabase/functions/send-transactional-email/index.ts —
 // the verified sender subdomain is what Resend authorises the send against.
-const SENDER_DOMAIN = "notify.alperrefrigerants.com";
+const SENDER_DOMAIN = "notify.alperrefrigas.com";
 const FROM_DOMAIN = "alperrefrigerants.com";
 const FROM_EMAIL =
   Deno.env.get("INVOICE_FROM_EMAIL") || `Alper Refrigerants <invoices@${FROM_DOMAIN}>`;

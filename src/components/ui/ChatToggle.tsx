@@ -13,9 +13,10 @@ export const ChatToggle: React.FC = () => {
           .from('site_settings')
           .select('setting_value')
           .eq('setting_key', 'whatsapp_number')
-          .single();
+          .maybeSingle();
         if (error) throw error;
-        return data?.setting_value as string | undefined;
+        return (data?.setting_value as string | undefined) ?? '905545645337';
+
       } catch (e) {
         console.error('❌ Error fetching WhatsApp number:', e);
         return '905545645337';
