@@ -91,9 +91,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         .from('site_settings')
         .select('setting_value')
         .eq('setting_key', 'free_shipping_threshold')
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) throw error;
+
       return parseFloat(data?.setting_value || '500');
     }
   });
