@@ -58,9 +58,16 @@ const HomePage = () => {
         const productList = featuredData?.map(item => ({
           name: item.products?.name || '',
           href: `/products/${createProductSlug(item.products?.name || '')}` // Use consistent slug generation
-        })) || [];
+        })).filter(p => p.name) || [];
 
-        setHomepageProducts(productList);
+        setHomepageProducts(
+          productList.length > 0
+            ? productList
+            : pickFallbackProducts(products).map((p: any) => ({
+                name: p.name,
+                href: `/products/${createProductSlug(p.name || '')}`,
+              }))
+        );
       } catch (error) {
         console.error('Error fetching homepage products:', error);
         // Fallback to default products
