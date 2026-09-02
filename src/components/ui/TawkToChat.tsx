@@ -81,8 +81,8 @@ export const TawkToChat: React.FC = () => {
     const style = document.createElement('style');
     style.id = 'tawk-position-override';
     style.textContent = `
-      /* Move Tawk.to bubble to bottom-left so it never covers the WhatsApp
-         button or right-aligned action buttons. */
+      /* Stack Tawk.to on the bottom-left above the WhatsApp button so the
+         two widgets never overlap. WhatsApp sits at bottom-24 (96px). */
       .tawk-min-container,
       .tawk-chat-widget,
       iframe[data-name="tawkChatIframe"],
@@ -91,6 +91,7 @@ export const TawkToChat: React.FC = () => {
       div[class*="tawk"][style*="position: fixed"] {
         right: auto !important;
         left: 16px !important;
+        bottom: 170px !important;
       }
 
       @media (max-width: 640px) {
@@ -101,7 +102,7 @@ export const TawkToChat: React.FC = () => {
         #tawk-chat-widget-container,
         div[class*="tawk"][style*="position: fixed"] {
           left: 8px !important;
-          bottom: 8px !important;
+          bottom: 160px !important;
         }
       }
     `;
