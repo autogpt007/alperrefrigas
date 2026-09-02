@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
-import { Search, HelpCircle, Truck, Shield, CreditCard, Package } from 'lucide-react';
+import { Search, HelpCircle, Truck, Shield, CreditCard, Package, RotateCcw, Snowflake } from 'lucide-react';
 import SEOComponent from '../seo/SEOComponent';
 
 const FAQ = () => {
