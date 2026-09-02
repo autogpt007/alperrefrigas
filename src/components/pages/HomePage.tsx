@@ -20,6 +20,13 @@ import { useOrders } from '@/contexts/OrdersContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
+// Public fallback: show real catalog products when no curated selection exists
+const pickFallbackProducts = (products: any[]) => {
+  if (!products || products.length === 0) return [];
+  const refrigerants = products.filter((p: any) => p.product_type !== 'air_conditioner');
+  return (refrigerants.length > 0 ? refrigerants : products).slice(0, 3);
+};
+
 const HomePage = () => {
   const { t } = useTranslation();
   const { products, loading } = useProducts();
@@ -51,9 +58,16 @@ const HomePage = () => {
         const productList = featuredData?.map(item => ({
           name: item.products?.name || '',
           href: `/products/${createProductSlug(item.products?.name || '')}` // Use consistent slug generation
-        })) || [];
+        })).filter(p => p.name) || [];
 
-        setHomepageProducts(productList);
+        setHomepageProducts(
+          productList.length > 0
+            ? productList
+            : pickFallbackProducts(products).map((p: any) => ({
+                name: p.name,
+                href: `/products/${createProductSlug(p.name || '')}`,
+              }))
+        );
       } catch (error) {
         console.error('Error fetching homepage products:', error);
         // Fallback to default products
@@ -155,13 +169,16 @@ const HomePage = () => {
           applications: item.products?.applications || [],
           stock_quantity: item.products?.stock_quantity,
           availability: item.products?.availability
-        })) || [];
+        })).filter(p => p.id) || [];
 
-        setFeaturedProducts(productList);
+        if (productList.length > 0) {
+          setFeaturedProducts(productList);
+        } else {
+          setFeaturedProducts(pickFallbackProducts(products));
+        }
       } catch (error) {
         console.error('Error fetching featured products:', error);
-        // Fallback to first 3 products from main products list
-        setFeaturedProducts(products.slice(0, 3));
+        setFeaturedProducts(pickFallbackProducts(products));
       }
     };
 
@@ -624,10 +641,10 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No products available yet. Please add some products in the admin panel.</p>
-              <Link to="/admin" className="inline-block mt-4">
+              <p className="text-gray-400 text-lg">Our featured selection is being updated. Browse the full refrigerant catalog in the meantime.</p>
+              <Link to="/products" className="inline-block mt-4">
                 <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
-                  Go to Admin Panel
+                  View All Products
                 </Button>
               </Link>
             </div>
