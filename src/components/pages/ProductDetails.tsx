@@ -192,12 +192,40 @@ const ProductDetails = () => {
         });
       }
     } else if (product.product_type === 'air_conditioner') {
-      cases.push('Residential cooling', 'Commercial office buildings', 'Retail and hospitality venues', 'Data center cooling', 'Warehouse climate control');
+      if (product.applications?.length) {
+        product.applications.forEach(app => {
+          if (!cases.includes(app)) cases.push(app);
+        });
+      }
+      if (cases.length === 0) {
+        switch (product.ac_type) {
+          case 'Window AC':
+          case 'Inverter Window AC':
+            cases.push('Apartment and rental unit cooling', 'Hotel and motel guest rooms', 'Student housing and dormitories', 'Small offices and reception areas', 'Seasonal dealer inventory');
+            break;
+          case 'Portable AC':
+            cases.push('Leased spaces where no installation is allowed', 'Server rooms and telecom closets', 'Event and tent cooling', 'Temporary cooling during system repair', 'Workshops and garages');
+            break;
+          case 'Multi-Zone Mini-Split':
+            cases.push('Whole-home ductless retrofits', 'Multi-office build-outs', 'Apartment and duplex renovations', 'Short-term rental properties', 'Buildings with no duct space');
+            break;
+          case 'Ceiling Cassette':
+            cases.push('Retail floors and showrooms', 'Restaurants and cafes', 'Open-plan offices', 'Conference and training rooms', 'Suspended-ceiling retrofits');
+            break;
+          case 'PTAC':
+          case 'PTAC Heat Pump':
+            cases.push('Hotel and motel guest rooms', 'Apartment and condo units', 'Assisted-living and senior housing', 'Dormitories and barracks', 'Through-wall unit replacement');
+            break;
+          default:
+            cases.push('Single-room additions and bonus rooms', 'Garage and ADU conversions', 'Small retail and salon spaces', 'Home offices and studios', 'Ductless retrofits in older buildings');
+        }
+      }
     } else {
       cases.push('Professional HVAC installation', 'Maintenance and servicing', 'System retrofitting');
     }
     return cases;
   }, [product]);
+
 
   // Specifications for table (must be before early returns to maintain hook order)
   const specsTableData = React.useMemo(() => {
