@@ -86,8 +86,8 @@ const CheckoutPage = () => {
     payVatAtCustoms: false
   });
 
-  // Check if cart contains refrigerant products (non-accessories)
-  const hasRefrigerantProducts = items.some(item => item.product_type !== 'accessory');
+  // Check if cart contains actual refrigerant products (EPA/DOT rules apply to these only)
+  const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
