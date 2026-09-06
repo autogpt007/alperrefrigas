@@ -187,7 +187,7 @@ const Header = () => {
                 </span>
               </div>
             )}
-            <div className="min-w-0">
+            <div className={`min-w-0 ${logoSettings?.logo_url ? 'hidden sm:block' : ''}`}>
               <span className="block truncate text-base sm:text-2xl font-bold text-gray-900 leading-tight">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
               <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
             </div>
