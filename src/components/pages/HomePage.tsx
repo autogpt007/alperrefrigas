@@ -270,7 +270,7 @@ const HomePage = () => {
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
                   dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}>
               </h2>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm line-clamp-3 sm:line-clamp-none">
                 {t('home.hero.description')}
               </p>
             </div>
