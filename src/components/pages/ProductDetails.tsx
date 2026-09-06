@@ -613,6 +613,10 @@ const ProductDetails = () => {
                 See order options
               </Button>
             </div>
+
+            {/* Technical Specifications */}
+            <Card className="mb-6">
+
             
 
               <CardHeader>
