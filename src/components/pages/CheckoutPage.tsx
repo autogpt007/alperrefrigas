@@ -1314,8 +1314,19 @@ const CheckoutPage = () => {
                       <div key={index} className="flex justify-between items-start">
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500">{item.packaging}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          {item.product_type === 'air_conditioner' ? (
+                            <>
+                              <p className="text-xs text-gray-500">{item.packaging}</p>
+                              <p className="text-xs text-gray-500">
+                                Total shown covers all units in this minimum order{item.quantity > 1 ? ` × ${item.quantity} orders` : ''}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-xs text-gray-500">{item.packaging}</p>
+                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                            </>
+                          )}
                           {/* AC Configuration Summary */}
                           {item.product_type === 'air_conditioner' && item.configuration_json && (
                             <div className="mt-1">
