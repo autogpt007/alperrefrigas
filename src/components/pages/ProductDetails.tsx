@@ -779,6 +779,26 @@ const ProductDetails = () => {
                 </div>
               )}
 
+              {/* Trust strip */}
+              <div className="mb-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-4">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>{product.product_type === 'refrigerant' ? 'EPA 608 certified' : 'Factory warranty'}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Truck className="h-3.5 w-3.5 text-blue-600" />
+                  <span>Ships from US warehouses</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>Secure payment</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Award className="h-3.5 w-3.5 text-amber-600" />
+                  <a href="tel:+16822152974" className="hover:underline">682-215-2974</a>
+                </div>
+              </div>
+
               {/* Purchase Options - Moved up for better UX */}
               <Card className="mb-6">
                 <CardHeader>
