@@ -37,7 +37,7 @@ const ProductDetails = () => {
     toast
   } = useToast();
   const [quantity, setQuantity] = useState(1);
-  const [acQuantity, setAcQuantity] = useState(5); // AC products have MOQ of 5
+  const [acQuantity, setAcQuantity] = useState(1); // AC products can be bought as single units
   const [packaging, setPackaging] = useState('');
   const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
   
@@ -290,10 +290,10 @@ const ProductDetails = () => {
     if (product.product_type === 'air_conditioner') {
       const tier = calculateACPricingTier(product, acQuantity);
       if (!tier) {
-        if (acQuantity < 5) {
+        if (acQuantity < 1) {
           toast({
-            title: "Minimum Order Quantity",
-            description: "Air conditioners require a minimum order of 5 units.",
+            title: "Invalid Quantity",
+            description: "Please enter at least 1 unit.",
             variant: "destructive"
           });
         } else {
@@ -434,7 +434,7 @@ const ProductDetails = () => {
     ? [
         {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "Our minimum order quantity (MOQ) for air conditioners is 5 units. We offer tiered bulk pricing with better rates at higher quantities."
+          answer: "You can order a single air conditioner unit. Single and small orders (1-4 units) include a 20% handling rate, and tiered bulk pricing gives better unit rates from 5 units upward."
         },
         {
           question: `What warranty does ${product.name} come with?`,
@@ -518,7 +518,7 @@ const ProductDetails = () => {
   const seoDescription = isRefrigerant
     ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
     : isAC
-    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. MOQ 5 units. Fast shipping across the US.`
+    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. Single units and bulk orders. Fast shipping across the US.`
     : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
     
   // Include both full name AND short aliases for keyword coverage
@@ -603,7 +603,7 @@ const ProductDetails = () => {
                 </span>
               </p>
               {product.product_type === 'air_conditioner' && (
-                <p className="text-xs text-blue-800 mt-1">Minimum order 5 units</p>
+                <p className="text-xs text-blue-800 mt-1">Single units available &middot; better rates from 5 units</p>
               )}
               <Button
                 className="mt-3 w-full"
@@ -729,7 +729,7 @@ const ProductDetails = () => {
                     {formatPrice(product.price)}
                     <span className="text-lg font-medium text-muted-foreground">/unit</span>
                   </p>
-                  <p className="text-sm text-blue-800">Minimum order 5 units</p>
+                  <p className="text-sm text-blue-800">Single units available &middot; better rates from 5 units</p>
                   {product.base_unit_price && product.base_unit_price < product.price && (
                     <p className="text-xs text-emerald-600 mt-2">
                       💡 As low as {formatPrice(product.base_unit_price)}/unit at full container volume
@@ -864,7 +864,7 @@ const ProductDetails = () => {
                         <Button 
                           onClick={handleAddToCart} 
                           className="w-full bg-orange-500 hover:bg-orange-600"
-                          disabled={acQuantity < 5 || !calculateACPricingTier(product, acQuantity)}
+                          disabled={acQuantity < 1 || !calculateACPricingTier(product, acQuantity)}
                         >
                           <ShoppingCart className="h-4 w-4 mr-2" />
                           Add to Cart
