@@ -68,7 +68,14 @@ export function calculateACPricingTier(product: Product, quantity: number): Pric
     tierLabel = 'Mid Bulk';
     upliftPercent = midBulkUplift;
   } 
-  // TIER 3: CUSTOM BULK - qty >= 5 and qty < HALF
+  // TIER 3: SMALL ORDER - 1-4 units: 5-19 rate plus single-unit surcharge
+  else if (quantity < 5) {
+    tierLabel = quantity === 1 ? 'Single Unit' : 'Small Order';
+    upliftPercent = Math.round(
+      ((1 + uplift5_19 / 100) * (1 + SMALL_ORDER_SURCHARGE_PERCENT / 100) - 1) * 10000
+    ) / 100;
+  }
+  // TIER 4: CUSTOM BULK - qty >= 5 and qty < HALF
   // Use ladder: 5-19, 20-39, 40-(HALF-1)
   else {
     tierLabel = 'Custom Bulk';
@@ -82,6 +89,7 @@ export function calculateACPricingTier(product: Product, quantity: number): Pric
       upliftPercent = uplift5_19;
     }
   }
+
   
   const unitPrice = basePrice * (1 + upliftPercent / 100);
   const total = unitPrice * quantity;
