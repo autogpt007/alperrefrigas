@@ -53,7 +53,7 @@ const AirConditionersPage: React.FC = () => {
     <>
       <SEOComponent
         title="Wholesale Air Conditioners | Bulk AC"
-        description="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. MOQ 5 units."
+        description="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. Single units available."
         keywords="wholesale air conditioners, bulk AC units, mini splits wholesale, window AC bulk, portable air conditioner wholesale"
         canonicalUrl="/products/air-conditioners"
         breadcrumbs={[
@@ -73,8 +73,8 @@ const AirConditionersPage: React.FC = () => {
                 Wholesale Air Conditioners
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Premium bulk air conditioning units for distributors and contractors. 
-                Container-load pricing with minimum order quantity of 5 units.
+                Premium air conditioning units for distributors and contractors. Order a single unit or
+                a full container, with better unit pricing as quantity grows.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link to="/contact">
@@ -98,7 +98,7 @@ const AirConditionersPage: React.FC = () => {
             <div className="flex flex-wrap justify-center items-center gap-8 text-center">
               <div>
                 <p className="text-sm text-muted-foreground">Minimum Order</p>
-                <p className="text-2xl font-bold text-primary">5 Units</p>
+                <p className="text-2xl font-bold text-primary">1 Unit</p>
               </div>
               <div className="hidden md:block h-12 w-px bg-border" />
               <div>
@@ -200,7 +200,7 @@ const AirConditionersPage: React.FC = () => {
                     <div>
                       <h3 className="font-semibold text-foreground">Custom Bulk (5+ Units)</h3>
                       <p className="text-muted-foreground">
-                        Flexible ordering from 5 units up with tiered pricing based on quantity.
+                        Flexible ordering from a single unit up, with tiered pricing based on quantity.
                       </p>
                     </div>
                   </div>
