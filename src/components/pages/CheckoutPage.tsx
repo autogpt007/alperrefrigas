@@ -1272,18 +1272,24 @@ const CheckoutPage = () => {
                       </>
                     )}
                     
-                    {/* Show general terms for accessories only */}
-                    {items.every(item => item.product_type === 'accessory') && (
-                      <div className="flex items-start space-x-2">
-                        <Checkbox
-                          id="legal-acknowledgment"
-                          checked={legalAcknowledged}
-                          onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
-                        />
-                        <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
-                          I acknowledge that I understand the terms of purchase and agree to use these products
-                          in accordance with manufacturer specifications and safety guidelines.
-                        </Label>
+                    {/* Show general terms for non-refrigerant orders (equipment & accessories) */}
+                    {!hasRefrigerantProducts && (
+                      <div className="space-y-3">
+                        <div className="bg-muted/50 p-4 rounded-lg border text-sm text-muted-foreground space-y-1">
+                          <p>Equipment ships from US warehouses with manufacturer warranty included.</p>
+                          <p>Freight is quoted at cost; our team confirms delivery details after your order.</p>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="legal-acknowledgment"
+                            checked={legalAcknowledged}
+                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                          />
+                          <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
+                            I acknowledge that I understand the terms of purchase and agree to use these products
+                            in accordance with manufacturer specifications and safety guidelines.
+                          </Label>
+                        </div>
                       </div>
                     )}
                   </CardContent>
