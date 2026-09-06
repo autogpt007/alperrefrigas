@@ -29,8 +29,10 @@ interface PricingTier {
  *    - 40 to (half-1): custom_uplift_40_half (default 15%)
  *    - 20-39: custom_uplift_20_39 (default 25%)
  *    - 5-19: custom_uplift_5_19 (default 35%)
- * 4. Below MOQ (qty < 5): blocked
+ * 4. Small order (1-4 units): 5-19 tier price + 20% single-unit surcharge
  */
+export const SMALL_ORDER_SURCHARGE_PERCENT = 20;
+
 export function calculateACPricingTier(product: Product, quantity: number): PricingTier | null {
   const q20 = product.q20_units;
   const basePrice = product.base_unit_price;
@@ -40,10 +42,10 @@ export function calculateACPricingTier(product: Product, quantity: number): Pric
     return null;
   }
   
-  // Below MOQ
-  if (quantity < 5) {
+  if (quantity < 1) {
     return null;
   }
+
   
   const half = Math.ceil(q20 * 0.5);
   
