@@ -192,12 +192,40 @@ const ProductDetails = () => {
         });
       }
     } else if (product.product_type === 'air_conditioner') {
-      cases.push('Residential cooling', 'Commercial office buildings', 'Retail and hospitality venues', 'Data center cooling', 'Warehouse climate control');
+      if (product.applications?.length) {
+        product.applications.forEach(app => {
+          if (!cases.includes(app)) cases.push(app);
+        });
+      }
+      if (cases.length === 0) {
+        switch (product.ac_type) {
+          case 'Window AC':
+          case 'Inverter Window AC':
+            cases.push('Apartment and rental unit cooling', 'Hotel and motel guest rooms', 'Student housing and dormitories', 'Small offices and reception areas', 'Seasonal dealer inventory');
+            break;
+          case 'Portable AC':
+            cases.push('Leased spaces where no installation is allowed', 'Server rooms and telecom closets', 'Event and tent cooling', 'Temporary cooling during system repair', 'Workshops and garages');
+            break;
+          case 'Multi-Zone Mini-Split':
+            cases.push('Whole-home ductless retrofits', 'Multi-office build-outs', 'Apartment and duplex renovations', 'Short-term rental properties', 'Buildings with no duct space');
+            break;
+          case 'Ceiling Cassette':
+            cases.push('Retail floors and showrooms', 'Restaurants and cafes', 'Open-plan offices', 'Conference and training rooms', 'Suspended-ceiling retrofits');
+            break;
+          case 'PTAC':
+          case 'PTAC Heat Pump':
+            cases.push('Hotel and motel guest rooms', 'Apartment and condo units', 'Assisted-living and senior housing', 'Dormitories and barracks', 'Through-wall unit replacement');
+            break;
+          default:
+            cases.push('Single-room additions and bonus rooms', 'Garage and ADU conversions', 'Small retail and salon spaces', 'Home offices and studios', 'Ductless retrofits in older buildings');
+        }
+      }
     } else {
       cases.push('Professional HVAC installation', 'Maintenance and servicing', 'System retrofitting');
     }
     return cases;
   }, [product]);
+
 
   // Specifications for table (must be before early returns to maintain hook order)
   const specsTableData = React.useMemo(() => {
@@ -212,9 +240,21 @@ const ProductDetails = () => {
     if (product.hazardClass) specs.push({ label: 'Hazard Class', value: product.hazardClass });
     if (product.shippingWeight) specs.push({ label: 'Shipping Weight', value: product.shippingWeight });
     if (product.refrigerantType) specs.push({ label: 'Refrigerant Type', value: product.refrigerantType });
-    if (product.epaApproved !== undefined) specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
+    if (product.product_type === 'air_conditioner') {
+      if (product.btu) specs.push({ label: 'Cooling Capacity', value: `${product.btu.toLocaleString()} BTU/h` });
+      if (product.ac_type) specs.push({ label: 'Unit Type', value: product.ac_type });
+      if (product.max_room_size) specs.push({ label: 'Coverage Area', value: product.max_room_size });
+      if (product.efficiency_label) specs.push({ label: 'Efficiency Rating', value: product.efficiency_label });
+      if (product.voltage) specs.push({ label: 'Voltage', value: product.voltage });
+      if (product.plug_type) specs.push({ label: 'Electrical Connection', value: product.plug_type });
+      if (product.phase) specs.push({ label: 'Phase', value: product.phase });
+      if (product.frequency) specs.push({ label: 'Frequency', value: product.frequency });
+      if (product.comes_with_base?.length) specs.push({ label: 'What Ships In The Box', value: product.comes_with_base.join(', ') });
+    }
+    if (product.epaApproved !== undefined && product.product_type !== 'air_conditioner') specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
     if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
     return specs;
+
   }, [product]);
 
   // Show loading state while products are being fetched
@@ -433,22 +473,49 @@ const ProductDetails = () => {
   const productFAQ = product.product_type === 'air_conditioner'
     ? [
         {
+          question: `What size room does ${product.name} cool?`,
+          answer: product.max_room_size
+            ? `At ${product.btu ? product.btu.toLocaleString() + ' BTU/h' : 'its rated capacity'} this unit is sized for ${product.max_room_size.toLowerCase()}. Rooms with large west-facing glass, high ceilings, poor insulation or heat-producing equipment need extra capacity, while a shaded, well-insulated room can run at the lower end of the range.`
+            : 'Coverage depends on the unit capacity listed in the specifications table. Rooms with large glazing, high ceilings or heat-producing equipment need extra capacity.'
+        },
+        {
+          question: `What electrical supply does ${product.name} need?`,
+          answer: `${product.voltage ? `It runs on ${product.voltage}` : 'Voltage is listed in the specifications'}${product.phase ? `, ${product.phase}` : ''}${product.frequency ? `, ${product.frequency}` : ''}${product.plug_type ? `, connecting via ${product.plug_type}` : ''}. ${product.voltage === '230V' ? 'A dedicated 230V circuit is required, and hardwired models need a licensed electrician.' : 'It works from a standard building circuit, but it should be on its own breaker rather than shared with lighting or appliances.'}`
+        },
+        {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "You can order a single air conditioner unit. Single and small orders (1-4 units) include a 20% handling rate, and tiered bulk pricing gives better unit rates from 5 units upward."
+          answer: 'You can order a single unit. Orders of one to four units carry a 20% handling rate, unit rates improve from five units, and the lowest per-unit price applies at full pallet or container volume.'
         },
         {
-          question: `What warranty does ${product.name} come with?`,
-          answer: `${product.name} comes with a manufacturer warranty. Contact us for specific warranty details and coverage information.`
+          question: 'Is it cheaper to buy in bulk?',
+          answer: `Yes. Per-unit pricing drops in tiers as quantity rises${product.q20_units ? `, reaching the lowest rate from ${product.q20_units} units` : ''}. Bank wire and Zelle payments receive an additional discount at checkout.`
         },
         {
-          question: "What are your shipping terms?",
-          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments include fast, secure delivery with tracking information."
+          question: `Does ${product.name} need professional installation?`,
+          answer: product.ac_type === 'Portable AC'
+            ? 'No. It rolls into place, vents through the supplied window kit and plugs into a standard outlet, so no technician is required.'
+            : product.ac_type === 'Window AC' || product.ac_type === 'Inverter Window AC'
+            ? 'No refrigerant work is involved: the chassis fits a standard double-hung window opening and plugs in. A maintenance crew can install it, though heavier units need two people.'
+            : product.ac_type === 'PTAC' || product.ac_type === 'PTAC Heat Pump'
+            ? 'The unit slides into a standard through-wall sleeve, but it is hardwired, so a licensed electrician should make the connection.'
+            : 'Yes. Refrigerant line sets must be evacuated and charge verified, so a licensed HVAC technician should commission the system.'
         },
         {
-          question: "Do you offer installation services?",
-          answer: "We recommend professional installation for all air conditioning units. Contact us for referrals to certified HVAC installers in your area."
+          question: 'What refrigerant does it use, and can I buy it here?',
+          answer: product.refrigerantType
+            ? `This unit is charged with ${product.refrigerantType}. We stock ${product.refrigerantType} in bulk, so service gas can ship alongside the equipment on the same order.`
+            : 'The factory charge is listed in the specifications table, and we stock matching service refrigerant in bulk.'
+        },
+        {
+          question: 'How are air conditioners shipped, and what does freight cost?',
+          answer: 'Units ship from US warehouses, palletised for larger orders, with freight quoted at cost for your delivery address. Air conditioners are not hazardous material, so no HazMat surcharge applies.'
+        },
+        {
+          question: 'What warranty applies?',
+          answer: 'Units carry the manufacturer factory warranty. Contact us with the model before ordering and we will confirm the exact term and coverage in writing.'
         }
       ]
+
     : product.product_type === 'accessory'
     ? [
         {
@@ -507,8 +574,15 @@ const ProductDetails = () => {
       return candidate.length <= 60 ? candidate : `${shortName} Bulk Price ${currentYear} | Alper`;
     }
     if (isAC) {
-      const candidate = `${shortName} Wholesale ${currentYear} | Alper`;
-      return candidate.length <= 60 ? candidate : `${product.name.substring(0, 35)} | Alper`;
+      const btuLabel = product.btu ? `${product.btu.toLocaleString()} BTU` : '';
+      const typeLabel = product.ac_type || 'Air Conditioner';
+      const candidates = [
+        `${product.brand || ''} ${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
+        `${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
+        `${shortName} Wholesale ${currentYear}`
+      ];
+      const pick = candidates.find(c => `${c} | Alper`.length <= 60) || product.name.substring(0, 45);
+      return `${pick} | Alper`;
     }
     // Accessories: use brand + model
     const candidate = `${shortName} — Buy Wholesale | Alper`;
@@ -518,8 +592,9 @@ const ProductDetails = () => {
   const seoDescription = isRefrigerant
     ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
     : isAC
-    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. Single units and bulk orders. Fast shipping across the US.`
+    ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} wholesale from ${formatPrice(product.price)}/unit${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. Single units or bulk, US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
     : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
+
     
   // Include both full name AND short aliases for keyword coverage
   const seoKeywords = isRefrigerant
@@ -1135,7 +1210,62 @@ const ProductDetails = () => {
             </Card>
           )}
 
+          {/* AC Buying Guide with internal links */}
+          {isAC && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Buying guide: choosing the right unit</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm text-muted-foreground">
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">1. Match capacity to the room</h3>
+                  <p>
+                    As a rule of thumb allow roughly 20 BTU per square foot, then add capacity for large glazing,
+                    high ceilings, top-floor rooms, kitchens or equipment loads.
+                    {product.btu && product.max_room_size
+                      ? ` This unit's ${product.btu.toLocaleString()} BTU/h suits ${product.max_room_size.toLowerCase()}.`
+                      : ''}
+                    {' '}Oversizing is not a safe default: an oversized unit short-cycles, leaves humidity behind and wears faster.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">2. Pick the format that fits the building</h3>
+                  <p>
+                    <Link to="/products?category=window-ac" className="text-primary hover:underline">Window units</Link> are the
+                    fastest and cheapest way to cool existing rooms.{' '}
+                    <Link to="/products?category=portable-ac" className="text-primary hover:underline">Portable units</Link> suit
+                    leases that forbid modification.{' '}
+                    <Link to="/products?category=mini-splits" className="text-primary hover:underline">Single-zone mini-splits</Link> are
+                    the quiet, efficient choice for additions and conversions,{' '}
+                    <Link to="/products?category=multi-zone" className="text-primary hover:underline">multi-zone systems</Link> cover
+                    several rooms from one condenser, and{' '}
+                    <Link to="/products?category=ptac-commercial" className="text-primary hover:underline">PTAC units</Link> are the
+                    standard for hotel and apartment through-wall sleeves.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">3. Check power and efficiency before you order</h3>
+                  <p>
+                    Confirm the circuit matches the unit{product.voltage ? ` (${product.voltage}${product.plug_type ? `, ${product.plug_type}` : ''} here)` : ''}.
+                    Higher SEER2 or CEER ratings cost more up front and less to run — worth paying for where units run all season.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">4. Plan service gas with the equipment</h3>
+                  <p>
+                    Stock the matching refrigerant while you are ordering:{' '}
+                    <Link to="/products?type=refrigerant" className="text-primary hover:underline">browse bulk refrigerants</Link>
+                    {product.refrigerantType ? ` including ${product.refrigerantType}` : ''}, or see the full{' '}
+                    <Link to="/products" className="text-primary hover:underline">product catalog</Link>. Questions on sizing or
+                    freight: call 682-215-2974.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* FAQ Accordion */}
+
           {productFAQ.length > 0 && (
             <Card>
               <CardHeader>
