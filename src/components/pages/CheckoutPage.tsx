@@ -86,8 +86,8 @@ const CheckoutPage = () => {
     payVatAtCustoms: false
   });
 
-  // Check if cart contains refrigerant products (non-accessories)
-  const hasRefrigerantProducts = items.some(item => item.product_type !== 'accessory');
+  // Check if cart contains actual refrigerant products (EPA/DOT rules apply to these only)
+  const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bankWireDetails, setBankWireDetails] = useState<any>(null);
@@ -1236,7 +1236,7 @@ const CheckoutPage = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Show EPA compliance only if cart contains refrigerants */}
-                    {items.some(item => item.product_type !== 'accessory') && (
+                    {hasRefrigerantProducts && (
                       <>
                         <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-300">
                           <h4 className="font-semibold mb-2 text-yellow-900 flex items-center">
@@ -1272,18 +1272,24 @@ const CheckoutPage = () => {
                       </>
                     )}
                     
-                    {/* Show general terms for accessories only */}
-                    {items.every(item => item.product_type === 'accessory') && (
-                      <div className="flex items-start space-x-2">
-                        <Checkbox
-                          id="legal-acknowledgment"
-                          checked={legalAcknowledged}
-                          onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
-                        />
-                        <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
-                          I acknowledge that I understand the terms of purchase and agree to use these products
-                          in accordance with manufacturer specifications and safety guidelines.
-                        </Label>
+                    {/* Show general terms for non-refrigerant orders (equipment & accessories) */}
+                    {!hasRefrigerantProducts && (
+                      <div className="space-y-3">
+                        <div className="bg-muted/50 p-4 rounded-lg border text-sm text-muted-foreground space-y-1">
+                          <p>Equipment ships from US warehouses with manufacturer warranty included.</p>
+                          <p>Freight is quoted at cost; our team confirms delivery details after your order.</p>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="legal-acknowledgment"
+                            checked={legalAcknowledged}
+                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                          />
+                          <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
+                            I acknowledge that I understand the terms of purchase and agree to use these products
+                            in accordance with manufacturer specifications and safety guidelines.
+                          </Label>
+                        </div>
                       </div>
                     )}
                   </CardContent>
@@ -1308,8 +1314,19 @@ const CheckoutPage = () => {
                       <div key={index} className="flex justify-between items-start">
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500">{item.packaging}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          {item.product_type === 'air_conditioner' ? (
+                            <>
+                              <p className="text-xs text-gray-500">{item.packaging}</p>
+                              <p className="text-xs text-gray-500">
+                                Total shown covers all units in this minimum order{item.quantity > 1 ? ` × ${item.quantity} orders` : ''}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-xs text-gray-500">{item.packaging}</p>
+                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                            </>
+                          )}
                           {/* AC Configuration Summary */}
                           {item.product_type === 'air_conditioner' && item.configuration_json && (
                             <div className="mt-1">
@@ -1532,6 +1549,23 @@ const CheckoutPage = () => {
                       `Place Order - ${formatCurrency(finalTotal)}`
                     )}
                   </Button>
+
+                  {/* What happens next */}
+                  <div className="mt-4 rounded-lg border bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">What happens next</p>
+                    {formData.paymentMethod === 'bank_wire' || formData.paymentMethod === 'zelle' ? (
+                      <p>
+                        You'll get an order confirmation by email with our {formData.paymentMethod === 'zelle' ? 'Zelle' : 'bank wire'} payment
+                        details. Our team calls or emails you within one business day to confirm freight and release the shipment once payment clears.
+                      </p>
+                    ) : (
+                      <p>
+                        You'll get an order confirmation by email, then our team calls or emails you within one business day to confirm
+                        freight and delivery timing.
+                      </p>
+                    )}
+                    <p>Questions? Call 682-215-2974.</p>
+                  </div>
 
                   {/* Security Notice */}
                   <div className="flex items-center justify-center text-xs text-gray-500 mt-4">

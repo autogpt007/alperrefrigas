@@ -592,9 +592,33 @@ const ProductDetails = () => {
                 </Badge>
               </div>
             </div>
-            
+
+            {/* Mobile price summary — keeps price above the fold on phones */}
+            <div className="lg:hidden mb-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-4">
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              <p className="text-3xl font-bold text-primary">
+                {formatPrice(product.price)}
+                <span className="text-sm font-medium text-muted-foreground">
+                  {product.product_type === 'refrigerant' ? '/cylinder' : product.product_type === 'air_conditioner' ? '/unit' : '/piece'}
+                </span>
+              </p>
+              {product.product_type === 'air_conditioner' && (
+                <p className="text-xs text-blue-800 mt-1">Minimum order 5 units</p>
+              )}
+              <Button
+                className="mt-3 w-full"
+                onClick={() => document.getElementById('purchase-options')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                See order options
+              </Button>
+            </div>
+
             {/* Technical Specifications */}
             <Card className="mb-6">
+
+            
+
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="h-5 w-5 mr-2" />
@@ -700,14 +724,17 @@ const ProductDetails = () => {
               
               {/* Starting Price display - show different content for AC products */}
               {product.product_type === 'air_conditioner' ? (
-                <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 mb-1">Full Container Base Price</p>
-                  <p className="text-lg font-semibold text-blue-900">
-                    {product.base_unit_price ? formatPrice(product.base_unit_price) : 'Not configured'}/unit
+                <div className="mb-4 p-4 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50">
+                  <p className="text-4xl font-bold text-primary mb-1">
+                    {formatPrice(product.price)}
+                    <span className="text-lg font-medium text-muted-foreground">/unit</span>
                   </p>
-                  <p className="text-xs text-blue-600">
-                    Tiered bulk pricing: MOQ 5 units. Best price at full container quantities.
-                  </p>
+                  <p className="text-sm text-blue-800">Minimum order 5 units</p>
+                  {product.base_unit_price && product.base_unit_price < product.price && (
+                    <p className="text-xs text-emerald-600 mt-2">
+                      💡 As low as {formatPrice(product.base_unit_price)}/unit at full container volume
+                    </p>
+                  )}
                 </div>
               ) : product.product_type === 'accessory' ? (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -776,8 +803,28 @@ const ProductDetails = () => {
                 </div>
               )}
 
+              {/* Trust strip */}
+              <div className="mb-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-4">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>{product.product_type === 'refrigerant' ? 'EPA 608 certified' : 'Factory warranty'}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Truck className="h-3.5 w-3.5 text-blue-600" />
+                  <span>Ships from US warehouses</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>Secure payment</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Award className="h-3.5 w-3.5 text-amber-600" />
+                  <a href="tel:+16822152974" className="hover:underline">682-215-2974</a>
+                </div>
+              </div>
+
               {/* Purchase Options - Moved up for better UX */}
-              <Card className="mb-6">
+              <Card className="mb-6" id="purchase-options">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <ShoppingCart className="h-5 w-5 mr-2" />

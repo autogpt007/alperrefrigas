@@ -50,7 +50,7 @@ export const ChatToggle: React.FC = () => {
   if (!whatsappNumber) return null;
 
   return (
-    <div className="fixed bottom-24 left-6 z-50">
+    <div className="fixed bottom-6 left-4 sm:bottom-24 sm:left-6 z-40">
       {/* WhatsApp */}
       <button
         onClick={handleWhatsAppClick}

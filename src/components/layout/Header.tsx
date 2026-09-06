@@ -171,24 +171,24 @@ const Header = () => {
         </div>
 
         {/* Main Header */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between gap-2 py-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex min-w-0 flex-shrink items-center space-x-2">
             {logoSettings?.logo_url ? (
               <img 
                 src={logoSettings.logo_url} 
                 alt={logoSettings.company_name || 'Company Logo'} 
-                className="h-12 w-auto object-contain"
+                className="h-10 sm:h-12 w-auto flex-shrink-0 object-contain"
               />
             ) : (
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">
                   {logoSettings?.company_name?.charAt(0) || 'FF'}
                 </span>
               </div>
             )}
-            <div>
-              <span className="text-xl sm:text-2xl font-bold text-gray-900 block">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
+            <div className={`min-w-0 ${logoSettings?.logo_url ? 'hidden sm:block' : ''}`}>
+              <span className="block truncate text-base sm:text-2xl font-bold text-gray-900 leading-tight">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
               <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
             </div>
           </Link>
