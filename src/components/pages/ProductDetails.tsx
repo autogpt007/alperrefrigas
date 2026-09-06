@@ -240,9 +240,21 @@ const ProductDetails = () => {
     if (product.hazardClass) specs.push({ label: 'Hazard Class', value: product.hazardClass });
     if (product.shippingWeight) specs.push({ label: 'Shipping Weight', value: product.shippingWeight });
     if (product.refrigerantType) specs.push({ label: 'Refrigerant Type', value: product.refrigerantType });
-    if (product.epaApproved !== undefined) specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
+    if (product.product_type === 'air_conditioner') {
+      if (product.btu) specs.push({ label: 'Cooling Capacity', value: `${product.btu.toLocaleString()} BTU/h` });
+      if (product.ac_type) specs.push({ label: 'Unit Type', value: product.ac_type });
+      if (product.max_room_size) specs.push({ label: 'Coverage Area', value: product.max_room_size });
+      if (product.efficiency_label) specs.push({ label: 'Efficiency Rating', value: product.efficiency_label });
+      if (product.voltage) specs.push({ label: 'Voltage', value: product.voltage });
+      if (product.plug_type) specs.push({ label: 'Electrical Connection', value: product.plug_type });
+      if (product.phase) specs.push({ label: 'Phase', value: product.phase });
+      if (product.frequency) specs.push({ label: 'Frequency', value: product.frequency });
+      if (product.comes_with_base?.length) specs.push({ label: 'What Ships In The Box', value: product.comes_with_base.join(', ') });
+    }
+    if (product.epaApproved !== undefined && product.product_type !== 'air_conditioner') specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
     if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
     return specs;
+
   }, [product]);
 
   // Show loading state while products are being fetched
