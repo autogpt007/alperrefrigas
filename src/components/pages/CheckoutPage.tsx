@@ -1236,7 +1236,7 @@ const CheckoutPage = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Show EPA compliance only if cart contains refrigerants */}
-                    {items.some(item => item.product_type !== 'accessory') && (
+                    {hasRefrigerantProducts && (
                       <>
                         <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-300">
                           <h4 className="font-semibold mb-2 text-yellow-900 flex items-center">
