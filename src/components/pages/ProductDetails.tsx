@@ -473,22 +473,49 @@ const ProductDetails = () => {
   const productFAQ = product.product_type === 'air_conditioner'
     ? [
         {
+          question: `What size room does ${product.name} cool?`,
+          answer: product.max_room_size
+            ? `At ${product.btu ? product.btu.toLocaleString() + ' BTU/h' : 'its rated capacity'} this unit is sized for ${product.max_room_size.toLowerCase()}. Rooms with large west-facing glass, high ceilings, poor insulation or heat-producing equipment need extra capacity, while a shaded, well-insulated room can run at the lower end of the range.`
+            : 'Coverage depends on the unit capacity listed in the specifications table. Rooms with large glazing, high ceilings or heat-producing equipment need extra capacity.'
+        },
+        {
+          question: `What electrical supply does ${product.name} need?`,
+          answer: `${product.voltage ? `It runs on ${product.voltage}` : 'Voltage is listed in the specifications'}${product.phase ? `, ${product.phase}` : ''}${product.frequency ? `, ${product.frequency}` : ''}${product.plug_type ? `, connecting via ${product.plug_type}` : ''}. ${product.voltage === '230V' ? 'A dedicated 230V circuit is required, and hardwired models need a licensed electrician.' : 'It works from a standard building circuit, but it should be on its own breaker rather than shared with lighting or appliances.'}`
+        },
+        {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "You can order a single air conditioner unit. Single and small orders (1-4 units) include a 20% handling rate, and tiered bulk pricing gives better unit rates from 5 units upward."
+          answer: 'You can order a single unit. Orders of one to four units carry a 20% handling rate, unit rates improve from five units, and the lowest per-unit price applies at full pallet or container volume.'
         },
         {
-          question: `What warranty does ${product.name} come with?`,
-          answer: `${product.name} comes with a manufacturer warranty. Contact us for specific warranty details and coverage information.`
+          question: 'Is it cheaper to buy in bulk?',
+          answer: `Yes. Per-unit pricing drops in tiers as quantity rises${product.q20_units ? `, reaching the lowest rate from ${product.q20_units} units` : ''}. Bank wire and Zelle payments receive an additional discount at checkout.`
         },
         {
-          question: "What are your shipping terms?",
-          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments include fast, secure delivery with tracking information."
+          question: `Does ${product.name} need professional installation?`,
+          answer: product.ac_type === 'Portable AC'
+            ? 'No. It rolls into place, vents through the supplied window kit and plugs into a standard outlet, so no technician is required.'
+            : product.ac_type === 'Window AC' || product.ac_type === 'Inverter Window AC'
+            ? 'No refrigerant work is involved: the chassis fits a standard double-hung window opening and plugs in. A maintenance crew can install it, though heavier units need two people.'
+            : product.ac_type === 'PTAC' || product.ac_type === 'PTAC Heat Pump'
+            ? 'The unit slides into a standard through-wall sleeve, but it is hardwired, so a licensed electrician should make the connection.'
+            : 'Yes. Refrigerant line sets must be evacuated and charge verified, so a licensed HVAC technician should commission the system.'
         },
         {
-          question: "Do you offer installation services?",
-          answer: "We recommend professional installation for all air conditioning units. Contact us for referrals to certified HVAC installers in your area."
+          question: 'What refrigerant does it use, and can I buy it here?',
+          answer: product.refrigerantType
+            ? `This unit is charged with ${product.refrigerantType}. We stock ${product.refrigerantType} in bulk, so service gas can ship alongside the equipment on the same order.`
+            : 'The factory charge is listed in the specifications table, and we stock matching service refrigerant in bulk.'
+        },
+        {
+          question: 'How are air conditioners shipped, and what does freight cost?',
+          answer: 'Units ship from US warehouses, palletised for larger orders, with freight quoted at cost for your delivery address. Air conditioners are not hazardous material, so no HazMat surcharge applies.'
+        },
+        {
+          question: 'What warranty applies?',
+          answer: 'Units carry the manufacturer factory warranty. Contact us with the model before ordering and we will confirm the exact term and coverage in writing.'
         }
       ]
+
     : product.product_type === 'accessory'
     ? [
         {
