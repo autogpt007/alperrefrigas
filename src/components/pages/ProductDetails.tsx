@@ -700,14 +700,17 @@ const ProductDetails = () => {
               
               {/* Starting Price display - show different content for AC products */}
               {product.product_type === 'air_conditioner' ? (
-                <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800 mb-1">Full Container Base Price</p>
-                  <p className="text-lg font-semibold text-blue-900">
-                    {product.base_unit_price ? formatPrice(product.base_unit_price) : 'Not configured'}/unit
+                <div className="mb-4 p-4 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50">
+                  <p className="text-4xl font-bold text-primary mb-1">
+                    {formatPrice(product.price)}
+                    <span className="text-lg font-medium text-muted-foreground">/unit</span>
                   </p>
-                  <p className="text-xs text-blue-600">
-                    Tiered bulk pricing: MOQ 5 units. Best price at full container quantities.
-                  </p>
+                  <p className="text-sm text-blue-800">Minimum order 5 units</p>
+                  {product.base_unit_price && product.base_unit_price < product.price && (
+                    <p className="text-xs text-emerald-600 mt-2">
+                      💡 As low as {formatPrice(product.base_unit_price)}/unit at full container volume
+                    </p>
+                  )}
                 </div>
               ) : product.product_type === 'accessory' ? (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
