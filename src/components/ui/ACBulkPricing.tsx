@@ -130,33 +130,36 @@ const ACBulkPricing: React.FC<ACBulkPricingProps> = ({
   
   const half = Math.ceil(q20 * 0.5);
   const tier = calculateACPricingTier(product, quantity);
-  const isBelowMOQ = quantity < 5;
+  const isSmallOrder = quantity > 0 && quantity < 5;
+  const isInvalid = quantity < 1;
   
   return (
     <div className="space-y-4">
-      {/* Quantity Selector with MOQ */}
+      {/* Quantity Selector - single units allowed */}
       <div>
         <Label htmlFor="ac-quantity" className="text-sm font-medium text-gray-700 mb-2 block">
-          Order Quantity (MOQ: 5 units)
+          Order Quantity (from 1 unit)
         </Label>
         <div className="flex items-center gap-3">
           <Input
             id="ac-quantity"
             type="number"
-            min={5}
+            min={1}
             value={quantity}
-            onChange={(e) => onQuantityChange(Math.max(1, parseInt(e.target.value) || 0))}
-            className={`w-24 ${isBelowMOQ ? 'border-red-500' : ''}`}
+            onChange={(e) => onQuantityChange(Math.max(1, parseInt(e.target.value) || 1))}
+            className={`w-24 ${isInvalid ? 'border-red-500' : ''}`}
           />
           <span className="text-sm text-gray-500">units</span>
         </div>
-        {isBelowMOQ && (
-          <p className="text-sm text-red-600 mt-1 flex items-center gap-1">
+        {isSmallOrder && (
+          <p className="text-sm text-amber-700 mt-1 flex items-center gap-1">
             <AlertTriangle className="h-4 w-4" />
-            Minimum order quantity is 5 units
+            Small orders under 5 units carry a single-unit handling rate. Order 5+ units for a lower unit price.
           </p>
         )}
       </div>
+      
+
       
       {/* Pricing Tier Display - NO uplift percentages shown to customer */}
       {tier && (
