@@ -1210,7 +1210,62 @@ const ProductDetails = () => {
             </Card>
           )}
 
+          {/* AC Buying Guide with internal links */}
+          {isAC && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Buying guide: choosing the right unit</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm text-muted-foreground">
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">1. Match capacity to the room</h3>
+                  <p>
+                    As a rule of thumb allow roughly 20 BTU per square foot, then add capacity for large glazing,
+                    high ceilings, top-floor rooms, kitchens or equipment loads.
+                    {product.btu && product.max_room_size
+                      ? ` This unit's ${product.btu.toLocaleString()} BTU/h suits ${product.max_room_size.toLowerCase()}.`
+                      : ''}
+                    {' '}Oversizing is not a safe default: an oversized unit short-cycles, leaves humidity behind and wears faster.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">2. Pick the format that fits the building</h3>
+                  <p>
+                    <Link to="/products?category=window-ac" className="text-primary hover:underline">Window units</Link> are the
+                    fastest and cheapest way to cool existing rooms.{' '}
+                    <Link to="/products?category=portable-ac" className="text-primary hover:underline">Portable units</Link> suit
+                    leases that forbid modification.{' '}
+                    <Link to="/products?category=mini-splits" className="text-primary hover:underline">Single-zone mini-splits</Link> are
+                    the quiet, efficient choice for additions and conversions,{' '}
+                    <Link to="/products?category=multi-zone" className="text-primary hover:underline">multi-zone systems</Link> cover
+                    several rooms from one condenser, and{' '}
+                    <Link to="/products?category=ptac-commercial" className="text-primary hover:underline">PTAC units</Link> are the
+                    standard for hotel and apartment through-wall sleeves.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">3. Check power and efficiency before you order</h3>
+                  <p>
+                    Confirm the circuit matches the unit{product.voltage ? ` (${product.voltage}${product.plug_type ? `, ${product.plug_type}` : ''} here)` : ''}.
+                    Higher SEER2 or CEER ratings cost more up front and less to run — worth paying for where units run all season.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">4. Plan service gas with the equipment</h3>
+                  <p>
+                    Stock the matching refrigerant while you are ordering:{' '}
+                    <Link to="/products?type=refrigerant" className="text-primary hover:underline">browse bulk refrigerants</Link>
+                    {product.refrigerantType ? ` including ${product.refrigerantType}` : ''}, or see the full{' '}
+                    <Link to="/products" className="text-primary hover:underline">product catalog</Link>. Questions on sizing or
+                    freight: call 682-215-2974.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* FAQ Accordion */}
+
           {productFAQ.length > 0 && (
             <Card>
               <CardHeader>
