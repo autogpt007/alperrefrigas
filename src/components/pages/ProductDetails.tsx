@@ -824,7 +824,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Purchase Options - Moved up for better UX */}
-              <Card className="mb-6">
+              <Card className="mb-6" id="purchase-options">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <ShoppingCart className="h-5 w-5 mr-2" />
