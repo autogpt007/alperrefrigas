@@ -1550,6 +1550,23 @@ const CheckoutPage = () => {
                     )}
                   </Button>
 
+                  {/* What happens next */}
+                  <div className="mt-4 rounded-lg border bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">What happens next</p>
+                    {formData.paymentMethod === 'bank_wire' || formData.paymentMethod === 'zelle' ? (
+                      <p>
+                        You'll get an order confirmation by email with our {formData.paymentMethod === 'zelle' ? 'Zelle' : 'bank wire'} payment
+                        details. Our team calls or emails you within one business day to confirm freight and release the shipment once payment clears.
+                      </p>
+                    ) : (
+                      <p>
+                        You'll get an order confirmation by email, then our team calls or emails you within one business day to confirm
+                        freight and delivery timing.
+                      </p>
+                    )}
+                    <p>Questions? Call 682-215-2974.</p>
+                  </div>
+
                   {/* Security Notice */}
                   <div className="flex items-center justify-center text-xs text-gray-500 mt-4">
                     <Shield className="h-3 w-3 mr-1" />
