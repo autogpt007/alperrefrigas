@@ -574,8 +574,15 @@ const ProductDetails = () => {
       return candidate.length <= 60 ? candidate : `${shortName} Bulk Price ${currentYear} | Alper`;
     }
     if (isAC) {
-      const candidate = `${shortName} Wholesale ${currentYear} | Alper`;
-      return candidate.length <= 60 ? candidate : `${product.name.substring(0, 35)} | Alper`;
+      const btuLabel = product.btu ? `${product.btu.toLocaleString()} BTU` : '';
+      const typeLabel = product.ac_type || 'Air Conditioner';
+      const candidates = [
+        `${product.brand || ''} ${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
+        `${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
+        `${shortName} Wholesale ${currentYear}`
+      ];
+      const pick = candidates.find(c => `${c} | Alper`.length <= 60) || product.name.substring(0, 45);
+      return `${pick} | Alper`;
     }
     // Accessories: use brand + model
     const candidate = `${shortName} — Buy Wholesale | Alper`;
@@ -585,8 +592,9 @@ const ProductDetails = () => {
   const seoDescription = isRefrigerant
     ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
     : isAC
-    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. Single units and bulk orders. Fast shipping across the US.`
+    ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} wholesale from ${formatPrice(product.price)}/unit${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. Single units or bulk, US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
     : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
+
     
   // Include both full name AND short aliases for keyword coverage
   const seoKeywords = isRefrigerant
