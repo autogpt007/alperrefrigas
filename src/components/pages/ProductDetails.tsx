@@ -592,9 +592,29 @@ const ProductDetails = () => {
                 </Badge>
               </div>
             </div>
+
+            {/* Mobile price summary — keeps price above the fold on phones */}
+            <div className="lg:hidden mb-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-4">
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              <p className="text-3xl font-bold text-primary">
+                {formatPrice(product.price)}
+                <span className="text-sm font-medium text-muted-foreground">
+                  {product.product_type === 'refrigerant' ? '/cylinder' : product.product_type === 'air_conditioner' ? '/unit' : '/piece'}
+                </span>
+              </p>
+              {product.product_type === 'air_conditioner' && (
+                <p className="text-xs text-blue-800 mt-1">Minimum order 5 units</p>
+              )}
+              <Button
+                className="mt-3 w-full"
+                onClick={() => document.getElementById('purchase-options')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                See order options
+              </Button>
+            </div>
             
-            {/* Technical Specifications */}
-            <Card className="mb-6">
+
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="h-5 w-5 mr-2" />
