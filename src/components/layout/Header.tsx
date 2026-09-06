@@ -181,16 +181,18 @@ const Header = () => {
                 className="h-10 sm:h-12 w-auto flex-shrink-0 object-contain"
               />
             ) : (
-              <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">
-                  {logoSettings?.company_name?.charAt(0) || 'FF'}
-                </span>
+              <div className="flex min-w-0 items-center space-x-2">
+                <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">
+                    {logoSettings?.company_name?.charAt(0) || 'A'}
+                  </span>
+                </div>
+                <div className="min-w-0">
+                  <span className="block truncate text-base sm:text-2xl font-bold text-gray-900 leading-tight">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
+                  <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
+                </div>
               </div>
             )}
-            <div className={`min-w-0 ${logoSettings?.logo_url ? 'hidden sm:block' : ''}`}>
-              <span className="block truncate text-base sm:text-2xl font-bold text-gray-900 leading-tight">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
-              <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
-            </div>
           </Link>
 
           {/* Search Bar - Desktop */}
