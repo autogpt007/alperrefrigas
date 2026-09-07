@@ -416,6 +416,9 @@ const ProductCatalog = () => {
 
   // Generate unique SEO title based on product type and category for no duplicates
   const getSEOTitle = () => {
+    if (isHeatPumpPath) {
+      return `${getCategoryDisplayName()} Wholesale | Alper`;
+    }
     if (productType === 'refrigerant') {
       return `${getCategoryDisplayName()} Refrigerants | Alper`;
     }
