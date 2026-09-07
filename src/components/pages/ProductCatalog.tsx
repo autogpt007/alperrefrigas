@@ -26,16 +26,24 @@ const ProductCatalog = () => {
   const [sortBy, setSortBy] = useState('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  const isHeatPumpPath = location.pathname.includes('/heating-heat-pumps');
+  const isToolsPath = location.pathname.includes('/hvac-tools');
+
   // Determine product type from URL
   const getProductTypeFromUrl = () => {
     if (location.pathname.includes('/refrigerants')) return 'refrigerant';
-    if (location.pathname.includes('/accessories')) return 'accessory';
-    if (location.pathname.includes('/air-conditioners')) return 'air_conditioner';
+    if (location.pathname.includes('/accessories') || isToolsPath) return 'accessory';
+    if (location.pathname.includes('/air-conditioners') || isHeatPumpPath) return 'air_conditioner';
     return 'all';
   };
 
   // Get AC subcategory from URL if applicable
   const getACSubcategory = () => {
+    if (isHeatPumpPath) {
+      const hpMatch = location.pathname.match(/\/heating-heat-pumps\/([^/]+)/);
+      if (!hpMatch) return null;
+      return hpMatch[1].startsWith('heat-pump-') ? hpMatch[1] : `heat-pump-${hpMatch[1]}`;
+    }
     const match = location.pathname.match(/\/air-conditioners\/([^/]+)/);
     return match ? match[1] : null;
   };
