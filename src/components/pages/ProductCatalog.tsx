@@ -130,6 +130,13 @@ const ProductCatalog = () => {
       return false;
     }
 
+    // Heat pumps live inside the air_conditioner product type but have their own section
+    const isHeatPumpProduct = (product.category || '').toLowerCase().startsWith('heat-pump');
+    if (productType === 'air_conditioner') {
+      if (isHeatPumpPath && !isHeatPumpProduct) return false;
+      if (!isHeatPumpPath && isHeatPumpProduct) return false;
+    }
+
     // Normalize search query and product text for better matching
     const normalizedQuery = searchQuery.toLowerCase().trim().replace(/[-\s]/g, '');
     
