@@ -109,6 +109,18 @@ const Header = () => {
       description: 'Bulk wholesale AC units - mini-splits, window & portable',
       icon: 'wind'
     },
+    {
+      title: 'Heating & Heat Pumps',
+      href: '/products/heating-heat-pumps',
+      description: 'Single-zone, multi-zone and PTAC heat pumps that heat and cool',
+      icon: 'wind'
+    },
+    {
+      title: 'HVAC Tools & Gauges',
+      href: '/products/hvac-tools',
+      description: 'Manifold gauges, vacuum pumps, recovery gear and safety kit',
+      icon: 'wrench'
+    },
     { 
       title: 'Accessories',
       href: '/products/accessories', 

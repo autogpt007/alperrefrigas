@@ -26,16 +26,24 @@ const ProductCatalog = () => {
   const [sortBy, setSortBy] = useState('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  const isHeatPumpPath = location.pathname.includes('/heating-heat-pumps');
+  const isToolsPath = location.pathname.includes('/hvac-tools');
+
   // Determine product type from URL
   const getProductTypeFromUrl = () => {
     if (location.pathname.includes('/refrigerants')) return 'refrigerant';
-    if (location.pathname.includes('/accessories')) return 'accessory';
-    if (location.pathname.includes('/air-conditioners')) return 'air_conditioner';
+    if (location.pathname.includes('/accessories') || isToolsPath) return 'accessory';
+    if (location.pathname.includes('/air-conditioners') || isHeatPumpPath) return 'air_conditioner';
     return 'all';
   };
 
   // Get AC subcategory from URL if applicable
   const getACSubcategory = () => {
+    if (isHeatPumpPath) {
+      const hpMatch = location.pathname.match(/\/heating-heat-pumps\/([^/]+)/);
+      if (!hpMatch) return null;
+      return hpMatch[1].startsWith('heat-pump-') ? hpMatch[1] : `heat-pump-${hpMatch[1]}`;
+    }
     const match = location.pathname.match(/\/air-conditioners\/([^/]+)/);
     return match ? match[1] : null;
   };
@@ -80,6 +88,13 @@ const ProductCatalog = () => {
         { value: 'safety', label: 'Safety Equipment' },
         { value: 'valves', label: 'Valves & Controls' }
       ];
+    } else if (isHeatPumpPath) {
+      return [
+        { value: 'all', label: 'All Heat Pumps' },
+        { value: 'heat-pump-single-zone', label: 'Single-Zone Heat Pumps' },
+        { value: 'heat-pump-multi-zone', label: 'Multi-Zone Heat Pumps' },
+        { value: 'heat-pump-ptac', label: 'PTAC Heat Pumps' }
+      ];
     } else if (productType === 'air_conditioner') {
       return [
         { value: 'all', label: 'All Air Conditioners' },
@@ -113,6 +128,13 @@ const ProductCatalog = () => {
     // Filter by product type first
     if (productType !== 'all' && product.product_type !== productType) {
       return false;
+    }
+
+    // Heat pumps live inside the air_conditioner product type but have their own section
+    const isHeatPumpProduct = (product.category || '').toLowerCase().startsWith('heat-pump');
+    if (productType === 'air_conditioner') {
+      if (isHeatPumpPath && !isHeatPumpProduct) return false;
+      if (!isHeatPumpPath && isHeatPumpProduct) return false;
     }
 
     // Normalize search query and product text for better matching
@@ -311,6 +333,7 @@ const ProductCatalog = () => {
 
   // Get page title and description based on product type - UNIQUE titles for SEO
   const getPageTitle = () => {
+    if (isHeatPumpPath) return 'Wholesale Heat Pumps';
     if (productType === 'refrigerant') return 'Refrigerant Gas Products';
     if (productType === 'accessory') return 'HVAC Accessories & Professional Tools';
     if (productType === 'air_conditioner') return 'Wholesale Air Conditioning Units';
@@ -393,6 +416,9 @@ const ProductCatalog = () => {
 
   // Generate unique SEO title based on product type and category for no duplicates
   const getSEOTitle = () => {
+    if (isHeatPumpPath) {
+      return `${getCategoryDisplayName()} Wholesale | Alper`;
+    }
     if (productType === 'refrigerant') {
       return `${getCategoryDisplayName()} Refrigerants | Alper`;
     }
@@ -407,6 +433,9 @@ const ProductCatalog = () => {
 
   // Generate unique SEO description based on product type for no duplicates
   const getSEODescription = () => {
+    if (isHeatPumpPath) {
+      return `Shop ${getCategoryDisplayName().toLowerCase()} at trade prices. Inverter heat pumps from 9,000 to 36,000 BTU that heat and cool, R-410A pre-charged, single units to full container loads.`;
+    }
     if (productType === 'refrigerant') {
       return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA distribution centers.`;
     }
@@ -450,7 +479,9 @@ const ProductCatalog = () => {
               {getPageTitle()}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              {productType === 'refrigerant' 
+              {isHeatPumpPath
+                ? 'Inverter heat pumps that heat and cool, from 9,000 to 36,000 BTU. Pre-charged with R-410A, single units to full container loads.'
+                : productType === 'refrigerant' 
                 ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
                 : productType === 'accessory'
                 ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
