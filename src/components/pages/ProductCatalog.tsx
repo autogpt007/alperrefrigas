@@ -479,7 +479,9 @@ const ProductCatalog = () => {
               {getPageTitle()}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              {productType === 'refrigerant' 
+              {isHeatPumpPath
+                ? 'Inverter heat pumps that heat and cool, from 9,000 to 36,000 BTU. Pre-charged with R-410A, single units to full container loads.'
+                : productType === 'refrigerant' 
                 ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
                 : productType === 'accessory'
                 ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
