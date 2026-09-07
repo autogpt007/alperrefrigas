@@ -20,7 +20,9 @@ export const useFavicon = () => {
           const link = document.createElement('link');
           link.rel = 'icon';
           link.type = 'image/png';
-          link.href = data.setting_value;
+          const faviconUrl = new URL(data.setting_value, window.location.origin);
+          faviconUrl.searchParams.set('v', '20260907');
+          link.href = faviconUrl.toString();
           document.head.appendChild(link);
         }
       } catch (error) {

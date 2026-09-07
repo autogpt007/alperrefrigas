@@ -183,14 +183,14 @@ const Header = () => {
         </div>
 
         {/* Main Header */}
-        <div className="flex items-center justify-between gap-2 py-4">
+        <div className="flex items-center justify-between gap-2 py-2">
           {/* Logo */}
           <Link to="/" className="flex min-w-0 flex-shrink items-center space-x-2">
             {logoSettings?.logo_url ? (
               <img 
                 src={logoSettings.logo_url} 
                 alt={logoSettings.company_name || 'Company Logo'} 
-                className="h-10 sm:h-12 w-auto flex-shrink-0 object-contain"
+                className="h-16 w-auto max-w-[9rem] flex-shrink-0 object-contain sm:h-20 sm:max-w-[13rem] lg:max-w-[15rem]"
               />
             ) : (
               <div className="flex min-w-0 items-center space-x-2">
