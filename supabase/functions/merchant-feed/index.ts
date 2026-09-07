@@ -60,7 +60,7 @@ Deno.serve(async (req: Request) => {
     const columns = [
       "id", "name", "description", "price", "sku", "gtin", "mpn", "brand", "condition",
       "availability", "stock_quantity", "images", "thumbnail_url", "google_product_category",
-      "product_type", "weight_kg", "length_cm", "width_cm", "height_cm",
+      "product_type", "category", "weight_kg", "length_cm", "width_cm", "height_cm",
       "identifier_exists", "updated_at",
     ].join(",");
 
@@ -143,7 +143,15 @@ Deno.serve(async (req: Request) => {
 
       // B2B / professional-only catalogue.
       parts.push(`      <g:adult>no</g:adult>`);
-      parts.push(`      <g:product_type>${esc(p.product_type === "air_conditioner" ? "Air Conditioners" : "Refrigerants")}</g:product_type>`);
+      const category = String(p.category ?? "").toLowerCase();
+      const feedProductType = category.startsWith("heat-pump")
+        ? "Heat Pumps"
+        : p.product_type === "air_conditioner"
+          ? "Air Conditioners"
+          : p.product_type === "accessory"
+            ? "HVAC Tools"
+            : "Refrigerants";
+      parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
 
       items.push(`    <item>\n${parts.join("\n")}\n    </item>`);
     }
