@@ -689,8 +689,62 @@ const ProductDetails = () => {
               </Button>
             </div>
 
+            {/* Product overview — sits directly under the product image */}
+            {product.description && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <FileText className="h-5 w-5 mr-2" />
+                    About the {product.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm sm:text-base leading-relaxed text-gray-600 space-y-3">
+                    {product.description.split('\n').filter(Boolean).map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
+                  </div>
+                  {product.sdsUrl && (
+                    <Button variant="outline" className="mt-4 w-full sm:w-auto" asChild>
+                      <a href={product.sdsUrl} target="_blank" rel="noopener noreferrer">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Safety Data Sheet
+                      </a>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Quick facts — fills the column with scannable data */}
+            {isAC && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="text-lg">At a glance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <dl className="grid grid-cols-2 gap-3 text-sm">
+                    {[
+                      product.btu ? { k: 'Cooling capacity', v: `${product.btu.toLocaleString()} BTU/h` } : null,
+                      product.max_room_size ? { k: 'Covers', v: product.max_room_size } : null,
+                      product.efficiency_label ? { k: 'Efficiency', v: product.efficiency_label } : null,
+                      product.refrigerantType ? { k: 'Refrigerant', v: product.refrigerantType } : null,
+                      product.voltage ? { k: 'Power', v: `${product.voltage}${product.phase ? ` · ${product.phase}` : ''}` } : null,
+                      product.plug_type ? { k: 'Connection', v: product.plug_type } : null
+                    ].filter(Boolean).map((row, idx) => (
+                      <div key={idx} className="rounded-lg border bg-muted/40 p-3">
+                        <dt className="text-xs uppercase tracking-wide text-muted-foreground">{row!.k}</dt>
+                        <dd className="font-semibold text-gray-900">{row!.v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Technical Specifications */}
             <Card className="mb-6">
+
 
             
 
@@ -1116,19 +1170,8 @@ const ProductDetails = () => {
                   </div>
                 </CardContent>
               </Card>
-              
-              <div className="text-gray-600 mb-6 whitespace-pre-line">
-                {product.description?.split('\n').map((line, index) => (
-                  <p key={index} className="mb-2 last:mb-0">
-                    {line}
-                  </p>
-                ))}
-              </div>
-              
-              {product.sdsUrl && <Button variant="outline" className="mb-6">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Safety Data Sheet
-                </Button>}
+
+
             </div>
 
             {/* Applications */}
