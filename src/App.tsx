@@ -29,6 +29,8 @@ import "./App.css";
 import HomePage from "./components/pages/HomePage";
 import ProductCatalog from "./components/pages/ProductCatalog";
 import AirConditionersPage from "./components/pages/AirConditionersPage";
+import HeatPumpsPage from "./components/pages/HeatPumpsPage";
+import HVACToolsPage from "./components/pages/HVACToolsPage";
 import ProductDetails from "./components/pages/ProductDetails";
 
 // Lazy-loaded routes
@@ -184,6 +186,9 @@ function App() {
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
                                 <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
+                                <Route path="/products/heating-heat-pumps" element={<HeatPumpsPage />} />
+                                <Route path="/products/heating-heat-pumps/:subcategory" element={<ProductCatalog />} />
+                                <Route path="/products/hvac-tools" element={<HVACToolsPage />} />
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
                                  <Route path="/products/category/:category" element={<ProductCategory />} />
