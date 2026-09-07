@@ -1116,19 +1116,8 @@ const ProductDetails = () => {
                   </div>
                 </CardContent>
               </Card>
-              
-              <div className="text-gray-600 mb-6 whitespace-pre-line">
-                {product.description?.split('\n').map((line, index) => (
-                  <p key={index} className="mb-2 last:mb-0">
-                    {line}
-                  </p>
-                ))}
-              </div>
-              
-              {product.sdsUrl && <Button variant="outline" className="mb-6">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Safety Data Sheet
-                </Button>}
+
+
             </div>
 
             {/* Applications */}
