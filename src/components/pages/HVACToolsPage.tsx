@@ -12,7 +12,7 @@ const subcategories = [
     description:
       'Analogue and digital manifold gauge sets, vacuum micron gauges and clamp meters for charging, evacuation and electrical checks.',
     icon: Gauge,
-    href: '/products/hvac-tools?category=gauges',
+    href: '/products/accessories?category=gauges',
     features: ['R-410A and R-134a scales', 'Digital and analogue', 'Hoses included'],
   },
   {
@@ -21,7 +21,7 @@ const subcategories = [
     description:
       'Two-stage vacuum pumps, charging scales, leak detectors and copper tubing tool kits for daily service work.',
     icon: Wrench,
-    href: '/products/hvac-tools?category=tools',
+    href: '/products/accessories?category=tools',
     features: ['5 and 8 CFM pumps', '220 lb charging scales', 'Heated-diode leak detection'],
   },
   {
@@ -30,7 +30,7 @@ const subcategories = [
     description:
       'Recovery machines and DOT-rated recovery cylinders for compliant refrigerant removal and storage.',
     icon: Recycle,
-    href: '/products/hvac-tools?category=recovery',
+    href: '/products/accessories?category=recovery',
     features: ['Oil-less compressor', '50 lb recovery cylinders', 'EPA 608 workflow'],
   },
   {
@@ -39,7 +39,7 @@ const subcategories = [
     description:
       'Brass flare adapters, couplers, tees and caps that connect gauges, hoses and service ports across refrigerant types.',
     icon: Link2,
-    href: '/products/hvac-tools?category=fittings',
+    href: '/products/accessories?category=fittings',
     features: ['Brass construction', 'Common flare sizes', 'Sold as organised sets'],
   },
   {
@@ -48,7 +48,7 @@ const subcategories = [
     description:
       'Goggles, face shields and insulated gloves sized for refrigerant handling and cylinder work.',
     icon: HardHat,
-    href: '/products/hvac-tools?category=safety',
+    href: '/products/accessories?category=safety',
     features: ['Cryogenic gloves', 'Splash goggles', 'Site-ready kits'],
   },
   {
@@ -57,7 +57,7 @@ const subcategories = [
     description:
       'Valve core removal tools and spare Schrader cores for service without recovering the full charge.',
     icon: Settings,
-    href: '/products/hvac-tools?category=valves',
+    href: '/products/accessories?category=valves',
     features: ['Core removal under pressure', 'Spare cores included', 'Brass and chrome'],
   },
 ];
