@@ -433,6 +433,9 @@ const ProductCatalog = () => {
 
   // Generate unique SEO description based on product type for no duplicates
   const getSEODescription = () => {
+    if (isHeatPumpPath) {
+      return `Shop ${getCategoryDisplayName().toLowerCase()} at trade prices. Inverter heat pumps from 9,000 to 36,000 BTU that heat and cool, R-410A pre-charged, single units to full container loads.`;
+    }
     if (productType === 'refrigerant') {
       return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA distribution centers.`;
     }
