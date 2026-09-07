@@ -88,6 +88,13 @@ const ProductCatalog = () => {
         { value: 'safety', label: 'Safety Equipment' },
         { value: 'valves', label: 'Valves & Controls' }
       ];
+    } else if (isHeatPumpPath) {
+      return [
+        { value: 'all', label: 'All Heat Pumps' },
+        { value: 'heat-pump-single-zone', label: 'Single-Zone Heat Pumps' },
+        { value: 'heat-pump-multi-zone', label: 'Multi-Zone Heat Pumps' },
+        { value: 'heat-pump-ptac', label: 'PTAC Heat Pumps' }
+      ];
     } else if (productType === 'air_conditioner') {
       return [
         { value: 'all', label: 'All Air Conditioners' },
