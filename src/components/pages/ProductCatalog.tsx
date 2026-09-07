@@ -333,6 +333,7 @@ const ProductCatalog = () => {
 
   // Get page title and description based on product type - UNIQUE titles for SEO
   const getPageTitle = () => {
+    if (isHeatPumpPath) return 'Wholesale Heat Pumps';
     if (productType === 'refrigerant') return 'Refrigerant Gas Products';
     if (productType === 'accessory') return 'HVAC Accessories & Professional Tools';
     if (productType === 'air_conditioner') return 'Wholesale Air Conditioning Units';
