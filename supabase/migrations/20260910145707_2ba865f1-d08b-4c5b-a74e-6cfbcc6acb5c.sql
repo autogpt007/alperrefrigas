@@ -1,0 +1,2 @@
+ALTER TABLE public.generated_documents ADD COLUMN IF NOT EXISTS quote_request_id uuid REFERENCES public.quotes(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS generated_documents_quote_request_id_idx ON public.generated_documents (quote_request_id);
