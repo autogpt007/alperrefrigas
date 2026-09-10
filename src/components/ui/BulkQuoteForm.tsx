@@ -80,45 +80,40 @@ const BulkQuoteForm = () => {
       formDataWithCSRF,
       async (sanitizedData) => {
 
-      const quoteData = {
-        user_id: user?.id || null,
-        customer_name: sanitizedData.customerName,
-        customer_email: sanitizedData.customerEmail,
-        company_name: sanitizedData.companyName,
-        phone: sanitizedData.phone,
-        shipping_address: sanitizedData.shippingAddress,
-        status: 'pending' as const,
-        notes: `Bulk Quote Request:
+      // Quotes are created server-side (service role) so both guests and
+      // signed-in customers can submit without hitting row-level security.
+      const { data: submitData, error: submitError } = await supabase.functions.invoke('submit-contact', {
+        body: {
+          type: 'quote',
+          name: sanitizedData.customerName,
+          email: sanitizedData.customerEmail,
+          company_name: sanitizedData.companyName,
+          phone: sanitizedData.phone,
+          shipping_address: sanitizedData.shippingAddress,
+          notes: `Bulk Quote Request:
 Product Type: ${sanitizedData.productType}
 Quantity: ${sanitizedData.quantity}
 Container Type: ${sanitizedData.containerType}
 
-Additional Notes: ${sanitizedData.notes}`
-      };
+Additional Notes: ${sanitizedData.notes}`,
+          item: {
+            product_name: `${sanitizedData.productType} - Bulk Order`,
+            quantity: parseInt(sanitizedData.quantity) || 1,
+            packaging: sanitizedData.containerType
+          }
+        }
+      });
 
-      const { data: newQuote, error: quoteError } = await supabase
-        .from('quotes')
-        .insert(quoteData)
-        .select()
-        .single();
+      if (submitError) throw submitError;
+      if (submitData?.error) throw new Error(submitData.error);
 
-      if (quoteError) throw quoteError;
-
-      // Create a bulk quote item
-      const { error: itemError } = await supabase
-        .from('quote_items')
-        .insert({
-          quote_id: newQuote.id,
-          product_name: `${sanitizedData.productType} - Bulk Order`,
-          quantity: parseInt(sanitizedData.quantity) || 1,
-          packaging: sanitizedData.containerType
-        });
-
-      if (itemError) throw itemError;
+      const newQuote = { quote_number: submitData?.quote_number ?? null };
 
       toast({
         title: "Bulk Quote Requested!",
-        description: `Quote ${newQuote.quote_number} has been submitted. Our team will contact you within 24 hours.`
+        description: newQuote.quote_number
+          ? `Quote ${newQuote.quote_number} has been submitted. Our team will contact you within 24 hours.`
+          : "Your bulk quote request has been submitted. Our team will contact you within 24 hours."
       });
 
       // Reset form
