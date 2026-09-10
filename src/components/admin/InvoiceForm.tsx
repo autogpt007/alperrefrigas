@@ -619,9 +619,8 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                         <CommandItem
                           key={p.id}
                           value={`${p.name} ${p.sku || ''} ${p.category || ''} ${p.id}`}
-                          onSelect={() => addProductLine(p)}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
+                          onSelect={() => {
+                            setProductPickerOpen(false);
                             addProductLine(p);
                           }}
                           className="cursor-pointer"
@@ -663,11 +662,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                             key={q.id}
                             value={`${q.label} ${q.sub} ${q.id}`}
                             onSelect={() => {
-                              setRequestPickerOpen(false);
-                              importFromQuoteRequest(q.id);
-                            }}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
                               setRequestPickerOpen(false);
                               importFromQuoteRequest(q.id);
                             }}
@@ -714,11 +708,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                             key={o.id}
                             value={`${o.label} ${o.sub} ${o.id}`}
                             onSelect={() => {
-                              setOrderPickerOpen(false);
-                              importFromOrder(o.id);
-                            }}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
                               setOrderPickerOpen(false);
                               importFromOrder(o.id);
                             }}
