@@ -549,6 +549,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         document_type: documentType,
         document_number: documentNumber,
         order_id: orderId || null,
+        quote_request_id: quoteRequestId || null,
         buyer_name: buyer.name,
         buyer_company: buyer.company || null,
         buyer_email: buyer.email || null,
