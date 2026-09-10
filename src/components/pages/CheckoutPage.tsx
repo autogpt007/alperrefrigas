@@ -1107,13 +1107,10 @@ const CheckoutPage = () => {
                         <div className="space-y-4">
                           {getTraditionalWallets().filter(w => w.payment_type === 'zelle').length > 0 && (
                             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                              <h4 className="font-medium text-blue-900 mb-2">Our Zelle Information</h4>
-                              {getTraditionalWallets().filter(w => w.payment_type === 'zelle').map((wallet) => (
-                                <div key={wallet.id} className="text-sm text-blue-800">
-                                  <p className="font-mono">{wallet.wallet_address}</p>
-                                  {wallet.label && <p className="text-xs opacity-75">{wallet.label}</p>}
-                                </div>
-                              ))}
+                              <h4 className="font-medium text-blue-900 mb-2">Zelle Payment</h4>
+                              <p className="text-sm text-blue-800">
+                                Our Zelle receiving details are sent with your proforma invoice once your order is placed.
+                              </p>
                             </div>
                           )}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1153,13 +1150,10 @@ const CheckoutPage = () => {
                         <div className="space-y-4">
                           {getTraditionalWallets().filter(w => w.payment_type === 'cashapp').length > 0 && (
                             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                              <h4 className="font-medium text-green-900 mb-2">Our CashApp Information</h4>
-                              {getTraditionalWallets().filter(w => w.payment_type === 'cashapp').map((wallet) => (
-                                <div key={wallet.id} className="text-sm text-green-800">
-                                  <p className="font-mono">{wallet.wallet_address}</p>
-                                  {wallet.label && <p className="text-xs opacity-75">{wallet.label}</p>}
-                                </div>
-                              ))}
+                              <h4 className="font-medium text-green-900 mb-2">CashApp Payment</h4>
+                              <p className="text-sm text-green-800">
+                                Our CashApp receiving details are sent with your proforma invoice once your order is placed.
+                              </p>
                             </div>
                           )}
                           <div>
