@@ -9,7 +9,8 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 // Must stay in sync with supabase/functions/send-transactional-email/index.ts —
 // the verified sender subdomain is what Resend authorises the send against.
 const SENDER_DOMAIN = "notify.alperrefrigas.com";
-const FROM_DOMAIN = "alperrefrigerants.com";
+// Must align with SENDER_DOMAIN's root domain or the email API rejects the send.
+const FROM_DOMAIN = "alperrefrigas.com";
 const FROM_EMAIL =
   Deno.env.get("INVOICE_FROM_EMAIL") || `Alper Refrigerants <invoices@${FROM_DOMAIN}>`;
 const REPLY_TO = "sales@alperrefrigerants.com";

@@ -13,7 +13,8 @@ const SENDER_DOMAIN = "notify.alperrefrigas.com"
 // FROM_DOMAIN is the domain shown in the From: header (e.g., "example.com").
 // When display_from_root is enabled, this can be the root domain for cleaner branding,
 // even though actual sending uses the subdomain above.
-const FROM_DOMAIN = "alperrefrigerants.com"
+// Must align with SENDER_DOMAIN's root domain or the email API rejects the send.
+const FROM_DOMAIN = "alperrefrigas.com"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

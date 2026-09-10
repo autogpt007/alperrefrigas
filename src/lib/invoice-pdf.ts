@@ -253,14 +253,10 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Items table ----------
   const billable = doc.items.filter((i) => !i.isDetail);
   const subtotal = billable.reduce((s, i) => s + Number(i.quantity || 0) * Number(i.unitPrice || 0), 0);
-  // Bank wire / Zelle orders earn a 15% settlement discount unless a manual
-  // discount was already entered on the document.
-  const wireOrZelle = isWire(doc.paymentMethod) || isZelle(doc.paymentMethod);
-  const effectiveDiscountPercent = Number(doc.discountPercent || 0) || (wireOrZelle ? 15 : 0);
-  const discountLabel =
-    !doc.discountPercent && wireOrZelle
-      ? `${isZelle(doc.paymentMethod) ? "Zelle" : "Bank wire"} discount (15%)`
-      : `Discount (${effectiveDiscountPercent}%)`;
+  // Only the discount entered on the document is applied, so the PDF total
+  // always matches the admin preview and the saved record.
+  const effectiveDiscountPercent = Number(doc.discountPercent || 0);
+  const discountLabel = `Discount (${effectiveDiscountPercent}%)`;
   const discountAmount = subtotal * (effectiveDiscountPercent / 100);
   const total =
     subtotal - discountAmount + Number(doc.shippingCost || 0) + Number(doc.taxAmount || 0);

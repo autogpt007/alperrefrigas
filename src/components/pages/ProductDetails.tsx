@@ -552,6 +552,9 @@ const ProductDetails = () => {
   const currentYear = new Date().getFullYear();
   const isRefrigerant = product.product_type === 'refrigerant';
   const isAC = product.product_type === 'air_conditioner';
+  // Headline price for AC/heat pumps must match what the cart actually charges
+  // for one unit (5-19 tier plus the single-unit surcharge).
+  const singleUnitPrice = calculateACPricingTier(product, 1)?.unitPrice ?? product.price;
   
   // Extract short-form name for SEO (e.g., "R-134A" from "R-134A Refrigerant Gas | Alper Refrigerant Gas")
   const shortName = (() => {
