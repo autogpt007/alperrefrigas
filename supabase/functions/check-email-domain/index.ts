@@ -7,7 +7,7 @@ const corsHeaders = {
 
 // Must stay in sync with supabase/functions/send-transactional-email/index.ts
 const EXPECTED_SENDER_DOMAIN = "notify.alperrefrigas.com";
-const EXPECTED_FROM_DOMAIN = "alperrefrigerants.com";
+const EXPECTED_FROM_DOMAIN = "alperrefrigas.com";
 const EXPECTED_FROM_ADDRESS = `noreply@${EXPECTED_FROM_DOMAIN}`;
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
