@@ -464,33 +464,32 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-3">
           <div className="space-y-1.5 md:col-span-3">
-            <Label>Import from order (optional)</Label>
-            <Popover open={orderPickerOpen} onOpenChange={setOrderPickerOpen}>
+            <Label>Add products from catalogue</Label>
+            <Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
-                  {selectedOrder ? selectedOrder.label : 'Select an order…'}
+                  Search products…
                   <ChevronsUpDown className="h-4 w-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[520px] p-0" align="start">
                 <Command>
-                  <CommandInput placeholder="Search orders…" />
+                  <CommandInput placeholder="Search by name, SKU or category…" />
                   <CommandList>
-                    <CommandEmpty>No orders found.</CommandEmpty>
+                    <CommandEmpty>No products found.</CommandEmpty>
                     <CommandGroup>
-                      {orderOptions.map((o) => (
+                      {productOptions.map((p) => (
                         <CommandItem
-                          key={o.id}
-                          value={`${o.label} ${o.sub}`}
-                          onSelect={() => {
-                            setOrderPickerOpen(false);
-                            importFromOrder(o.id);
-                          }}
+                          key={p.id}
+                          value={`${p.name} ${p.sku || ''} ${p.category || ''}`}
+                          onSelect={() => addProductLine(p)}
                         >
-                          <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
+                          <Plus className="mr-2 h-4 w-4 opacity-70" />
                           <div>
-                            <div className="text-sm font-medium">{o.label}</div>
-                            <div className="text-xs text-muted-foreground">{o.sub}</div>
+                            <div className="text-sm font-medium">{p.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {[p.sku, p.category, `USD ${Number(p.price || 0).toFixed(2)}`].filter(Boolean).join(' · ')}
+                            </div>
                           </div>
                         </CommandItem>
                       ))}
@@ -500,6 +499,92 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
               </PopoverContent>
             </Popover>
           </div>
+
+          {documentType === 'quote' && (
+            <div className="space-y-1.5 md:col-span-3">
+              <Label>Import a received quote request (optional)</Label>
+              <Popover open={requestPickerOpen} onOpenChange={setRequestPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    {selectedRequest ? selectedRequest.label : 'Select a customer request…'}
+                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[560px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search requests…" />
+                    <CommandList>
+                      <CommandEmpty>No quote requests found.</CommandEmpty>
+                      <CommandGroup>
+                        {requestOptions.map((q) => (
+                          <CommandItem
+                            key={q.id}
+                            value={`${q.label} ${q.sub}`}
+                            onSelect={() => {
+                              setRequestPickerOpen(false);
+                              importFromQuoteRequest(q.id);
+                            }}
+                          >
+                            <Check className={cn('mr-2 h-4 w-4', quoteRequestId === q.id ? 'opacity-100' : 'opacity-0')} />
+                            <div>
+                              <div className="text-sm font-medium">
+                                {q.label}
+                                {q.alreadyQuoted && (
+                                  <span className="ml-2 text-xs font-normal text-amber-600">already quoted</span>
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground">{q.sub}</div>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+
+          {documentType === 'invoice' && (
+            <div className="space-y-1.5 md:col-span-3">
+              <Label>Import from order (optional)</Label>
+              <Popover open={orderPickerOpen} onOpenChange={setOrderPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    {selectedOrder ? selectedOrder.label : 'Select an order…'}
+                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[520px] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Search orders…" />
+                    <CommandList>
+                      <CommandEmpty>No orders found.</CommandEmpty>
+                      <CommandGroup>
+                        {orderOptions.map((o) => (
+                          <CommandItem
+                            key={o.id}
+                            value={`${o.label} ${o.sub}`}
+                            onSelect={() => {
+                              setOrderPickerOpen(false);
+                              importFromOrder(o.id);
+                            }}
+                          >
+                            <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
+                            <div>
+                              <div className="text-sm font-medium">{o.label}</div>
+                              <div className="text-xs text-muted-foreground">{o.sub}</div>
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+
 
           <div className="space-y-1.5">
             <Label>PO number</Label>
