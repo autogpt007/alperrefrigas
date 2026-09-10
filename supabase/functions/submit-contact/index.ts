@@ -17,6 +17,11 @@ interface SubmissionData {
   shipping_address?: string;
   notes?: string;
   type: 'contact' | 'newsletter' | 'quote';
+  item?: {
+    product_name?: string;
+    quantity?: number | string;
+    packaging?: string;
+  };
 }
 
 // Rate limiting storage (in-memory for demo - use Redis in production)
