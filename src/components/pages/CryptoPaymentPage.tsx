@@ -58,14 +58,17 @@ const CryptoPaymentPage = () => {
 
         setOrder(orderData);
 
-        // Fetch wallet address for the payment method
+        // Fetch wallet address for the payment method (server-side, tied to this order)
         if (orderData?.payment_method) {
-          const { data: walletData, error: walletError } = await supabase
-            .from('payment_wallet_addresses')
-            .select('*')
-            .eq('payment_type', orderData.payment_method.toLowerCase())
-            .eq('is_active', true)
-            .single();
+          const { data: walletResponse, error: walletFnError } = await supabase.functions.invoke(
+            'payment-wallets',
+            { body: { order_number: orderNumber } }
+          );
+
+          const walletData = (walletResponse?.wallets || []).find(
+            (w: PaymentWallet) => w.payment_type === orderData.payment_method.toLowerCase()
+          );
+          const walletError = walletFnError || walletResponse?.error || (!walletData ? 'not_found' : null);
 
           if (walletError) {
             console.error('Error fetching wallet:', walletError);

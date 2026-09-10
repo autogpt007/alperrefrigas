@@ -17,6 +17,11 @@ interface SubmissionData {
   shipping_address?: string;
   notes?: string;
   type: 'contact' | 'newsletter' | 'quote';
+  item?: {
+    product_name?: string;
+    quantity?: number | string;
+    packaging?: string;
+  };
 }
 
 // Rate limiting storage (in-memory for demo - use Redis in production)
@@ -122,6 +127,7 @@ serve(async (req) => {
     );
 
     let insertResult;
+    let quoteNumber: string | null = null;
 
     // Insert based on submission type
     switch (sanitizedData.type) {
@@ -180,7 +186,29 @@ serve(async (req) => {
             notes: sanitizedData.notes,
             status: 'pending',
             user_id: null // Anonymous submission
-          });
+          })
+          .select('id, quote_number')
+          .single();
+
+        if (!insertResult.error && insertResult.data) {
+          quoteNumber = insertResult.data.quote_number ?? null;
+
+          const item = submissionData.item;
+          if (item?.product_name) {
+            const quantity = Number(item.quantity) > 0 ? Number(item.quantity) : 1;
+            const { error: itemError } = await supabaseClient
+              .from('quote_items')
+              .insert({
+                quote_id: insertResult.data.id,
+                product_name: sanitizeInput(String(item.product_name)).slice(0, 300),
+                quantity,
+                packaging: item.packaging ? sanitizeInput(String(item.packaging)).slice(0, 120) : null,
+              });
+            if (itemError) {
+              console.error('Error inserting quote item:', itemError);
+            }
+          }
+        }
         break;
     }
 
@@ -213,6 +241,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: `${sanitizedData.type} submitted successfully`,
+        quote_number: quoteNumber,
         type: sanitizedData.type
       }),
       {
