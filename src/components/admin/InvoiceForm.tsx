@@ -123,6 +123,16 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   const [orderPickerOpen, setOrderPickerOpen] = useState(false);
   const [orderOptions, setOrderOptions] = useState<Array<{ id: string; label: string; sub: string }>>([]);
 
+  const [quoteRequestId, setQuoteRequestId] = useState<string>((initialData as any)?.quote_request_id || '');
+  const [requestPickerOpen, setRequestPickerOpen] = useState(false);
+  const [requestOptions, setRequestOptions] = useState<
+    Array<{ id: string; label: string; sub: string; alreadyQuoted: boolean }>
+  >([]);
+  const [productPickerOpen, setProductPickerOpen] = useState(false);
+  const [productOptions, setProductOptions] = useState<
+    Array<{ id: string; name: string; sku: string | null; category: string | null; price: number; packaging: any }>
+  >([]);
+
   const [buyer, setBuyer] = useState({
     name: initialData?.buyer_name || '',
     company: initialData?.buyer_company || '',
