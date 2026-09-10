@@ -45,7 +45,8 @@ export const usePaymentWallets = (orderNumber?: string) => {
 
   useEffect(() => {
     fetchWallets();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderNumber]);
 
   const getWalletsByType = (type: string) => {
     return wallets.filter(wallet => wallet.payment_type === type);
