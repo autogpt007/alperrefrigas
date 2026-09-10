@@ -12,7 +12,7 @@ export interface PaymentWallet {
   updated_at: string;
 }
 
-export const usePaymentWallets = () => {
+export const usePaymentWallets = (orderNumber?: string) => {
   const [wallets, setWallets] = useState<PaymentWallet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,20 +21,20 @@ export const usePaymentWallets = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const { data, error: fetchError } = await supabase
-        .from('payment_wallet_addresses')
-        .select('*')
-        .eq('is_active', true)
-        .order('payment_type', { ascending: true });
 
-      if (fetchError) {
-        console.error('Error fetching payment wallets:', fetchError);
+      // Receiving details come from the server; addresses are only returned
+      // once a real order reference is supplied.
+      const { data, error: fetchError } = await supabase.functions.invoke('payment-wallets', {
+        body: orderNumber ? { order_number: orderNumber } : {},
+      });
+
+      if (fetchError || data?.error) {
+        console.error('Error fetching payment wallets:', fetchError || data?.error);
         setError('Failed to fetch payment methods');
         return;
       }
 
-      setWallets(data || []);
+      setWallets((data?.wallets as PaymentWallet[]) || []);
     } catch (err) {
       console.error('Error:', err);
       setError('An unexpected error occurred');
