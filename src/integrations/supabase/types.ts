@@ -774,6 +774,7 @@ export type Database = {
           pdf_path: string | null
           pdf_url: string | null
           po_number: string | null
+          quote_request_id: string | null
           ship_to_address: string | null
           shipping_cost: number
           subtotal: number
@@ -806,6 +807,7 @@ export type Database = {
           pdf_path?: string | null
           pdf_url?: string | null
           po_number?: string | null
+          quote_request_id?: string | null
           ship_to_address?: string | null
           shipping_cost?: number
           subtotal?: number
@@ -838,6 +840,7 @@ export type Database = {
           pdf_path?: string | null
           pdf_url?: string | null
           po_number?: string | null
+          quote_request_id?: string | null
           ship_to_address?: string | null
           shipping_cost?: number
           subtotal?: number
@@ -852,6 +855,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_documents_quote_request_id_fkey"
+            columns: ["quote_request_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
             referencedColumns: ["id"]
           },
         ]
