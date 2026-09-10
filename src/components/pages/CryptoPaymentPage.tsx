@@ -66,7 +66,7 @@ const CryptoPaymentPage = () => {
           );
 
           const walletData = (walletResponse?.wallets || []).find(
-            (w: Wallet) => w.payment_type === orderData.payment_method.toLowerCase()
+            (w: PaymentWallet) => w.payment_type === orderData.payment_method.toLowerCase()
           );
           const walletError = walletFnError || walletResponse?.error || (!walletData ? 'not_found' : null);
 
