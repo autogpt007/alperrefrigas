@@ -126,6 +126,16 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Attach the quote to the signed-in customer when the caller sent a session
+    // token, so it shows up in their account. Anonymous callers stay anonymous.
+    let requesterId: string | null = null;
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    if (token) {
+      const { data: userData } = await supabaseClient.auth.getUser(token);
+      requesterId = userData?.user?.id ?? null;
+    }
+
     let insertResult;
     let quoteNumber: string | null = null;
 
