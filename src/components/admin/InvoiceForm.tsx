@@ -618,8 +618,12 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                       {productOptions.map((p) => (
                         <CommandItem
                           key={p.id}
-                          value={`${p.name} ${p.sku || ''} ${p.category || ''}`}
-                          onSelect={() => addProductLine(p)}
+                          value={`${p.name} ${p.sku || ''} ${p.category || ''} ${p.id}`}
+                          onSelect={() => {
+                            setProductPickerOpen(false);
+                            addProductLine(p);
+                          }}
+                          className="cursor-pointer"
                         >
                           <Plus className="mr-2 h-4 w-4 opacity-70" />
                           <div>
@@ -656,11 +660,12 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                         {requestOptions.map((q) => (
                           <CommandItem
                             key={q.id}
-                            value={`${q.label} ${q.sub}`}
+                            value={`${q.label} ${q.sub} ${q.id}`}
                             onSelect={() => {
                               setRequestPickerOpen(false);
                               importFromQuoteRequest(q.id);
                             }}
+                            className="cursor-pointer"
                           >
                             <Check className={cn('mr-2 h-4 w-4', quoteRequestId === q.id ? 'opacity-100' : 'opacity-0')} />
                             <div>
@@ -701,11 +706,12 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                         {orderOptions.map((o) => (
                           <CommandItem
                             key={o.id}
-                            value={`${o.label} ${o.sub}`}
+                            value={`${o.label} ${o.sub} ${o.id}`}
                             onSelect={() => {
                               setOrderPickerOpen(false);
                               importFromOrder(o.id);
                             }}
+                            className="cursor-pointer"
                           >
                             <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
                             <div>
