@@ -444,9 +444,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
       address: formatAddress((request as any).shipping_address) || b.address,
     }));
     setShipToAddress(formatAddress((request as any).shipping_address) || '');
-    if ((request as any).notes) {
-      setPaymentTerms((t) => t);
-    }
 
     const lines = ((request as any).quote_items || []) as any[];
     if (!lines.length) {
