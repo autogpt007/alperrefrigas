@@ -618,8 +618,13 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                       {productOptions.map((p) => (
                         <CommandItem
                           key={p.id}
-                          value={`${p.name} ${p.sku || ''} ${p.category || ''}`}
+                          value={`${p.name} ${p.sku || ''} ${p.category || ''} ${p.id}`}
                           onSelect={() => addProductLine(p)}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            addProductLine(p);
+                          }}
+                          className="cursor-pointer"
                         >
                           <Plus className="mr-2 h-4 w-4 opacity-70" />
                           <div>
