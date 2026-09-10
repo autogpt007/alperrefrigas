@@ -595,7 +595,7 @@ const ProductDetails = () => {
   const seoDescription = isRefrigerant
     ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
     : isAC
-    ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} wholesale from ${formatPrice(product.price)}/unit${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. Single units or bulk, US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
+    ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} from ${formatPrice(singleUnitPrice)}/unit single, ${formatPrice(product.price)}/unit at 5+${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
     : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
 
     
@@ -675,13 +675,13 @@ const ProductDetails = () => {
             <div className="lg:hidden mb-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-4">
               <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
               <p className="text-3xl font-bold text-primary">
-                {formatPrice(product.price)}
+                {formatPrice(isAC ? singleUnitPrice : product.price)}
                 <span className="text-sm font-medium text-muted-foreground">
                   {product.product_type === 'refrigerant' ? '/cylinder' : product.product_type === 'air_conditioner' ? '/unit' : '/piece'}
                 </span>
               </p>
               {product.product_type === 'air_conditioner' && (
-                <p className="text-xs text-blue-800 mt-1">Single units available &middot; better rates from 5 units</p>
+                <p className="text-xs text-blue-800 mt-1">Price for a single unit &middot; {formatPrice(product.price)}/unit from 5 units</p>
               )}
               <Button
                 className="mt-3 w-full"
@@ -858,10 +858,10 @@ const ProductDetails = () => {
               {product.product_type === 'air_conditioner' ? (
                 <div className="mb-4 p-4 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50">
                   <p className="text-4xl font-bold text-primary mb-1">
-                    {formatPrice(product.price)}
+                    {formatPrice(singleUnitPrice)}
                     <span className="text-lg font-medium text-muted-foreground">/unit</span>
                   </p>
-                  <p className="text-sm text-blue-800">Single units available &middot; better rates from 5 units</p>
+                  <p className="text-sm text-blue-800">Price for a single unit &middot; {formatPrice(product.price)}/unit from 5 units</p>
                   {product.base_unit_price && product.base_unit_price < product.price && (
                     <p className="text-xs text-emerald-600 mt-2">
                       💡 As low as {formatPrice(product.base_unit_price)}/unit at full container volume
