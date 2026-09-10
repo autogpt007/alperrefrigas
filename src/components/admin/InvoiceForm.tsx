@@ -712,11 +712,17 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                         {orderOptions.map((o) => (
                           <CommandItem
                             key={o.id}
-                            value={`${o.label} ${o.sub}`}
+                            value={`${o.label} ${o.sub} ${o.id}`}
                             onSelect={() => {
                               setOrderPickerOpen(false);
                               importFromOrder(o.id);
                             }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setOrderPickerOpen(false);
+                              importFromOrder(o.id);
+                            }}
+                            className="cursor-pointer"
                           >
                             <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
                             <div>
