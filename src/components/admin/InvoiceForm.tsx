@@ -661,11 +661,17 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
                         {requestOptions.map((q) => (
                           <CommandItem
                             key={q.id}
-                            value={`${q.label} ${q.sub}`}
+                            value={`${q.label} ${q.sub} ${q.id}`}
                             onSelect={() => {
                               setRequestPickerOpen(false);
                               importFromQuoteRequest(q.id);
                             }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setRequestPickerOpen(false);
+                              importFromQuoteRequest(q.id);
+                            }}
+                            className="cursor-pointer"
                           >
                             <Check className={cn('mr-2 h-4 w-4', quoteRequestId === q.id ? 'opacity-100' : 'opacity-0')} />
                             <div>
