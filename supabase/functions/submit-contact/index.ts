@@ -241,6 +241,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: `${sanitizedData.type} submitted successfully`,
+        quote_number: quoteNumber,
         type: sanitizedData.type
       }),
       {
