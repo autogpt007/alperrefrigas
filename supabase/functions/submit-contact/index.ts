@@ -195,7 +195,7 @@ serve(async (req) => {
             shipping_address: sanitizedData.shipping_address,
             notes: sanitizedData.notes,
             status: 'pending',
-            user_id: null // Anonymous submission
+            user_id: requesterId // null for anonymous submissions
           })
           .select('id, quote_number')
           .single();
