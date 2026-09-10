@@ -8,6 +8,7 @@ import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 
 interface CryptoPaymentSectionProps {
   order: {
+    order_number?: string;
     payment_method?: string;
     total_amount: number;
     created_at: string;
@@ -15,7 +16,7 @@ interface CryptoPaymentSectionProps {
 }
 
 export const CryptoPaymentSection: React.FC<CryptoPaymentSectionProps> = ({ order }) => {
-  const { wallets } = usePaymentWallets();
+  const { wallets } = usePaymentWallets(order.order_number);
   const [timeRemaining, setTimeRemaining] = useState<number>(30 * 60); // 30 minutes in seconds
   const [isExpired, setIsExpired] = useState(false);
 
