@@ -358,6 +358,135 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
     toast.success('Order imported');
   };
 
+  // ---------- catalogue + quote request sources ----------
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('id, name, sku, category, price, packaging')
+        .order('name', { ascending: true })
+        .limit(500);
+      setProductOptions(
+        (data || []).map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          sku: p.sku || null,
+          category: p.category || null,
+          price: Number(p.price || 0),
+          packaging: p.packaging,
+        }))
+      );
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (documentType !== 'quote') return;
+    (async () => {
+      const [{ data: reqs }, { data: docs }] = await Promise.all([
+        supabase
+          .from('quotes')
+          .select('id, quote_number, company_name, customer_name, customer_email, status, created_at')
+          .order('created_at', { ascending: false })
+          .limit(100),
+        supabase.from('generated_documents').select('quote_request_id').not('quote_request_id', 'is', null),
+      ]);
+      const quoted = new Set((docs || []).map((d: any) => d.quote_request_id));
+      setRequestOptions(
+        (reqs || []).map((q: any) => ({
+          id: q.id,
+          label: `${q.quote_number || `#${q.id.slice(0, 8).toUpperCase()}`} — ${q.company_name || q.customer_name || 'Customer'}`,
+          sub: `${new Date(q.created_at).toLocaleDateString()} · ${q.customer_name || ''} · ${q.customer_email || ''} · ${q.status || 'pending'}`,
+          alreadyQuoted: quoted.has(q.id),
+        }))
+      );
+    })();
+  }, [documentType]);
+
+  const firstPackaging = (packaging: any): string => {
+    if (!packaging) return 'cyl';
+    if (Array.isArray(packaging)) {
+      const first = packaging[0];
+      if (typeof first === 'string') return first;
+      if (first && typeof first === 'object') return first.size || first.label || first.name || 'cyl';
+    }
+    if (typeof packaging === 'string') return packaging;
+    return 'cyl';
+  };
+
+  const addProductLine = (p: { name: string; price: number; packaging: any }) => {
+    setItems((prev) => {
+      const next = prev.filter((i) => i.isDetail || i.description.trim() || Number(i.unitPrice || 0) > 0);
+      return [
+        ...next,
+        { description: p.name, quantity: 1, unit: firstPackaging(p.packaging), unitPrice: Number(p.price || 0) },
+      ];
+    });
+    toast.success(`${p.name} added`);
+  };
+
+  const importFromQuoteRequest = async (id: string) => {
+    const { data: request, error } = await supabase
+      .from('quotes')
+      .select('*, quote_items(*)')
+      .eq('id', id)
+      .maybeSingle();
+    if (error || !request) {
+      toast.error('Could not load that quote request');
+      return;
+    }
+    setQuoteRequestId(id);
+    setBuyer((b) => ({
+      ...b,
+      name: (request as any).customer_name || b.name,
+      company: (request as any).company_name || b.company,
+      email: (request as any).customer_email || b.email,
+      phone: (request as any).phone || b.phone,
+      address: formatAddress((request as any).shipping_address) || b.address,
+    }));
+    setShipToAddress(formatAddress((request as any).shipping_address) || '');
+    if ((request as any).notes) {
+      setPaymentTerms((t) => t);
+    }
+
+    const lines = ((request as any).quote_items || []) as any[];
+    if (!lines.length) {
+      toast.success('Request imported — no products were listed, add line items manually');
+      return;
+    }
+
+    const ids = lines.map((l) => l.product_id).filter(Boolean);
+    const priceById = new Map<string, number>();
+    if (ids.length) {
+      const { data: prods } = await supabase.from('products').select('id, price').in('id', ids);
+      (prods || []).forEach((p: any) => priceById.set(p.id, Number(p.price || 0)));
+    }
+    const priceByName = new Map<string, number>();
+    productOptions.forEach((p) => priceByName.set(p.name.toLowerCase().trim(), p.price));
+
+    let missing = 0;
+    const mapped: InvoiceItem[] = lines.map((li) => {
+      const price =
+        (li.product_id ? priceById.get(li.product_id) : undefined) ??
+        priceByName.get(String(li.product_name || '').toLowerCase().trim()) ??
+        0;
+      if (!price) missing++;
+      return {
+        description: [li.product_name, li.packaging].filter(Boolean).join(' — '),
+        quantity: Number(li.quantity || 1),
+        unit: li.packaging || 'cyl',
+        unitPrice: price,
+      };
+    });
+    setItems(mapped);
+    toast.success(
+      missing
+        ? `Request imported — ${mapped.length} lines, ${missing} need a price`
+        : `Request imported — ${mapped.length} lines priced from the catalogue`
+    );
+  };
+
+  const selectedRequest = requestOptions.find((r) => r.id === quoteRequestId);
+
   // ---------- PDF ----------
   const buildDoc = () => ({
     documentType,
