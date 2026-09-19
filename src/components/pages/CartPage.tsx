@@ -227,6 +227,20 @@ const CartPage = () => {
                   </Alert>
                 )}
                 
+                {/* Estimated Shipping & Tax Disclosure */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2">
+                  <h4 className="text-sm font-semibold text-gray-900">Estimated Shipping &amp; Tax</h4>
+                  <p className="text-xs text-gray-600">
+                    <span className="font-medium">Estimated Shipping:</span> Calculated at checkout. US Continental base rate $45.00 plus $25.00 HazMat surcharge for refrigerants; rates for Alaska, Hawaii, Canada, UK, EU and other regions shown at checkout.
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    <span className="font-medium">Estimated Tax:</span> Calculated at checkout based on your delivery ZIP code (US) or destination country VAT/GST (international).
+                  </p>
+                  <p className="text-xs text-gray-500 italic">
+                    Final shipping and taxes are confirmed on the checkout page before payment.
+                  </p>
+                </div>
+
                 <div className="space-y-3 pt-4">
                   {user ? (
                     <Button 
