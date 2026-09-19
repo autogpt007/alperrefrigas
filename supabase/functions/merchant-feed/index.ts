@@ -49,6 +49,19 @@ function absoluteImage(url: unknown): string | null {
   return `${BASE_URL}${raw.startsWith("/") ? raw : `/${raw}`}`;
 }
 
+type MerchantAvailability = "in_stock" | "out_of_stock" | "preorder" | "backorder";
+
+function merchantAvailability(value: unknown, stockQuantity: unknown): MerchantAvailability {
+  const status = String(value ?? "").toLowerCase();
+  if (status === "preorder" || status === "backorder" || status === "out_of_stock") {
+    return status;
+  }
+  if (stockQuantity !== null && stockQuantity !== undefined && Number(stockQuantity) <= 0) {
+    return "out_of_stock";
+  }
+  return "in_stock";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -102,12 +115,7 @@ Deno.serve(async (req: Request) => {
         .filter((url): url is string => !!url && url !== primaryImage)
         .slice(0, 10);
 
-      const inStock =
-        p.availability === "out_of_stock"
-          ? false
-          : p.stock_quantity === null || p.stock_quantity === undefined
-            ? true
-            : Number(p.stock_quantity) > 0;
+      const availability = merchantAvailability(p.availability, p.stock_quantity);
 
       const hasIdentifier = !!(p.gtin || (p.brand && p.mpn));
 
@@ -134,7 +142,7 @@ Deno.serve(async (req: Request) => {
         `      <g:link>${esc(link)}</g:link>`,
         `      <g:image_link>${esc(primaryImage)}</g:image_link>`,
         ...additionalImages.map((url) => `      <g:additional_image_link>${esc(url)}</g:additional_image_link>`),
-        `      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>`,
+        `      <g:availability>${availability}</g:availability>`,
         `      <g:price>${feedPrice.toFixed(2)} USD</g:price>`,
         `      <g:condition>${esc(p.condition || "new")}</g:condition>`,
         `      <g:brand>${esc(p.brand || SHOP_TITLE)}</g:brand>`,
@@ -166,18 +174,10 @@ Deno.serve(async (req: Request) => {
             : "Refrigerants";
       parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
 
-      // Google product category: audit requires taxonomy ID 2364 (Air Conditioners)
-      // for AC / mini-split / heat-pump units; other items keep their own value.
+      // Official Google taxonomy: 605 is Air Conditioners. Category 2364 is
+      // Brandy and must never be applied to HVAC equipment.
       if (isHvacUnit) {
-        parts.push(`      <g:google_product_category>2364</g:google_product_category>`);
-        // AHRI certification for HVAC equipment (audit-supplied values).
-        parts.push(
-          `      <g:certification>`,
-          `        <g:certification_authority>AHRI</g:certification_authority>`,
-          `        <g:certification_name>AHRI Certified</g:certification_name>`,
-          `        <g:certification_code>AHRI-CERTIFIED</g:certification_code>`,
-          `      </g:certification>`,
-        );
+        parts.push(`      <g:google_product_category>605</g:google_product_category>`);
       } else if (p.google_product_category) {
         parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
       }

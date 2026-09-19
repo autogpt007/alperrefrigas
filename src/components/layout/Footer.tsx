@@ -147,7 +147,9 @@ const Footer = () => {
               <div className="flex items-start space-x-3" itemScope itemType="https://schema.org/Organization">
                 <MapPin className="h-4 w-4 text-blue-400 mt-1" />
                 <div>
-                  <div className="font-medium" itemProp="name">Legal Entity: Alper Chemical Group</div>
+                  <div className="font-medium">
+                    Legal Entity: <span itemProp="name">Alper Chemical Group</span>
+                  </div>
                   <address
                     className="text-sm text-gray-300 not-italic"
                     itemProp="address"

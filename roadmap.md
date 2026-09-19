@@ -6,3 +6,4 @@
 - [x] Verify: Product JSON-LD parity vs merchant feed price ($59 = $59); removed invented "MOQ 40 cylinders" claim from structured data
 - [x] Verify: checkout test order on card completed (ORD-20260919-896289, FL 6% tax, create-order 200); create-order API rejects Zelle (400); site-wide mention search clean
 - [ ] Publish + re-run GMC guard; user requests Merchant Center re-review
+- [ ] GMC correction: category 2364→605, remove unsupported AHRI feed/schema claim, preserve all availability states, align identity markup, regenerate/deploy/publish/verify
