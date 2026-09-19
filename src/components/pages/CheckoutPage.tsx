@@ -76,9 +76,6 @@ const CheckoutPage = () => {
     billingState: '',
     billingZipCode: '',
     billingCountry: 'United States',
-    cashappTag: '',
-    zelleTag: '',
-    zellePhone: '',
     // F-Gas certification for EU orders
     fGasCertificationNumber: '',
     fGasCertificationValid: false,
@@ -90,15 +87,12 @@ const CheckoutPage = () => {
   const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
-  const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
   // Check if cart has AC products
   const hasACProducts = items.some(item => item.product_type === 'air_conditioner');
   const acItems = items.filter(item => item.product_type === 'air_conditioner');
-  const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
 
   // Shipping zones for dynamic rates
   const { data: shippingZones } = useShippingZones();
@@ -281,8 +275,8 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
-  // Bank wire / Zelle settlement discount (applied after any coupon)
-  const PAYMENT_DISCOUNT_METHODS = ['bank_wire', 'zelle'];
+  // Bank wire settlement discount (applied after any coupon)
+  const PAYMENT_DISCOUNT_METHODS = ['bank_wire'];
   const isPaymentDiscountEligible = PAYMENT_DISCOUNT_METHODS.includes(formData.paymentMethod);
   const paymentDiscount = isPaymentDiscountEligible
     ? Math.max(0, subtotal - couponDiscount) * 0.15
@@ -337,47 +331,6 @@ const CheckoutPage = () => {
         });
         return false;
       }
-    }
-
-    if (formData.paymentMethod === 'zelle') {
-      if (!formData.zelleTag || !formData.zelleTag.trim()) {
-        toast({
-          title: "Missing Zelle Information",
-          description: "Please provide your Zelle email address",
-          variant: "destructive",
-        });
-        return false;
-      }
-      // Basic email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.zelleTag)) {
-        toast({
-          title: "Invalid Email",
-          description: "Please enter a valid email address for Zelle",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    if (formData.paymentMethod === 'cashapp') {
-      if (!formData.cashappTag || !formData.cashappTag.trim()) {
-        toast({
-          title: "Missing CashApp Information",
-          description: "Please provide your CashApp $cashtag",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    if (formData.paymentMethod.startsWith('crypto_') && !selectedCryptoWallet) {
-      toast({
-        title: "Missing Crypto Wallet",
-        description: "Please select a crypto wallet for payment",
-        variant: "destructive",
-      });
-      return false;
     }
 
     // F-Gas validation for EU refrigerant orders
@@ -516,8 +469,8 @@ const CheckoutPage = () => {
         notes: [formData.notes, taxCalculation.taxNotice].filter(Boolean).join('\n\n'),
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
-        zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
-        cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
+        zelle_tag: null,
+        cashapp_tag: null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
         payment_details: {
           // Tax information for audit trail
@@ -552,16 +505,11 @@ const CheckoutPage = () => {
               country: formData.billingCountry || formData.country
             }
           } : {}),
-          // Crypto wallet details if applicable
-          ...(formData.paymentMethod.startsWith('crypto_') ? {
-            selected_wallet: selectedCryptoWallet,
-            wallet_type: formData.paymentMethod.replace('crypto_', '')
-          } : {}),
-          // Settlement discount for bank wire / Zelle (server re-verifies)
+          // Settlement discount for bank wire (server re-verifies)
           ...(paymentDiscount > 0 ? {
             payment_discount_percent: 15,
             payment_discount_amount: Number(paymentDiscount.toFixed(2)),
-            payment_discount_reason: 'bank_wire_zelle'
+            payment_discount_reason: 'bank_wire'
           } : {})
         },
       };
@@ -686,8 +634,8 @@ const CheckoutPage = () => {
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
         title="Secure Checkout - Alper Refrigerant"
-        description="Complete your refrigerant order with our secure checkout process. Multiple payment options available including credit card, Zelle, and CashApp."
-        keywords="secure checkout, refrigerant purchase, credit card payment, Zelle payment, CashApp payment"
+        description="Complete your refrigerant order with our secure checkout process. Pay by credit card or bank wire transfer."
+        keywords="secure checkout, refrigerant purchase, credit card payment, bank wire payment"
         robotsContent="noindex, nofollow"
         canonicalUrl="/checkout"
       />
@@ -976,32 +924,14 @@ const CheckoutPage = () => {
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                   <CardContent className="space-y-6">
-                     {walletsLoading ? (
-                       <div className="text-center py-8">
-                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                         <p className="text-sm text-gray-500 mt-2">Loading payment methods...</p>
-                       </div>
-                     ) : (
-                       <PaymentMethodSelector
-                         selectedMethod={formData.paymentMethod}
-                         onMethodSelect={(method) => {
-                           handleInputChange('paymentMethod', method);
-                           if (method.includes('crypto_')) {
-                             const cryptoType = method.replace('crypto_', '');
-                             const wallet = getCryptoWallets().find(w => w.payment_type === cryptoType);
-                             if (wallet) setSelectedCryptoWallet(wallet.id);
-                           }
-                         }}
-                           availableMethods={[
-                             'credit_card',
-                             'bank_wire',
-                             'zelle',
-                             'cashapp',
-                             ...getCryptoWallets().map(w => `crypto_${w.payment_type}`)
-                           ]}
-                       />
-                     )}
+                    <CardContent className="space-y-6">
+                      <PaymentMethodSelector
+                        selectedMethod={formData.paymentMethod}
+                        onMethodSelect={(method) => {
+                          handleInputChange('paymentMethod', method);
+                        }}
+                        availableMethods={['credit_card', 'bank_wire']}
+                      />
 
                     {/* Payment Method Details */}
                     <div className="border-t pt-6">
