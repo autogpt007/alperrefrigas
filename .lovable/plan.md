@@ -1,4 +1,8 @@
-# GMC Guard: close the remaining audit gaps (cart disclosure + product data parity check)
+# GMC Guard: close the remaining audit gaps (cart disclosure + product data parity check) + misrepresentation re-review prep
+
+## Context update (from the user)
+The store IS on Google Merchant Center and was approved; Google issued an actual **misrepresentation suspension yesterday**. The Guardian findings are its re-scan of the checks that feed that suspension. Goal: fix the verifiable gaps on-site so the Merchant Center re-review has the best possible case. Google does not disclose the exact trigger, so this plan closes every gap we can control.
+
 
 ## What the audit found vs. what is actually live (verified)
 
@@ -24,6 +28,12 @@ All values are real, taken from the live shipping zones table (US Continental: b
 
 ### 3. Address consistency sweep (read-only verification)
 - Confirm the exact address string `382 NE 191st St, Miami, FL 33179` is identical across `index.html` (JSON-LD + noscript), footer microdata, Contact page, and `public/llms.txt`. Correct `llms.txt` only if it deviates.
+
+### 4. Misrepresentation re-review prep (audit-driven, safe changes only)
+- **Payment-method messaging audit**: Zelle / CashApp / crypto are the strongest known Google misrepresentation triggers when advertised on a Shopping-facing storefront. List where they appear (homepage, footer, cart, product pages, policies) and report back — removal or rewording is a business decision, presented to the user before any change.
+- **Identity consistency**: confirm the Merchant Center account's verified business name, address, and phone exactly match the site (Alper Chemical Group / Alper Refrigerants, Miami address, 682-215-2974) — mismatched identity is a common suspension cause.
+- **Price parity**: confirm feed prices equal page prices for all products (part of step 2, extended to a spot-check across categories).
+- Note for the user: the domain migrated ~2 months ago; young-domain trust is a Google factor we cannot change, only mitigate with consistent, verifiable info.
 
 ## What is intentionally NOT done (per the audit's hard rules)
 - No checkout, payment, or cart **logic** changes — only the visible disclosure block.
