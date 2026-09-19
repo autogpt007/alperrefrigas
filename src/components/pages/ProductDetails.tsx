@@ -634,6 +634,7 @@ const ProductDetails = () => {
           description: enhancedDescription,
           image: product.thumbnailUrl || product.images?.[0] || product.image || '',
           category: product.category,
+          productType: product.product_type,
           specifications: {
             chemicalFormula: product.chemicalFormula,
             casNumber: product.casNumber,
