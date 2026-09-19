@@ -624,8 +624,9 @@ const ProductDetails = () => {
         
         product={{
           name: product.name,
-          // Per-unit price to match Google Merchant Center feed (per-cylinder for refrigerants, per-piece for accessories, per-unit for AC)
-          price: isRefrigerant ? product.price : (product.base_unit_price || product.price),
+          // Price must match the headline price on the page and the Merchant feed:
+          // per-cylinder for refrigerants, single-unit rate for AC/heat-pump units.
+          price: isAC ? singleUnitPrice : (isRefrigerant ? product.price : (product.base_unit_price || product.price)),
           currency: 'USD',
           availability: product.availability === 'in_stock' ? 'InStock' : 'OutOfStock',
           brand: product.brand || 'Alper Refrigerant',
