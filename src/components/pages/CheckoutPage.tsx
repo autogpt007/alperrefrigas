@@ -1397,9 +1397,9 @@ const CheckoutPage = () => {
                   {/* What happens next */}
                   <div className="mt-4 rounded-lg border bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
                     <p className="font-medium text-foreground">What happens next</p>
-                    {formData.paymentMethod === 'bank_wire' || formData.paymentMethod === 'zelle' ? (
+                    {formData.paymentMethod === 'bank_wire' ? (
                       <p>
-                        You'll get an order confirmation by email with our {formData.paymentMethod === 'zelle' ? 'Zelle' : 'bank wire'} payment
+                        You'll get an order confirmation by email with our bank wire payment
                         details. Our team calls or emails you within one business day to confirm freight and release the shipment once payment clears.
                       </p>
                     ) : (
