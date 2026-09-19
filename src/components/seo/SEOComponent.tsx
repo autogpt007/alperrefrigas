@@ -84,7 +84,6 @@ const SEOComponent: React.FC<SEOProps> = ({
   const legalName = 'Alper Chemical Group';
   const mainPhone = '+1-682-215-2974';
   const salesEmail = 'sales@alperrefrigerants.com';
-  const supportEmail = 'support@alperrefrigerants.com';
   
   const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName}`;
   
@@ -185,81 +184,16 @@ const SEOComponent: React.FC<SEOProps> = ({
     }))
   } : null;
 
-  // Enhanced Organization structured data
+  // Verified legal and contact identity shared by every public page.
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": businessName,
     "legalName": legalName,
-    "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
     "url": siteUrl,
     "logo": `${siteUrl}/logo.png`,
-    "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
-    "foundingDate": "2020",
-    "serviceArea": [
-      { "@type": "Country", "name": "United States" },
-      { "@type": "Country", "name": "United Kingdom" },
-      { "@type": "Country", "name": "Canada" },
-      { "@type": "Country", "name": "Australia" },
-      { "@type": "AdministrativeArea", "name": "European Union" }
-    ],
-    "areaServed": [
-      { "@type": "Country", "name": "United States" },
-      { "@type": "Country", "name": "United Kingdom" },
-      { "@type": "Country", "name": "Canada" },
-      { "@type": "Country", "name": "Australia" },
-      { "@type": "AdministrativeArea", "name": "European Union" }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Refrigerant Products",
-      "itemListElement": [
-        {
-          "@type": "OfferCatalog",
-          "name": "HFC Refrigerants",
-          "description": "High-performance HFC refrigerants for commercial and industrial applications"
-        },
-        {
-          "@type": "OfferCatalog", 
-          "name": "HFO Refrigerants",
-          "description": "Next-generation low-GWP HFO refrigerants for environmental compliance"
-        },
-        {
-          "@type": "OfferCatalog",
-          "name": "Natural Refrigerants",
-          "description": "Eco-friendly natural refrigerant solutions"
-        }
-      ]
-    },
-    "contactPoint": [
-      {
-        "@type": "ContactPoint",
-        "telephone": mainPhone,
-        "contactType": "sales",
-        "email": salesEmail,
-        "availableLanguage": ["English", "Spanish"],
-        "hoursAvailable": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "08:00",
-          "closes": "17:00"
-        }
-      },
-      {
-        "@type": "ContactPoint", 
-        "telephone": mainPhone,
-        "contactType": "customer service",
-        "email": supportEmail,
-        "hoursAvailable": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "08:00",
-          "closes": "17:00"
-        }
-      }
-    ],
-    "telephone": "+1-682-215-2974",
-    "email": "sales@alperrefrigerants.com",
+    "telephone": mainPhone,
+    "email": salesEmail,
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "382 NE 191st St",
@@ -267,15 +201,6 @@ const SEOComponent: React.FC<SEOProps> = ({
       "addressRegion": "FL",
       "postalCode": "33179",
       "addressCountry": "US"
-    },
-    "sameAs": [
-      "https://www.facebook.com/alperrefrigerants",
-      "https://www.linkedin.com/company/alperrefrigerants"
-    ],
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": `${siteUrl}/products?search={search_term_string}`,
-      "query-input": "required name=search_term_string"
     }
   };
 

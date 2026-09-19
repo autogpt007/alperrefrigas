@@ -62,6 +62,20 @@ function merchantAvailability(value: unknown, stockQuantity: unknown): MerchantA
   return "in_stock";
 }
 
+function googleProductCategory(product: Record<string, unknown>): string | null {
+  const category = String(product.category ?? "").toLowerCase();
+  const name = String(product.name ?? "").toLowerCase();
+
+  if (category.startsWith("heat-pump") || product.product_type === "air_conditioner") return "605";
+  if (product.product_type !== "accessory") return null;
+  if (category === "safety") return "2047";
+  if (category === "fittings" || category === "valves") return "1810";
+  if (category === "gauges" || name.includes("gauge") || name.includes("analyzer")) return "1732";
+  if (name.includes("leak detector")) return "1991";
+  if (name.includes("scale")) return "1698";
+  return "1167";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -174,13 +188,10 @@ Deno.serve(async (req: Request) => {
             : "Refrigerants";
       parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
 
-      // Official Google taxonomy: 605 is Air Conditioners. Category 2364 is
-      // Brandy and must never be applied to HVAC equipment.
-      if (isHvacUnit) {
-        parts.push(`      <g:google_product_category>605</g:google_product_category>`);
-      } else if (p.google_product_category) {
-        parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
-      }
+      // Use verified numeric IDs from Google's official US taxonomy. Refrigerants
+      // are left uncategorized because the taxonomy has no accurate refrigerant class.
+      const taxonomyId = googleProductCategory(p);
+      if (taxonomyId) parts.push(`      <g:google_product_category>${taxonomyId}</g:google_product_category>`);
 
       items.push(`    <item>\n${parts.join("\n")}\n    </item>`);
     }
