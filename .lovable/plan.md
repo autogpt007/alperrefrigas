@@ -41,13 +41,15 @@ Keep **credit/debit card (Stripe)** and **bank wire** as the only payment method
 - **Content sweep**: remove Zelle/CashApp/crypto mentions from `PaymentInformation.tsx`, `FAQ.tsx`, `ContactUs.tsx`, `ProductDetails.tsx`, `index.html` noscript ("credit card, Zelle, CashApp, cryptocurrency" → "credit card and bank transfer"), and any feed/description text. Historical order/invoice records in the database are left untouched.
 
 ## What is intentionally NOT done (per the audit's hard rules)
-- No checkout, payment, or cart **logic** changes — only the visible disclosure block.
 - No invented reviews, ratings, certifications, or policy text; no feed attributes added.
 - No Merchant Center / Content API calls from the storefront.
 - No placeholder text: every value used is verified real (address, phone, email, $45.00 base, $25.00 HazMat). **No placeholders remain needing your input.**
+- Note: the payment-logic exception above is now lifted for task 4, which the user explicitly ordered.
 
 ## Verification
 1. Build passes; cart page renders the disclosure block above the checkout button on desktop and mobile.
 2. Playwright on the published site: product page head contains parseable Product JSON-LD whose price equals the feed price for that SKU.
-3. Raw HTML fetch of the homepage still shows the full address in JSON-LD and noscript.
-4. Publish, then re-run the GMC guard so it re-scans the live site and clears the findings.
+3. Raw HTML fetch of the homepage still shows the full address in JSON-LD and noscript, and no longer mentions Zelle/CashApp/crypto.
+4. Checkout flow offers only Card and Bank Wire end-to-end; a test order completes on card.
+5. Site-wide search shows no remaining customer-facing Zelle/CashApp/crypto mentions.
+6. Publish, then re-run the GMC guard so it re-scans the live site; then request the Merchant Center re-review to lift the misrepresentation suspension.
