@@ -110,6 +110,22 @@ Deno.serve(async (req: Request) => {
 
       const hasIdentifier = !!(p.gtin || (p.brand && p.mpn));
 
+      // GMC rule: feed price must match the price a single unit sells for on the
+      // landing page. AC / mini-split / heat-pump units are orderable from qty 1,
+      // so emit the single-unit rate (5+ rate + 20% small-order surcharge), the
+      // same calculation the storefront's calculateACPricingTier(product, 1) runs.
+      const categoryPre = String(p.category ?? "").toLowerCase();
+      const isHvacUnitPre =
+        categoryPre.startsWith("heat-pump") || p.product_type === "air_conditioner";
+      let feedPrice = Number(p.price);
+      if (isHvacUnitPre && p.base_unit_price && p.q20_units) {
+        const uplift5_19 = Number(p.custom_uplift_5_19 ?? 35);
+        feedPrice =
+          Math.round(
+            Number(p.base_unit_price) * (1 + uplift5_19 / 100) * 1.2 * 100,
+          ) / 100;
+      }
+
       const parts: string[] = [
         `      <g:id>${esc(p.sku || p.id)}</g:id>`,
         `      <g:title>${esc(plainText(p.name, 150))}</g:title>`,
@@ -118,9 +134,7 @@ Deno.serve(async (req: Request) => {
         `      <g:image_link>${esc(primaryImage)}</g:image_link>`,
         ...additionalImages.map((url) => `      <g:additional_image_link>${esc(url)}</g:additional_image_link>`),
         `      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>`,
-        // Per-cylinder / per-unit price only — must match the price shown on the
-        // product page, otherwise GMC reports a mismatched-price violation.
-        `      <g:price>${Number(p.price).toFixed(2)} USD</g:price>`,
+        `      <g:price>${feedPrice.toFixed(2)} USD</g:price>`,
         `      <g:condition>${esc(p.condition || "new")}</g:condition>`,
         `      <g:brand>${esc(p.brand || SHOP_TITLE)}</g:brand>`,
       ];
