@@ -29,11 +29,16 @@ All values are real, taken from the live shipping zones table (US Continental: b
 ### 3. Address consistency sweep (read-only verification)
 - Confirm the exact address string `382 NE 191st St, Miami, FL 33179` is identical across `index.html` (JSON-LD + noscript), footer microdata, Contact page, and `public/llms.txt`. Correct `llms.txt` only if it deviates.
 
-### 4. Misrepresentation re-review prep (audit-driven, safe changes only)
-- **Payment-method messaging audit**: Zelle / CashApp / crypto are the strongest known Google misrepresentation triggers when advertised on a Shopping-facing storefront. List where they appear (homepage, footer, cart, product pages, policies) and report back — removal or rewording is a business decision, presented to the user before any change.
-- **Identity consistency**: confirm the Merchant Center account's verified business name, address, and phone exactly match the site (Alper Chemical Group / Alper Refrigerants, Miami address, 682-215-2974) — mismatched identity is a common suspension cause.
-- **Price parity**: confirm feed prices equal page prices for all products (part of step 2, extended to a spot-check across categories).
-- Note for the user: the domain migrated ~2 months ago; young-domain trust is a Google factor we cannot change, only mitigate with consistent, verifiable info.
+### 4. Remove Zelle, CashApp, and crypto as payment methods (user decision)
+Keep **credit/debit card (Stripe)** and **bank wire** as the only payment methods. Removal is customer-facing only — no destructive database changes, so historical orders that used the old methods still render correctly.
+
+- **Checkout (`CheckoutPage.tsx`, `PaymentMethodSelector.tsx`)**: offer only Card and Bank Wire; strip Zelle/CashApp/crypto flows, wallet lookups, and the wire/Zelle 15% discount becomes wire-only (no Zelle branch).
+- **Order confirmation (`OrderConfirmation.tsx`)**: remove crypto/Zelle payment instructions; card and wire orders keep their existing confirmation flows.
+- **Routes & pages (`App.tsx`, `CryptoPaymentPage.tsx`, `CryptoPaymentSection.tsx`)**: remove the crypto payment route and components.
+- **Admin (`PaymentManagement.tsx`, `InvoiceForm.tsx`, `InvoicesManager.tsx`)**: hide wallet-address management; invoice payment instructions limited to card and wire.
+- **Invoice PDFs (`invoice-pdf.ts`)**: payment details block shows card + wire only.
+- **Backend (`create-order` edge function)**: reject order submissions with payment methods other than card/wire (server-side enforcement, not just UI).
+- **Content sweep**: remove Zelle/CashApp/crypto mentions from `PaymentInformation.tsx`, `FAQ.tsx`, `ContactUs.tsx`, `ProductDetails.tsx`, `index.html` noscript ("credit card, Zelle, CashApp, cryptocurrency" → "credit card and bank transfer"), and any feed/description text. Historical order/invoice records in the database are left untouched.
 
 ## What is intentionally NOT done (per the audit's hard rules)
 - No checkout, payment, or cart **logic** changes — only the visible disclosure block.
