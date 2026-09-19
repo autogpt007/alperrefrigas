@@ -142,7 +142,7 @@ const FAQ = () => {
         },
         {
           question: 'How long do refunds take?',
-          answer: 'Once the returned shipment is received and inspected, refunds are issued to the original payment method. Card refunds typically post within 5-10 business days; bank wire and Zelle refunds are returned to the originating account. Return shipping costs are deducted from the refund on customer-initiated returns.'
+          answer: 'Once the returned shipment is received and inspected, refunds are issued to the original payment method. Card refunds typically post within 5-10 business days; bank wire refunds are returned to the originating account. Return shipping costs are deducted from the refund on customer-initiated returns.'
         },
         {
           question: 'What if my shipment arrives damaged?',
@@ -161,11 +161,7 @@ const FAQ = () => {
         },
         {
           question: 'What payment methods do you accept?',
-          answer: 'We accept major credit cards, bank wire transfer, Zelle and ACH. Net terms are available for qualified business accounts after credit review. Orders ship once payment clears unless terms are already established.'
-        },
-        {
-          question: 'Do you offer a discount for bank wire or Zelle?',
-          answer: 'Yes. Orders paid by bank wire or Zelle receive a 15% discount, applied automatically at checkout when you select either method.'
+          answer: 'We accept major credit cards and bank wire transfer. Net terms are available for qualified business accounts after credit review. Orders ship once payment clears unless terms are already established.'
         },
         {
           question: 'Do you offer volume discounts?',
