@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
@@ -1051,16 +1051,6 @@ const CheckoutPage = () => {
                             </div>
                           </div>
                         </div>
-                      )}
-
-                      {/* Cryptocurrency Payment Information */}
-                      {formData.paymentMethod.startsWith('crypto_') && (
-                        <Alert className="border-orange-300 bg-orange-50">
-                          <Bitcoin className="h-4 w-4 text-orange-600" />
-                          <AlertDescription className="text-orange-800">
-                            Payment details will be provided after order confirmation. You'll have 30 minutes to complete the cryptocurrency payment.
-                          </AlertDescription>
-                        </Alert>
                       )}
                     </div>
                   </CardContent>
