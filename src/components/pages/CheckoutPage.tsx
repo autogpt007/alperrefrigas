@@ -87,6 +87,7 @@ const CheckoutPage = () => {
   const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bankWireDetails, setBankWireDetails] = useState<Record<string, string> | null>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
