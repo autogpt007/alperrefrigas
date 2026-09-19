@@ -20,9 +20,9 @@ const MyAccount = () => {
     firstName: user?.user_metadata?.full_name?.split(' ')[0] || '',
     lastName: user?.user_metadata?.full_name?.split(' ')[1] || '',
     email: user?.email || '',
-    phone: '+1 (555) 123-4567',
-    company: 'HVAC Solutions Inc.',
-    licenseNumber: 'EPA-608-123456'
+    phone: '',
+    company: '',
+    licenseNumber: ''
   });
 
   useEffect(() => {
