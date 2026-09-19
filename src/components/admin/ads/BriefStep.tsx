@@ -25,7 +25,7 @@ export const initialBrief: BriefState = {
   geography: "United States (Miami FL, TX and CA distribution centers) plus 54 export countries",
   usps: [
     "Wholesale pallet and 20ft/40ft container pricing",
-    "Extra 15% off on bank wire or Zelle payments",
+    "Extra 15% off on bank wire payments",
     "Same-day shipping from TX, FL and CA distribution centers",
     "EPA Section 608 certified, DOT HazMat-compliant shipping",
     "99.9% purity with SDS provided for every cylinder",
