@@ -96,54 +96,16 @@ const PaymentInformation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Smartphone className="h-5 w-5 mr-2 text-purple-600" />
-                  Digital Payment Options
+                  Invoice Payment Options
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>Zelle:</strong></p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
-                  <li>Instant transfers from your bank account</li>
-                  <li>No transaction fees</li>
-                  <li>Available through most major US banks</li>
-                  <li>Send to our registered Zelle email (provided at checkout)</li>
-                </ul>
-                
-                <p><strong>CashApp:</strong></p>
-                <ul className="list-disc pl-6 space-y-1 mb-4">
-                  <li>Quick payment via $cashtag</li>
-                  <li>Instant confirmation</li>
-                  <li>Our $cashtag provided at checkout</li>
-                </ul>
-
                 <p><strong>PayPal:</strong></p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Business PayPal accepted</li>
                   <li>Buyer protection available</li>
                   <li>Invoice payment option for commercial accounts</li>
                 </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Bitcoin className="h-5 w-5 mr-2 text-orange-600" />
-                  Cryptocurrency Payments
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <p><strong>Accepted Cryptocurrencies:</strong></p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>Bitcoin (BTC):</strong> Primary cryptocurrency option</li>
-                  <li><strong>Ethereum (ETH):</strong> Accepted on ERC-20 network</li>
-                  <li><strong>USDT (Tether):</strong> Stablecoin option available</li>
-                  <li><strong>USDC:</strong> USD Coin accepted</li>
-                </ul>
-                <div className="bg-orange-50 p-4 rounded-lg mt-4 border border-orange-200">
-                  <p className="text-orange-800 text-sm">
-                    <strong>⏱️ Payment Window:</strong> Cryptocurrency payments must be completed within 30 minutes of order placement. Exchange rate locked at time of checkout.
-                  </p>
-                </div>
               </CardContent>
             </Card>
 
@@ -193,23 +155,8 @@ const PaymentInformation = () => {
                       <td className="py-2">Same day</td>
                     </tr>
                     <tr className="border-b">
-                      <td className="py-2">Zelle</td>
-                      <td className="py-2">Instant</td>
-                      <td className="py-2">Same day</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="py-2">CashApp</td>
-                      <td className="py-2">Instant</td>
-                      <td className="py-2">Same day</td>
-                    </tr>
-                    <tr className="border-b">
                       <td className="py-2">Wire Transfer</td>
                       <td className="py-2">1-3 business days</td>
-                      <td className="py-2">Upon confirmation</td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="py-2">Cryptocurrency</td>
-                      <td className="py-2">10-60 minutes</td>
                       <td className="py-2">Upon confirmation</td>
                     </tr>
                     <tr>
