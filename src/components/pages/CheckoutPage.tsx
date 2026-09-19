@@ -19,7 +19,6 @@ import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Sca
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
-import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
@@ -1299,7 +1298,7 @@ const CheckoutPage = () => {
                     )}
                     {paymentDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
-                        <span>Bank wire / Zelle discount (15%):</span>
+                        <span>Bank wire discount (15%):</span>
                         <span>-{formatCurrency(paymentDiscount)}</span>
                       </div>
                     )}
