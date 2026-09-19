@@ -42,7 +42,7 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       const slug = createProductSlug(product.name);
       return {
         slug: `/products/${slug}`,
-        title: `${product.name} - North American Refrigerants`,
+        title: `${product.name} - Alper Refrigerants`,
         name: product.name
       };
     }

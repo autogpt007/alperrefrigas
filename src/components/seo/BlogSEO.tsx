@@ -55,12 +55,12 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
     "image": post.banner_image_url || post.featured_image_url || "https://alperrefrigerants.com/logo.png",
     "author": {
       "@type": "Organization",
-      "name": "North American Refrigerants",
+      "name": "Alper Refrigerants",
       "url": "https://alperrefrigerants.com"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "North American Refrigerants",
+      "name": "Alper Refrigerants",
       "logo": {
         "@type": "ImageObject",
         "url": "https://alperrefrigerants.com/logo.png"
@@ -115,7 +115,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
   return (
     <Helmet>
       {/* Basic Meta Tags */}
-      <title>{post.title} | North American Refrigerants - Expert Refrigerant Solutions</title>
+      <title>{post.title} | Alper Refrigerants</title>
       <meta name="description" content={cleanExcerpt} />
       <meta name="keywords" content={extractKeywords()} />
       <link rel="canonical" href={currentUrl} />
@@ -125,7 +125,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta property="og:description" content={cleanExcerpt} />
       <meta property="og:type" content="article" />
       <meta property="og:url" content={currentUrl} />
-      <meta property="og:site_name" content="North American Refrigerants" />
+      <meta property="og:site_name" content="Alper Refrigerants" />
       <meta property="og:locale" content="en_US" />
       {(post.banner_image_url || post.featured_image_url) && (
         <>
@@ -139,7 +139,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       {/* Article Meta Tags */}
       <meta property="article:published_time" content={post.created_at} />
       <meta property="article:modified_time" content={post.updated_at} />
-      <meta property="article:author" content="North American Refrigerants" />
+      <meta property="article:author" content="Alper Refrigerants" />
       <meta property="article:section" content="Refrigerant Industry" />
       {post.tags && post.tags.map(tag => (
         <meta key={tag} property="article:tag" content={tag} />
@@ -156,7 +156,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       {/* Additional SEO Tags */}
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
       <meta name="googlebot" content="index, follow" />
-      <meta name="author" content="North American Refrigerants" />
+      <meta name="author" content="Alper Refrigerants" />
       <meta name="article:opinion" content="false" />
       <meta name="news_keywords" content={extractKeywords()} />
       

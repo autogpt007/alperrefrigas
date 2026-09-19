@@ -225,7 +225,7 @@ const Sitemap = () => {
             <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-700">
               <div>
                 <strong>General Support:</strong><br />
-                Email: support@alperrefrigerants.com<br />
+                Email: sales@alperrefrigerants.com<br />
                 Phone: 1-682-215-2974
               </div>
               <div>

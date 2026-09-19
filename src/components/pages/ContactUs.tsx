@@ -195,8 +195,8 @@ const ContactUs = () => {
     "@type": "ContactPage",
     "mainEntity": {
       "@type": "Organization",
-      "name": "Alper Chemical Group",
-      "alternateName": "Alper Refrigerants",
+      "name": "Alper Refrigerants",
+      "legalName": "Alper Chemical Group",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "382 NE 191st St",
@@ -218,7 +218,7 @@ const ContactUs = () => {
           "@type": "ContactPoint", 
           "contactType": "customer service",
           "telephone": "+1-682-215-2974",
-          "email": "support@alperrefrigerants.com",
+          "email": "sales@alperrefrigerants.com",
           "hoursAvailable": "Mo-Fr 07:00-18:00"
         }
       ]
