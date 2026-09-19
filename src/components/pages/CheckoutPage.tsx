@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
