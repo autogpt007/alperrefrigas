@@ -1,4 +1,8 @@
-# GMC Guard: close the remaining audit gaps (cart disclosure + product data parity check)
+# GMC Guard: close the remaining audit gaps (cart disclosure + product data parity check) + misrepresentation re-review prep
+
+## Context update (from the user)
+The store IS on Google Merchant Center and was approved; Google issued an actual **misrepresentation suspension yesterday**. The Guardian findings are its re-scan of the checks that feed that suspension. Goal: fix the verifiable gaps on-site so the Merchant Center re-review has the best possible case. Google does not disclose the exact trigger, so this plan closes every gap we can control.
+
 
 ## What the audit found vs. what is actually live (verified)
 
