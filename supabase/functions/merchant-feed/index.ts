@@ -62,6 +62,7 @@ Deno.serve(async (req: Request) => {
       "availability", "stock_quantity", "images", "thumbnail_url", "google_product_category",
       "product_type", "category", "weight_kg", "length_cm", "width_cm", "height_cm",
       "identifier_exists", "updated_at",
+      "base_unit_price", "q20_units", "custom_uplift_5_19",
     ].join(",");
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
