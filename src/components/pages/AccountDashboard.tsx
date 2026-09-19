@@ -89,19 +89,8 @@ const AccountDashboard = () => {
   };
 
   const fetchAddresses = async () => {
-    // Mock addresses for now - in real app this would come from database
-    setAddresses([
-      {
-        id: '1',
-        name: 'Business Address',
-        street: '123 Industrial Blvd',
-        city: 'Houston',
-        state: 'TX',
-        zipCode: '77001',
-        country: 'USA',
-        isDefault: true
-      }
-    ]);
+    // No saved addresses until the customer adds one
+    setAddresses([]);
   };
 
   const updateProfile = async () => {

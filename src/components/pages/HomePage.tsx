@@ -218,7 +218,7 @@ const HomePage = () => {
     },
     {
       question: "Do you ship refrigerants internationally?",
-      answer: "Yes, we ship refrigerants globally from our distribution centers in Texas, Florida, and California. All shipments are DOT certified and comply with international shipping regulations."
+      answer: "Yes, we ship refrigerants globally from our our Miami, Florida distribution center. All shipments are DOT certified and comply with international shipping regulations."
     },
     {
       question: "Are your refrigerants EPA approved?",
@@ -230,7 +230,7 @@ const HomePage = () => {
     },
     {
       question: "How fast is your shipping?",
-      answer: "We offer same-day shipping for in-stock items from our Texas, Florida, and California distribution centers. Most orders arrive within 1-3 business days depending on location."
+      answer: "We offer same-day shipping for in-stock items from our Miami, Florida distribution center. Most orders arrive within 1-3 business days depending on location."
     },
     {
       question: "Do you provide Safety Data Sheets?",

@@ -293,7 +293,7 @@ const ContactUs = () => {
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold">
                     <Phone className="h-4 w-4 mr-2" />
-                    Emergency: +1 (800) 555-HELP
+                    Emergency: +1 (682) 215-2974
                   </Button>
                 </CardContent>
               </Card>

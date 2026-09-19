@@ -202,13 +202,11 @@ const Sitemap = () => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-gray-800">Distribution Centers</h4>
+                  <h4 className="font-semibold mb-3 text-gray-800">Business Address</h4>
                   <ul className="space-y-2 text-sm">
-                    <li>Houston, TX - Central Distribution Hub</li>
-                    <li>Atlanta, GA - Southeast Distribution</li>
-                    <li>Los Angeles, CA - West Coast Distribution</li>
-                    <li>Toronto, ON - Canadian Distribution</li>
-                    <li>Chicago, IL - Midwest Distribution</li>
+                    <li>Alper Chemical Group (DBA Alper Refrigerants)</li>
+                    <li>382 NE 191st St</li>
+                    <li>Miami, FL 33179, US</li>
                   </ul>
                 </div>
               </div>

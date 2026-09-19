@@ -50,7 +50,7 @@ const R454BLandingPage = () => {
     },
     {
       question: "Where can I buy R-454B in bulk?",
-      answer: "Alper Refrigerants is a wholesale R-454B supplier shipping from distribution centers in Texas, Florida, and California. We provide EPA-compliant documentation, competitive container-load pricing, and same-day shipping."
+      answer: "Alper Refrigerants is a wholesale R-454B supplier shipping from our Miami, Florida distribution center. We provide EPA-compliant documentation, competitive container-load pricing, and same-day shipping."
     }
   ];
 

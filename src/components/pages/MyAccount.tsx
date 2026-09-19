@@ -20,9 +20,9 @@ const MyAccount = () => {
     firstName: user?.user_metadata?.full_name?.split(' ')[0] || '',
     lastName: user?.user_metadata?.full_name?.split(' ')[1] || '',
     email: user?.email || '',
-    phone: '+1 (555) 123-4567',
-    company: 'HVAC Solutions Inc.',
-    licenseNumber: 'EPA-608-123456'
+    phone: '',
+    company: '',
+    licenseNumber: ''
   });
 
   useEffect(() => {
@@ -259,10 +259,8 @@ const MyAccount = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Billing Address</h3>
                   <div className="border rounded-lg p-4">
-                    <p className="font-medium">HVAC Solutions Inc.</p>
-                    <p className="text-sm text-gray-600">123 Main Street</p>
-                    <p className="text-sm text-gray-600">Houston, TX 77001</p>
-                    <Button variant="outline" className="mt-2">Edit Address</Button>
+                    <p className="text-sm text-gray-600">No billing address on file</p>
+                    <Button variant="outline" className="mt-2">Add Address</Button>
                   </div>
                 </div>
               </CardContent>

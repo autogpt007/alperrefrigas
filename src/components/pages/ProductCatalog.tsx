@@ -370,7 +370,7 @@ const ProductCatalog = () => {
         },
         {
           question: "How fast is refrigerant shipping?",
-          answer: "We offer same-day shipping for in-stock refrigerants from our distribution centers in Texas, Florida, and California. Most orders arrive within 1-3 business days."
+          answer: "We offer same-day shipping for in-stock refrigerants from our our Miami, Florida distribution center. Most orders arrive within 1-3 business days."
         }
       ];
     } else if (productType === 'accessory') {
