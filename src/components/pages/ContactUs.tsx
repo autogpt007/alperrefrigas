@@ -158,7 +158,7 @@ const ContactUs = () => {
     {
       icon: Phone,
       title: "Phone",
-      details: "+1 (800) 555-COOL",
+      details: "+1 (682) 215-2974",
       description: "Monday-Friday, 8AM-6PM EST"
     },
     {
@@ -170,8 +170,8 @@ const ContactUs = () => {
     {
       icon: MapPin,
       title: "Address",
-      details: "1234 Industrial Blvd, Suite 100",
-      description: "Houston, TX 77041"
+      details: "382 NE 191st St",
+      description: "Miami, FL 33179, United States"
     },
     {
       icon: Clock,
