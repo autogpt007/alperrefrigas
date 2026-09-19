@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Building, Smartphone, Bitcoin, DollarSign, Shield, Clock, AlertTriangle } from 'lucide-react';
+import { CreditCard, Building, Smartphone, DollarSign, Shield, Clock, AlertTriangle } from 'lucide-react';
 import SEOComponent from '../seo/SEOComponent';
 
 const PaymentInformation = () => {
