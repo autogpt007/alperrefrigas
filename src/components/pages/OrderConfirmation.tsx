@@ -9,7 +9,6 @@ import { useOrders } from '../../contexts/OrdersContext';
 import { useQuotes } from '../../contexts/QuotesContext';
 import { supabase } from '@/integrations/supabase/client';
 import SEOComponent from '../seo/SEOComponent';
-import { CryptoPaymentSection } from '../ui/CryptoPaymentSection';
 import { trackPurchase, cartItemToGA4Item, GA4ProductItem } from '@/utils/ga4Ecommerce';
 import { trackFBPurchase, trackFBLead } from '@/utils/facebookPixel';
 import { trackGoogleAdsPurchase, trackGoogleAdsLead } from '@/utils/googleAdsConversions';
@@ -281,12 +280,6 @@ const OrderConfirmation = () => {
             <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
           ) : data.payment_method === 'bank_wire' ? (
             <div className="text-6xl mb-4">🏦</div>
-          ) : data.payment_method?.startsWith('crypto_') ? (
-            <div className="text-6xl mb-4">⏳</div>
-          ) : data.payment_method === 'cashapp' ? (
-            <div className="text-6xl mb-4">💵</div>
-          ) : data.payment_method === 'zelle' ? (
-            <div className="text-6xl mb-4">📧</div>
           ) : (
             <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
           )}
@@ -294,9 +287,6 @@ const OrderConfirmation = () => {
             {isQuote ? 'Quote Request Submitted!' 
              : data.payment_method === 'credit_card' ? '✅ Order Confirmed!'
              : data.payment_method === 'bank_wire' ? '🏦 Order Received – Awaiting Payment'
-             : data.payment_method?.startsWith('crypto_') ? '⏳ Order Pending Payment'
-             : data.payment_method === 'cashapp' ? '💵 Order Awaiting CashApp Payment'
-             : data.payment_method === 'zelle' ? '📧 Order Awaiting Zelle Payment'
              : 'Order Confirmed!'}
           </h1>
           <p className="text-xl text-gray-600">
@@ -306,12 +296,6 @@ const OrderConfirmation = () => {
                 ? "Thank you for your order. You will be contacted within 24h by one of our sales agents and once your payment is confirmed we will process your order immediately."
               : data.payment_method === 'bank_wire'
                 ? "Thank you for your order. You will receive a proforma invoice with bank wire payment instructions. Your order will be processed as soon as we receive your payment confirmation receipt. Payment should be completed within 48h of order creation."
-              : data.payment_method?.startsWith('crypto_')
-                ? "Please send the exact crypto amount to the address provided. This screen will remain active for 30 minutes. After one network confirmation, your order will be fully confirmed. If payment is not received in time, you will automatically get a proforma invoice with wallet details."
-              : data.payment_method === 'cashapp'
-                ? "Thank you for your order. You will receive a proforma invoice with CashApp payment details. Once you complete the transfer and send us the confirmation screenshot, we'll process your order immediately."
-              : data.payment_method === 'zelle'
-                ? "Thank you for your order. You will receive a proforma invoice with Zelle account details. Please send your payment within 48h and email us your receipt to confirm."
                 : "Thank you for your order. We've received your payment and will process your order shortly."
             }
           </p>
@@ -402,39 +386,10 @@ const OrderConfirmation = () => {
                 <div className="pt-4 bg-blue-50 p-4 rounded-lg">
                   <p className="text-blue-800 text-sm font-medium">
                     This is a quote request. Pricing will be provided by our sales team within one business day.
-                  </p>
+              </p>
                 </div>
               )}
 
-              {/* Payment Instructions for Digital Payments */}
-              {!isQuote && data.payment_method && (data.payment_method === 'cashapp' || data.payment_method === 'zelle' || data.payment_method?.startsWith('crypto_')) && (
-                <div className="pt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
-                  <h4 className="font-semibold text-orange-900 mb-2">Payment Instructions</h4>
-                  {data.payment_method === 'cashapp' && (
-                    <div className="text-orange-800 text-sm space-y-2">
-                      <p>• You will receive a proforma invoice with our CashApp details via email</p>
-                      {data.cashapp_tag && (
-                        <p>• A payment request will be sent to your CashApp tag: <span className="font-mono font-medium">{data.cashapp_tag}</span></p>
-                      )}
-                      <p className="font-medium">• Please confirm the payment request within 24 hours to secure your order</p>
-                      <p>• Your order will be processed once payment is confirmed</p>
-                    </div>
-                  )}
-                  {data.payment_method === 'zelle' && (
-                    <div className="text-orange-800 text-sm space-y-2">
-                      <p>• You will receive a proforma invoice with our Zelle details via email</p>
-                      {data.zelle_tag && (
-                        <p>• Payment request will be sent to: <span className="font-mono font-medium">{data.zelle_tag}</span></p>
-                      )}
-                      {data.zelle_phone && (
-                        <p>• Backup contact: <span className="font-mono font-medium">{data.zelle_phone}</span></p>
-                      )}
-                      <p className="font-medium">• Please confirm the payment request within 24 hours to secure your order</p>
-                      <p>• Your order will be processed once payment is confirmed</p>
-                    </div>
-                  )}
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -532,21 +487,6 @@ const OrderConfirmation = () => {
               <div className="text-center">
                 <p className="text-gray-600">
                   Check your inbox for the proforma invoice. Once you send us the transfer receipt, your order status will update to Confirmed.
-                </p>
-              </div>
-            ) : data.payment_method?.startsWith('crypto_') ? (
-              <CryptoPaymentSection order={data} />
-            
-            ) : data.payment_method === 'cashapp' ? (
-              <div className="text-center">
-                <p className="text-gray-600">
-                  Open CashApp, complete the transfer, and reply to the invoice email with your payment proof.
-                </p>
-              </div>
-            ) : data.payment_method === 'zelle' ? (
-              <div className="text-center">
-                <p className="text-gray-600">
-                  Check your inbox for the Zelle invoice. Reply with your payment proof so we can confirm your order quickly.
                 </p>
               </div>
             ) : (
