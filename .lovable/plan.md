@@ -29,6 +29,12 @@ All values are real, taken from the live shipping zones table (US Continental: b
 ### 3. Address consistency sweep (read-only verification)
 - Confirm the exact address string `382 NE 191st St, Miami, FL 33179` is identical across `index.html` (JSON-LD + noscript), footer microdata, Contact page, and `public/llms.txt`. Correct `llms.txt` only if it deviates.
 
+### 4. Misrepresentation re-review prep (audit-driven, safe changes only)
+- **Payment-method messaging audit**: Zelle / CashApp / crypto are the strongest known Google misrepresentation triggers when advertised on a Shopping-facing storefront. List where they appear (homepage, footer, cart, product pages, policies) and report back — removal or rewording is a business decision, presented to the user before any change.
+- **Identity consistency**: confirm the Merchant Center account's verified business name, address, and phone exactly match the site (Alper Chemical Group / Alper Refrigerants, Miami address, 682-215-2974) — mismatched identity is a common suspension cause.
+- **Price parity**: confirm feed prices equal page prices for all products (part of step 2, extended to a spot-check across categories).
+- Note for the user: the domain migrated ~2 months ago; young-domain trust is a Google factor we cannot change, only mitigate with consistent, verifiable info.
+
 ## What is intentionally NOT done (per the audit's hard rules)
 - No checkout, payment, or cart **logic** changes — only the visible disclosure block.
 - No invented reviews, ratings, certifications, or policy text; no feed attributes added.
