@@ -164,7 +164,7 @@ const ContactUs = () => {
     {
       icon: Mail,
       title: "Email",
-      details: "info@alperrefrigerants.com",
+      details: "sales@alperrefrigerants.com",
       description: "We respond within 4 hours"
     },
     {
