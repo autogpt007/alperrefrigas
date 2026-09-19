@@ -21,11 +21,6 @@ export interface BankDetails {
   address?: string;
 }
 
-export interface ZelleDetails {
-  recipient?: string;
-  handle?: string;
-}
-
 export interface InvoiceBranding {
   logoUrl?: string | null;
   signatureUrl?: string | null;
@@ -93,7 +88,6 @@ const isWire = (method?: string | null) => {
   const m = (method || "").toLowerCase();
   return m.includes("bank") || m.includes("wire") || m.includes("ach");
 };
-const isZelle = (method?: string | null) => (method || "").toLowerCase().includes("zelle");
 
 /**
  * Builds the human-readable payment instruction block printed on the PDF.
@@ -103,7 +97,6 @@ export const buildPaymentNotes = (opts: {
   paymentMethod?: string | null;
   orderNumber?: string;
   bank?: BankDetails;
-  zelle?: ZelleDetails;
 }): string => {
   const lines: string[] = [];
   const ref = opts.orderNumber ? ` (reference ${opts.orderNumber})` : "";
@@ -118,12 +111,6 @@ export const buildPaymentNotes = (opts: {
     if (b.swift) lines.push(`SWIFT / BIC: ${b.swift}`);
     if (b.address) lines.push(`Bank Address: ${b.address}`);
     lines.push("Please include the document number on the wire reference.");
-  } else if (isZelle(opts.paymentMethod)) {
-    const z = opts.zelle || {};
-    lines.push(`Payment by Zelle${ref}:`);
-    if (z.recipient) lines.push(`Recipient: ${z.recipient}`);
-    if (z.handle) lines.push(`Zelle Email / Phone: ${z.handle}`);
-    lines.push("Please include the document number in the Zelle memo.");
   } else {
     lines.push(
       `Payment instructions will be confirmed by our sales team${ref}. Contact ${COMPANY.email}.`
