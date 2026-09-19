@@ -107,14 +107,9 @@ const AboutUs = () => {
     "@type": "AboutPage",
     "mainEntity": {
       "@type": "Organization", 
-      "name": "Alper Chemical Group",
+      "name": "Alper Refrigerants",
       "legalName": "Alper Chemical Group",
-      "alternateName": "Alper Refrigerants",
       "description": "B2B professional wholesale refrigerant distributor serving EPA-certified HVAC contractors, licensed technicians, and industrial facilities across North America.",
-      "foundingDate": "2011",
-      "numberOfEmployees": "25-50",
-      "naics": "423730",
-      "isicV4": "4661",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "382 NE 191st St",
@@ -124,15 +119,7 @@ const AboutUs = () => {
         "addressCountry": "US"
       },
       "telephone": "+1-682-215-2974",
-      "email": "sales@alperrefrigerants.com",
-      "specialty": [
-        "HFC Refrigerant Distribution",
-        "HFO Refrigerant Sales", 
-        "Natural Refrigerant Supply",
-        "EPA Section 608 Compliance",
-        "HVAC Technical Support",
-        "Bulk Refrigerant Sales"
-      ]
+      "email": "sales@alperrefrigerants.com"
     }
   };
 

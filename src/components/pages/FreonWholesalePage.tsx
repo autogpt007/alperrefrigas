@@ -17,31 +17,23 @@ const FreonWholesalePage = () => {
       {
         "@type": "LocalBusiness",
         "@id": "https://alperrefrigerants.com/#business",
-        "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
+        "name": "Alper Refrigerants",
+        "legalName": "Alper Chemical Group",
         "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
         "url": "https://alperrefrigerants.com/products",
         "telephone": "+1-682-215-2974",
-        "email": "wholesale@alperrefrigerants.com",
+        "email": "sales@alperrefrigerants.com",
         "address": {
           "@type": "PostalAddress",
-          "addressCountry": "US",
-          "addressRegion": "TX"
+          "streetAddress": "382 NE 191st St",
+          "addressLocality": "Miami",
+          "addressRegion": "FL",
+          "postalCode": "33179",
+          "addressCountry": "US"
         },
-        "geo": {
-          "@type": "GeoCoordinates", 
-          "latitude": "29.4241",
-          "longitude": "-98.4936"
-        },
-        "openingHours": "Mo-Fr 08:00-18:00",
-        "priceRange": "$$",
         "serviceArea": {
           "@type": "Country",
           "name": "United States"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "reviewCount": "247"
         }
       },
       {
@@ -54,7 +46,7 @@ const FreonWholesalePage = () => {
           "@type": "ContactPoint",
           "telephone": "+1-682-215-2974",
           "contactType": "wholesale sales",
-          "email": "wholesale@alperrefrigerants.com"
+          "email": "sales@alperrefrigerants.com"
         }
       }
     ]
@@ -202,7 +194,7 @@ const FreonWholesalePage = () => {
                   </Button>
                 </Link>
                 <EmailObfuscator 
-                  email="wholesale@alperrefrigerants.com"
+                  email="sales@alperrefrigerants.com"
                   className="inline-block"
                 >
                   <Button 
@@ -542,10 +534,10 @@ const FreonWholesalePage = () => {
                     <Mail className="h-12 w-12 text-green-400 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-white mb-2">Email Wholesale Team</h3>
                     <EmailObfuscator 
-                      email="wholesale@alperrefrigerants.com"
+                      email="sales@alperrefrigerants.com"
                       className="text-green-400 text-lg font-semibold hover:text-green-300"
                     >
-                      wholesale@alperrefrigerants.com
+                      sales@alperrefrigerants.com
                     </EmailObfuscator>
                     <p className="text-gray-300 text-sm mt-2">24-hour response guaranteed</p>
                   </CardContent>

@@ -49,6 +49,33 @@ function absoluteImage(url: unknown): string | null {
   return `${BASE_URL}${raw.startsWith("/") ? raw : `/${raw}`}`;
 }
 
+type MerchantAvailability = "in_stock" | "out_of_stock" | "preorder" | "backorder";
+
+function merchantAvailability(value: unknown, stockQuantity: unknown): MerchantAvailability {
+  const status = String(value ?? "").toLowerCase();
+  if (status === "preorder" || status === "backorder" || status === "out_of_stock") {
+    return status;
+  }
+  if (stockQuantity !== null && stockQuantity !== undefined && Number(stockQuantity) <= 0) {
+    return "out_of_stock";
+  }
+  return "in_stock";
+}
+
+function googleProductCategory(product: Record<string, unknown>): string | null {
+  const category = String(product.category ?? "").toLowerCase();
+  const name = String(product.name ?? "").toLowerCase();
+
+  if (category.startsWith("heat-pump") || product.product_type === "air_conditioner") return "605";
+  if (product.product_type !== "accessory") return null;
+  if (category === "safety") return "2047";
+  if (category === "fittings" || category === "valves") return "1810";
+  if (category === "gauges" || name.includes("gauge") || name.includes("analyzer")) return "1732";
+  if (name.includes("leak detector")) return "1991";
+  if (name.includes("scale")) return "1698";
+  return "1167";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -102,12 +129,7 @@ Deno.serve(async (req: Request) => {
         .filter((url): url is string => !!url && url !== primaryImage)
         .slice(0, 10);
 
-      const inStock =
-        p.availability === "out_of_stock"
-          ? false
-          : p.stock_quantity === null || p.stock_quantity === undefined
-            ? true
-            : Number(p.stock_quantity) > 0;
+      const availability = merchantAvailability(p.availability, p.stock_quantity);
 
       const hasIdentifier = !!(p.gtin || (p.brand && p.mpn));
 
@@ -134,7 +156,7 @@ Deno.serve(async (req: Request) => {
         `      <g:link>${esc(link)}</g:link>`,
         `      <g:image_link>${esc(primaryImage)}</g:image_link>`,
         ...additionalImages.map((url) => `      <g:additional_image_link>${esc(url)}</g:additional_image_link>`),
-        `      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>`,
+        `      <g:availability>${availability}</g:availability>`,
         `      <g:price>${feedPrice.toFixed(2)} USD</g:price>`,
         `      <g:condition>${esc(p.condition || "new")}</g:condition>`,
         `      <g:brand>${esc(p.brand || SHOP_TITLE)}</g:brand>`,
@@ -166,21 +188,10 @@ Deno.serve(async (req: Request) => {
             : "Refrigerants";
       parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
 
-      // Google product category: audit requires taxonomy ID 2364 (Air Conditioners)
-      // for AC / mini-split / heat-pump units; other items keep their own value.
-      if (isHvacUnit) {
-        parts.push(`      <g:google_product_category>2364</g:google_product_category>`);
-        // AHRI certification for HVAC equipment (audit-supplied values).
-        parts.push(
-          `      <g:certification>`,
-          `        <g:certification_authority>AHRI</g:certification_authority>`,
-          `        <g:certification_name>AHRI Certified</g:certification_name>`,
-          `        <g:certification_code>AHRI-CERTIFIED</g:certification_code>`,
-          `      </g:certification>`,
-        );
-      } else if (p.google_product_category) {
-        parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
-      }
+      // Use verified numeric IDs from Google's official US taxonomy. Refrigerants
+      // are left uncategorized because the taxonomy has no accurate refrigerant class.
+      const taxonomyId = googleProductCategory(p);
+      if (taxonomyId) parts.push(`      <g:google_product_category>${taxonomyId}</g:google_product_category>`);
 
       items.push(`    <item>\n${parts.join("\n")}\n    </item>`);
     }

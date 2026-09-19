@@ -17,6 +17,27 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 
+const REQUIRED_ITEM_TAGS = ["id", "link", "image_link", "availability", "price"] as const;
+const ALLOWED_AVAILABILITY = new Set(["in_stock", "out_of_stock", "preorder", "backorder"]);
+
+function assertCompleteFeed(xml: string): number {
+  const items = xml.match(/<item>[\s\S]*?<\/item>/g) ?? [];
+  if (items.length === 0) throw new Error("feed contains no products");
+
+  items.forEach((item, index) => {
+    for (const tag of REQUIRED_ITEM_TAGS) {
+      const match = item.match(new RegExp(`<g:${tag}>([\\s\\S]*?)<\\/g:${tag}>`));
+      if (!match?.[1]?.trim()) throw new Error(`product ${index + 1} is missing ${tag}`);
+    }
+    const availability = item.match(/<g:availability>([^<]+)<\/g:availability>/)?.[1]?.trim();
+    if (!availability || !ALLOWED_AVAILABILITY.has(availability)) {
+      throw new Error(`product ${index + 1} has invalid availability`);
+    }
+  });
+
+  return items.length;
+}
+
 function loadEnvFile(): Record<string, string> {
   const path = resolve(".env");
   if (!existsSync(path)) return {};
@@ -52,12 +73,12 @@ async function main() {
     }
 
     const xml = await res.text();
-    const itemCount = (xml.match(/<item>/g) || []).length;
-
-    if (!xml.trim().startsWith("<?xml") || itemCount === 0) {
+    if (!xml.trim().startsWith("<?xml")) {
       console.warn("[merchant-feed] response was not a usable feed — keeping existing feed file");
       return;
     }
+
+    const itemCount = assertCompleteFeed(xml);
 
     writeFileSync(OUT_PATH, xml.endsWith("\n") ? xml : `${xml}\n`, "utf8");
     console.log(`[merchant-feed] wrote public/merchant-feed.xml (${itemCount} items)`);
