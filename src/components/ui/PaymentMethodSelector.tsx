@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Smartphone, Bitcoin, Banknote, Zap } from 'lucide-react';
+import { CreditCard, Banknote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface PaymentMethod {
@@ -29,36 +29,16 @@ interface PaymentMethodSelectorProps {
 const paymentCategories: PaymentCategory[] = [
   {
     id: 'traditional',
-    name: 'Traditional Payments',
+    name: 'Payment Options',
     icon: <CreditCard className="w-6 h-6" />,
     description: 'Credit cards and bank transfers',
     gradient: 'from-blue-500 to-blue-600'
-  },
-  {
-    id: 'digital',
-    name: 'Digital Payments',
-    icon: <Smartphone className="w-6 h-6" />,
-    description: 'Zelle, CashApp and digital wallets',
-    gradient: 'from-green-500 to-green-600'
-  },
-  {
-    id: 'crypto',
-    name: 'Crypto Payments',
-    icon: <Bitcoin className="w-6 h-6" />,
-    description: 'Bitcoin, USDT, Ethereum and more',
-    gradient: 'from-orange-500 to-orange-600'
   }
 ];
 
 const paymentMethods: PaymentMethod[] = [
   { id: 'credit_card', name: 'Credit Card', icon: <CreditCard className="w-5 h-5" />, category: 'traditional', description: 'Visa, Mastercard, American Express' },
-  { id: 'bank_wire', name: 'Bank Wire', icon: <Banknote className="w-5 h-5" />, category: 'traditional', description: 'Direct bank transfer' },
-  { id: 'zelle', name: 'Zelle', icon: <Zap className="w-5 h-5" />, category: 'digital', description: 'Send money with Zelle' },
-  { id: 'cashapp', name: 'CashApp', icon: <Smartphone className="w-5 h-5" />, category: 'digital', description: 'Pay with Cash App' },
-  { id: 'crypto_bitcoin', name: 'Bitcoin (BTC)', icon: <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">₿</div>, category: 'crypto', description: 'Digital currency' },
-  { id: 'crypto_usdt', name: 'Tether (USDT)', icon: <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">₮</div>, category: 'crypto', description: 'Stable cryptocurrency' },
-  { id: 'crypto_ethereum', name: 'Ethereum (ETH)', icon: <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">Ξ</div>, category: 'crypto', description: 'Smart contract platform' },
-  { id: 'crypto_litecoin', name: 'Litecoin (LTC)', icon: <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">Ł</div>, category: 'crypto', description: 'Peer-to-peer cryptocurrency' }
+  { id: 'bank_wire', name: 'Bank Wire', icon: <Banknote className="w-5 h-5" />, category: 'traditional', description: 'Direct bank transfer' }
 ];
 
 export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({

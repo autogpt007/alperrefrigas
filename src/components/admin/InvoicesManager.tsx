@@ -75,7 +75,7 @@ const InvoicesManager = () => {
               <FileText className="h-5 w-5" /> Quotes &amp; Invoices
             </CardTitle>
             <CardDescription>
-              Create branded PDF quotes and invoices with bank wire or Zelle payment details, then email them to buyers.
+              Create branded PDF quotes and invoices with bank wire payment details, then email them to buyers.
             </CardDescription>
           </div>
           <Button

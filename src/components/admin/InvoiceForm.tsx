@@ -66,7 +66,6 @@ interface BankAccount {
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD'];
 const PAYMENT_METHODS = [
   { value: 'bank-wire', label: 'Bank Wire / ACH Transfer' },
-  { value: 'zelle', label: 'Zelle' },
   { value: 'other', label: 'Other / Discuss with sales' },
 ];
 
@@ -163,7 +162,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
 
   const notesAutoRef = useRef(!initialData?.notes);
 
-  const [zelle, setZelle] = useState({ recipient: '', handle: '' });
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const [selectedBankId, setSelectedBankId] = useState('');
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
@@ -183,8 +181,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         .select('setting_key, setting_value')
         .in('setting_key', [
           'invoice_bank_accounts',
-          'invoice_zelle_recipient',
-          'invoice_zelle_handle',
           'invoice_logo_url',
           'invoice_signature_url',
           'invoice_signature_name',
@@ -204,10 +200,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
       setBankAccounts(accounts);
       if (accounts.length) setSelectedBankId((prev) => prev || accounts[0].id);
 
-      setZelle({
-        recipient: map.get('invoice_zelle_recipient') || '',
-        handle: map.get('invoice_zelle_handle') || '',
-      });
       setBranding({
         logoUrl: map.get('invoice_logo_url') || map.get('logo_url') || '',
         signatureUrl: map.get('invoice_signature_url') || '',
@@ -262,7 +254,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
       paymentMethod,
       orderNumber: documentNumber,
       bank: account,
-      zelle,
     });
     setNotes(generated);
     notesAutoRef.current = true;
@@ -272,7 +263,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   useEffect(() => {
     if (!notes || notesAutoRef.current) regenerateNotes(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentMethod, selectedBankId, bankAccounts, zelle]);
+  }, [paymentMethod, selectedBankId, bankAccounts]);
 
   // ---------- settings persistence ----------
   const saveSetting = async (key: string, value: string) => {
@@ -295,18 +286,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
     }
   };
 
-  const persistZelle = async () => {
-    setSavingSettings(true);
-    try {
-      await saveSetting('invoice_zelle_recipient', zelle.recipient);
-      await saveSetting('invoice_zelle_handle', zelle.handle);
-      toast.success('Zelle details saved');
-    } catch (e: any) {
-      toast.error(`Failed to save Zelle details: ${e.message}`);
-    } finally {
-      setSavingSettings(false);
-    }
-  };
 
   const persistBranding = async (patch: Partial<typeof branding>) => {
     const next = { ...branding, ...patch };
@@ -908,7 +887,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         <CardHeader>
           <CardTitle>Payment details</CardTitle>
           <CardDescription>
-            Bank wire and Zelle details entered here are saved for reuse and printed on the PDF.
+            Bank wire details entered here are saved for reuse and printed on the PDF.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -1023,23 +1002,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
             )}
           </div>
 
-          {/* Zelle */}
-          <div className="rounded-md border p-4 space-y-3">
-            <h4 className="font-medium text-sm">Zelle details</h4>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label>Recipient name</Label>
-                <Input value={zelle.recipient} onChange={(e) => setZelle({ ...zelle, recipient: e.target.value })} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Zelle email or phone</Label>
-                <Input value={zelle.handle} onChange={(e) => setZelle({ ...zelle, handle: e.target.value })} />
-              </div>
-            </div>
-            <Button type="button" size="sm" variant="outline" disabled={savingSettings} onClick={persistZelle}>
-              <Save className="h-4 w-4 mr-1" /> Save Zelle details
-            </Button>
-          </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">

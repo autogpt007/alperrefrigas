@@ -15,11 +15,10 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
-import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
@@ -76,9 +75,6 @@ const CheckoutPage = () => {
     billingState: '',
     billingZipCode: '',
     billingCountry: 'United States',
-    cashappTag: '',
-    zelleTag: '',
-    zellePhone: '',
     // F-Gas certification for EU orders
     fGasCertificationNumber: '',
     fGasCertificationValid: false,
@@ -90,15 +86,13 @@ const CheckoutPage = () => {
   const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [bankWireDetails, setBankWireDetails] = useState<any>(null);
+  const [bankWireDetails, setBankWireDetails] = useState<Record<string, string> | null>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
-  const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
   // Check if cart has AC products
   const hasACProducts = items.some(item => item.product_type === 'air_conditioner');
   const acItems = items.filter(item => item.product_type === 'air_conditioner');
-  const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
 
   // Shipping zones for dynamic rates
   const { data: shippingZones } = useShippingZones();
@@ -281,8 +275,8 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
-  // Bank wire / Zelle settlement discount (applied after any coupon)
-  const PAYMENT_DISCOUNT_METHODS = ['bank_wire', 'zelle'];
+  // Bank wire settlement discount (applied after any coupon)
+  const PAYMENT_DISCOUNT_METHODS = ['bank_wire'];
   const isPaymentDiscountEligible = PAYMENT_DISCOUNT_METHODS.includes(formData.paymentMethod);
   const paymentDiscount = isPaymentDiscountEligible
     ? Math.max(0, subtotal - couponDiscount) * 0.15
@@ -337,47 +331,6 @@ const CheckoutPage = () => {
         });
         return false;
       }
-    }
-
-    if (formData.paymentMethod === 'zelle') {
-      if (!formData.zelleTag || !formData.zelleTag.trim()) {
-        toast({
-          title: "Missing Zelle Information",
-          description: "Please provide your Zelle email address",
-          variant: "destructive",
-        });
-        return false;
-      }
-      // Basic email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.zelleTag)) {
-        toast({
-          title: "Invalid Email",
-          description: "Please enter a valid email address for Zelle",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    if (formData.paymentMethod === 'cashapp') {
-      if (!formData.cashappTag || !formData.cashappTag.trim()) {
-        toast({
-          title: "Missing CashApp Information",
-          description: "Please provide your CashApp $cashtag",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    if (formData.paymentMethod.startsWith('crypto_') && !selectedCryptoWallet) {
-      toast({
-        title: "Missing Crypto Wallet",
-        description: "Please select a crypto wallet for payment",
-        variant: "destructive",
-      });
-      return false;
     }
 
     // F-Gas validation for EU refrigerant orders
@@ -516,8 +469,8 @@ const CheckoutPage = () => {
         notes: [formData.notes, taxCalculation.taxNotice].filter(Boolean).join('\n\n'),
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
-        zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
-        cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
+        zelle_tag: null,
+        cashapp_tag: null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
         payment_details: {
           // Tax information for audit trail
@@ -552,16 +505,11 @@ const CheckoutPage = () => {
               country: formData.billingCountry || formData.country
             }
           } : {}),
-          // Crypto wallet details if applicable
-          ...(formData.paymentMethod.startsWith('crypto_') ? {
-            selected_wallet: selectedCryptoWallet,
-            wallet_type: formData.paymentMethod.replace('crypto_', '')
-          } : {}),
-          // Settlement discount for bank wire / Zelle (server re-verifies)
+          // Settlement discount for bank wire (server re-verifies)
           ...(paymentDiscount > 0 ? {
             payment_discount_percent: 15,
             payment_discount_amount: Number(paymentDiscount.toFixed(2)),
-            payment_discount_reason: 'bank_wire_zelle'
+            payment_discount_reason: 'bank_wire'
           } : {})
         },
       };
@@ -686,8 +634,8 @@ const CheckoutPage = () => {
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
         title="Secure Checkout - Alper Refrigerant"
-        description="Complete your refrigerant order with our secure checkout process. Multiple payment options available including credit card, Zelle, and CashApp."
-        keywords="secure checkout, refrigerant purchase, credit card payment, Zelle payment, CashApp payment"
+        description="Complete your refrigerant order with our secure checkout process. Pay by credit card or bank wire transfer."
+        keywords="secure checkout, refrigerant purchase, credit card payment, bank wire payment"
         robotsContent="noindex, nofollow"
         canonicalUrl="/checkout"
       />
@@ -976,32 +924,14 @@ const CheckoutPage = () => {
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                   <CardContent className="space-y-6">
-                     {walletsLoading ? (
-                       <div className="text-center py-8">
-                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                         <p className="text-sm text-gray-500 mt-2">Loading payment methods...</p>
-                       </div>
-                     ) : (
-                       <PaymentMethodSelector
-                         selectedMethod={formData.paymentMethod}
-                         onMethodSelect={(method) => {
-                           handleInputChange('paymentMethod', method);
-                           if (method.includes('crypto_')) {
-                             const cryptoType = method.replace('crypto_', '');
-                             const wallet = getCryptoWallets().find(w => w.payment_type === cryptoType);
-                             if (wallet) setSelectedCryptoWallet(wallet.id);
-                           }
-                         }}
-                           availableMethods={[
-                             'credit_card',
-                             'bank_wire',
-                             'zelle',
-                             'cashapp',
-                             ...getCryptoWallets().map(w => `crypto_${w.payment_type}`)
-                           ]}
-                       />
-                     )}
+                    <CardContent className="space-y-6">
+                      <PaymentMethodSelector
+                        selectedMethod={formData.paymentMethod}
+                        onMethodSelect={(method) => {
+                          handleInputChange('paymentMethod', method);
+                        }}
+                        availableMethods={['credit_card', 'bank_wire']}
+                      />
 
                     {/* Payment Method Details */}
                     <div className="border-t pt-6">
@@ -1102,76 +1032,6 @@ const CheckoutPage = () => {
                         </div>
                       )}
 
-                      {/* Zelle Details */}
-                      {formData.paymentMethod === 'zelle' && (
-                        <div className="space-y-4">
-                          {getTraditionalWallets().filter(w => w.payment_type === 'zelle').length > 0 && (
-                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                              <h4 className="font-medium text-blue-900 mb-2">Zelle Payment</h4>
-                              <p className="text-sm text-blue-800">
-                                Our Zelle receiving details are sent with your proforma invoice once your order is placed.
-                              </p>
-                            </div>
-                          )}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="zelle-email">Your Zelle Email *</Label>
-                              <Input
-                                id="zelle-email"
-                                type="email"
-                                placeholder="email@example.com"
-                                value={formData.zelleTag}
-                                onChange={(e) => handleInputChange('zelleTag', e.target.value)}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="zelle-phone">Your Zelle Phone (Optional)</Label>
-                              <Input
-                                id="zelle-phone"
-                                type="tel"
-                                placeholder="(555) 123-4567"
-                                value={formData.zellePhone}
-                                onChange={(e) => handleInputChange('zellePhone', e.target.value)}
-                              />
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-500 mt-2">
-                            Provide your Zelle-registered email (required). You'll receive a proforma invoice and payment request within 24 hours.
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            We'll contact you with payment instructions. Provide either email or phone for Zelle.
-                          </p>
-                        </div>
-                      )}
-
-                      {/* CashApp Details */}
-                      {formData.paymentMethod === 'cashapp' && (
-                        <div className="space-y-4">
-                          {getTraditionalWallets().filter(w => w.payment_type === 'cashapp').length > 0 && (
-                            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                              <h4 className="font-medium text-green-900 mb-2">CashApp Payment</h4>
-                              <p className="text-sm text-green-800">
-                                Our CashApp receiving details are sent with your proforma invoice once your order is placed.
-                              </p>
-                            </div>
-                          )}
-                          <div>
-                            <Label htmlFor="cashapp-tag">Your CashApp Tag *</Label>
-                            <Input
-                              id="cashapp-tag"
-                              placeholder="$your-cashtag (e.g., $username)"
-                              value={formData.cashappTag}
-                              onChange={(e) => handleInputChange('cashappTag', e.target.value)}
-                              required
-                            />
-                            <p className="text-sm text-gray-500 mt-1">
-                              Enter your CashApp $cashtag. You'll receive a proforma invoice and payment request within 24 hours.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
                       {/* Bank Wire Details */}
                       {formData.paymentMethod === 'bank_wire' && (
                         <div className="space-y-4">
@@ -1190,16 +1050,6 @@ const CheckoutPage = () => {
                             </div>
                           </div>
                         </div>
-                      )}
-
-                      {/* Cryptocurrency Payment Information */}
-                      {formData.paymentMethod.startsWith('crypto_') && (
-                        <Alert className="border-orange-300 bg-orange-50">
-                          <Bitcoin className="h-4 w-4 text-orange-600" />
-                          <AlertDescription className="text-orange-800">
-                            Payment details will be provided after order confirmation. You'll have 30 minutes to complete the cryptocurrency payment.
-                          </AlertDescription>
-                        </Alert>
                       )}
                     </div>
                   </CardContent>
@@ -1448,7 +1298,7 @@ const CheckoutPage = () => {
                     )}
                     {paymentDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
-                        <span>Bank wire / Zelle discount (15%):</span>
+                        <span>Bank wire discount (15%):</span>
                         <span>-{formatCurrency(paymentDiscount)}</span>
                       </div>
                     )}
@@ -1547,9 +1397,9 @@ const CheckoutPage = () => {
                   {/* What happens next */}
                   <div className="mt-4 rounded-lg border bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
                     <p className="font-medium text-foreground">What happens next</p>
-                    {formData.paymentMethod === 'bank_wire' || formData.paymentMethod === 'zelle' ? (
+                    {formData.paymentMethod === 'bank_wire' ? (
                       <p>
-                        You'll get an order confirmation by email with our {formData.paymentMethod === 'zelle' ? 'Zelle' : 'bank wire'} payment
+                        You'll get an order confirmation by email with our bank wire payment
                         details. Our team calls or emails you within one business day to confirm freight and release the shipment once payment clears.
                       </p>
                     ) : (

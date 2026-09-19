@@ -488,7 +488,7 @@ const ProductDetails = () => {
         },
         {
           question: 'Is it cheaper to buy in bulk?',
-          answer: `Yes. Per-unit pricing drops in tiers as quantity rises${product.q20_units ? `, reaching the lowest rate from ${product.q20_units} units` : ''}. Bank wire and Zelle payments receive an additional discount at checkout.`
+          answer: `Yes. Per-unit pricing drops in tiers as quantity rises${product.q20_units ? `, reaching the lowest rate from ${product.q20_units} units` : ''}. Bank wire payments receive an additional discount at checkout.`
         },
         {
           question: `Does ${product.name} need professional installation?`,
@@ -633,7 +633,6 @@ const ProductDetails = () => {
           gtin: product.gtin,
           description: enhancedDescription,
           image: product.thumbnailUrl || product.images?.[0] || product.image || '',
-          moq: 40,
           category: product.category,
           specifications: {
             chemicalFormula: product.chemicalFormula,

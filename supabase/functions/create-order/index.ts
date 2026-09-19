@@ -46,6 +46,15 @@ serve(async (req: Request) => {
     } = await req.json();
 
     // --- Input validation ---
+    // Only card and bank wire are accepted; other methods are rejected server-side
+    const ALLOWED_PAYMENT_METHODS = ["credit_card", "bank_wire"];
+    if (!ALLOWED_PAYMENT_METHODS.includes(String(payment_method))) {
+      return new Response(
+        JSON.stringify({ error: "Unsupported payment method" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
     if (!customer_name?.trim()) {
       return new Response(
         JSON.stringify({ error: "Customer name is required" }),
@@ -232,8 +241,8 @@ serve(async (req: Request) => {
       }
     }
 
-    // Bank wire / Zelle settlement discount (15%), recomputed server-side
-    const PAYMENT_DISCOUNT_METHODS = ["bank_wire", "zelle"];
+    // Bank wire settlement discount (15%), recomputed server-side
+    const PAYMENT_DISCOUNT_METHODS = ["bank_wire"];
     const verifiedPaymentDiscount = PAYMENT_DISCOUNT_METHODS.includes(String(payment_method))
       ? Math.max(0, computedItemsTotal - verifiedDiscount) * 0.15
       : 0;
@@ -287,7 +296,7 @@ serve(async (req: Request) => {
             ? {
               payment_discount_percent: 15,
               payment_discount_amount: Number(verifiedPaymentDiscount.toFixed(2)),
-              payment_discount_reason: "bank_wire_zelle",
+              payment_discount_reason: "bank_wire",
             }
             : {}),
         },
