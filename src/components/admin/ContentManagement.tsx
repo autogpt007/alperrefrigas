@@ -94,7 +94,7 @@ const ContentManagement = () => {
     tagline: 'Premium Refrigerants for Professional HVAC',
     description: 'Leading supplier of high-quality refrigerants and HVAC chemicals for professionals worldwide.',
     phone: '+1 (555) 123-4567',
-    email: 'info@alperrefrigerants.com',
+    email: 'sales@alperrefrigerants.com',
     address: '123 Industrial Blvd, Houston, TX 77001',
     website: 'https://alperrefrigerants.com',
     business_hours: JSON.stringify({

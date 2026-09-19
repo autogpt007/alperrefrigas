@@ -346,7 +346,7 @@ const AdminSettings = () => {
                 className={`bg-slate-700 border-slate-600 text-white mt-2 ${
                   validationErrors.headerEmail ? 'border-red-500' : ''
                 }`}
-                placeholder="e.g., info@alperrefrigerants.com"
+                placeholder="e.g., sales@alperrefrigerants.com"
               />
               {validationErrors.headerEmail && (
                 <p className="text-red-400 text-sm mt-1">{validationErrors.headerEmail}</p>
