@@ -68,7 +68,6 @@ const AdminSidebar = () => {
     { icon: Megaphone, label: 'Adverts', path: '/admin/adverts' },
     { icon: Sparkles, label: 'Google Ads Engine', path: '/admin/google-ads-engine' },
     { icon: Tag, label: 'Coupons', path: '/admin/coupons' },
-    { icon: CreditCard, label: 'Payment Methods', path: '/admin/payment-methods' },
     { icon: Calculator, label: 'US Tax Rates', path: '/admin/tax-rates' },
     { icon: Globe, label: 'International Taxes', path: '/admin/international-taxes' },
     { icon: Globe, label: 'Exchange Rates', path: '/admin/exchange-rates' },

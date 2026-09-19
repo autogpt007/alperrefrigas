@@ -57,7 +57,6 @@ const ShippingPolicy = lazy(() => import("./components/pages/ShippingPolicy"));
 const PaymentInformation = lazy(() => import("./components/pages/PaymentInformation"));
 const Sitemap = lazy(() => import("./components/pages/Sitemap"));
 const CustomerSupport = lazy(() => import("./components/pages/CustomerSupport"));
-const CryptoPaymentPage = lazy(() => import("./components/pages/CryptoPaymentPage"));
 const MyAccount = lazy(() => import("./components/pages/MyAccount"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
 const UserAuthPage = lazy(() => import("./components/auth/UserAuthPage"));
@@ -81,7 +80,6 @@ const LogoManagement = lazy(() => import("./components/admin/LogoManagement"));
 const ContactManagement = lazy(() => import("./components/admin/ContactManagement"));
 const ContactInfoManagement = lazy(() => import("./components/admin/ContactInfoManagement"));
 const AdminSettings = lazy(() => import("./components/admin/AdminSettings"));
-const PaymentManagement = lazy(() => import("./components/admin/PaymentManagement"));
 const TeamManagement = lazy(() => import("./components/admin/TeamManagement"));
 const CertificationManagement = lazy(() => import("./components/admin/CertificationManagement"));
 const ContentManagement = lazy(() => import("./components/admin/ContentManagement"));
@@ -154,7 +152,6 @@ function App() {
                          <Route path="adverts" element={<AdvertManagement />} />
                          <Route path="google-ads-engine" element={<GoogleAdsEngine />} />
                           <Route path="coupons" element={<CouponManagement />} />
-                          <Route path="payment-methods" element={<PaymentManagement />} />
                           <Route path="tax-rates" element={<TaxRatesManagement />} />
                           <Route path="international-taxes" element={<InternationalTaxManagement />} />
                           <Route path="exchange-rates" element={<ExchangeRateManagement />} />
@@ -199,7 +196,6 @@ function App() {
                                <Route path="/bulk-pricing" element={<BulkPricing />} />
                               <Route path="/rfq" element={<RFQPage />} />
                                <Route path="/checkout" element={<CheckoutPage />} />
-                               <Route path="/crypto-payment/:orderNumber" element={<CryptoPaymentPage />} />
                                <Route path="/order-confirmation" element={<OrderConfirmation />} />
                               <Route path="/quote-confirmation" element={<OrderConfirmation />} />
                         <Route path="/testimonials" element={<TestimonialsPage />} />
