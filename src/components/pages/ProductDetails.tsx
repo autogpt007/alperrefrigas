@@ -633,7 +633,6 @@ const ProductDetails = () => {
           gtin: product.gtin,
           description: enhancedDescription,
           image: product.thumbnailUrl || product.images?.[0] || product.image || '',
-          moq: 40,
           category: product.category,
           specifications: {
             chemicalFormula: product.chemicalFormula,
