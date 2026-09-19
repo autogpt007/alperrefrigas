@@ -524,7 +524,7 @@ const ProductDetails = () => {
         },
         {
           question: "What are your shipping terms?",
-          answer: "We ship from distribution centers in Texas, Florida, and California. Fast, secure delivery with tracking information."
+          answer: "We ship from our Miami, Florida distribution center. Fast, secure delivery with tracking information."
         }
       ]
     : [
@@ -540,7 +540,7 @@ const ProductDetails = () => {
         },
         {
           question: "What are your shipping terms?",
-          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments are DOT certified and include fast, secure delivery with tracking information."
+          answer: "We ship from our Miami, Florida distribution center. All shipments are DOT certified and include fast, secure delivery with tracking information."
         },
         {
           question: "Do you provide Safety Data Sheets (SDS)?",
