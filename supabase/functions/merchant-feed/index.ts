@@ -62,6 +62,7 @@ Deno.serve(async (req: Request) => {
       "availability", "stock_quantity", "images", "thumbnail_url", "google_product_category",
       "product_type", "category", "weight_kg", "length_cm", "width_cm", "height_cm",
       "identifier_exists", "updated_at",
+      "base_unit_price", "q20_units", "custom_uplift_5_19",
     ].join(",");
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -110,6 +111,22 @@ Deno.serve(async (req: Request) => {
 
       const hasIdentifier = !!(p.gtin || (p.brand && p.mpn));
 
+      // GMC rule: feed price must match the price a single unit sells for on the
+      // landing page. AC / mini-split / heat-pump units are orderable from qty 1,
+      // so emit the single-unit rate (5+ rate + 20% small-order surcharge), the
+      // same calculation the storefront's calculateACPricingTier(product, 1) runs.
+      const categoryPre = String(p.category ?? "").toLowerCase();
+      const isHvacUnitPre =
+        categoryPre.startsWith("heat-pump") || p.product_type === "air_conditioner";
+      let feedPrice = Number(p.price);
+      if (isHvacUnitPre && p.base_unit_price && p.q20_units) {
+        const uplift5_19 = Number(p.custom_uplift_5_19 ?? 35);
+        feedPrice =
+          Math.round(
+            Number(p.base_unit_price) * (1 + uplift5_19 / 100) * 1.2 * 100,
+          ) / 100;
+      }
+
       const parts: string[] = [
         `      <g:id>${esc(p.sku || p.id)}</g:id>`,
         `      <g:title>${esc(plainText(p.name, 150))}</g:title>`,
@@ -118,9 +135,7 @@ Deno.serve(async (req: Request) => {
         `      <g:image_link>${esc(primaryImage)}</g:image_link>`,
         ...additionalImages.map((url) => `      <g:additional_image_link>${esc(url)}</g:additional_image_link>`),
         `      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>`,
-        // Per-cylinder / per-unit price only — must match the price shown on the
-        // product page, otherwise GMC reports a mismatched-price violation.
-        `      <g:price>${Number(p.price).toFixed(2)} USD</g:price>`,
+        `      <g:price>${feedPrice.toFixed(2)} USD</g:price>`,
         `      <g:condition>${esc(p.condition || "new")}</g:condition>`,
         `      <g:brand>${esc(p.brand || SHOP_TITLE)}</g:brand>`,
       ];
@@ -133,9 +148,6 @@ Deno.serve(async (req: Request) => {
         }</g:identifier_exists>`,
       );
 
-      if (p.google_product_category) {
-        parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
-      }
       if (p.weight_kg) parts.push(`      <g:shipping_weight>${Number(p.weight_kg).toFixed(2)} kg</g:shipping_weight>`);
       if (p.length_cm) parts.push(`      <g:shipping_length>${Number(p.length_cm).toFixed(0)} cm</g:shipping_length>`);
       if (p.width_cm) parts.push(`      <g:shipping_width>${Number(p.width_cm).toFixed(0)} cm</g:shipping_width>`);
@@ -144,6 +156,7 @@ Deno.serve(async (req: Request) => {
       // B2B / professional-only catalogue.
       parts.push(`      <g:adult>no</g:adult>`);
       const category = String(p.category ?? "").toLowerCase();
+      const isHvacUnit = category.startsWith("heat-pump") || p.product_type === "air_conditioner";
       const feedProductType = category.startsWith("heat-pump")
         ? "Heat Pumps"
         : p.product_type === "air_conditioner"
@@ -152,6 +165,22 @@ Deno.serve(async (req: Request) => {
             ? "HVAC Tools"
             : "Refrigerants";
       parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
+
+      // Google product category: audit requires taxonomy ID 2364 (Air Conditioners)
+      // for AC / mini-split / heat-pump units; other items keep their own value.
+      if (isHvacUnit) {
+        parts.push(`      <g:google_product_category>2364</g:google_product_category>`);
+        // AHRI certification for HVAC equipment (audit-supplied values).
+        parts.push(
+          `      <g:certification>`,
+          `        <g:certification_authority>AHRI</g:certification_authority>`,
+          `        <g:certification_name>AHRI Certified</g:certification_name>`,
+          `        <g:certification_code>AHRI-CERTIFIED</g:certification_code>`,
+          `      </g:certification>`,
+        );
+      } else if (p.google_product_category) {
+        parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
+      }
 
       items.push(`    <item>\n${parts.join("\n")}\n    </item>`);
     }

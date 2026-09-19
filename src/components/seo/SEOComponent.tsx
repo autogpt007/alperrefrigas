@@ -34,6 +34,7 @@ interface SEOProps {
     image: string;
     moq?: number;
     category?: string;
+    productType?: string;
     specifications?: Record<string, any>;
   };
   aggregateRating?: {
@@ -141,6 +142,17 @@ const SEOComponent: React.FC<SEOProps> = ({
       "@type": "BusinessAudience",
       "audienceType": "B2B HVAC Professionals"
     },
+    // AHRI certification — HVAC equipment only (air conditioners, mini-splits,
+    // heat pumps); not applicable to refrigerant cylinders or tools.
+    ...((product.productType === 'air_conditioner' ||
+        (product.category || '').toLowerCase().startsWith('heat-pump')) && {
+      "hasCertification": {
+        "@type": "Certification",
+        "certificationAuthority": "AHRI",
+        "certificationCode": "AHRI-CERTIFIED",
+        "name": "AHRI Certified"
+      }
+    }),
     ...(product.moq && {
       "additionalProperty": {
         "@type": "PropertyValue",
