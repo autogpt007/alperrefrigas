@@ -4,6 +4,12 @@ import SEOComponent from '../seo/SEOComponent';
 import { Gauge, Wrench, Recycle, Link2, HardHat, Settings, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const subcategories = [
   {
@@ -62,6 +68,39 @@ const subcategories = [
   },
 ];
 
+const toolsFaqs = [
+  {
+    question: 'What is the minimum order for HVAC tools?',
+    answer:
+      'One tool. Single items ship from stock, while 5-packs carry a 5% discount and 10-packs a 15% discount on the per-unit trade price.',
+  },
+  {
+    question: 'Which manifold gauge set should I buy for R-410A work?',
+    answer:
+      'Choose a set whose gauges carry an R-410A scale and whose hoses are rated for its higher operating pressures. Digital manifolds add superheat and subcooling readings directly, which removes manual calculation on every charge.',
+  },
+  {
+    question: 'What size vacuum pump do I need?',
+    answer:
+      'A 5 CFM two-stage pump is ample for residential mini-splits and small ductless systems. An 8 CFM pump shortens pull-down time on light commercial systems with longer line runs.',
+  },
+  {
+    question: 'Do I need EPA certification to buy tools and gauges?',
+    answer:
+      'No. Tools, gauges, fittings and safety equipment are sold without certification. EPA Section 608 certification is required only for purchases of refrigerant gas.',
+  },
+  {
+    question: 'Can tools be shipped outside the United States?',
+    answer:
+      'Yes. Tools and equipment ship internationally on a standard commercial invoice and do not require a chemical import licence. Bulk refrigerant gas is handled separately as dangerous goods and needs the destination country import licence.',
+  },
+  {
+    question: 'How are recovery cylinders shipped?',
+    answer:
+      'Recovery cylinders are DOT-rated and ship empty, so they move as ordinary freight. Refrigerant itself always ships as a regulated hazardous material.',
+  },
+];
+
 const HVACToolsPage: React.FC = () => {
   return (
     <>
@@ -75,6 +114,7 @@ const HVACToolsPage: React.FC = () => {
           { name: 'Products', url: '/products' },
           { name: 'HVAC Tools & Gauges', url: '/products/hvac-tools' },
         ]}
+        faq={toolsFaqs}
       />
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -216,6 +256,28 @@ const HVACToolsPage: React.FC = () => {
                   .
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground text-center mb-8">
+                HVAC Tool Buying Questions
+              </h2>
+              <Accordion type="single" collapsible className="bg-card rounded-xl border px-4">
+                {toolsFaqs.map((item, idx) => (
+                  <AccordionItem key={idx} value={`tools-faq-${idx}`}>
+                    <AccordionTrigger className="text-left text-base font-semibold">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </section>
