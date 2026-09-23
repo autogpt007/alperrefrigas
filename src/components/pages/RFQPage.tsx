@@ -215,6 +215,29 @@ const RFQPage = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* International export & import permit guidance */}
+              <Card className="mt-6 border-blue-200 bg-blue-50/40">
+                <CardHeader className="border-b border-blue-100">
+                  <CardTitle className="text-lg text-blue-900">International Orders: Export &amp; Import Permits</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 text-sm text-blue-900 space-y-3">
+                  <p>
+                    We export to Europe, the United Kingdom, Australia and New Zealand. Every overseas shipment includes a commercial invoice,
+                    packing list and, for refrigerant gas, a Dangerous Goods Declaration for your customs broker.
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>HVAC equipment, tools and gauges:</strong> ship on a standard commercial invoice, no chemical permit needed.</li>
+                    <li><strong>European Union &amp; UK bulk gas:</strong> valid F-Gas certification plus F-Gas Portal / HFC Registry ID and quota (EU Regulation 2024/573).</li>
+                    <li><strong>Australia bulk gas:</strong> DCCEEW controlled substances licence and ARC Refrigerant Trading Authorisation or Handling Licence.</li>
+                    <li><strong>New Zealand bulk gas:</strong> EPA import permit.</li>
+                  </ul>
+                  <p>
+                    Please include your licence or registration details with this request so freight and clearance can be quoted accurately.
+                    Full details are on our <a href="/shipping-policy" className="underline">Shipping Policy</a> page.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Contact Form */}
