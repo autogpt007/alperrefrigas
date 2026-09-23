@@ -4,6 +4,12 @@ import SEOComponent from '../seo/SEOComponent';
 import { Wind, Thermometer, Zap, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const subcategories = [
   {
@@ -48,6 +54,44 @@ const subcategories = [
   },
 ];
 
+const acFaqs = [
+  {
+    question: 'Can I buy a single air conditioner, or is there a minimum order?',
+    answer:
+      'You can order a single unit. Per-unit pricing improves with quantity, through custom bulk tiers from five units up to half-container and full 20ft or 40ft container loads.',
+  },
+  {
+    question: 'How many BTU do I need for a room?',
+    answer:
+      'Allow roughly 20 BTU per square foot of floor area, then add capacity for high ceilings, large windows or a top floor under an uninsulated roof. A 12,000 BTU unit suits about 550 sq ft and a 24,000 BTU unit about 1,100 sq ft.',
+  },
+  {
+    question: 'What is the difference between mini-split, window and portable units?',
+    answer:
+      'A ductless mini-split pairs an outdoor condenser with one or more indoor heads and is the quietest and most efficient option. Window units are self-contained and mount in an opening. Portable units need no permanent installation and vent through a hose.',
+  },
+  {
+    question: 'Which refrigerant do the units use?',
+    answer:
+      'Units are supplied pre-charged, with the exact refrigerant listed on each product page. Refrigerant connection and commissioning must be carried out by a qualified technician.',
+  },
+  {
+    question: 'How do air conditioners ship?',
+    answer:
+      'Units ship from our Miami, Florida warehouse. Small quantities move by parcel or LTL freight, and pallet or container volumes are quoted by freight carrier for your delivery address.',
+  },
+  {
+    question: 'Do you ship air conditioners internationally?',
+    answer:
+      'Yes. Equipment ships worldwide on a standard commercial invoice, with duties and taxes settled on delivery. Pre-charged equipment may require an equipment import licence in the EU or Australia.',
+  },
+  {
+    question: 'What payment methods do you accept for bulk AC orders?',
+    answer:
+      'Credit card and bank wire transfer. Bank wire orders receive a 15% discount, and our sales team emails a proforma invoice with payment details.',
+  },
+];
+
 const AirConditionersPage: React.FC = () => {
   return (
     <>
@@ -61,6 +105,7 @@ const AirConditionersPage: React.FC = () => {
           { name: 'Products', url: '/products' },
           { name: 'Air Conditioners', url: '/products/air-conditioners' }
         ]}
+        faq={acFaqs}
       />
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -206,6 +251,29 @@ const AirConditionersPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground text-center mb-8">
+                Air Conditioner Buying Questions
+              </h2>
+              <Accordion type="single" collapsible className="bg-card rounded-xl border px-4">
+                {acFaqs.map((item, idx) => (
+                  <AccordionItem key={idx} value={`ac-faq-${idx}`}>
+                    <AccordionTrigger className="text-left text-base font-semibold">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </section>
