@@ -71,17 +71,55 @@ const readStoredCart = (): CartItem[] => {
   }
 };
 
+const CART_SYNC_EVENT = 'alper_cart_sync';
+
+const writeStoredCart = (next: CartItem[]) => {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // storage unavailable (private mode) - cart stays in memory only
+  }
+  // Notify other components in this same tab (storage events only fire cross-tab)
+  try {
+    window.dispatchEvent(new CustomEvent(CART_SYNC_EVENT));
+  } catch {
+    // no-op
+  }
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(readStoredCart);
 
-  // Persist the cart so a page refresh or new tab keeps the order intact
+  /**
+   * Every mutation re-reads the latest persisted cart before applying its
+   * change, so two tabs adding different products never overwrite each other.
+   */
+  const mutateCart = (updater: (current: CartItem[]) => CartItem[]) => {
+    const latest = readStoredCart();
+    const next = updater(latest);
+    writeStoredCart(next);
+    setItems(next);
+  };
+
+  // Keep every tab and every component in sync with the persisted cart
   useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      // storage unavailable (private mode) - cart stays in memory only
-    }
-  }, [items]);
+    const resync = () => setItems(readStoredCart());
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === null || event.key === CART_STORAGE_KEY) resync();
+    };
+
+    window.addEventListener('storage', onStorage);
+    window.addEventListener(CART_SYNC_EVENT, resync);
+    // Re-read when the tab regains focus in case it was changed while hidden
+    window.addEventListener('focus', resync);
+
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener(CART_SYNC_EVENT, resync);
+      window.removeEventListener('focus', resync);
+    };
+  }, []);
 
   // Fetch free shipping threshold from settings
   const { data: shippingSettings } = useQuery({
