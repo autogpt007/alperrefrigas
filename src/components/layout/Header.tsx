@@ -131,6 +131,7 @@ const Header = () => {
   ];
 
   return (
+    <>
     <header className="bg-white shadow-lg sticky top-0 z-50" style={{"--header-height": "83px"} as React.CSSProperties}>
       <div className="container mx-auto px-4">
         {/* Top Bar */}
