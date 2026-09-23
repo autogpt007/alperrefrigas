@@ -459,6 +459,8 @@ const Header = () => {
         </div>
       )}
     </header>
+    <TrustBar />
+    </>
   );
 };
 
