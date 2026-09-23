@@ -403,7 +403,9 @@ const ShippingPolicy = () => {
                     ⚠️ MANDATORY FOR EU CUSTOMERS PURCHASING REFRIGERANTS
                   </p>
                   <p className="text-orange-800 text-sm">
-                    Under EU Regulation 517/2014, purchasers of fluorinated greenhouse gases (F-gases) must hold valid F-Gas certification.
+                    Under EU Regulation 2024/573 (which replaced Regulation 517/2014), purchasers of fluorinated greenhouse gases (F-gases)
+                    must hold valid F-Gas certification, and importers of bulk HFCs must be registered in the EU F-Gas Portal and HFC Registry
+                    with sufficient quota for the quantity imported. Buyers in Great Britain are covered by the retained UK F-Gas Regulation.
                   </p>
                 </div>
 
@@ -412,6 +414,8 @@ const ShippingPolicy = () => {
                   <li><strong>Valid F-Gas Certification:</strong> Required at checkout for all EU refrigerant orders</li>
                   <li><strong>Certification Number:</strong> Your national F-Gas certification number must be provided</li>
                   <li><strong>Validity Confirmation:</strong> You must confirm your certification is current and valid</li>
+                  <li><strong>Bulk Imports:</strong> For cylinder and pallet quantities we also request your F-Gas Portal registration (HFC Registry) ID and confirmation of available quota before freight is booked</li>
+                  <li><strong>EORI Number:</strong> Required by your customs broker to clear the shipment</li>
                 </ul>
 
                 <h4 className="font-semibold mt-4">Covered Products (F-Gases)</h4>
