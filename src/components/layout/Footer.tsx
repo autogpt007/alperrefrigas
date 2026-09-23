@@ -116,6 +116,9 @@ const Footer = () => {
               <li><Link to="/products?category=automotive" className="text-gray-300 hover:text-white transition-colors">{t('footer.automotive')}</Link></li>
               <li><Link to="/products?category=commercial" className="text-gray-300 hover:text-white transition-colors">{t('footer.commercialHvac')}</Link></li>
               <li><Link to="/products?category=industrial" className="text-gray-300 hover:text-white transition-colors">{t('footer.industrial')}</Link></li>
+              <li><Link to="/products/r-22-replacements" className="text-gray-300 hover:text-white transition-colors">R-22 Replacements</Link></li>
+              <li><Link to="/products/r-454b" className="text-gray-300 hover:text-white transition-colors">R-454B Guide</Link></li>
+              <li><Link to="/products/hvac-tools" className="text-gray-300 hover:text-white transition-colors">HVAC Tools &amp; Gauges</Link></li>
             </ul>
           </div>
 

@@ -1011,6 +1011,25 @@ const ProductDetails = () => {
                     </>
                   ) : product.product_type === 'refrigerant' ? (
                     <>
+                      {/* Order-size clarity for small buyers vs bulk buyers */}
+                      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-2">
+                        <p className="text-sm font-semibold text-blue-900">
+                          Sold by the pallet — 1 pallet = {CYLINDERS_PER_PALLET} cylinders
+                        </p>
+                        <p className="text-xs text-blue-800 leading-relaxed">
+                          Per-cylinder pricing improves as pallet count rises. Pallet orders ship by LTL
+                          freight carrier, quoted for your delivery address.
+                        </p>
+                        <Button
+                          onClick={handleAddToRFQ}
+                          variant="outline"
+                          size="sm"
+                          className="w-full bg-white text-xs"
+                        >
+                          Need fewer than {CYLINDERS_PER_PALLET} cylinders? Request a quote
+                        </Button>
+                      </div>
+
                       {/* Refrigerant: Pallet quantity slider */}
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">

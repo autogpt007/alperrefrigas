@@ -4,6 +4,12 @@ import SEOComponent from '../seo/SEOComponent';
 import { Wind, Home, Building2, ArrowRight, Thermometer, Snowflake } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const subcategories = [
   {
@@ -35,6 +41,44 @@ const subcategories = [
   },
 ];
 
+const heatPumpFaqs = [
+  {
+    question: 'What size heat pump do I need?',
+    answer:
+      'Allow roughly 20 BTU per square foot of conditioned floor area, then add capacity for high ceilings, large glazed areas or a top floor under an uninsulated roof. A 12,000 BTU unit suits about 550 sq ft and a 24,000 BTU unit about 1,100 sq ft.',
+  },
+  {
+    question: 'Do heat pumps still work in freezing weather?',
+    answer:
+      'Inverter heat pumps keep producing heat below freezing, but output falls as the outdoor temperature drops. In cold climates specify a low-ambient model or keep a backup heat source for the coldest weeks.',
+  },
+  {
+    question: 'Single-zone or multi-zone: which should I choose?',
+    answer:
+      'One indoor head per outdoor unit costs less per room and is simpler to service. A multi-zone condenser saves wall space and line runs when three or four rooms are treated at once.',
+  },
+  {
+    question: 'What is the minimum order quantity?',
+    answer:
+      'One unit. Per-unit pricing improves as quantity grows, up to full container loads. Send a unit schedule and we will price the whole package in one quote.',
+  },
+  {
+    question: 'Are the units pre-charged with refrigerant?',
+    answer:
+      'Yes, our mini-split and PTAC heat pumps are supplied pre-charged with R-410A. Final refrigerant connection and commissioning must be carried out by a qualified technician.',
+  },
+  {
+    question: 'What electrical supply do heat pumps need?',
+    answer:
+      'Smaller units run on 115V or 208/230V single phase. Larger units and PTAC models require a dedicated 208/230V circuit.',
+  },
+  {
+    question: 'Can heat pumps be exported to Europe or Australia?',
+    answer:
+      'Yes. Equipment ships on a standard commercial invoice, though pre-charged units may require an equipment import licence in the EU or Australia. Bulk refrigerant gas is quoted separately and requires the destination import licence.',
+  },
+];
+
 const HeatPumpsPage: React.FC = () => {
   return (
     <>
@@ -48,6 +92,7 @@ const HeatPumpsPage: React.FC = () => {
           { name: 'Products', url: '/products' },
           { name: 'Heating & Heat Pumps', url: '/products/heating-heat-pumps' },
         ]}
+        faq={heatPumpFaqs}
       />
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -196,6 +241,28 @@ const HeatPumpsPage: React.FC = () => {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground text-center mb-8">
+                Heat Pump Buying Questions
+              </h2>
+              <Accordion type="single" collapsible className="bg-card rounded-xl border px-4">
+                {heatPumpFaqs.map((item, idx) => (
+                  <AccordionItem key={idx} value={`hp-faq-${idx}`}>
+                    <AccordionTrigger className="text-left text-base font-semibold">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </section>

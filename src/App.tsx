@@ -34,6 +34,7 @@ import HVACToolsPage from "./components/pages/HVACToolsPage";
 import ProductDetails from "./components/pages/ProductDetails";
 
 // Lazy-loaded routes
+const R22ReplacementsPage = lazy(() => import("./components/pages/R22ReplacementsPage"));
 const R454BLandingPage = lazy(() => import("./components/pages/R454BLandingPage"));
 const HFOLandingPage = lazy(() => import("./components/pages/HFOLandingPage"));
 const ProductCategory = lazy(() => import("./components/pages/ProductCategory"));
@@ -188,6 +189,7 @@ function App() {
                                 <Route path="/products/hvac-tools" element={<HVACToolsPage />} />
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
+                                 <Route path="/products/r-22-replacements" element={<R22ReplacementsPage />} />
                                  <Route path="/products/category/:category" element={<ProductCategory />} />
                                  <Route path="/products/accessories/:category" element={<ProductCategory />} />
                                  <Route path="/products/:productSlug" element={<ProductDetails />} />

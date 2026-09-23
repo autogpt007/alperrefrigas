@@ -54,6 +54,7 @@ const staticEntries: SitemapEntry[] = [
   { path: "/products/category/industrial", changefreq: "weekly", priority: "0.8" },
   { path: "/products/r-454b", changefreq: "weekly", priority: "0.9" },
   { path: "/products/hfo-refrigerants", changefreq: "weekly", priority: "0.9" },
+  { path: "/products/r-22-replacements", changefreq: "weekly", priority: "0.9" },
   { path: "/certifications", changefreq: "monthly", priority: "0.6" },
   { path: "/compliance", changefreq: "monthly", priority: "0.6" },
   { path: "/shipping-policy", changefreq: "monthly", priority: "0.5" },

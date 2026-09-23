@@ -15,6 +15,7 @@ import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
+import EquipmentGasFinder from '@/components/widgets/EquipmentGasFinder';
 import { useCart } from '@/contexts/CartContext';
 import { useOrders } from '@/contexts/OrdersContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -308,6 +309,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Equipment & Refrigerant Finder */}
+      <EquipmentGasFinder />
 
       {/* SEO Content Section */}
       <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
