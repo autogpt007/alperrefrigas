@@ -15,6 +15,7 @@ import { trackGoogleAdsPurchase, trackGoogleAdsLead } from '@/utils/googleAdsCon
 import { pushToDataLayer } from '@/utils/tracking';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { calculateOrderTotals } from '@/utils/orderTotals';
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
