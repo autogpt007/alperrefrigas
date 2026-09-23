@@ -217,7 +217,7 @@ const R22ReplacementsPage: React.FC = () => {
                       <p className="text-sm text-muted-foreground">{retrofit.note}</p>
                       {product ? (
                         <Link
-                          to={`/products/${createProductSlug(product)}`}
+                          to={`/products/${createProductSlug(product.name)}`}
                           className="inline-flex items-center text-primary font-medium hover:underline"
                         >
                           View {retrofit.gas} pricing

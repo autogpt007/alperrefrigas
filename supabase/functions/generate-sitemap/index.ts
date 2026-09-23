@@ -58,6 +58,7 @@ serve(async (req: Request) => {
       { loc: "/products/category/industrial", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/r-454b", changefreq: "weekly", priority: "0.9" },
       { loc: "/products/hfo-refrigerants", changefreq: "weekly", priority: "0.9" },
+      { loc: "/products/r-22-replacements", changefreq: "weekly", priority: "0.9" },
       { loc: "/certifications", changefreq: "monthly", priority: "0.6" },
       { loc: "/compliance", changefreq: "monthly", priority: "0.7" },
       { loc: "/shipping-policy", changefreq: "monthly", priority: "0.6" },
