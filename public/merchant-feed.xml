@@ -5,6 +5,22 @@
     <link>https://alperrefrigerants.com</link>
     <description>Wholesale refrigerants and HVAC equipment for licensed professionals. EPA 608 certification required for refrigerant purchases.</description>
     <item>
+      <g:id>ACCUTOOLS-EL720</g:id>
+      <g:title>AccuTools eL-720 Carbon Dioxide (CO2) Gas Leak Detector | HVAC and Refrigeration Tool</g:title>
+      <g:description>The AccuTools eL-720 Carbon Dioxide Gas Leak Detector is a professional-grade instrument designed to quickly and accurately locate CO2 leaks in HVAC and refrigeration systems. Featuring advanced infrared sensor technology, it provides pinpoint accuracy and fast response times, making it an essential tool for technicians and wholesalers. Detects trace levels of CO2 (R744) with high sensitivity, using LED and audible leak indicators with variable intensity levels.</g:description>
+      <g:link>https://alperrefrigerants.com/products/accutools-el-720-carbon-dioxide-co2-gas-leak-detector-hvac-and-refrigeration-tool</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ELD-PRO-HG.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>199.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AccuTools</g:brand>
+      <g:mpn>eL-720</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1991</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-RE-REC-1HP</g:id>
       <g:title>AlperPro 1 HP Refrigerant Recovery Machine 115V</g:title>
       <g:description>A 1 HP oil-less recovery machine for pulling refrigerant out of a system into a DOT recovery cylinder, which federal rules require before opening any circuit for service or disposal. The oil-less twin-cylinder compressor means no crankcase oil to contaminate recovered refrigerant, and it handles vapour, liquid and push-pull recovery with a high-pressure cut-out at 550 psi. Rated for R-22, R-410A, R-134a, R-404A, R-407C and other common HFC and HCFC refrigerants; it is not rated for A2L flammable refrigerants such as R-32 or R-454B, which require a listed A2L machine. Recovery rate is roughly 0.5 lb per minute of vapour and up to 7 lb per minute in liquid push-pull. Includes a carry frame, dual gauges and a 1/4 in SAE inlet and outlet. Use only with a certified recovery cylinder and never fill past 80 percent.</g:description>
@@ -324,6 +340,22 @@
       <g:google_product_category>605</g:google_product_category>
     </item>
     <item>
+      <g:id>APPION-G5TWIN</g:id>
+      <g:title>Appion G5Twin Refrigerant Recovery Machine | High-Speed EPA-Compliant Recovery</g:title>
+      <g:description>The Appion G5Twin Refrigerant Recovery Machine is a high-performance recovery unit designed for HVAC technicians, contractors, and industrial users who need speed, durability, and EPA compliance. Built with a twin-cylinder, twin-condenser design, the G5Twin delivers fast recovery rates for R410A, R134a, R22, R32 and other common refrigerants, making it a professional-grade choice for residential, commercial, and industrial applications. Oil-less 1/2 HP compressor, 115V/60Hz, recovery rate up to 2.5 lbs/min.</g:description>
+      <g:link>https://alperrefrigerants.com/products/appion-g5twin-refrigerant-recovery-machine-high-speed-epa-compliant-recovery</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/G5TWIN.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1299.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Appion</g:brand>
+      <g:mpn>G5Twin</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
       <g:id>AC-BD-PORT-14K</g:id>
       <g:title>Black+Decker 14000 BTU Portable AC</g:title>
       <g:description>Powerful portable air conditioner with dehumidifier function. 14000 BTU, easy-roll casters, programmable timer. The Black+Decker 14000 BTU Portable AC delivers 14,000 BTU/h of cooling and is sized for up to 500 sq ft. It carries a SACC 14,000 BTU efficiency rating, which is what determines running cost once the unit is in service — the higher the rating, the less the same amount of cooling costs your customer or tenant each season. No permanent installation is required. The unit rolls on casters, the exhaust hose vents through the supplied window bracket, and it plugs into a standard outlet. That makes it the usual answer for leased spaces where the landlord permits no modifications, for server and telecom closets that overheat, for event and tent cooling, and for keeping a space usable while a fixed system is being repaired or replaced. Electrically it runs on 115V, 1-Phase, 60Hz, and connects via NEMA 5-15P. Confirm the circuit before delivery: a 115V unit works from common building circuits, but it should be on its own breaker rather than shared with lighting or appliances. It is charged with R-32, a lower-GWP refrigerant now standard on new US equipment. Servicing requires R-32-rated gauges and recovery equipment, and we stock R-32 in bulk so service gas can ship alongside the units. Typical buyers are facility managers, event and equipment rental companies, IT and telecom sites, and retailers building seasonal stock. Order a single unit or a full load. Pricing is tiered: single and small orders of one to four units carry a handling rate, unit rates improve from five units, and the lowest per-unit price applies from 18 units. Units ship from US warehouses with freight quoted at cost, and orders can be invoiced by bank wire at a discount.</g:description>
@@ -449,6 +481,22 @@
       <g:google_product_category>1698</g:google_product_category>
     </item>
     <item>
+      <g:id>FP-MG44</g:id>
+      <g:title>Fieldpiece MG44 Wireless Vacuum Gauge | Digital Micron Meter for HVAC (R410A, R134a)</g:title>
+      <g:description>The Fieldpiece MG44 Wireless Vacuum Gauge is a rugged, high-precision micron gauge designed for HVAC professionals performing vacuum evacuation and leak detection on refrigerant systems including R410A, R134a, R22, R32 and blends. Featuring a reversible angled coupler and compact cylindrical design, it is easy to connect even in tight or awkward spots, and the IP54-rated housing ensures durability in the field. The MG44 offers three viewing modes (Rate, Bar Graph and Rate Meter) and supports standalone operation, wireless display via the Job Link mobile app, or integration with the SMAN manifold screen, with 40 to 50 hours of battery life.</g:description>
+      <g:link>https://alperrefrigerants.com/products/fieldpiece-mg44-wireless-vacuum-gauge-digital-micron-meter-for-hvac-r410a-r134a</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/MG44.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>309.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Fieldpiece</g:brand>
+      <g:mpn>MG44</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
+    </item>
+    <item>
       <g:id>AC-FRIG-WIN-10K</g:id>
       <g:title>Frigidaire 10000 BTU Window AC</g:title>
       <g:description>Compact window air conditioner with remote control. 10000 BTU capacity, 3 cooling speeds, washable filter. The Frigidaire 10000 BTU Window AC delivers 10,000 BTU/h of cooling and is sized for up to 450 sq ft. It carries a 12 CEER efficiency rating, which is what determines running cost once the unit is in service — the higher the rating, the less the same amount of cooling costs your customer or tenant each season. Installation is a single-window job. The chassis drops into a standard double-hung window opening, the side curtains seal the gap and the unit plugs into an existing outlet, so there is no line set to braze, no vacuum to pull and no refrigerant charging on site. A crew can commission a whole floor of rooms in a day, which is why window units remain the fastest way to bring a building of rooms back online before a cooling season. Electrically it runs on 115V, 1-Phase, 60Hz, and connects via NEMA 5-15P. Confirm the circuit before delivery: a 115V unit works from common building circuits, but it should be on its own breaker rather than shared with lighting or appliances. It is charged with R-32, a lower-GWP refrigerant now standard on new US equipment. Servicing requires R-32-rated gauges and recovery equipment, and we stock R-32 in bulk so service gas can ship alongside the units. Typical buyers are property managers, student-housing operators, motel owners and HVAC dealers restocking before the season. Order a single unit or a full load. Pricing is tiered: single and small orders of one to four units carry a handling rate, unit rates improve from five units, and the lowest per-unit price applies from 22 units. Units ship from US warehouses with freight quoted at cost, and orders can be invoiced by bank wire at a discount.</g:description>
@@ -527,6 +575,22 @@
       <g:google_product_category>605</g:google_product_category>
     </item>
     <item>
+      <g:id>INFICON-705-202-G1</g:id>
+      <g:title>Inficon 705-202-G1 TEK-Mate Refrigerant Leak Detector | Professional HVAC Tool</g:title>
+      <g:description>The Inficon 705-202-G1 (TEK-Mate) Refrigerant Leak Detector offers high sensitivity, proven reliability, and professional-grade performance for HVAC and refrigeration service work. Designed for contractors, service technicians, and industrial users, the TEK-Mate detects leaks of R134a, R410A, R22, R32 and most CFCs, HCFCs and HFCs, with a flexible probe and multi-level sensitivity indication.</g:description>
+      <g:link>https://alperrefrigerants.com/products/inficon-705-202-g1-tek-mate-refrigerant-leak-detector-professional-hvac-tool</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/705-202-G1.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>299.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Inficon</g:brand>
+      <g:mpn>705-202-G1</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1991</g:google_product_category>
+    </item>
+    <item>
       <g:id>AC-LG-WIN-12K</g:id>
       <g:title>LG 12000 BTU Window Air Conditioner</g:title>
       <g:description>Wholesale 12,000 BTU window air conditioner with digital display, remote control, 24-hour timer and energy saver mode. Core volume size for rental and hospitality supply. The LG 12000 BTU Window Air Conditioner delivers 12,000 BTU/h of cooling and is sized for up to 550 sq ft. It carries a 12 CEER efficiency rating, which is what determines running cost once the unit is in service — the higher the rating, the less the same amount of cooling costs your customer or tenant each season. Installation is a single-window job. The chassis drops into a standard double-hung window opening, the side curtains seal the gap and the unit plugs into an existing outlet, so there is no line set to braze, no vacuum to pull and no refrigerant charging on site. A crew can commission a whole floor of rooms in a day, which is why window units remain the fastest way to bring a building of rooms back online before a cooling season. Electrically it runs on 115V, 1-Phase, 60Hz, and connects via NEMA 5-15P. Confirm the circuit before delivery: a 115V unit works from common building circuits, but it should be on its own breaker rather than shared with lighting or appliances. It is charged with R-32, a lower-GWP refrigerant now standard on new US equipment. Servicing requires R-32-rated gauges and recovery equipment, and we stock R-32 in bulk so service gas can ship alongside the units. Typical buyers are property managers, student-housing operators, motel owners and HVAC dealers restocking before the season. Order a single unit or a full load. Pricing is tiered: single and small orders of one to four units carry a handling rate, unit rates improve from five units, and the lowest per-unit price applies from 30 units. Units ship from US warehouses with freight quoted at cost, and orders can be invoiced by bank wire at a discount.</g:description>
@@ -556,6 +620,22 @@
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>MC-69LEGEND-HFC</g:id>
+      <g:title>Mastercool 69LEGEND-HFC Legend Series HFC Refrigerant Analyzer | EPA-Compliant HVAC Tool</g:title>
+      <g:description>The Mastercool 69LEGEND-HFC Legend Series Refrigerant Analyzer is engineered for HVAC professionals who demand speed, accuracy, and regulatory compliance. This robust tool analyzes and identifies HFC refrigerants such as R410A, R134a, R22 and R32, ensuring purity verification to prevent cross-contamination and safeguard your recovery systems. Analyzed refrigerants: R410A, R134a, R22, R32. Colour LCD display with built-in thermal printer, moisture and contamination detection, and an updatable refrigerant database.</g:description>
+      <g:link>https://alperrefrigerants.com/products/mastercool-69legend-hfc-legend-series-hfc-refrigerant-analyzer-epa-compliant-hvac-tool</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/MC-69LEGEND-HFC.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>3699.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Mastercool</g:brand>
+      <g:mpn>69LEGEND-HFC</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
     </item>
     <item>
       <g:id>AC-MIDEA-PORT-8K</g:id>
@@ -650,6 +730,22 @@
       <g:adult>no</g:adult>
       <g:product_type>Heat Pumps</g:product_type>
       <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>NAVAC-NRP6DI</g:id>
+      <g:title>NAVAC NRP6Di Smart Vacuum Pump | 6 CFM with Digital Vacuum Gauge for HVAC and Refrigeration</g:title>
+      <g:description>The NAVAC NRP6Di Smart Vacuum Pump delivers professional-grade evacuation performance with smart digital control. With a capacity of 6 CFM and a built-in digital vacuum gauge, it ensures precise measurement, faster evacuation, and reliable performance across HVAC and refrigeration applications. Designed for HVAC systems using R410A, R134A, R22 and other common HFC/HCFC refrigerants, with an integrated digital gauge offering micron-level accuracy.</g:description>
+      <g:link>https://alperrefrigerants.com/products/navac-nrp6di-smart-vacuum-pump-6-cfm-with-digital-vacuum-gauge-for-hvac-and-refrigeration</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/NAVAC-NRP6DI.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>249.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>NAVAC</g:brand>
+      <g:mpn>NRP6Di</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
     </item>
     <item>
       <g:id>HP-SZ-PIO-CAS-12K</g:id>
@@ -791,6 +887,22 @@
       <g:condition>new</g:condition>
       <g:brand>HVAC Pro Tools</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
+      <g:id>PROMAX-RG6000</g:id>
+      <g:title>Promax RG6000 Portable Refrigerant Recovery Machine</g:title>
+      <g:description>Portable recovery machine built for daily professional service work. Fast: best in class recovery performance saves time on every job. Easy to carry: compact package that is small and light. Rugged: designed to withstand the rigors of daily use in extreme conditions. Easy to use: large oversized pressure gauges are easy to read. Convenient: self-purge manifold makes it easy to prepare the machine for the next job. Field serviceable: easy to disassemble and repair with kits available to replace wearable components, helping limit downtime. An internal filter protects the machine from harmful foreign objects.</g:description>
+      <g:link>https://alperrefrigerants.com/products/promax-rg6000-portable-refrigerant-recovery-machine</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/PRP-6000-RF.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>563.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Promax</g:brand>
+      <g:mpn>RG6000</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1167</g:google_product_category>
@@ -1035,6 +1147,22 @@
       <g:google_product_category>1732</g:google_product_category>
     </item>
     <item>
+      <g:id>ROBINAIR-RG6</g:id>
+      <g:title>Robinair RG6 Portable Refrigerant Recovery Machine with UL ARI-740-98 Performance Ratings</g:title>
+      <g:description>The Robinair RG6 Portable Refrigerant Recovery Machine is engineered for high-speed refrigerant recovery in residential, commercial, and industrial HVAC/R systems. Built with a rugged twin-cylinder design, the RG6 delivers fast liquid and vapor recovery, making it the preferred choice for professional HVAC technicians. Handles R22, R134a, R404A, R407C, R410A and other Class III, IV and V non-flammable refrigerants (CFCs, HCFCs, HFCs). High-accuracy analog gauges with clear pressure indication.</g:description>
+      <g:link>https://alperrefrigerants.com/products/robinair-rg6-portable-refrigerant-recovery-machine-with-ul-ari-740-98-performance-ratings</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/RG-6000-PRO.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>599.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Robinair</g:brand>
+      <g:mpn>RG6</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
       <g:id>AC-MZ-DUAL-18K</g:id>
       <g:title>Senville 18000 BTU Dual-Zone Mini-Split</g:title>
       <g:description>Wholesale dual-zone 18,000 BTU mini-split system: one outdoor condenser plus two 9,000 BTU indoor heads. Independent room control for apartments and offices. The Senville 18000 BTU Dual-Zone Mini-Split delivers 18,000 BTU/h of cooling and is sized for 2 rooms up to 750 sq ft. It carries a 19 SEER2 efficiency rating, which is what determines running cost once the unit is in service — the higher the rating, the less the same amount of cooling costs your customer or tenant each season. One outdoor condenser feeds multiple indoor heads, and each head has its own thermostat and remote, so rooms are conditioned only when they are occupied instead of running one system for the whole building. It covers 2 rooms up to 750 sq ft. Line sets run to every head, which keeps zoning retrofits practical where there is no duct space; installation is a licensed HVAC job. Electrically it runs on 230V, 1-Phase, 60Hz, and connects via NEMA 6-20P. Confirm the circuit before delivery: a 230V unit needs a dedicated 230V circuit, and hardwired models need a licensed electrician to terminate the connection. It is charged with R-410A, still the most widely stocked service refrigerant in North America, which keeps future maintenance simple and parts and gas easy to source. We stock R-410A in bulk, so service gas can ship alongside the units. Typical buyers are HVAC contractors on whole-home retrofits, apartment renovators and multi-office build-outs. Order a single unit or a full load. Pricing is tiered: single and small orders of one to four units carry a handling rate, unit rates improve from five units, and the lowest per-unit price applies from 12 units. Units ship from US warehouses with freight quoted at cost, and orders can be invoiced by bank wire at a discount.</g:description>
@@ -1114,6 +1242,22 @@
       <g:product_type>Refrigerants</g:product_type>
     </item>
     <item>
+      <g:id>TESTO-558S-KIT</g:id>
+      <g:title>Testo 558s Smart Digital Manifold Kit with Hoses and Probes | HVAC Wireless Gauge Set (0564 5583 01)</g:title>
+      <g:description>The Testo 558s Smart Digital Manifold Kit with Hoses (Catalog# 0564 5583 01) is designed for HVAC/R professionals who demand precision, speed, and wireless connectivity. Equipped with temperature probes, vacuum probe, hose set, and durable carrying case, this manifold ensures effortless system diagnostics and accurate refrigerant measurements. Compatible with over 60 refrigerants, including R410A, R134A, R22, R32 and low-GWP blends, with automatic detection via the preloaded refrigerant database in the Testo Smart App.</g:description>
+      <g:link>https://alperrefrigerants.com/products/testo-558s-smart-digital-manifold-kit-with-hoses-and-probes-hvac-wireless-gauge-set-0564-5583-01</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/DM-4WAY-BT.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>599.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Testo</g:brand>
+      <g:mpn>0564 5583 01</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
+    </item>
+    <item>
       <g:id>AC-WHYN-PORT-12K</g:id>
       <g:title>Whynter 12000 BTU Portable AC</g:title>
       <g:description>Eco-friendly portable AC with dual hose design. 12000 BTU, 3-in-1 cooling/fan/dehumidifier, LED display. The Whynter 12000 BTU Portable AC delivers 12,000 BTU/h of cooling and is sized for up to 400 sq ft. It carries a SACC 12,000 BTU efficiency rating, which is what determines running cost once the unit is in service — the higher the rating, the less the same amount of cooling costs your customer or tenant each season. No permanent installation is required. The unit rolls on casters, the exhaust hose vents through the supplied window bracket, and it plugs into a standard outlet. That makes it the usual answer for leased spaces where the landlord permits no modifications, for server and telecom closets that overheat, for event and tent cooling, and for keeping a space usable while a fixed system is being repaired or replaced. Electrically it runs on 115V, 1-Phase, 60Hz, and connects via NEMA 5-15P. Confirm the circuit before delivery: a 115V unit works from common building circuits, but it should be on its own breaker rather than shared with lighting or appliances. It is charged with R-32, a lower-GWP refrigerant now standard on new US equipment. Servicing requires R-32-rated gauges and recovery equipment, and we stock R-32 in bulk so service gas can ship alongside the units. Typical buyers are facility managers, event and equipment rental companies, IT and telecom sites, and retailers building seasonal stock. Order a single unit or a full load. Pricing is tiered: single and small orders of one to four units carry a handling rate, unit rates improve from five units, and the lowest per-unit price applies from 15 units. Units ship from US warehouses with freight quoted at cost, and orders can be invoiced by bank wire at a discount.</g:description>
@@ -1143,6 +1287,54 @@
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>YJ-45930</g:id>
+      <g:title>Yellow Jacket 45930 CO2 Transcritical Test and Charging Manifold with Quick Couplers</g:title>
+      <g:description>The Yellow Jacket 45930 CO2 Transcritical Test and Charging Manifold with Quick Couplers is a professional-grade tool designed for safe and accurate service on high-pressure CO2 refrigeration and HVAC systems. Built for technicians working with transcritical CO2, this manifold ensures reliable performance under demanding commercial and industrial conditions. Engineered specifically for R744 (carbon dioxide) transcritical systems, with analog high-pressure gauges on a CO2 scale.</g:description>
+      <g:link>https://alperrefrigerants.com/products/yellow-jacket-45930-co2-transcritical-test-and-charging-manifold-with-quick-couplers</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/Yellow-Jacket-45930.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>679.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Yellow Jacket</g:brand>
+      <g:mpn>45930</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
+    </item>
+    <item>
+      <g:id>YJ-68812</g:id>
+      <g:title>Yellow Jacket 68812 Electronic Charging Scale | 220 lb (100 kg) Refrigerant Scale</g:title>
+      <g:description>The Yellow Jacket 68812 Electronic Charging Scale is a professional-grade HVAC tool designed to simplify refrigerant charging and recovery. With a 220 lb (100 kg) capacity, NIST-traceable calibration, and rugged construction, this scale delivers high accuracy and reliability. Its sealed digital display, removable control module with 5 ft retractable cord, and mechanical overload protection with an OL alert ensure safety and precision in demanding jobsite conditions. Compatible with all refrigerants including R410A, R134a, R22 and R32, it enables direct charging into systems, reducing handling steps and improving efficiency.</g:description>
+      <g:link>https://alperrefrigerants.com/products/yellow-jacket-68812-electronic-charging-scale-220-lb-100-kg-refrigerant-scale</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/YJE-68812.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>599.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Yellow Jacket</g:brand>
+      <g:mpn>68812</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1698</g:google_product_category>
+    </item>
+    <item>
+      <g:id>025-47116-007-EEV</g:id>
+      <g:title>York 025-47116-007 Electronic Expansion Valve (EEV) | OEM HVAC Refrigeration Part</g:title>
+      <g:description>The York 025-47116-007 Electronic Expansion Valve (EEV) is a factory-authorized OEM replacement part designed for York and Johnson Controls HVAC systems. Built for precision refrigerant flow control, it enhances system efficiency, stabilizes temperature regulation, and ensures reliable long-term performance in commercial and industrial applications. Compatible with R410A, R134A, R22, R407C and other standard HFC/HCFC refrigerants. Refrigerant Type: HFC / HCFC. Flow is controlled electronically through the system onboard digital interface.</g:description>
+      <g:link>https://alperrefrigerants.com/products/york-025-47116-007-electronic-expansion-valve-eev-oem-hvac-refrigeration-part</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/025-47116-007-EEV.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>289.99 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>York</g:brand>
+      <g:mpn>025-47116-007</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1810</g:google_product_category>
     </item>
   </channel>
 </rss>
