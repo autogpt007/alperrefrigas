@@ -364,8 +364,6 @@ const Header = () => {
         </nav>
       </div>
 
-      {/* B2B Trust Bar */}
-      <TrustBar />
 
 
       {/* Mobile Menu */}
