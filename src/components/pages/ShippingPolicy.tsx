@@ -353,12 +353,48 @@ const ShippingPolicy = () => {
               </CardContent>
             </Card>
 
+            {/* Equipment vs Bulk Gas classification */}
+            <Card className="border-indigo-200">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2 text-indigo-600" />
+                  International Orders: Equipment vs. Bulk Refrigerant Gas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <p>Export requirements differ by product type. Please review which category your order falls under.</p>
+                <div className="grid gap-4 md:grid-cols-2 mt-4">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">HVAC Equipment, Tools &amp; Gauges</h4>
+                    <ul className="list-disc pl-5 text-sm text-green-800 space-y-1">
+                      <li>Mini-splits, heat pumps, PTAC units, manifolds, gauges, scales and detectors</li>
+                      <li>Ship on a standard commercial invoice and customs declaration</li>
+                      <li>No chemical import permit required</li>
+                      <li>Pre-charged equipment may still require an equipment import licence in the EU and Australia</li>
+                    </ul>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                    <h4 className="font-semibold text-orange-900 mb-2">Bulk Refrigerant Cylinders &amp; Pallets</h4>
+                    <ul className="list-disc pl-5 text-sm text-orange-800 space-y-1">
+                      <li>Move as Dangerous Goods under IATA and IMDG rules with a Dangerous Goods Declaration</li>
+                      <li>Require a valid import/handling licence in the destination country before booking freight</li>
+                      <li>Quoted individually and settled by bank wire against a proforma invoice, so customs paperwork is prepared with your broker</li>
+                      <li>Released for shipment only after our export team verifies your licence</li>
+                    </ul>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-4">
+                  For overseas pallet or container quantities, please submit a request through our quote form so freight, routing and clearance can be tailored to your destination port.
+                </p>
+              </CardContent>
+            </Card>
+
             {/* EU F-Gas Regulations */}
             <Card className="border-orange-200 bg-orange-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2 text-orange-600" />
-                  EU F-Gas Regulations (Regulation 517/2014)
+                  EU &amp; UK F-Gas Regulations (EU Regulation 2024/573)
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
