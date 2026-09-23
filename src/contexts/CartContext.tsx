@@ -141,79 +141,59 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const standardShippingCost = 50; // Standard shipping cost
 
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
-    console.log('Adding item to cart:', newItem);
-    
-    setItems(currentItems => {
-      const existingItemIndex = currentItems.findIndex(item => 
+    mutateCart(currentItems => {
+      const existingItemIndex = currentItems.findIndex(item =>
         item.id === newItem.id && item.packaging === newItem.packaging
       );
-      
+
       if (existingItemIndex !== -1) {
-        // Update existing item quantity
         const updatedItems = [...currentItems];
         updatedItems[existingItemIndex] = {
           ...updatedItems[existingItemIndex],
           quantity: updatedItems[existingItemIndex].quantity + 1
         };
-        console.log('Updated existing item, new cart:', updatedItems);
-        
-        // Track add to cart in GA4 and Facebook Pixel
+
         const itemToTrack = updatedItems[existingItemIndex];
         trackAddToCart(cartItemToGA4Item({ ...itemToTrack, quantity: 1 }));
         trackFBAddToCart(itemToTrack.sku || itemToTrack.id, itemToTrack.name, itemToTrack.price, 'USD', 1);
         trackGoogleAdsAddToCart(itemToTrack.price);
-        
+
         return updatedItems;
       }
-      
-      // Add new item
+
       const newCart = [...currentItems, { ...newItem, quantity: 1 }];
-      console.log('Added new item, new cart:', newCart);
-      
-      // Track add to cart in GA4 and Facebook Pixel
+
       trackAddToCart(cartItemToGA4Item({ ...newItem, quantity: 1 }));
       trackFBAddToCart(newItem.sku || newItem.id, newItem.name, newItem.price, 'USD', 1);
       trackGoogleAdsAddToCart(newItem.price);
-      
+
       return newCart;
     });
   };
 
   const removeItem = (id: string) => {
-    console.log('Removing item from cart:', id);
-    setItems(currentItems => {
-      // Find the item being removed for GA4 tracking
+    mutateCart(currentItems => {
       const removedItem = currentItems.find(item => item.id === id);
       if (removedItem) {
         trackRemoveFromCart(cartItemToGA4Item(removedItem));
       }
-      
-      const newItems = currentItems.filter(item => item.id !== id);
-      console.log('Cart after removal:', newItems);
-      return newItems;
+      return currentItems.filter(item => item.id !== id);
     });
   };
 
   const updateQuantity = (id: string, quantity: number) => {
-    console.log('Updating quantity for item:', id, 'to:', quantity);
-    
     if (quantity <= 0) {
       removeItem(id);
       return;
     }
-    
-    setItems(currentItems => {
-      const updatedItems = currentItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      );
-      console.log('Cart after quantity update:', updatedItems);
-      return updatedItems;
-    });
+
+    mutateCart(currentItems =>
+      currentItems.map(item => (item.id === id ? { ...item, quantity } : item))
+    );
   };
 
   const updateItemConfiguration = (id: string, configuration: CartItem['configuration_json']) => {
-    console.log('Updating configuration for item:', id, configuration);
-    setItems(currentItems =>
+    mutateCart(currentItems =>
       currentItems.map(item =>
         item.id === id ? { ...item, configuration_json: configuration } : item
       )
@@ -221,8 +201,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = () => {
-    console.log('Clearing cart');
-    setItems([]);
+    mutateCart(() => []);
   };
 
   const getTotalItems = () => {
