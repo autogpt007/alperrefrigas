@@ -445,6 +445,53 @@ const ShippingPolicy = () => {
               </CardContent>
             </Card>
 
+            {/* Australian import compliance */}
+            <Card className="border-orange-200 bg-orange-50/30">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Shield className="h-5 w-5 mr-2 text-orange-600" />
+                  Australian Import Compliance (OPSGGM Act)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <div className="bg-orange-100 p-4 rounded-lg mb-4 border border-orange-300">
+                  <p className="text-orange-900 font-semibold mb-2">
+                    ⚠️ MANDATORY FOR AUSTRALIAN CUSTOMERS PURCHASING REFRIGERANTS
+                  </p>
+                  <p className="text-orange-800 text-sm">
+                    Imports of HFC and HCFC refrigerants into Australia are controlled under the Ozone Protection and Synthetic Greenhouse Gas
+                    Management Act 1989, administered by the Department of Climate Change, Energy, the Environment and Water (DCCEEW).
+                  </p>
+                </div>
+
+                <h4 className="font-semibold">Licence Requirements</h4>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li><strong>Controlled Substances Licence:</strong> A DCCEEW licence (with HFC quota where applicable) is required to import bulk refrigerant gas</li>
+                  <li><strong>ARC Authorisation:</strong> Buyers acquiring or handling refrigerant must hold an ARC Refrigerant Trading Authorisation (RTA) or Refrigerant Handling Licence (RHL)</li>
+                  <li><strong>Equipment Licence:</strong> Pre-charged air conditioning and heat pump equipment requires an Equipment Licence (EQPL) or import under the relevant exemption</li>
+                  <li><strong>Checkout Verification:</strong> Australian refrigerant orders must include your licence number, which our export team verifies with the issuing authority before freight is booked</li>
+                </ul>
+
+                <h4 className="font-semibold mt-4">New Zealand</h4>
+                <p className="text-sm">
+                  New Zealand buyers are covered by the Ozone Layer Protection Act 1996 and the synthetic greenhouse gas levy; an EPA import permit
+                  is required for bulk refrigerant gas.
+                </p>
+
+                <div className="bg-red-50 p-4 rounded-lg mt-4 border border-red-200">
+                  <p className="text-red-800 text-sm">
+                    <strong>❌ Orders Without a Valid Licence:</strong> Cannot be processed for Australian or New Zealand delivery.
+                    HVAC equipment, tools and gauges are unaffected and ship on a standard commercial invoice.
+                  </p>
+                </div>
+
+                <p className="text-xs text-gray-500 mt-4">
+                  This summary is provided for guidance only and does not replace advice from your customs broker or the relevant authority.
+                  Import rules change; buyers are responsible for confirming their current obligations.
+                </p>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
