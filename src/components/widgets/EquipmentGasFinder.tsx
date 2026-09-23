@@ -163,10 +163,10 @@ const EquipmentGasFinder = () => {
                         </Button>
                       </Link>
                     ) : (
-                      <Link to="/rfq">
+                      <Link to={gas.fallbackHref || '/rfq'}>
                         <Button size="sm" variant="outline" className="w-full">
                           <Quote className="mr-1.5 h-3.5 w-3.5" />
-                          Request availability
+                          {gas.fallbackHref ? `About ${gas.code}` : 'Request availability'}
                         </Button>
                       </Link>
                     )}
