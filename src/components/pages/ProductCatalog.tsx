@@ -102,7 +102,8 @@ const ProductCatalog = () => {
         { value: 'window-ac', label: 'Window AC Units' },
         { value: 'portable-ac', label: 'Portable AC Units' },
         { value: 'multi-zone', label: 'Multi-Zone Systems' },
-        { value: 'ptac-commercial', label: 'PTAC & Commercial' }
+        { value: 'ptac-commercial', label: 'PTAC & Commercial' },
+        { value: 'ducted-split', label: 'Ducted Split Systems' }
       ];
     } else {
       return [
