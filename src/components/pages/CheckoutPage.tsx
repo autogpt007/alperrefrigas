@@ -86,7 +86,6 @@ const CheckoutPage = () => {
   const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [bankWireDetails, setBankWireDetails] = useState<Record<string, string> | null>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
@@ -128,23 +127,6 @@ const CheckoutPage = () => {
     }
   }, [user, isGuest]);
 
-  // Fetch bank wire details
-  useEffect(() => {
-    const fetchBankWireDetails = async () => {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('setting_key, setting_value')
-        .in('setting_key', ['bank_wire_instructions', 'bank_name', 'bank_routing_number', 'bank_account_number', 'bank_swift_code']);
-      
-      const details: any = {};
-      data?.forEach(setting => {
-        details[setting.setting_key] = setting.setting_value;
-      });
-      setBankWireDetails(details);
-    };
-    
-    fetchBankWireDetails();
-  }, []);
 
   // Track begin_checkout event when user lands on checkout page
   useEffect(() => {
@@ -1036,17 +1018,10 @@ const CheckoutPage = () => {
                       {formData.paymentMethod === 'bank_wire' && (
                         <div className="space-y-4">
                           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <h4 className="font-medium text-blue-900 mb-2">Bank Wire Transfer Instructions</h4>
+                            <h4 className="font-medium text-blue-900 mb-2">Bank Wire Transfer</h4>
                             <div className="text-sm text-blue-800 space-y-1">
-                              <p>Wire transfer details will be provided after order confirmation.</p>
+                              <p>After you place your order, our sales team will email you a proforma invoice with the bank wire payment instructions.</p>
                               <p className="text-xs opacity-75">Processing time: 1-3 business days</p>
-                              {bankWireDetails && (
-                                <div className="mt-3 space-y-1 font-mono text-xs">
-                                  {bankWireDetails.bank_name && <p><strong>Bank:</strong> {bankWireDetails.bank_name}</p>}
-                                  {bankWireDetails.bank_account_number && <p><strong>Account:</strong> {bankWireDetails.bank_account_number}</p>}
-                                  {bankWireDetails.bank_routing_number && <p><strong>Routing:</strong> {bankWireDetails.bank_routing_number}</p>}
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>

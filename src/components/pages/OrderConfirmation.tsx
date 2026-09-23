@@ -296,7 +296,7 @@ const OrderConfirmation = () => {
               : data.payment_method === 'credit_card' 
                 ? "Thank you for your order. You will be contacted within 24h by one of our sales agents and once your payment is confirmed we will process your order immediately."
               : data.payment_method === 'bank_wire'
-                ? "Thank you for your order. You will receive a proforma invoice with bank wire payment instructions. Your order will be processed as soon as we receive your payment confirmation receipt. Payment should be completed within 48h of order creation."
+                ? "Thank you for your order. Our sales team will email you a proforma invoice with the bank wire payment instructions. Your order will be processed as soon as we receive your payment confirmation receipt."
                 : "Thank you for your order. We've received your payment and will process your order shortly."
             }
           </p>
@@ -504,7 +504,7 @@ const OrderConfirmation = () => {
             ) : data.payment_method === 'bank_wire' ? (
               <div className="text-center">
                 <p className="text-gray-600">
-                  Check your inbox for the proforma invoice. Once you send us the transfer receipt, your order status will update to Confirmed.
+                  Our sales team will email you the proforma invoice with payment instructions. Once you send us the transfer receipt, your order status will update to Confirmed.
                 </p>
               </div>
             ) : (
