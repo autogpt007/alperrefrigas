@@ -78,6 +78,9 @@ const CheckoutPage = () => {
     // F-Gas certification for EU orders
     fGasCertificationNumber: '',
     fGasCertificationValid: false,
+    // Australian OPSGGM / ARC licence for AU refrigerant orders
+    auLicenceNumber: '',
+    auLicenceValid: false,
     // VAT exemption for international orders
     payVatAtCustoms: false
   });
@@ -335,6 +338,26 @@ const CheckoutPage = () => {
       }
     }
 
+    // Australian import licence validation for AU refrigerant orders
+    if (formData.countryCode === 'AU' && hasRefrigerantProducts) {
+      if (!formData.auLicenceNumber.trim()) {
+        toast({
+          title: "Australian Licence Required",
+          description: "Australian law (OPSGGM Act) requires a refrigerant handling or import licence number",
+          variant: "destructive",
+        });
+        return false;
+      }
+      if (!formData.auLicenceValid) {
+        toast({
+          title: "Please Confirm Your Licence",
+          description: "You must confirm that your Australian licence is current and valid",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
     if (!legalAcknowledged) {
       toast({
         title: "Legal Acknowledgment Required",
@@ -469,6 +492,14 @@ const CheckoutPage = () => {
             fgas_certification: {
               number: formData.fGasCertificationNumber,
               confirmed_valid: formData.fGasCertificationValid,
+              country: formData.countryCode
+            }
+          } : {}),
+          // Australian import/handling licence for AU orders
+          ...(formData.countryCode === 'AU' && hasRefrigerantProducts ? {
+            au_import_licence: {
+              number: formData.auLicenceNumber,
+              confirmed_valid: formData.auLicenceValid,
               country: formData.countryCode
             }
           } : {}),
@@ -845,6 +876,52 @@ const CheckoutPage = () => {
                         />
                         <Label htmlFor="fGasCertificationValid" className="text-sm text-orange-900">
                           I confirm that my F-Gas certification is valid and current, and I am authorized to purchase regulated refrigerants under EU Regulation 517/2014.
+                        </Label>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Australian Import / Handling Licence for AU Orders */}
+                {formData.countryCode === 'AU' && hasRefrigerantProducts && (
+                  <Card className="border-orange-200 bg-orange-50/50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center text-orange-800">
+                        <Shield className="h-5 w-5 mr-2" />
+                        Australian Refrigerant Licence Required (OPSGGM Act)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Alert className="bg-orange-100 border-orange-300">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription className="text-orange-800">
+                          Australian law requires a valid licence to import or acquire synthetic greenhouse gas refrigerants.
+                          Provide your ARC Refrigerant Trading Authorisation, Refrigerant Handling Licence, or DCCEEW import licence number.
+                        </AlertDescription>
+                      </Alert>
+                      <div>
+                        <Label htmlFor="auLicenceNumber" className="text-orange-900">ARC / DCCEEW Licence Number *</Label>
+                        <Input
+                          id="auLicenceNumber"
+                          value={formData.auLicenceNumber}
+                          onChange={(e) => handleInputChange('auLicenceNumber', e.target.value)}
+                          placeholder="Enter your ARC RTA, RHL, or DCCEEW licence number"
+                          className="border-orange-200 focus:border-orange-400"
+                          required
+                        />
+                        <p className="text-xs text-orange-700 mt-1">
+                          Bulk cylinder and pallet shipments are released only after our export team verifies your licence with the issuing authority.
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Checkbox
+                          id="auLicenceValid"
+                          checked={formData.auLicenceValid}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, auLicenceValid: checked === true }))}
+                          className="mt-1"
+                        />
+                        <Label htmlFor="auLicenceValid" className="text-sm text-orange-900">
+                          I confirm that my licence is current and valid, and that I am authorised to acquire and import controlled refrigerants under the Ozone Protection and Synthetic Greenhouse Gas Management Act.
                         </Label>
                       </div>
                     </CardContent>

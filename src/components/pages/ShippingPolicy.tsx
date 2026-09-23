@@ -353,12 +353,48 @@ const ShippingPolicy = () => {
               </CardContent>
             </Card>
 
+            {/* Equipment vs Bulk Gas classification */}
+            <Card className="border-indigo-200">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2 text-indigo-600" />
+                  International Orders: Equipment vs. Bulk Refrigerant Gas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <p>Export requirements differ by product type. Please review which category your order falls under.</p>
+                <div className="grid gap-4 md:grid-cols-2 mt-4">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">HVAC Equipment, Tools &amp; Gauges</h4>
+                    <ul className="list-disc pl-5 text-sm text-green-800 space-y-1">
+                      <li>Mini-splits, heat pumps, PTAC units, manifolds, gauges, scales and detectors</li>
+                      <li>Ship on a standard commercial invoice and customs declaration</li>
+                      <li>No chemical import permit required</li>
+                      <li>Pre-charged equipment may still require an equipment import licence in the EU and Australia</li>
+                    </ul>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                    <h4 className="font-semibold text-orange-900 mb-2">Bulk Refrigerant Cylinders &amp; Pallets</h4>
+                    <ul className="list-disc pl-5 text-sm text-orange-800 space-y-1">
+                      <li>Move as Dangerous Goods under IATA and IMDG rules with a Dangerous Goods Declaration</li>
+                      <li>Require a valid import/handling licence in the destination country before booking freight</li>
+                      <li>Quoted individually and settled by bank wire against a proforma invoice, so customs paperwork is prepared with your broker</li>
+                      <li>Released for shipment only after our export team verifies your licence</li>
+                    </ul>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-4">
+                  For overseas pallet or container quantities, please submit a request through our quote form so freight, routing and clearance can be tailored to your destination port.
+                </p>
+              </CardContent>
+            </Card>
+
             {/* EU F-Gas Regulations */}
             <Card className="border-orange-200 bg-orange-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2 text-orange-600" />
-                  EU F-Gas Regulations (Regulation 517/2014)
+                  EU &amp; UK F-Gas Regulations (EU Regulation 2024/573)
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
@@ -367,7 +403,9 @@ const ShippingPolicy = () => {
                     ⚠️ MANDATORY FOR EU CUSTOMERS PURCHASING REFRIGERANTS
                   </p>
                   <p className="text-orange-800 text-sm">
-                    Under EU Regulation 517/2014, purchasers of fluorinated greenhouse gases (F-gases) must hold valid F-Gas certification.
+                    Under EU Regulation 2024/573 (which replaced Regulation 517/2014), purchasers of fluorinated greenhouse gases (F-gases)
+                    must hold valid F-Gas certification, and importers of bulk HFCs must be registered in the EU F-Gas Portal and HFC Registry
+                    with sufficient quota for the quantity imported. Buyers in Great Britain are covered by the retained UK F-Gas Regulation.
                   </p>
                 </div>
 
@@ -376,6 +414,8 @@ const ShippingPolicy = () => {
                   <li><strong>Valid F-Gas Certification:</strong> Required at checkout for all EU refrigerant orders</li>
                   <li><strong>Certification Number:</strong> Your national F-Gas certification number must be provided</li>
                   <li><strong>Validity Confirmation:</strong> You must confirm your certification is current and valid</li>
+                  <li><strong>Bulk Imports:</strong> For cylinder and pallet quantities we also request your F-Gas Portal registration (HFC Registry) ID and confirmation of available quota before freight is booked</li>
+                  <li><strong>EORI Number:</strong> Required by your customs broker to clear the shipment</li>
                 </ul>
 
                 <h4 className="font-semibold mt-4">Covered Products (F-Gases)</h4>
@@ -402,6 +442,53 @@ const ShippingPolicy = () => {
                     If you are unable to provide valid certification, please contact us to discuss alternative arrangements.
                   </p>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Australian import compliance */}
+            <Card className="border-orange-200 bg-orange-50/30">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Shield className="h-5 w-5 mr-2 text-orange-600" />
+                  Australian Import Compliance (OPSGGM Act)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <div className="bg-orange-100 p-4 rounded-lg mb-4 border border-orange-300">
+                  <p className="text-orange-900 font-semibold mb-2">
+                    ⚠️ MANDATORY FOR AUSTRALIAN CUSTOMERS PURCHASING REFRIGERANTS
+                  </p>
+                  <p className="text-orange-800 text-sm">
+                    Imports of HFC and HCFC refrigerants into Australia are controlled under the Ozone Protection and Synthetic Greenhouse Gas
+                    Management Act 1989, administered by the Department of Climate Change, Energy, the Environment and Water (DCCEEW).
+                  </p>
+                </div>
+
+                <h4 className="font-semibold">Licence Requirements</h4>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li><strong>Controlled Substances Licence:</strong> A DCCEEW licence (with HFC quota where applicable) is required to import bulk refrigerant gas</li>
+                  <li><strong>ARC Authorisation:</strong> Buyers acquiring or handling refrigerant must hold an ARC Refrigerant Trading Authorisation (RTA) or Refrigerant Handling Licence (RHL)</li>
+                  <li><strong>Equipment Licence:</strong> Pre-charged air conditioning and heat pump equipment requires an Equipment Licence (EQPL) or import under the relevant exemption</li>
+                  <li><strong>Checkout Verification:</strong> Australian refrigerant orders must include your licence number, which our export team verifies with the issuing authority before freight is booked</li>
+                </ul>
+
+                <h4 className="font-semibold mt-4">New Zealand</h4>
+                <p className="text-sm">
+                  New Zealand buyers are covered by the Ozone Layer Protection Act 1996 and the synthetic greenhouse gas levy; an EPA import permit
+                  is required for bulk refrigerant gas.
+                </p>
+
+                <div className="bg-red-50 p-4 rounded-lg mt-4 border border-red-200">
+                  <p className="text-red-800 text-sm">
+                    <strong>❌ Orders Without a Valid Licence:</strong> Cannot be processed for Australian or New Zealand delivery.
+                    HVAC equipment, tools and gauges are unaffected and ship on a standard commercial invoice.
+                  </p>
+                </div>
+
+                <p className="text-xs text-gray-500 mt-4">
+                  This summary is provided for guidance only and does not replace advice from your customs broker or the relevant authority.
+                  Import rules change; buyers are responsible for confirming their current obligations.
+                </p>
               </CardContent>
             </Card>
 
@@ -503,7 +590,7 @@ const ShippingPolicy = () => {
               <p className="text-blue-800">
                 For shipping inquiries or to request a freight quote:
                 <br />
-                <strong>Email:</strong> shipping@alperrefrigerants.com
+                <strong>Email:</strong> sales@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> +1-682-215-2974
                 <br />
