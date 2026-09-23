@@ -767,33 +767,68 @@ const OrderManagement = () => {
                   </div>
 
                   {/* Order Summary */}
-                  <div>
-                    <h3 className="text-white font-medium mb-4">Order Summary</h3>
-                    <div className="bg-slate-700/50 p-4 rounded-lg space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Subtotal:</span>
-                        <span className="text-white">${(selectedOrder.total_amount - (selectedOrder.shipping_cost || 0) - (selectedOrder.tax_amount || 0)).toFixed(2)}</span>
+                  {(() => {
+                    const totals = calculateOrderTotals(selectedOrder);
+                    return (
+                      <div>
+                        <h3 className="text-white font-medium mb-4">Order Summary</h3>
+                        <div className="bg-slate-700/50 p-4 rounded-lg space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Items Subtotal (gross):</span>
+                            <span className="text-white">${totals.itemsSubtotal.toFixed(2)}</span>
+                          </div>
+                          {totals.couponDiscount > 0 && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">
+                                Coupon Discount{totals.couponCode ? ` (${totals.couponCode})` : ''}:
+                              </span>
+                              <span className="text-emerald-400">-${totals.couponDiscount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {totals.paymentDiscount > 0 && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">
+                                {totals.paymentDiscountLabel}
+                                {totals.paymentDiscountPercent ? ` (${totals.paymentDiscountPercent}%)` : ''}:
+                              </span>
+                              <span className="text-emerald-400">-${totals.paymentDiscount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {(totals.couponDiscount > 0 || totals.paymentDiscount > 0) && (
+                            <div className="flex justify-between border-t border-slate-600 pt-2">
+                              <span className="text-gray-400">Discounted Subtotal:</span>
+                              <span className="text-white">
+                                ${(totals.itemsSubtotal - totals.couponDiscount - totals.paymentDiscount).toFixed(2)}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Shipping:</span>
+                            <span className="text-white">
+                              {totals.shipping > 0 ? `$${totals.shipping.toFixed(2)}` : 'Free freight'}
+                            </span>
+                          </div>
+                          {totals.tax > 0 && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Tax:</span>
+                              <span className="text-white">${totals.tax.toFixed(2)}</span>
+                            </div>
+                          )}
+                          <div className="border-t border-slate-600 pt-2">
+                            <div className="flex justify-between font-medium">
+                              <span className="text-white">Net Total Charged:</span>
+                              <span className="text-cyan-400">${totals.total.toFixed(2)}</span>
+                            </div>
+                          </div>
+                          {!totals.reconciles && (
+                            <p className="text-xs text-amber-400 pt-1">
+                              Line items do not fully reconcile with the stored total. Review before invoicing.
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      {selectedOrder.shipping_cost > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Shipping:</span>
-                          <span className="text-white">${selectedOrder.shipping_cost.toFixed(2)}</span>
-                        </div>
-                      )}
-                      {selectedOrder.tax_amount > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Tax:</span>
-                          <span className="text-white">${selectedOrder.tax_amount.toFixed(2)}</span>
-                        </div>
-                      )}
-                      <div className="border-t border-slate-600 pt-2">
-                        <div className="flex justify-between font-medium">
-                          <span className="text-white">Total:</span>
-                          <span className="text-cyan-400">${selectedOrder.total_amount.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   <div>
                     <h3 className="text-white font-medium mb-4">Order Notes</h3>
