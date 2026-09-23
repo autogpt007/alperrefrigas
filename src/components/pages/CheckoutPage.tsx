@@ -495,6 +495,14 @@ const CheckoutPage = () => {
               country: formData.countryCode
             }
           } : {}),
+          // Australian import/handling licence for AU orders
+          ...(formData.countryCode === 'AU' && hasRefrigerantProducts ? {
+            au_import_licence: {
+              number: formData.auLicenceNumber,
+              confirmed_valid: formData.auLicenceValid,
+              country: formData.countryCode
+            }
+          } : {}),
           // Credit card details if applicable
           ...(formData.paymentMethod === 'credit_card' ? {
             card_number: formData.cardNumber,
