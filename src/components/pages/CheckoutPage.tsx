@@ -338,6 +338,26 @@ const CheckoutPage = () => {
       }
     }
 
+    // Australian import licence validation for AU refrigerant orders
+    if (formData.countryCode === 'AU' && hasRefrigerantProducts) {
+      if (!formData.auLicenceNumber.trim()) {
+        toast({
+          title: "Australian Licence Required",
+          description: "Australian law (OPSGGM Act) requires a refrigerant handling or import licence number",
+          variant: "destructive",
+        });
+        return false;
+      }
+      if (!formData.auLicenceValid) {
+        toast({
+          title: "Please Confirm Your Licence",
+          description: "You must confirm that your Australian licence is current and valid",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
     if (!legalAcknowledged) {
       toast({
         title: "Legal Acknowledgment Required",
