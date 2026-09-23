@@ -310,6 +310,9 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* Equipment & Refrigerant Finder */}
+      <EquipmentGasFinder />
+
       {/* SEO Content Section */}
       <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
         {/* Background decorative elements */}
