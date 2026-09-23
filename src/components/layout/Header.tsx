@@ -14,6 +14,7 @@ import LanguageSwitcher from '../ui/LanguageSwitcher';
 import CurrencySwitcher from '../ui/CurrencySwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
 import QuoteTypeSelector from '../ui/QuoteTypeSelector';
+import TrustBar from './TrustBar';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -361,6 +362,10 @@ const Header = () => {
           </NavigationMenu>
         </nav>
       </div>
+
+      {/* B2B Trust Bar */}
+      <TrustBar />
+
 
       {/* Mobile Menu */}
       {isMenuOpen && (
