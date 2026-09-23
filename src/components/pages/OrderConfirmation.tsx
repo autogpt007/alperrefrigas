@@ -347,28 +347,44 @@ const OrderConfirmation = () => {
                 </div>
               ))}
               
-              {!isQuote && 'total_amount' in data && (
+              {!isQuote && 'total_amount' in data && (() => {
+                const totals = calculateOrderTotals(data as never);
+                return (
                 <div className="space-y-2 pt-4">
                   <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatPrice(data.total_amount - (data.shipping_cost || 0) - (data.tax_amount || 0))}</span>
+                    <span>Items Subtotal</span>
+                    <span>{formatPrice(totals.itemsSubtotal)}</span>
                   </div>
-                  {data.shipping_cost > 0 && (
-                    <div className="flex justify-between">
-                      <span>Shipping</span>
-                      <span>{formatPrice(data.shipping_cost)}</span>
+                  {totals.couponDiscount > 0 && (
+                    <div className="flex justify-between text-green-700">
+                      <span>Coupon Discount{totals.couponCode ? ` (${totals.couponCode})` : ''}</span>
+                      <span>-{formatPrice(totals.couponDiscount)}</span>
                     </div>
                   )}
-                  {data.tax_amount > 0 && (
+                  {totals.paymentDiscount > 0 && (
+                    <div className="flex justify-between text-green-700">
+                      <span>
+                        {totals.paymentDiscountLabel}
+                        {totals.paymentDiscountPercent ? ` (${totals.paymentDiscountPercent}%)` : ''}
+                      </span>
+                      <span>-{formatPrice(totals.paymentDiscount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>{totals.shipping > 0 ? formatPrice(totals.shipping) : 'Free freight'}</span>
+                  </div>
+                  {totals.tax > 0 && (
                     <div className="flex justify-between">
                       <span>Tax</span>
-                      <span>{formatPrice(data.tax_amount)}</span>
+                      <span>{formatPrice(totals.tax)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-lg font-bold border-t pt-2">
                     <span>Total</span>
-                    <span className="text-green-600">{formatPrice(data.total_amount)}</span>
+                    <span className="text-green-600">{formatPrice(totals.total)}</span>
                   </div>
+                  
                   
                   {/* Currency notice for non-USD */}
                   {currency !== 'USD' && (
