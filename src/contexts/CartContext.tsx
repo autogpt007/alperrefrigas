@@ -214,15 +214,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const shippingCost = qualifiesForFreeShipping ? 0 : standardShippingCost;
   const finalTotal = total + shippingCost;
 
-  console.log('Cart state:', { 
-    items, 
-    total, 
-    itemCount, 
-    freeShippingThreshold, 
-    qualifiesForFreeShipping, 
-    shippingCost, 
-    finalTotal 
-  });
 
   const value = {
     items,
