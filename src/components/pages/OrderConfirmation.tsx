@@ -396,7 +396,8 @@ const OrderConfirmation = () => {
                     </Alert>
                   )}
                 </div>
-              )}
+                );
+              })()}
               
               {isQuote && (
                 <div className="pt-4 bg-blue-50 p-4 rounded-lg">
