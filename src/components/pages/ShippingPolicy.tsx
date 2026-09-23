@@ -590,7 +590,7 @@ const ShippingPolicy = () => {
               <p className="text-blue-800">
                 For shipping inquiries or to request a freight quote:
                 <br />
-                <strong>Email:</strong> shipping@alperrefrigerants.com
+                <strong>Email:</strong> sales@alperrefrigerants.com
                 <br />
                 <strong>Phone:</strong> +1-682-215-2974
                 <br />
