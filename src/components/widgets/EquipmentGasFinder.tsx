@@ -13,7 +13,7 @@ type Option = {
   hint: string;
   icon: React.ElementType;
   /** Refrigerant designations commonly specified for this equipment class */
-  gases: { code: string; note: string; safety: string }[];
+  gases: { code: string; note: string; safety: string; fallbackHref?: string }[];
 };
 
 const OPTIONS: Option[] = [
@@ -24,8 +24,13 @@ const OPTIONS: Option[] = [
     icon: Wind,
     gases: [
       { code: 'R-410A', note: 'Long-standing charge for existing split systems', safety: 'A1' },
-      { code: 'R-454B', note: 'Lower-GWP charge used in new equipment', safety: 'A2L' },
-      { code: 'R-32', note: 'Lower-GWP charge used in new mini-splits', safety: 'A2L' },
+      {
+        code: 'R-454B',
+        note: 'Lower-GWP charge used in new equipment',
+        safety: 'A2L',
+        fallbackHref: '/products/r-454b',
+      },
+      { code: 'R-407C', note: 'Used in split systems and light commercial units', safety: 'A1' },
     ],
   },
   {
@@ -34,7 +39,7 @@ const OPTIONS: Option[] = [
     hint: 'Centrifugal, screw and scroll chillers',
     icon: Factory,
     gases: [
-      { code: 'R-134a', note: 'Widely specified for centrifugal and screw chillers', safety: 'A1' },
+      { code: 'R-134A', note: 'Widely specified for centrifugal and screw chillers', safety: 'A1' },
       { code: 'R-513A', note: 'Lower-GWP alternative used in R-134a chillers', safety: 'A1' },
       { code: 'R-407C', note: 'Used in medium-temperature commercial systems', safety: 'A1' },
     ],
@@ -56,8 +61,9 @@ const OPTIONS: Option[] = [
     hint: 'Vehicle AC, reefer trailers',
     icon: Car,
     gases: [
-      { code: 'R-134a', note: 'Service charge for older vehicle AC systems', safety: 'A1' },
-      { code: 'R-1234yf', note: 'Charge used in newer vehicle AC systems', safety: 'A2L' },
+      { code: 'R-134A', note: 'Service charge for vehicle AC systems', safety: 'A1' },
+      { code: 'R-452A', note: 'Used in transport refrigeration units', safety: 'A1' },
+      { code: 'R-507A', note: 'Used in low-temperature transport and cold rooms', safety: 'A1' },
     ],
   },
   {
