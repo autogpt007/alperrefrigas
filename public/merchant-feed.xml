@@ -38,6 +38,38 @@
       <g:google_product_category>1167</g:google_product_category>
     </item>
     <item>
+      <g:id>TL-EV-VH-12-6</g:id>
+      <g:title>AlperPro 1/2 in Large Bore High Vacuum Evacuation Hose, 6 ft</g:title>
+      <g:description>Large bore evacuation hose for pulling deep vacuums quickly. A 1/2 in internal bore moves far more air per minute than a standard 1/4 in charging hose, so systems reach a low micron reading in a fraction of the time. Internal bore: 1/2 in. Length: 6 ft. Fittings: brass swivel connections at both ends. Intended for evacuation service, not for refrigerant charging through a manifold.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-12-in-large-bore-high-vacuum-evacuation-hose-6-ft</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/VACHOSE.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>79.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-EV-VH-12-6</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1810</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-EV-VCRT-14</g:id>
+      <g:title>AlperPro 1/4 in Valve Core Removal Tool with Ball Valve</g:title>
+      <g:description>Brass inline core removal tool that lets a technician pull the Schrader core from a 1/4 in service port, so evacuation and charging happen through the full port instead of past a restrictive valve core. The integral ball valve holds the system while the core is replaced, without breaking vacuum. Port size: 1/4 in flare. Body: brass with a ball valve lever and knurled removal knob. Suitable for R-410A, R-454B, R-32 and HFC service pressures.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-14-in-valve-core-removal-tool-with-ball-valve</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/VCRT.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>44.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-EV-VCRT-14</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1810</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-IN-LS-1438-16</g:id>
       <g:title>AlperPro 16 ft Pre-Flared Insulated Copper Line Set 1/4 in x 3/8 in for Mini-Split Systems</g:title>
       <g:description>Pre-flared insulated copper line set for ductless mini-split and heat pump installations. Includes a 1/4 in liquid line and a 3/8 in suction line, each individually insulated and fitted with brass flare nuts so the set connects straight to the indoor and outdoor units. Length: 16 ft. Line sizes: 1/4 in and 3/8 in. Suitable for R-410A, R-454B and R-32 systems rated for flare connections. Sold as one complete line set.</g:description>
@@ -103,6 +135,38 @@
       <g:google_product_category>1810</g:google_product_category>
     </item>
     <item>
+      <g:id>TL-EV-VH-38-6</g:id>
+      <g:title>AlperPro 3/8 in Large Bore High Vacuum Evacuation Hose, 6 ft</g:title>
+      <g:description>Large bore evacuation hose with a 3/8 in internal bore, a practical middle size for residential and light commercial evacuation where a 1/2 in hose is more than the equipment ports need. Internal bore: 3/8 in. Length: 6 ft. Fittings: brass swivel connections at both ends. Intended for evacuation service rather than charging.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-38-in-large-bore-high-vacuum-evacuation-hose-6-ft</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/VACHOSE.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>59.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-EV-VH-38-6</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1810</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-RC-TANK-30</g:id>
+      <g:title>AlperPro 30 lb DOT-4BA400 Refrigerant Recovery Cylinder with Dual Y-Valve and Float Switch</g:title>
+      <g:description>Empty 30 lb refrigerant recovery cylinder built to DOT-4BA400 specification, with a dual Y-valve giving separate liquid and vapour service ports and an 80 percent float switch that signals a recovery machine to shut down before the tank is overfilled. Capacity: 30 lb. Service pressure: 400 psig. Valve: dual port liquid and vapour with protective collar. Supplied empty, with no refrigerant charge. Recovered refrigerant must be handled by an EPA Section 608 certified technician.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-30-lb-dot-4ba400-refrigerant-recovery-cylinder-with-dual-y-valve-and-float-switch</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TANK30.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>119.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-RC-TANK-30</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-GA-MAN4-410</g:id>
       <g:title>AlperPro 4-Valve Brass Manifold Gauge Set R410A R22 R404A</g:title>
       <g:description>A four-valve brass manifold designed for R-410A pressures, with dual low-side and high-side ports so a technician can pull vacuum and charge without breaking connections. The forged brass body carries a 800 psi high-side and 250 psi low-side working range with a 4,000 psi burst rating, and the 2.5 in class 1.0 gauges are dampened for readable needles on a running system. Sight glass in the manifold body shows liquid flow during charging. Supplied with three 60 in 1/4 in SAE charging hoses rated 800 psi working pressure and fitted with ball-valve depressors, plus a hanging hook and moulded case. Scales are printed for R-410A, R-22 and R-404A so it covers the great majority of residential and light commercial service calls. Sold to HVAC contractors, service fleets and training programs; case and pallet pricing available.</g:description>
@@ -137,6 +201,22 @@
       <g:google_product_category>1167</g:google_product_category>
     </item>
     <item>
+      <g:id>TL-EV-VCRT-516</g:id>
+      <g:title>AlperPro 5/16 in Valve Core Removal Tool with Ball Valve for R-410A Systems</g:title>
+      <g:description>Brass inline core removal tool sized for the 5/16 in service ports fitted to R-410A and other high pressure systems. Removing the Schrader core opens the full port for fast evacuation, and the integral ball valve holds the system while the core is refitted so the vacuum is not lost. Port size: 5/16 in flare. Body: brass with a ball valve lever and knurled removal knob. Suitable for R-410A, R-454B and R-32 service pressures.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-516-in-valve-core-removal-tool-with-ball-valve-for-r-410a-systems</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/VCRT.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>49.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-EV-VCRT-516</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1810</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-IN-LS-1438-50</g:id>
       <g:title>AlperPro 50 ft Pre-Flared Insulated Copper Line Set 1/4 in x 3/8 in for Mini-Split Systems</g:title>
       <g:description>Long-run pre-flared insulated copper line set for installations where the outdoor unit sits well away from the indoor head. Includes a 1/4 in liquid line and a 3/8 in suction line, each individually insulated and fitted with brass flare nuts. Length: 50 ft. Line sizes: 1/4 in and 3/8 in. Suitable for R-410A, R-454B and R-32 systems rated for flare connections. Sold as one complete line set.</g:description>
@@ -165,6 +245,22 @@
       <g:brand>AlperPro</g:brand>
       <g:mpn>TL-RE-CYL-50</g:mpn>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-RC-TANK-50</g:id>
+      <g:title>AlperPro 50 lb DOT-4BA400 Refrigerant Recovery Cylinder with Dual Y-Valve and Float Switch</g:title>
+      <g:description>Empty 50 lb refrigerant recovery cylinder built to DOT-4BA400 specification for larger commercial recovery jobs. The dual Y-valve provides separate liquid and vapour ports, and the 80 percent float switch signals the recovery machine to stop before overfill. Capacity: 50 lb. Service pressure: 400 psig. Valve: dual port liquid and vapour with protective collar. Supplied empty, with no refrigerant charge. Recovered refrigerant must be handled by an EPA Section 608 certified technician.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-50-lb-dot-4ba400-refrigerant-recovery-cylinder-with-dual-y-valve-and-float-switch</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TANK50.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>159.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-RC-TANK-50</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1167</g:google_product_category>
@@ -335,6 +431,38 @@
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-N2-FLOW-50</g:id>
+      <g:title>AlperPro Nitrogen Flow Indicator 0-50 SCFH for Brazing Purge</g:title>
+      <g:description>Inline flow indicator that shows the low nitrogen flow used when brazing. A floating ball in a clear tube lets the technician confirm a steady trickle of gas through the line set instead of guessing at the regulator. Range: 0 to 50 SCFH. Connections: brass threaded inlet and outlet. Fits between the nitrogen regulator and the purge hose.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-nitrogen-flow-indicator-0-50-scfh-for-brazing-purge</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/N2FLOW.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>69.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-N2-FLOW-50</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-N2-REG-800</g:id>
+      <g:title>AlperPro Nitrogen Purge Regulator 0-800 PSI with CGA-580 Cylinder Connection</g:title>
+      <g:description>Two stage nitrogen regulator for purging and pressure testing HVAC line sets. Flowing dry nitrogen while brazing prevents the copper oxide scale that otherwise forms inside the tubing and later blocks metering devices, and the same regulator is used for standing pressure leak tests. Outlet range: 0 to 800 psi. Inlet connection: CGA-580 for inert gas cylinders. Two pressure gauges show cylinder and delivery pressure. Nitrogen cylinder is not included.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-nitrogen-purge-regulator-0-800-psi-with-cga-580-cylinder-connection</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/N2REG.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>189.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-N2-REG-800</g:mpn>
+      <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1732</g:google_product_category>
     </item>
     <item>
       <g:id>TL-OIL-PAG100-QT</g:id>
@@ -1116,6 +1244,20 @@
       <g:google_product_category>1167</g:google_product_category>
     </item>
     <item>
+      <g:id>ALP-R-1234YF-10LB</g:id>
+      <g:title>R-1234yf Refrigerant 10LB</g:title>
+      <g:description>R-1234yf is the low-GWP HFO refrigerant fitted to modern vehicle air conditioning systems in place of R-134a, and it is also a component of several stationary A2L blends. It is classified A2L, mildly flammable, so recovery and charging require A2L rated service equipment. Chemical: 2,3,3,3-tetrafluoropropene. Cylinder: 10 lb with an R-1234yf specific valve fitting that will not cross connect with R-134a equipment. Sold to certified automotive and HVAC service trades only. Ships as Dangerous Goods.</g:description>
+      <g:link>https://alperrefrigerants.com/products/r-1234yf-refrigerant-10lb</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ALP-R-1234YF-10LB.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>399.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Alper Refrigerants</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Refrigerants</g:product_type>
+    </item>
+    <item>
       <g:id>ALP-R-134A-30LB</g:id>
       <g:title>R-134A Refrigerant 30LB</g:title>
       <g:description>HFC refrigerant for automotive A/C, commercial refrigeration, and centrifugal chillers. Zero ozone depletion potential.</g:description>
@@ -1137,6 +1279,20 @@
       <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ALP-R-22-30LB.jpg</g:image_link>
       <g:availability>in_stock</g:availability>
       <g:price>209.98 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Alper Refrigerants</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Refrigerants</g:product_type>
+    </item>
+    <item>
+      <g:id>ALP-R-32-25LB</g:id>
+      <g:title>R-32 Refrigerant 25LB</g:title>
+      <g:description>R-32 is a single component low-GWP refrigerant used as the factory charge in many ductless mini-split and light commercial systems. Because it is a pure refrigerant rather than a blend it can be charged as vapour or liquid without fractionation, which simplifies top-ups after a repair. Chemical: difluoromethane (R-32). Safety class: A2L, mildly flammable, requiring A2L rated tools and leak detection. Cylinder: 25 lb. Sold to EPA Section 608 certified technicians and licensed trade buyers only. Ships as Dangerous Goods.</g:description>
+      <g:link>https://alperrefrigerants.com/products/r-32-refrigerant-25lb</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ALP-R-32-25LB.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>145.00 USD</g:price>
       <g:condition>new</g:condition>
       <g:brand>Alper Refrigerants</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
@@ -1305,6 +1461,20 @@
       <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ALP-R-453A-RS-44B-25LB.jpg</g:image_link>
       <g:availability>in_stock</g:availability>
       <g:price>202.48 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Alper Refrigerants</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Refrigerants</g:product_type>
+    </item>
+    <item>
+      <g:id>ALP-R-454B-25LB</g:id>
+      <g:title>R-454B Refrigerant 25LB</g:title>
+      <g:description>R-454B is the low-GWP A2L blend now factory charged in new residential and light commercial systems from the major equipment makers, replacing R-410A under the EPA AIM Act phase-down. It runs at similar pressures to R-410A but is a mildly flammable A2L classified refrigerant, so it requires A2L rated recovery, leak detection and service practice. Composition: R-32 and R-1234yf blend. Cylinder: 25 lb with a left-hand thread A2L service valve. Sold to EPA Section 608 certified technicians and licensed trade buyers only. Ships as Dangerous Goods.</g:description>
+      <g:link>https://alperrefrigerants.com/products/r-454b-refrigerant-25lb</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/ALP-R-454B-25LB.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>189.00 USD</g:price>
       <g:condition>new</g:condition>
       <g:brand>Alper Refrigerants</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
