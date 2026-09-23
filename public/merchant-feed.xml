@@ -70,6 +70,22 @@
       <g:google_product_category>1810</g:google_product_category>
     </item>
     <item>
+      <g:id>TL-IAQ-AS-1000</g:id>
+      <g:title>AlperPro 1000 CFM Industrial HEPA Air Scrubber with Wheels</g:title>
+      <g:description>A 1,000 CFM industrial air scrubber on a wheeled chassis, sized for mould remediation, flood drying and large construction containments where a compact unit cannot turn the air over fast enough. The three-stage filter train uses a deep pleated pre-filter, an activated carbon odour stage and a final HEPA filter rated 99.97 percent at 0.3 micron, with a filter-change indicator so the crew replaces media on condition rather than guesswork. Variable speed lets the same machine run as a scrubber inside the space or as a negative air machine ducted through a containment wall to hold the work area under pressure. The roto-molded housing is stackable for transport, and the large rear wheels plus swivel casters move it over thresholds and rough slabs. Runs on a standard 115V circuit with daisy-chain outlets. Sold to restoration contractors, abatement crews and HVAC service firms; case and pallet pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-1000-cfm-industrial-hepa-air-scrubber-with-wheels</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TL-IAQ-AS-1000.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1249.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-IAQ-AS-1000</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-IN-LS-1438-16</g:id>
       <g:title>AlperPro 16 ft Pre-Flared Insulated Copper Line Set 1/4 in x 3/8 in for Mini-Split Systems</g:title>
       <g:description>Pre-flared insulated copper line set for ductless mini-split and heat pump installations. Includes a 1/4 in liquid line and a 3/8 in suction line, each individually insulated and fitted with brass flare nuts so the set connects straight to the indoor and outdoor units. Length: 16 ft. Line sizes: 1/4 in and 3/8 in. Suitable for R-410A, R-454B and R-32 systems rated for flare connections. Sold as one complete line set.</g:description>
@@ -103,6 +119,22 @@
       <g:google_product_category>1732</g:google_product_category>
     </item>
     <item>
+      <g:id>TL-IAQ-NAM-2000</g:id>
+      <g:title>AlperPro 2000 CFM Heavy-Duty Negative Air Machine Galvanized Steel</g:title>
+      <g:description>A heavy-duty 2,000 CFM negative air machine in a welded galvanized steel cabinet, specified for large commercial containments where air changes per hour must be documented. The high-capacity blower develops enough static pressure to move air through long flexible duct runs and a loaded HEPA filter without collapsing airflow, which is where lighter plastic units fall short. Filtration is a pre-filter and final HEPA stage rated 99.97 percent at 0.3 micron, with a DOP test port on the housing so the filter seal can be challenged and recorded for the project file. A 16 in duct collar takes lay-flat or insulated flex to exhaust outside the containment and hold the work area under negative pressure. Fork pockets in the base allow pallet jack and forklift handling on commercial sites. Runs on 115V, 60Hz. Sold to abatement, remediation and mechanical contractors; pallet and truckload pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-2000-cfm-heavy-duty-negative-air-machine-galvanized-steel</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TL-IAQ-NAM-2000.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1899.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-IAQ-NAM-2000</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
       <g:id>TL-IN-LS-1412-25</g:id>
       <g:title>AlperPro 25 ft Pre-Flared Insulated Copper Line Set 1/4 in x 1/2 in for Mini-Split Systems</g:title>
       <g:description>Pre-flared insulated copper line set sized for larger capacity mini-split and multi-zone heat pump installations. Includes a 1/4 in liquid line and a 1/2 in suction line, each individually insulated and fitted with brass flare nuts. Length: 25 ft. Line sizes: 1/4 in and 1/2 in. Suitable for R-410A, R-454B and R-32 systems rated for flare connections. Sold as one complete line set.</g:description>
@@ -133,6 +165,22 @@
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1810</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-IAQ-FLT-3S10</g:id>
+      <g:title>AlperPro 3-Stage Air Scrubber Replacement Filter Pack 10-Pack Case</g:title>
+      <g:description>A case of ten complete three-stage filter sets for AlperPro portable air scrubbers, covering the consumable side of restoration and duct cleaning work. Each set contains a pleated pre-filter that takes the bulk dust load and protects the stages behind it, an activated carbon panel for smoke, solvent and sewage odours, and a final HEPA filter rated 99.97 percent at 0.3 micron with a gasketed frame so the seal holds against the housing. Buying by the case keeps a service van and warehouse stocked through a full job cycle rather than chasing single filters between calls, and gives a documented consumable cost per project. Filters are dimensionally matched to the 500 CFM and 1,000 CFM AlperPro scrubbers. Recommended change intervals are on condition: pre-filters weekly under heavy dust, carbon at odour breakthrough and HEPA on pressure rise or at the manufacturer interval. Sold to restoration contractors, duct cleaners and facility maintenance teams; pallet pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-3-stage-air-scrubber-replacement-filter-pack-10-pack-case</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TL-IAQ-FLT-3S10.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>289.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-IAQ-FLT-3S10</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
     </item>
     <item>
       <g:id>TL-EV-VH-38-6</g:id>
@@ -261,6 +309,22 @@
       <g:brand>AlperPro</g:brand>
       <g:mpn>TL-RC-TANK-50</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>HVAC Tools</g:product_type>
+      <g:google_product_category>1167</g:google_product_category>
+    </item>
+    <item>
+      <g:id>TL-IAQ-AS-500</g:id>
+      <g:title>AlperPro 500 CFM Compact HEPA Air Scrubber Negative Air Machine</g:title>
+      <g:description>A compact roto-molded air scrubber rated 500 CFM on high speed, built for duct cleaning, small containment work and post-construction dust control. Air passes through a three-stage train: a pleated pre-filter that catches bulk dust, an activated carbon stage for odours from smoke and solvents, and a final HEPA filter rated 99.97 percent at 0.3 micron. The variable-speed control lets a technician trade airflow for static pressure when ducting the outlet, and a duct collar on the housing allows negative pressure setup by exhausting outside the work area. Daisy-chain outlets let several units run from one 115V circuit, and the running-hour meter supports billing and filter-change records. The stackable roto-molded shell survives jobsite handling and the unit runs on a standard 115V outlet. Sold to HVAC contractors, duct cleaners and restoration firms; case and pallet pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/alperpro-500-cfm-compact-hepa-air-scrubber-negative-air-machine</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/TL-IAQ-AS-500.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>789.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperPro</g:brand>
+      <g:mpn>TL-IAQ-AS-500</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1167</g:google_product_category>
@@ -925,6 +989,70 @@
       <g:adult>no</g:adult>
       <g:product_type>HVAC Tools</g:product_type>
       <g:google_product_category>1991</g:google_product_category>
+    </item>
+    <item>
+      <g:id>AC-DS-INV-24K</g:id>
+      <g:title>Inverter Ducted Heat Pump Split System 24000 BTU 2 Ton 18 SEER2</g:title>
+      <g:description>A matched 2 ton central ducted split system pairing a variable-speed inverter heat pump condenser with a multi-position air handler, rated 18 SEER2 for whole-home and light commercial replacement work. The inverter compressor modulates capacity instead of cycling, which holds supply air temperature steady, lowers running current and improves humidity removal on part-load days. The air handler cabinet is factory insulated and can be installed upflow, downflow or horizontal left and right, so it drops into attics, closets, basements and mechanical rooms without a separate conversion kit. Both sections run on 208/230V single phase and accept a standard 24V thermostat or a communicating control. Shipped as a factory-charged condenser plus air handler; line set, filter drier, pad and thermostat are ordered separately. Sold to HVAC contractors and distributors. Installation requires evacuation, brazing under dry nitrogen and final charge weigh-in by a qualified technician. Container and truckload pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/inverter-ducted-heat-pump-split-system-24000-btu-2-ton-18-seer2</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/AC-DS-INV-24K.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>2349.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperAir</g:brand>
+      <g:mpn>AC-DS-INV-24K</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Air Conditioners</g:product_type>
+      <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>AC-DS-INV-36K</g:id>
+      <g:title>Inverter Ducted Heat Pump Split System 36000 BTU 3 Ton 18 SEER2</g:title>
+      <g:description>A 3 ton matched central ducted split system built around a variable-speed inverter heat pump condenser and a multi-position air handler, rated 18 SEER2. This is the volume size for three and four bedroom changeouts and for small commercial suites on a single ducted zone. Inverter modulation reduces starting current against a fixed-speed compressor, which matters where the service panel is already loaded, and the slower steady airflow pulls more latent heat in humid climates. The insulated air handler cabinet installs upflow, downflow or horizontal in either direction, and the condenser is factory charged for a standard line set length. Operates on 208/230V single phase with 24V or communicating thermostat control. Line set, filter drier, condenser pad and thermostat are ordered separately. Sold to HVAC contractors and distributors; installation requires nitrogen-purged brazing, vacuum evacuation and a weighed final charge. Container and truckload pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/inverter-ducted-heat-pump-split-system-36000-btu-3-ton-18-seer2</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/AC-DS-INV-36K.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>2835.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperAir</g:brand>
+      <g:mpn>AC-DS-INV-36K</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Air Conditioners</g:product_type>
+      <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>AC-DS-INV-48K</g:id>
+      <g:title>Inverter Ducted Heat Pump Split System 48000 BTU 4 Ton 17.5 SEER2</g:title>
+      <g:description>A 4 ton matched ducted split system with a variable-speed inverter heat pump condenser and a multi-position air handler, rated 17.5 SEER2. At this capacity the system covers large single-family homes and light commercial floor plates such as offices, clinics and retail units served by one duct trunk. The inverter drive ramps capacity to load rather than short-cycling, which reduces compressor wear and keeps return air temperature stable across long duct runs. The air handler cabinet is factory insulated for upflow, downflow or horizontal installation and accepts a high-static blower profile for longer duct systems. Runs on 208/230V single phase, controlled by a 24V or communicating thermostat. Line set, filter drier, pad, and thermostat are ordered separately. Sold to HVAC contractors and distributors; commissioning requires manufacturer superheat and subcooling verification. Container and truckload pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/inverter-ducted-heat-pump-split-system-48000-btu-4-ton-175-seer2</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/AC-DS-INV-48K.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>3402.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperAir</g:brand>
+      <g:mpn>AC-DS-INV-48K</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Air Conditioners</g:product_type>
+      <g:google_product_category>605</g:google_product_category>
+    </item>
+    <item>
+      <g:id>AC-DS-INV-60K</g:id>
+      <g:title>Inverter Ducted Heat Pump Split System 60000 BTU 5 Ton 17 SEER2</g:title>
+      <g:description>A 5 ton matched ducted split system with a variable-speed inverter heat pump condenser and a multi-position air handler, rated 17 SEER2. This is the largest single-stage-replacement size most contractors install without moving to packaged rooftop equipment, covering large residences, church halls, gyms and commercial suites. The inverter compressor modulates down on mild days so a single large system behaves like a smaller one at part load, avoiding the temperature swings and humidity problems of oversized fixed-speed equipment. The insulated air handler supports upflow, downflow and horizontal orientations with a high-static blower for extended duct runs. Operates on 208/230V single phase with 24V or communicating thermostat control. Line set, filter drier, pad and thermostat are ordered separately. Sold to HVAC contractors and distributors; installation and commissioning must be performed by a qualified technician. Container and truckload pricing available.</g:description>
+      <g:link>https://alperrefrigerants.com/products/inverter-ducted-heat-pump-split-system-60000-btu-5-ton-17-seer2</g:link>
+      <g:image_link>https://nzyljjngxfkydjeoyefz.supabase.co/functions/v1/product-image/products/AC-DS-INV-60K.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>3969.00 USD</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>AlperAir</g:brand>
+      <g:mpn>AC-DS-INV-60K</g:mpn>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:adult>no</g:adult>
+      <g:product_type>Air Conditioners</g:product_type>
+      <g:google_product_category>605</g:google_product_category>
     </item>
     <item>
       <g:id>AC-LG-WIN-12K</g:id>

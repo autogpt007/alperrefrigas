@@ -52,6 +52,14 @@ const subcategories = [
     href: '/products/air-conditioners/ptac-commercial',
     features: ['Hospitality Grade', 'Electric Heat Option', '208/230V'],
   },
+  {
+    id: 'ducted-split',
+    title: 'Central Inverter Ducted Split Systems',
+    description: 'Matched 2 to 5 ton inverter heat pump condensers with multi-position air handlers for whole-home and light commercial changeouts.',
+    icon: Zap,
+    href: '/products/air-conditioners/ducted-split',
+    features: ['2 to 5 Ton', 'Up to 18 SEER2', 'Multi-Position Air Handler'],
+  },
 ];
 
 const acFaqs = [
