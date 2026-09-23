@@ -78,6 +78,9 @@ const CheckoutPage = () => {
     // F-Gas certification for EU orders
     fGasCertificationNumber: '',
     fGasCertificationValid: false,
+    // Australian OPSGGM / ARC licence for AU refrigerant orders
+    auLicenceNumber: '',
+    auLicenceValid: false,
     // VAT exemption for international orders
     payVatAtCustoms: false
   });
