@@ -8,8 +8,8 @@ import { Progress } from '@/components/ui/progress';
 import { Shield, Upload, Camera, CheckCircle, AlertTriangle, CreditCard, User, FileText, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const SUPABASE_URL = "https://ohfkcxwwvksrjymkgloo.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oZmtjeHd3dmtzcmp5bWtnbG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDk2MjgsImV4cCI6MjA2NTY4NTYyOH0.c-kSgAyWyiqbJ1m-binRf23l7P-cAT7AEP_sxGYHMpY";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 const TOKEN_REGEX = /^[a-f0-9]{64}$/i;
 
