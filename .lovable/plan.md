@@ -18,7 +18,6 @@ This avoids silently assuming a country (people browse from VPNs, offices and tr
 - **New small delivery box** under the price showing:
   - Ships to: [country]
   - Estimated delivery: 0-3 business days handling + 0-10 business days transit
-  - Shipping cost line. It uses current rates until you confirm the new flat international rates. US and Canada are unchanged.
   - Import duties line: VAT/GST included at checkout (EU/UK/AU) or duties on delivery (other countries), matching current checkout tax logic
   - Compliance hint for refrigerants: EPA 608 (US), F-Gas (EU/UK), ARC licence (AU)
 - The AC FAQ answer switches from "US warehouses" to region-aware wording.
@@ -30,7 +29,7 @@ This avoids silently assuming a country (people browse from VPNs, offices and tr
 - Same guard on catalog cards and direct-checkout links.
 
 ## Out of scope / pending your confirmation
-- New flat international shipping rates (from the previous proposal). These won't be applied until you say "confirm".
+- Shipping costs: no changes now and no cost line on product pages. A single flat rate for all product types (accessories, AC, refrigerant) will be built later and added to the roadmap.
 - No Merchant Center changes from the site.
 
 ## Technical details
