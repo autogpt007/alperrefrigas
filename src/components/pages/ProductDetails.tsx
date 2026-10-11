@@ -19,6 +19,9 @@ import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBViewContent } from '@/utils/facebookPixel';
 import ACBulkPricing, { calculateACPricingTier } from '../ui/ACBulkPricing';
 import ACConfigurator, { ACConfiguration, getDefaultConfiguration, formatConfigurationSummary } from '../ui/ACConfigurator';
+import ShipToSelector from '../ui/ShipToSelector';
+import { useShippingCountry } from '@/contexts/ShippingCountryContext';
+import { getDispatchHub, getDutiesNote, getRefrigerantCompliance } from '@/lib/dispatchHub';
 
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
@@ -54,6 +57,21 @@ const ProductDetails = () => {
     }
     return null;
   }, [products, id, productSlug]);
+
+  // Packaging options: fall back to the second list when the first is empty;
+  // products with no options are sold individually (no dropdown).
+  const packagingOptions: string[] = React.useMemo(() => {
+    const a = (product?.packaging_options || []).filter(Boolean);
+    if (a.length) return a;
+    return (product?.packaging || []).filter(Boolean);
+  }, [product]);
+
+  React.useEffect(() => {
+    if (product && product.product_type !== 'refrigerant' && product.product_type !== 'air_conditioner'
+      && packagingOptions.length === 0 && !packaging) {
+      setPackaging('Individual');
+    }
+  }, [product, packagingOptions, packaging]);
 
   // Initialize AC configuration when product loads
   React.useEffect(() => {
