@@ -1172,8 +1172,8 @@ const CheckoutPage = () => {
                     {!hasRefrigerantProducts && (
                       <div className="space-y-3">
                         <div className="bg-muted/50 p-4 rounded-lg border text-sm text-muted-foreground space-y-1">
-                          <p>Equipment ships from US warehouses with manufacturer warranty included.</p>
-                          <p>Freight is quoted at cost; our team confirms delivery details after your order.</p>
+                          <p>Equipment ships from our regional hub (US: Miami · EU/UK: Poland or Turkey · AU/NZ: Thailand) with manufacturer warranty included.</p>
+                          <p>Estimated delivery: 0-3 business days handling + 0-10 business days transit.</p>
                         </div>
                         <div className="flex items-start space-x-2">
                           <Checkbox
@@ -1359,6 +1359,12 @@ const CheckoutPage = () => {
                       <span>Total:</span>
                       <span>{formatCurrency(finalTotal)}</span>
                     </div>
+                  </div>
+
+                  <div className="bg-muted/50 p-3 rounded-lg border text-xs text-muted-foreground">
+                    <p className="font-medium text-foreground mb-1 flex items-center gap-1"><Truck className="h-3 w-3" /> Delivery estimate</p>
+                    <p>Handling 0-3 business days · Transit 0-10 business days (0-13 total).</p>
+                    <p>Ships from: {['US','CA','MX','PR'].includes(formData.countryCode) ? 'Miami, FL, USA' : ['AU','NZ'].includes(formData.countryCode) ? 'Thailand hub' : shippingZone?.region_name?.match(/Europe|Kingdom/i) || formData.countryCode === 'GB' ? 'Poland or Turkey hub' : 'nearest regional hub (confirmed on invoice)'}</p>
                   </div>
 
                   {/* Currency Conversion Notice */}

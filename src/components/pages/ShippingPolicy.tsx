@@ -60,16 +60,42 @@ const ShippingPolicy = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>Standard Processing:</strong> All orders are processed within 1-2 business days after EPA certification verification.</p>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 not-prose mb-4">
+                  <p className="text-blue-900 font-semibold">Delivery timeline (all destinations)</p>
+                  <ul className="text-sm text-blue-800 mt-2 space-y-1">
+                    <li><strong>Handling time:</strong> 0-3 business days</li>
+                    <li><strong>Transit time:</strong> 0-10 business days</li>
+                    <li><strong>Total estimated delivery:</strong> 0-13 business days</li>
+                  </ul>
+                </div>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>EPA Verification:</strong> All refrigerant orders require EPA Section 608 certification verification before processing</li>
-                  <li><strong>Business Days:</strong> Monday through Friday, excluding federal holidays</li>
-                  <li><strong>Cut-off Time:</strong> Orders placed before 2:00 PM EST are processed same business day</li>
-                  <li><strong>Large Orders:</strong> Bulk orders (pallet quantities) may require 2-3 business days for processing</li>
-                  <li><strong>Container Orders:</strong> 20ft and 40ft container orders require 5-7 business days for preparation</li>
+                  <li><strong>Verification:</strong> Refrigerant orders require certification/licence verification (EPA 608, F-Gas, or ARC) before handling begins</li>
+                  <li><strong>Business Days:</strong> Monday through Friday, excluding public holidays</li>
+                  <li><strong>Pallet &amp; container orders:</strong> Freight is booked after proforma invoice payment; the delivery date is confirmed in writing on your invoice</li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4">
-                  <strong>Note:</strong> Processing times do not include transit time. You will receive tracking information once your order ships.
+                  <strong>Note:</strong> Customs clearance in the destination country can add time outside our control. You will receive tracking information once your order ships.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MapPin className="h-5 w-5 mr-2 text-blue-600" />
+                  Where Your Order Ships From
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <p>Our business is registered in Miami, Florida. Orders are dispatched from the regional hub closest to you:</p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li><strong>United States, Canada &amp; Americas:</strong> dispatched from Miami, FL, USA</li>
+                  <li><strong>European Union &amp; United Kingdom:</strong> dispatched from our hubs in Poland and Turkey</li>
+                  <li><strong>Australia &amp; New Zealand:</strong> dispatched from our hub in Thailand</li>
+                </ul>
+                <p className="text-sm text-gray-600">
+                  The dispatch hub for your order is confirmed in your order confirmation or proforma invoice. Shipments from Turkey or Thailand
+                  are imported into your country; import duties and taxes are handled as described in the Customs section below.
                 </p>
               </CardContent>
             </Card>
@@ -157,7 +183,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">United States (Continental)</td>
                         <td className="py-2">US (48 states)</td>
-                        <td className="py-2">3-5 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$45</td>
                         <td className="py-2">+$25</td>
                         <td className="py-2">Orders $500+</td>
@@ -165,7 +191,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Alaska &amp; Hawaii</td>
                         <td className="py-2">US-AK, US-HI</td>
-                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$89</td>
                         <td className="py-2">+$45</td>
                         <td className="py-2">Orders $1,000+</td>
@@ -173,7 +199,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">US Territories</td>
                         <td className="py-2">Puerto Rico</td>
-                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$89</td>
                         <td className="py-2">+$45</td>
                         <td className="py-2">Orders $1,000+</td>
@@ -181,7 +207,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Canada</td>
                         <td className="py-2">Canada</td>
-                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$75</td>
                         <td className="py-2">+$35</td>
                         <td className="py-2">Orders $750+</td>
@@ -189,7 +215,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">United Kingdom</td>
                         <td className="py-2">United Kingdom</td>
-                        <td className="py-2">7-14 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$120</td>
                         <td className="py-2">+$50</td>
                         <td className="py-2">Orders $1,000+</td>
@@ -197,7 +223,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">European Union</td>
                         <td className="py-2">Austria, Belgium, Czechia, Denmark, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Netherlands, Poland, Portugal, Romania, Slovakia, Spain, Sweden and all other EU states</td>
-                        <td className="py-2">7-14 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$150</td>
                         <td className="py-2">+$60</td>
                         <td className="py-2">Orders $1,500+</td>
@@ -205,7 +231,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Non-EU Europe</td>
                         <td className="py-2">Switzerland, Norway, Ukraine, Russia, Georgia</td>
-                        <td className="py-2">8-16 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$165</td>
                         <td className="py-2">+$65</td>
                         <td className="py-2">Orders $1,500+</td>
@@ -213,7 +239,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Latin America &amp; Caribbean</td>
                         <td className="py-2">Mexico, Brazil, Argentina, Chile, Colombia, Peru, Ecuador, Uruguay, Paraguay, Costa Rica, Panama, El Salvador, Nicaragua, Dominican Republic</td>
-                        <td className="py-2">7-16 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$145</td>
                         <td className="py-2">+$70</td>
                         <td className="py-2">Orders $1,500+</td>
@@ -221,7 +247,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Middle East</td>
                         <td className="py-2">United Arab Emirates, Saudi Arabia, Kuwait, Bahrain, Oman, Israel</td>
-                        <td className="py-2">10-18 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$195</td>
                         <td className="py-2">+$80</td>
                         <td className="py-2">Orders $2,000+</td>
@@ -229,7 +255,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Asia-Pacific</td>
                         <td className="py-2">Hong Kong, Malaysia, Thailand, Philippines</td>
-                        <td className="py-2">10-20 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$185</td>
                         <td className="py-2">+$80</td>
                         <td className="py-2">Orders $2,000+</td>
@@ -237,7 +263,7 @@ const ShippingPolicy = () => {
                       <tr className="border-b">
                         <td className="py-2 font-medium">Australia &amp; New Zealand</td>
                         <td className="py-2">Australia, New Zealand</td>
-                        <td className="py-2">10-21 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$180</td>
                         <td className="py-2">+$75</td>
                         <td className="py-2">Orders $2,000+</td>
@@ -245,7 +271,7 @@ const ShippingPolicy = () => {
                       <tr>
                         <td className="py-2 font-medium">Africa</td>
                         <td className="py-2">South Africa</td>
-                        <td className="py-2">12-22 days</td>
+                        <td className="py-2">0-10 business days</td>
                         <td className="py-2">$220</td>
                         <td className="py-2">+$90</td>
                         <td className="py-2">Orders $2,500+</td>
@@ -270,9 +296,9 @@ const ShippingPolicy = () => {
               </CardHeader>
               <CardContent className="prose max-w-none">
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>DHL Express:</strong> UK, EU – 5-10 business days with full tracking and customs pre-clearance</li>
-                  <li><strong>FedEx International Priority:</strong> All regions – 5-14 business days with temperature-controlled options</li>
-                  <li><strong>UPS Worldwide:</strong> UK, EU, AU – 7-14 business days with HazMat certification</li>
+                  <li><strong>DHL Express:</strong> UK, EU – within our 0-10 business day transit window with full tracking and customs pre-clearance</li>
+                  <li><strong>FedEx International Priority:</strong> All regions – within our 0-10 business day transit window with temperature-controlled options</li>
+                  <li><strong>UPS Worldwide:</strong> UK, EU, AU – within our 0-10 business day transit window with HazMat certification</li>
                   <li><strong>Freight Forwarders:</strong> Container and pallet shipments – transit times by arrangement</li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4">

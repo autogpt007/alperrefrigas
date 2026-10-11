@@ -4,8 +4,8 @@ import { Warehouse, Globe, ShieldCheck, CreditCard } from 'lucide-react';
 const items = [
   {
     icon: Warehouse,
-    title: 'US Warehouse Dispatch',
-    detail: 'Miami, FL hub',
+    title: 'Regional Dispatch Hubs',
+    detail: 'US · Poland · Turkey · Thailand',
   },
   {
     icon: Globe,
