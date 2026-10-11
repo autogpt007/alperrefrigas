@@ -18,6 +18,7 @@ import { RFQProvider } from "./contexts/RFQContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
 import { QuotesProvider } from "./contexts/QuotesContext";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { ShippingCountryProvider } from "./contexts/ShippingCountryContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
@@ -120,6 +121,7 @@ function App() {
       <SecurityMonitor />
       <QueryClientProvider client={queryClient}>
         <CurrencyProvider>
+        <ShippingCountryProvider>
           <TooltipProvider>
           <AuthProvider>
             <ProductsProvider>
@@ -242,6 +244,7 @@ function App() {
             </ProductsProvider>
           </AuthProvider>
         </TooltipProvider>
+        </ShippingCountryProvider>
         </CurrencyProvider>
       </QueryClientProvider>
     </>
