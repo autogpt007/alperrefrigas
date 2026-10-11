@@ -13,6 +13,7 @@ import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ACConfigSummary } from '@/components/ui/ACConfigSummary';
 import { ACConfiguration } from '@/components/ui/ACConfigurator';
+import ShipToSelector from '@/components/ui/ShipToSelector';
 // Extracted cart item component for cleaner code
 interface CartItemCardProps {
   item: CartItem;
@@ -174,6 +175,7 @@ const CartPage = () => {
             Continue Shopping
           </Button>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <ShipToSelector className="mt-2" />
           <Badge variant="secondary" className="ml-auto">
             {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
           </Badge>

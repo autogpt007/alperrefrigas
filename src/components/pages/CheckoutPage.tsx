@@ -29,6 +29,8 @@ import { US_STATES } from '@/utils/zipCodeUtils';
 import { useDirectCheckout } from '@/hooks/useDirectCheckout';
 import { useShippingZones, getShippingZoneForCountry, calculateShippingCost } from '@/hooks/useShippingZones';
 import { ACConfigSummary, ACConfiguration } from '../ui/ACConfigSummary';
+import { useShippingCountry } from '@/contexts/ShippingCountryContext';
+import { getDispatchHub } from '@/lib/dispatchHub';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ const CheckoutPage = () => {
   const { toast } = useToast();
   const { formatPrice: formatCurrency, currency, currencyName, currencySymbol } = useCurrency();
   const [searchParams] = useSearchParams();
+  const { countryCode: shipCountry, setCountry: setShipCountry } = useShippingCountry();
   // Guests can check out without an account. The ?guest=true flag lets a signed-in
   // user deliberately place an order as a guest; otherwise anyone without a
   // session is treated as a guest instead of being bounced to the login page.
@@ -61,8 +64,8 @@ const CheckoutPage = () => {
     city: '',
     state: '',
     zipCode: '',
-    countryCode: 'US', // Use country code for international support
-    country: 'United States',
+    countryCode: shipCountry, // Prefilled from the buyer's Shipping-to country
+    country: getCountryByCode(shipCountry)?.name || 'United States',
     paymentMethod: '', // No payment method preselected
     notes: '',
     // Credit card details for offline processing
@@ -759,6 +762,7 @@ const CheckoutPage = () => {
                         onValueChange={(value) => {
                           const country = getCountryByCode(value);
                           handleInputChange('countryCode', value);
+                          setShipCountry(value);
                           handleInputChange('country', country?.name || value);
                           // Clear state when switching to non-US country
                           if (value !== 'US') {
@@ -1172,7 +1176,7 @@ const CheckoutPage = () => {
                     {!hasRefrigerantProducts && (
                       <div className="space-y-3">
                         <div className="bg-muted/50 p-4 rounded-lg border text-sm text-muted-foreground space-y-1">
-                          <p>Equipment ships from our regional hub (US: Miami · EU/UK: Poland or Turkey · AU/NZ: Thailand) with manufacturer warranty included.</p>
+                          <p>Equipment ships from {getDispatchHub(formData.countryCode)} with manufacturer warranty included.</p>
                           <p>Estimated delivery: 0-3 business days handling + 0-10 business days transit.</p>
                         </div>
                         <div className="flex items-start space-x-2">
@@ -1364,7 +1368,7 @@ const CheckoutPage = () => {
                   <div className="bg-muted/50 p-3 rounded-lg border text-xs text-muted-foreground">
                     <p className="font-medium text-foreground mb-1 flex items-center gap-1"><Truck className="h-3 w-3" /> Delivery estimate</p>
                     <p>Handling 0-3 business days · Transit 0-10 business days (0-13 total).</p>
-                    <p>Ships from: {['US','CA','MX','PR'].includes(formData.countryCode) ? 'Miami, FL, USA' : ['AU','NZ'].includes(formData.countryCode) ? 'Thailand hub' : shippingZone?.region_name?.match(/Europe|Kingdom/i) || formData.countryCode === 'GB' ? 'Poland or Turkey hub' : 'nearest regional hub (confirmed on invoice)'}</p>
+                    <p>Ships from: {getDispatchHub(formData.countryCode)}</p>
                   </div>
 
                   {/* Currency Conversion Notice */}

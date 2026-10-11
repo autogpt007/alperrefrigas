@@ -19,6 +19,9 @@ import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBViewContent } from '@/utils/facebookPixel';
 import ACBulkPricing, { calculateACPricingTier } from '../ui/ACBulkPricing';
 import ACConfigurator, { ACConfiguration, getDefaultConfiguration, formatConfigurationSummary } from '../ui/ACConfigurator';
+import ShipToSelector from '../ui/ShipToSelector';
+import { useShippingCountry } from '@/contexts/ShippingCountryContext';
+import { getDispatchHub, getDutiesNote, getRefrigerantCompliance } from '@/lib/dispatchHub';
 
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
@@ -39,6 +42,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [acQuantity, setAcQuantity] = useState(1); // AC products can be bought as single units
   const [packaging, setPackaging] = useState('');
+  const { countryCode: shipCountry } = useShippingCountry();
   const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
   
   // Find product by ID or by slug with better logic
@@ -53,6 +57,21 @@ const ProductDetails = () => {
     }
     return null;
   }, [products, id, productSlug]);
+
+  // Packaging options: fall back to the second list when the first is empty;
+  // products with no options are sold individually (no dropdown).
+  const packagingOptions: string[] = React.useMemo(() => {
+    const a = (product?.packaging_options || []).filter(Boolean);
+    if (a.length) return a;
+    return (product?.packaging || []).filter(Boolean);
+  }, [product]);
+
+  React.useEffect(() => {
+    if (product && product.product_type !== 'refrigerant' && product.product_type !== 'air_conditioner'
+      && packagingOptions.length === 0 && !packaging) {
+      setPackaging('Individual');
+    }
+  }, [product, packagingOptions, packaging]);
 
   // Initialize AC configuration when product loads
   React.useEffect(() => {
@@ -508,7 +527,7 @@ const ProductDetails = () => {
         },
         {
           question: 'How are air conditioners shipped, and what does freight cost?',
-          answer: 'Units ship from US warehouses, palletised for larger orders, with freight quoted at cost for your delivery address. Air conditioners are not hazardous material, so no HazMat surcharge applies.'
+          answer: `Units ship from our regional hub for your country (${getDispatchHub(shipCountry)}), palletised for larger orders.`+' Air conditioners are not hazardous material, so no HazMat surcharge applies.'
         },
         {
           question: 'What warranty applies?',
@@ -936,6 +955,17 @@ const ProductDetails = () => {
                 </div>
               )}
 
+              {/* Delivery info for the buyer's country */}
+              <div className="mb-4 rounded-lg border bg-muted/40 p-3 text-sm space-y-1.5">
+                <ShipToSelector />
+                <p className="text-muted-foreground"><strong className="text-foreground">Ships from:</strong> {getDispatchHub(shipCountry)}</p>
+                <p className="text-muted-foreground"><strong className="text-foreground">Estimated delivery:</strong> 0-3 business days handling + 0-10 business days transit</p>
+                <p className="text-muted-foreground"><strong className="text-foreground">Taxes &amp; duties:</strong> {getDutiesNote(shipCountry)}</p>
+                {product.product_type === 'refrigerant' && (
+                  <p className="text-muted-foreground"><strong className="text-foreground">Compliance:</strong> {getRefrigerantCompliance(shipCountry)}</p>
+                )}
+              </div>
+
               {/* Trust strip */}
               <div className="mb-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-4">
                 <div className="flex items-center gap-1.5">
@@ -944,7 +974,7 @@ const ProductDetails = () => {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Truck className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Ships from US warehouses</span>
+                  <span>Ships from {getDispatchHub(shipCountry)}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
@@ -1107,8 +1137,8 @@ const ProductDetails = () => {
                     </>
                   ) : (
                     <>
-                      {/* Accessory products: Packaging selector */}
-                      <div>
+                      {/* Accessory products: Packaging selector (hidden when product has no options) */}
+                      {packagingOptions.length > 0 && <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
                           Packaging Type *
                         </label>
@@ -1117,7 +1147,7 @@ const ProductDetails = () => {
                             <SelectValue placeholder="Select packaging option" />
                           </SelectTrigger>
                           <SelectContent>
-                            {(product.packaging_options || product.packaging)?.map(pkg => (
+                            {packagingOptions.map(pkg => (
                               <SelectItem key={pkg} value={pkg}>
                                 <div className="flex justify-between items-center w-full">
                                   <span>{pkg}</span>
@@ -1135,7 +1165,7 @@ const ProductDetails = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                      </div>
+                      </div>}
 
                       {/* Quantity selector - for accessories */}
                       <div>

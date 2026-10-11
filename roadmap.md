@@ -12,3 +12,5 @@
 - [x] Cart cross-tab sync: storage + custom-event listeners in CartContext, all mutations merge with latest persisted cart
 - [x] Itemized order totals: src/utils/orderTotals.ts shared breakdown (gross subtotal, coupon, bank wire discount, shipping, tax, net total) used in OrderManagement + OrderConfirmation
 - [ ] Confirm real beneficiary bank details before sending bank wire instructions to buyers
+- [ ] Later: single flat shipping rate for all product types (accessories, AC, refrigerant) — waiting on user go-ahead
+- [x] Ship-to country (IP detect + selector), region-aware dispatch hub on product/cart/checkout, packaging dropdown fix
