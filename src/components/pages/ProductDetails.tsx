@@ -464,10 +464,10 @@ const ProductDetails = () => {
   };
   // Enhanced product description - different for each product type
   const enhancedDescription = product.product_type === 'air_conditioner'
-    ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Fast shipping from multiple distribution centers.`
+    ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`
     : product.product_type === 'accessory'
-    ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Fast shipping available.`
-    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Fast shipping from multiple distribution centers in TX, FL, and CA.`;
+    ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Estimated delivery 0-13 business days.`
+    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`;
 
   // Product FAQ data for better SEO - different for each product type
   const productFAQ = product.product_type === 'air_conditioner'

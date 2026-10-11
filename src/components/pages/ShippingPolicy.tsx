@@ -60,16 +60,42 @@ const ShippingPolicy = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>Standard Processing:</strong> All orders are processed within 1-2 business days after EPA certification verification.</p>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 not-prose mb-4">
+                  <p className="text-blue-900 font-semibold">Delivery timeline (all destinations)</p>
+                  <ul className="text-sm text-blue-800 mt-2 space-y-1">
+                    <li><strong>Handling time:</strong> 0-3 business days</li>
+                    <li><strong>Transit time:</strong> 0-10 business days</li>
+                    <li><strong>Total estimated delivery:</strong> 0-13 business days</li>
+                  </ul>
+                </div>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>EPA Verification:</strong> All refrigerant orders require EPA Section 608 certification verification before processing</li>
-                  <li><strong>Business Days:</strong> Monday through Friday, excluding federal holidays</li>
-                  <li><strong>Cut-off Time:</strong> Orders placed before 2:00 PM EST are processed same business day</li>
-                  <li><strong>Large Orders:</strong> Bulk orders (pallet quantities) may require 2-3 business days for processing</li>
-                  <li><strong>Container Orders:</strong> 20ft and 40ft container orders require 5-7 business days for preparation</li>
+                  <li><strong>Verification:</strong> Refrigerant orders require certification/licence verification (EPA 608, F-Gas, or ARC) before handling begins</li>
+                  <li><strong>Business Days:</strong> Monday through Friday, excluding public holidays</li>
+                  <li><strong>Pallet &amp; container orders:</strong> Freight is booked after proforma invoice payment; the delivery date is confirmed in writing on your invoice</li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4">
-                  <strong>Note:</strong> Processing times do not include transit time. You will receive tracking information once your order ships.
+                  <strong>Note:</strong> Customs clearance in the destination country can add time outside our control. You will receive tracking information once your order ships.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MapPin className="h-5 w-5 mr-2 text-blue-600" />
+                  Where Your Order Ships From
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <p>Our business is registered in Miami, Florida. Orders are dispatched from the regional hub closest to you:</p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li><strong>United States, Canada &amp; Americas:</strong> dispatched from Miami, FL, USA</li>
+                  <li><strong>European Union &amp; United Kingdom:</strong> dispatched from our hubs in Poland and Turkey</li>
+                  <li><strong>Australia &amp; New Zealand:</strong> dispatched from our hub in Thailand</li>
+                </ul>
+                <p className="text-sm text-gray-600">
+                  The dispatch hub for your order is confirmed in your order confirmation or proforma invoice. Shipments from Turkey or Thailand
+                  are imported into your country; import duties and taxes are handled as described in the Customs section below.
                 </p>
               </CardContent>
             </Card>
