@@ -112,7 +112,16 @@ const SEOComponent: React.FC<SEOProps> = ({
     "availability": normalizeAvailability(availability),
     "itemCondition": "https://schema.org/NewCondition",
     "url": offerUrl || `${siteUrl}/products/${sku?.toLowerCase() || ''}`,
-    "seller": { "@type": "Organization", "name": businessName }
+    "seller": { "@type": "Organization", "name": businessName },
+    // Mirrors the published /refund-policy page (30-day window, returns by mail)
+    "hasMerchantReturnPolicy": ["US", "GB", "CA"].map((country) => ({
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": country,
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 30,
+      "returnMethod": "https://schema.org/ReturnByMail",
+      "merchantReturnLink": `${siteUrl}/refund-policy`
+    }))
   });
 
 
