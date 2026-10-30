@@ -111,6 +111,11 @@ export const TawkToChat: React.FC = () => {
 
   const load = useCallback(async () => {
     try {
+      // Tawk's cross-origin script is CORS-blocked on preview/dev hosts and
+      // surfaces as an opaque "Script error." — only load it on the live site.
+      const host = window.location.hostname;
+      if (/localhost|lovableproject\.com|id-preview--|webcontainer/.test(host)) return;
+
       const { enabled, snippet, pid, wid } = await fetchSettings();
 
       if (!enabled) {
