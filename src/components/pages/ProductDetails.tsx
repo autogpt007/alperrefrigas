@@ -145,6 +145,8 @@ const ProductDetails = () => {
     const total = perCylinder * cylinders;
     return { markup, label, perCylinder, total, tierHint, cylinders };
   };
+  // Single cylinders use the same per-cylinder rate as 1–10 pallets (base + $20)
+  const singleCylinderPrice = product ? product.price + 20 : 0;
 
   // Derive packaging label from pallet count
   const getPalletPackagingLabel = (qty: number): string => {
@@ -939,7 +941,7 @@ const ProductDetails = () => {
                       </div>
                       {/* Per-cylinder price is the HERO */}
                       <p className="text-4xl font-bold text-primary mb-1">
-                        {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
+                        {formatPrice(orderByCylinder ? singleCylinderPrice : tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
                       </p>
                       {tier.markup > 0 && (
                         <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
