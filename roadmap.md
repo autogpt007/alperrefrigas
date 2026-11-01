@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Resolve all Needs AC Config listings using model-specific manufacturer data; verify remaining warnings.
+
 - [x] Cart: estimated shipping/tax disclosure block above checkout button (CartPage.tsx) — real values: $45.00 US base + $25.00 HazMat, tax by ZIP
 - [x] Address consistency sweep (llms.txt vs index.html/footer/contact) — llms.txt already consistent
 - [x] Remove Zelle/CashApp/crypto payments: checkout, order confirmation, routes, admin, invoice PDF, create-order edge enforcement, content sweep (FAQ, ContactUs, ProductDetails, PaymentInformation, index.html noscript, ads copy), 22 AC product descriptions in the database, merchant feed regenerated
