@@ -1095,6 +1095,11 @@ const CheckoutPage = () => {
                         </div>
                       )}
 
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Shield className="h-4 w-4" />
+                        <span>Secure checkout. No payment is taken until your order is reviewed by our sales team.</span>
+                      </div>
+
                       {/* Bank Wire Details */}
                       {formData.paymentMethod === 'bank_wire' && (
                         <div className="space-y-4">
@@ -1149,7 +1154,7 @@ const CheckoutPage = () => {
                             <p>• Sales restricted to licensed HVAC professionals and certified technicians only</p>
                             <p>• Proper handling, recovery, and disposal regulations must be followed</p>
                             <p>• DOT HazMat shipping regulations apply to all refrigerant shipments</p>
-                            <p>• False certification claims are subject to federal penalties up to $44,539 per day per violation</p>
+                            <p>• Certification details may be verified before regulated items ship</p>
                           </div>
                         </div>
                         
