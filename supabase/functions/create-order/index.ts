@@ -158,6 +158,10 @@ serve(async (req: Request) => {
             const CYLS_PER_PALLET = 40;
             const validPrices: number[] = [];
 
+            // Single cylinders: 1-39 at the 1-10 pallet per-cylinder rate (base + $20)
+            for (let n = 1; n < CYLS_PER_PALLET; n++) {
+              validPrices.push(Number(((basePrice + 20) * n).toFixed(2)));
+            }
             // Tier 1: 1-10 pallets → base + $20/cyl
             for (let pq = 1; pq <= 10; pq++) {
               validPrices.push((basePrice + 20) * CYLS_PER_PALLET * pq);

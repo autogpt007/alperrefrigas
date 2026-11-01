@@ -105,6 +105,8 @@ const ProductDetails = () => {
 
   // Pallet quantity for tier 1 and tier 2
   const [palletQuantity, setPalletQuantity] = useState(1);
+  const [orderByCylinder, setOrderByCylinder] = useState(false);
+  const [cylinderQty, setCylinderQty] = useState(1);
 
   // Container/Truck constants
   const CYLINDERS_PER_PALLET = 40;
@@ -143,6 +145,8 @@ const ProductDetails = () => {
     const total = perCylinder * cylinders;
     return { markup, label, perCylinder, total, tierHint, cylinders };
   };
+  // Single cylinders use the same per-cylinder rate as 1–10 pallets (base + $20)
+  const singleCylinderPrice = product ? product.price + 20 : 0;
 
   // Derive packaging label from pallet count
   const getPalletPackagingLabel = (qty: number): string => {
@@ -418,6 +422,27 @@ const ProductDetails = () => {
       return;
     }
     
+    // Refrigerant: single cylinders (1-39) at the 1-10 pallet per-cylinder rate
+    if (product.product_type === 'refrigerant' && orderByCylinder) {
+      const label = `${cylinderQty} cylinder${cylinderQty > 1 ? 's' : ''}`;
+      addToCart({
+        id: `${product.id}-refrigerant-${cylinderQty}c`,
+        name: product.name,
+        price: Number((singleCylinderPrice * cylinderQty).toFixed(2)),
+        image: product.image || '/placeholder.svg',
+        sku: product.sku || 'N/A',
+        epaApproved: product.epaApproved || false,
+        packaging: label,
+        product_type: 'refrigerant'
+      });
+      toast({
+        title: "Added to Cart",
+        description: `${label} of ${product.name} added to your cart.`,
+        action: <Button variant="outline" size="sm" onClick={() => navigate('/cart')}>View Cart</Button>
+      });
+      return;
+    }
+
     // Refrigerant: derive from pallet count
     if (product.product_type === 'refrigerant') {
       const tier = getTierFromPalletCount(palletQuantity);
@@ -549,7 +574,7 @@ const ProductDetails = () => {
     : [
         {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "Our minimum order is 1 pallet (40 cylinders). We offer tiered volume pricing: 1-5 pallets, 5-10 pallets, 20ft containers (28 pallets / 1,120 cylinders), 40ft containers (56 pallets / 2,240 cylinders), and truck loads (44 pallets / 1,760 cylinders)."
+          answer: "You can order a single cylinder. Single cylinders (1-39) are priced at our standard pallet rate per cylinder. Volume pricing continues by the pallet (40 cylinders each), 20ft containers (28 pallets / 1,120 cylinders), 40ft containers (56 pallets / 2,240 cylinders), and truck loads (44 pallets / 1,760 cylinders)."
         },
         {
           question: `Is ${product.name} EPA approved?`,
@@ -907,14 +932,16 @@ const ProductDetails = () => {
                   <div className="mb-4">
                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
                       <div className="flex items-center gap-2 mb-3">
-                        <Badge className="bg-primary text-primary-foreground text-xs">{tier.label}</Badge>
+                        <Badge className="bg-primary text-primary-foreground text-xs">{orderByCylinder ? 'Single Cylinders' : tier.label}</Badge>
                         <span className="text-sm text-muted-foreground">
-                          {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''} · {tier.cylinders?.toLocaleString()} cylinders
+                          {orderByCylinder
+                            ? `${cylinderQty} cylinder${cylinderQty > 1 ? 's' : ''}`
+                            : `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${tier.cylinders?.toLocaleString()} cylinders`}
                         </span>
                       </div>
                       {/* Per-cylinder price is the HERO */}
                       <p className="text-4xl font-bold text-primary mb-1">
-                        {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
+                        {formatPrice(orderByCylinder ? singleCylinderPrice : tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
                       </p>
                       {tier.markup > 0 && (
                         <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
@@ -1042,6 +1069,49 @@ const ProductDetails = () => {
                   ) : product.product_type === 'refrigerant' ? (
                     <>
                       {/* Order-size clarity for small buyers vs bulk buyers */}
+                      {/* Order by cylinder or by pallet */}
+                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Order unit">
+                        <Button
+                          variant={orderByCylinder ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setOrderByCylinder(true)}
+                        >
+                          Single cylinders
+                        </Button>
+                        <Button
+                          variant={!orderByCylinder ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setOrderByCylinder(false)}
+                        >
+                          Pallets (40 cyl)
+                        </Button>
+                      </div>
+
+                      {orderByCylinder ? (
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            How many cylinders do you need?
+                          </label>
+                          <div className="flex items-center space-x-3 mb-2">
+                            <Button variant="outline" size="sm" aria-label="Fewer cylinders" onClick={() => setCylinderQty(Math.max(1, cylinderQty - 1))}>
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="text-2xl font-bold w-16 text-center text-foreground">{cylinderQty}</span>
+                            <Button variant="outline" size="sm" aria-label="More cylinders" onClick={() => setCylinderQty(Math.min(CYLINDERS_PER_PALLET - 1, cylinderQty + 1))}>
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {formatPrice(singleCylinderPrice)} per cylinder · 1–{CYLINDERS_PER_PALLET - 1} cylinders
+                          </p>
+                          {cylinderQty === CYLINDERS_PER_PALLET - 1 && (
+                            <button type="button" className="text-xs text-primary underline mt-1" onClick={() => { setOrderByCylinder(false); setPalletQuantity(1); }}>
+                              Need 40 or more? Switch to 1 pallet
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                      <>
                       <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-2">
                         <p className="text-sm font-semibold text-blue-900">
                           Sold by the pallet — 1 pallet = {CYLINDERS_PER_PALLET} cylinders
@@ -1050,14 +1120,6 @@ const ProductDetails = () => {
                           Per-cylinder pricing improves as pallet count rises. Pallet orders ship by LTL
                           freight carrier, quoted for your delivery address.
                         </p>
-                        <Button
-                          onClick={handleAddToRFQ}
-                          variant="outline"
-                          size="sm"
-                          className="w-full bg-white text-xs"
-                        >
-                          Need fewer than {CYLINDERS_PER_PALLET} cylinders? Request a quote
-                        </Button>
                       </div>
 
                       {/* Refrigerant: Pallet quantity slider */}
@@ -1122,11 +1184,13 @@ const ProductDetails = () => {
                           </Button>
                         </div>
                       </div>
+                      </>
+                      )}
 
                       <div className="space-y-3 pt-4 border-t">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
+                          Add to Cart — {formatPrice(orderByCylinder ? singleCylinderPrice * cylinderQty : getTierFromPalletCount(palletQuantity).total)}
                         </Button>
 
                         <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
