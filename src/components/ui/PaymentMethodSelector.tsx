@@ -46,7 +46,8 @@ export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   onMethodSelect,
   availableMethods
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // Open by default so buyers immediately see Credit Card and Bank Wire
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('traditional');
 
   const availableCategories = paymentCategories.filter(category =>
     paymentMethods.some(method => 
