@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Correct 29 Needs AC Config listings using manufacturer voltage ratings and save source links; verified in admin and buyer product pages, prices unchanged.
+- [ ] Finish Midea MAW18RV1CWT and MAW05M1WWT AC configuration — blocked on manufacturer electrical specification sheets or rating-label photos; official pages/manuals omit voltage.
+
 - [x] Cart: estimated shipping/tax disclosure block above checkout button (CartPage.tsx) — real values: $45.00 US base + $25.00 HazMat, tax by ZIP
 - [x] Address consistency sweep (llms.txt vs index.html/footer/contact) — llms.txt already consistent
 - [x] Remove Zelle/CashApp/crypto payments: checkout, order confirmation, routes, admin, invoice PDF, create-order edge enforcement, content sweep (FAQ, ContactUs, ProductDetails, PaymentInformation, index.html noscript, ads copy), 22 AC product descriptions in the database, merchant feed regenerated
