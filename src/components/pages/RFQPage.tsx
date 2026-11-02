@@ -12,6 +12,7 @@ import { useQuotes } from '../../contexts/QuotesContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/use-toast';
 import SEOComponent from '../seo/SEOComponent';
+import { trackGoogleAdsLead } from '@/utils/googleAdsConversions';
 
 const RFQPage = () => {
   const navigate = useNavigate();
@@ -84,6 +85,7 @@ const RFQPage = () => {
       const quote = await createQuote(quoteData);
       
       if (quote) {
+        trackGoogleAdsLead(undefined, 'USD', quote.quote_number);
         clearRFQ();
         navigate(`/quote-confirmation?quoteNumber=${quote.quote_number}&type=quote`);
       }

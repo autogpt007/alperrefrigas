@@ -16,7 +16,7 @@ const GOOGLE_ADS_CONVERSION_IDS = {
   PURCHASE: 'wz62CIr4yewcEMrT69BE', // paste the purchase conversion label here
   ADD_TO_CART: '', // Optional - add label if needed
   BEGIN_CHECKOUT: '', // Optional - add label if needed
-  LEAD: '', // For quote submissions - add label if needed
+  LEAD: 'O6O2CJit9bAdEMrT69BE', // "Alper Quote Request (RFQ)" conversion action
 };
 
 
@@ -137,7 +137,8 @@ export const trackGoogleAdsBeginCheckout = (
  */
 export const trackGoogleAdsLead = (
   value?: number,
-  currency: string = 'USD'
+  currency: string = 'USD',
+  transactionId?: string
 ) => {
   if (!isGoogleAdsConfigured() || !GOOGLE_ADS_CONVERSION_IDS.LEAD) {
     console.log('[Google Ads] Lead conversion not configured');
@@ -150,6 +151,7 @@ export const trackGoogleAdsLead = (
     const conversionData: any = {
       send_to: `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.LEAD}`
     };
+    if (transactionId) conversionData.transaction_id = transactionId;
 
     if (value !== undefined) {
       conversionData.value = value;
