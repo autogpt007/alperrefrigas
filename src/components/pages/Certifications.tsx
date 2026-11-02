@@ -151,8 +151,8 @@ const Certifications = () => {
     <>
     <SEOComponent
       title="EPA Certifications & Compliance | Alper"
-      description="View our EPA Section 608 certifications, ISO accreditations, and authorized distributor agreements. Independently verifiable compliance documentation for HVAC professionals."
-      keywords="EPA certification, refrigerant compliance, ISO certified, AHRI membership, authorized distributor, HVAC certification, Section 608"
+      description="View our EPA compliance documentation and the certificates we hold. Independently verifiable compliance documentation for HVAC professionals."
+      keywords="EPA certification, refrigerant compliance, authorized distributor, HVAC certification, Section 608"
       canonicalUrl="/certifications"
       breadcrumbs={[{ name: "Home", url: "/" }, { name: "Certifications", url: "/certifications" }]}
     />
@@ -433,13 +433,6 @@ const Certifications = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-semibold">AHRI Membership</h4>
-                        <p className="text-sm text-gray-600">Air-Conditioning, Heating & Refrigeration Institute</p>
-                      </div>
-                      <Badge className="bg-blue-100 text-blue-800">Member</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
                         <h4 className="font-semibold">ARCA Membership</h4>
                         <p className="text-sm text-gray-600">Appliance Recycling Centers of America</p>
                       </div>
@@ -451,44 +444,6 @@ const Certifications = () => {
             </div>
 
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-                    Quality Assurance Certifications
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Award className="h-8 w-8 text-blue-600" />
-                      </div>
-                      <h4 className="font-semibold mb-2">ISO 9001:2015</h4>
-                      <p className="text-sm text-gray-600">Quality Management System</p>
-                      <Badge variant="outline" className="mt-2">Certified</Badge>
-                    </div>
-                    
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Shield className="h-8 w-8 text-green-600" />
-                      </div>
-                      <h4 className="font-semibold mb-2">ISO 14001:2015</h4>
-                      <p className="text-sm text-gray-600">Environmental Management</p>
-                      <Badge variant="outline" className="mt-2">Certified</Badge>
-                    </div>
-                    
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <CheckCircle className="h-8 w-8 text-purple-600" />
-                      </div>
-                      <h4 className="font-semibold mb-2">OHSAS 18001</h4>
-                      <p className="text-sm text-gray-600">Occupational Health & Safety</p>
-                      <Badge variant="outline" className="mt-2">Certified</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </>
         )}

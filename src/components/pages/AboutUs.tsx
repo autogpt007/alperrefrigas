@@ -126,10 +126,10 @@ const AboutUs = () => {
   return (
     <>
       <SEOComponent
-        title="About Us | 13+ Years in Refrigerants | Alper"
-        description="Established 2011. Trusted refrigerant distributor with 13+ years experience. 500+ satisfied customers, 99.9% purity guarantee, ISO certified facility. Expert team serving HVAC professionals and contractors."
+        title="About Alper Refrigerants | Alper Chemical Group, Miami"
+        description="Alper Refrigerants (Alper Chemical Group), Miami, FL. Refrigerants, air conditioners and HVAC tools for EPA 608 certified professionals. Card or bank wire."
         breadcrumbs={[{ name: "Home", url: "/" }, { name: "About Us", url: "/about" }]}
-        keywords="about alper refrigerants, refrigerant distributor turkey history, EPA certified company, professional HVAC supplier, wholesale refrigerant company turkey, HVAC contractor supplier, refrigerant distribution services, refrigerant company since 2011"
+        keywords="about alper refrigerants, EPA certified company, professional HVAC supplier, HVAC contractor supplier, refrigerant distribution services"
         canonicalUrl="/about"
         structuredData={aboutPageStructuredData}
         ogType="article"
@@ -155,14 +155,6 @@ const AboutUs = () => {
               <Badge className="bg-blue-500 text-white px-4 py-2 text-sm">
                 <Shield className="h-4 w-4 mr-2" />
                 {t('about.epaCertified')}
-              </Badge>
-              <Badge className="bg-green-500 text-white px-4 py-2 text-sm">
-                <Award className="h-4 w-4 mr-2" />
-                {t('about.ahriMember')}
-              </Badge>
-              <Badge className="bg-purple-500 text-white px-4 py-2 text-sm">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                {t('about.isoCertified')}
               </Badge>
             </div>
           </div>
@@ -218,20 +210,6 @@ const AboutUs = () => {
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                 {t('about.missionDescription2')}
               </p>
-              <div className="grid grid-cols-3 gap-6 mt-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">13+</div>
-                  <div className="text-sm text-gray-600">{t('about.yearsExperience')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">5000+</div>
-                  <div className="text-sm text-gray-600">{t('about.customersServed')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">99.8%</div>
-                  <div className="text-sm text-gray-600">{t('about.purityRating')}</div>
-                </div>
-              </div>
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-8 shadow-lg">
@@ -246,7 +224,6 @@ const AboutUs = () => {
                     <div className="text-center text-blue-800">
                       <div className="text-2xl font-bold mb-2">Alper Refrigerants</div>
                       <div className="text-lg">Professional Facility</div>
-                      <div className="text-sm mt-2 opacity-75">Upload your facility image in Admin → Website Images</div>
                     </div>
                   </div>
                 )}
@@ -349,52 +326,7 @@ const AboutUs = () => {
                 </Card>
               ))}
             </div>
-          ) : (
-            // Fallback static team if no team members in database
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                    <Users className="h-12 w-12 text-blue-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">John Alper</h3>
-                  <p className="text-blue-600 font-medium mb-3">Founder & CEO</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    With over 20 years in the HVAC industry, John founded Alper Refrigerants with a vision 
-                    to provide unmatched quality and service to HVAC professionals.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
-                    <Users className="h-12 w-12 text-green-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Sarah Martinez</h3>
-                  <p className="text-blue-600 font-medium mb-3">Operations Director</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Sarah oversees our distribution network and ensures every order meets our 
-                    rigorous quality standards before reaching our customers.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
-                    <Users className="h-12 w-12 text-purple-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Mike Chen</h3>
-                  <p className="text-blue-600 font-medium mb-3">Technical Specialist</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    EPA certified with 15+ years of experience, Mike provides technical support and 
-                    helps customers choose the right refrigerant for their specific applications.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
 

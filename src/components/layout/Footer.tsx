@@ -83,10 +83,6 @@ const Footer = () => {
                 <Award className="h-4 w-4 mr-2 text-blue-400" />
                 {t('footer.epaCertified')}
               </div>
-              <div className="flex items-center text-sm text-gray-300">
-                <Shield className="h-4 w-4 mr-2 text-green-400" />
-                {t('footer.ahriMember')}
-              </div>
             </div>
           </div>
 
@@ -119,6 +115,13 @@ const Footer = () => {
               <li><Link to="/products/r-22-replacements" className="text-gray-300 hover:text-white transition-colors">R-22 Replacements</Link></li>
               <li><Link to="/products/r-454b" className="text-gray-300 hover:text-white transition-colors">R-454B Guide</Link></li>
               <li><Link to="/products/hvac-tools" className="text-gray-300 hover:text-white transition-colors">HVAC Tools &amp; Gauges</Link></li>
+              <li><Link to="/products/r-410a" className="text-gray-300 hover:text-white transition-colors">R-410A</Link></li>
+              <li><Link to="/products/r-32" className="text-gray-300 hover:text-white transition-colors">R-32</Link></li>
+              <li><Link to="/brands/mrcool" className="text-gray-300 hover:text-white transition-colors">MRCOOL Mini Splits</Link></li>
+              <li><Link to="/brands/senville" className="text-gray-300 hover:text-white transition-colors">Senville Mini Splits</Link></li>
+              <li><Link to="/products/ptac-units" className="text-gray-300 hover:text-white transition-colors">PTAC Units</Link></li>
+              <li><Link to="/guides" className="text-gray-300 hover:text-white transition-colors">Refrigerant Guides</Link></li>
+
             </ul>
           </div>
 

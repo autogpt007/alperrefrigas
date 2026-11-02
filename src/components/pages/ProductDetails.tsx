@@ -637,7 +637,7 @@ const ProductDetails = () => {
   })();
 
   const seoDescription = isRefrigerant
-    ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
+    ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Card or bank wire.`
     : isAC
     ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} from ${formatPrice(singleUnitPrice)}/unit single, ${formatPrice(product.price)}/unit at 5+${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
     : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
@@ -858,10 +858,6 @@ const ProductDetails = () => {
                       </div>
                     </>
                   )}
-                  <div className="flex items-center">
-                    <Shield className="h-4 w-4 text-green-600 mr-2" />
-                    <span>ISO 9001 Quality Assured</span>
-                  </div>
                   <div className="flex items-center">
                     <Truck className="h-4 w-4 text-blue-600 mr-2" />
                     <span>Fast & Secure Shipping</span>

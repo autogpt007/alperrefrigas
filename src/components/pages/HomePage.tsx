@@ -221,7 +221,7 @@ const HomePage = () => {
     },
     {
       question: "How fast is your shipping?",
-      answer: "We offer same-day shipping for in-stock items from our Miami, Florida distribution center. Most orders arrive within 1-3 business days depending on location."
+      answer: "Orders are handled in 0-3 business days and ship from the regional hub for your country (Miami for the Americas). Typical total delivery time is 0-13 business days; see our shipping policy for details."
     },
     {
       question: "Do you provide Safety Data Sheets?",
@@ -233,7 +233,7 @@ const HomePage = () => {
     <>
       <SEOComponent
         title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
-        description="Leading wholesale refrigerant distributor. EPA-certified bulk supplier of R-410A, R-134a, R-22, R-404A, HFO-1234yf with 99.9% purity. MOQ 40 cylinders. Same-day shipping from TX, FL, CA."
+        description="Leading wholesale refrigerant distributor. EPA-certified bulk supplier of R-410A, R-134a, R-22, R-404A, HFO-1234yf sold by cylinder, pallet or container. Card or bank wire."
         keywords="hfo refrigerant for sale, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, buy hfo 1234yf, EPA certified refrigerants, bulk r-454b, r-513a supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
@@ -671,9 +671,9 @@ const HomePage = () => {
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <Truck className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Lightning Fast Delivery</h3>
+              <h3 className="text-xl font-bold text-white mb-4">Clear Delivery Times</h3>
               <p className="text-white leading-relaxed font-medium text-shadow-sm">
-                Same-day processing and 48-hour delivery to most locations. Our nationwide distribution network ensures your projects stay on schedule.
+                Orders are handled in 0-3 business days and ship from the regional hub that serves your country, with typical delivery in 0-13 business days.
               </p>
             </div>
 

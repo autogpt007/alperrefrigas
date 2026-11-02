@@ -438,7 +438,7 @@ const ProductCatalog = () => {
       return `Shop ${getCategoryDisplayName().toLowerCase()} at trade prices. Inverter heat pumps from 9,000 to 36,000 BTU that heat and cool, R-410A pre-charged, single units to full container loads.`;
     }
     if (productType === 'refrigerant') {
-      return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA distribution centers.`;
+      return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale. Single cylinders, pallets or containers. EPA 608 certification required.`;
     }
     if (productType === 'accessory') {
       return `🔧 Shop professional HVAC accessories & tools including ${getCategoryDisplayName().toLowerCase()}. Gauges, manifolds, recovery equipment, fittings. Quality brands with fast shipping for contractors.`;
@@ -452,7 +452,7 @@ const ProductCatalog = () => {
   // Generate unique keywords based on product type
   const getSEOKeywords = () => {
     if (productType === 'refrigerant') {
-      return `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, MOQ 40 cylinders, EPA certified, fast shipping, ${getCategoryDisplayName().toLowerCase()}`;
+      return `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, EPA 608 refrigerant, ${getCategoryDisplayName().toLowerCase()}`;
     }
     if (productType === 'accessory') {
       return "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, leak detectors, professional HVAC tools, contractor supplies, bulk pricing";

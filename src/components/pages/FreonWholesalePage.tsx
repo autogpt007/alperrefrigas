@@ -96,7 +96,7 @@ const FreonWholesalePage = () => {
     },
     {
       question: "How quickly can you deliver bulk freon orders?",
-      answer: "We offer same-day shipping on in-stock freon products with emergency delivery available for urgent contractor needs. Most orders are processed within 24 hours of quote approval."
+      answer: "Orders are handled in 0-3 business days, with typical delivery in 0-13 business days depending on destination."
     },
     {
       question: "Do you provide EPA certified freon with purity guarantees?",
@@ -150,7 +150,7 @@ const FreonWholesalePage = () => {
     <>
       <SEOComponent
         title="Bulk Freon Wholesale | R-22, R-410A, R-134a | Alper"
-        description="HVAC contractor specialists. Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%, same-day shipping, EPA certified."
+        description="HVAC contractor specialists. Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%. EPA 608 certification required."
         keywords="bulk freon distributor contractors, R-22 R-410A R-134a wholesale, commercial refrigerant wholesale, HVAC contractor pricing, EPA certified bulk freon"
         canonicalUrl="/products"
         structuredData={enhancedStructuredData}
@@ -179,7 +179,7 @@ const FreonWholesalePage = () => {
                   Bulk Freon Distributor for HVAC Contractors
                 </h1>
                 <p className="text-xl md:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
-                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA certified with same-day shipping nationwide.
+                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA 608 certification required to order.
                 </p>
               </div>
 
@@ -318,7 +318,7 @@ const FreonWholesalePage = () => {
                     <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Fast Delivery</h3>
                     <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3">
                       <p className="text-white text-lg leading-relaxed font-medium">
-                        Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
+                        Orders handled in 0-3 business days, typical delivery in 0-13 business days.
                       </p>
                     </div>
                   </CardContent>

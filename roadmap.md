@@ -17,3 +17,6 @@
 - [ ] Confirm real beneficiary bank details before sending bank wire instructions to buyers
 - [ ] Later: single flat shipping rate for all product types (accessories, AC, refrigerant) — waiting on user go-ahead
 - [x] Ship-to country (IP detect + selector), region-aware dispatch hub on product/cart/checkout, packaging dropdown fix
+
+- [x] Search plan fixes 1, 3, 4: removed unprovable claims; added 3 guides + /guides and 5 category pages (R-410A, R-32, PTAC, MRCOOL, Senville) with sitemap/footer links
+- [ ] Check why AC product cards show container-size prices (e.g. Senville $42,666.80 "per unit") — needs user confirmation
