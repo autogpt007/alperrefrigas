@@ -87,16 +87,7 @@ const TestimonialsPage = () => {
               </p>
               
               {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-yellow-400 mb-2">4.9/5</div>
-                  <div className="text-blue-200">Average Rating</div>
-                  <div className="flex justify-center mt-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                    ))}
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 gap-8 mt-12">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-400 mb-2">{testimonials.length}+</div>
                   <div className="text-blue-200">Reviews</div>
