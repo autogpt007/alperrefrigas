@@ -63,7 +63,7 @@ const Footer = () => {
       
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-8">
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-3 mb-6">
@@ -112,16 +112,22 @@ const Footer = () => {
               <li><Link to="/products?category=automotive" className="text-gray-300 hover:text-white transition-colors">{t('footer.automotive')}</Link></li>
               <li><Link to="/products?category=commercial" className="text-gray-300 hover:text-white transition-colors">{t('footer.commercialHvac')}</Link></li>
               <li><Link to="/products?category=industrial" className="text-gray-300 hover:text-white transition-colors">{t('footer.industrial')}</Link></li>
-              <li><Link to="/products/r-22-replacements" className="text-gray-300 hover:text-white transition-colors">R-22 Replacements</Link></li>
-              <li><Link to="/products/r-454b" className="text-gray-300 hover:text-white transition-colors">R-454B Guide</Link></li>
-              <li><Link to="/products/hvac-tools" className="text-gray-300 hover:text-white transition-colors">HVAC Tools &amp; Gauges</Link></li>
               <li><Link to="/products/r-410a" className="text-gray-300 hover:text-white transition-colors">R-410A</Link></li>
               <li><Link to="/products/r-32" className="text-gray-300 hover:text-white transition-colors">R-32</Link></li>
+            </ul>
+          </div>
+
+          {/* Equipment & Guides */}
+          <div>
+            <h4 className="text-lg font-semibold mb-6">Equipment &amp; Guides</h4>
+            <ul className="space-y-3">
               <li><Link to="/brands/mrcool" className="text-gray-300 hover:text-white transition-colors">MRCOOL Mini Splits</Link></li>
               <li><Link to="/brands/senville" className="text-gray-300 hover:text-white transition-colors">Senville Mini Splits</Link></li>
               <li><Link to="/products/ptac-units" className="text-gray-300 hover:text-white transition-colors">PTAC Units</Link></li>
+              <li><Link to="/products/hvac-tools" className="text-gray-300 hover:text-white transition-colors">HVAC Tools &amp; Gauges</Link></li>
+              <li><Link to="/products/r-22-replacements" className="text-gray-300 hover:text-white transition-colors">R-22 Replacements</Link></li>
+              <li><Link to="/products/r-454b" className="text-gray-300 hover:text-white transition-colors">R-454B Guide</Link></li>
               <li><Link to="/guides" className="text-gray-300 hover:text-white transition-colors">Refrigerant Guides</Link></li>
-
             </ul>
           </div>
 
