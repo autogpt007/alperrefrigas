@@ -1110,46 +1110,4 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://alperrefrigerants.com/products/ptac-units</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/brands/mrcool</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/brands/senville</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/guides</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/guides/r-454b-vs-r-32</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/guides/who-can-buy-refrigerant</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://alperrefrigerants.com/guides/r-454b-handling</loc>
-    <lastmod>2026-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
 </urlset>
