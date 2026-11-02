@@ -111,6 +111,24 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       });
     });
 
+    // Style tables (wrap for mobile scrolling)
+    tempDiv.querySelectorAll('table').forEach(table => {
+      table.className = 'w-full text-sm text-gray-100 border-collapse';
+      table.querySelectorAll('th').forEach(th => { th.className = 'border border-slate-600 bg-slate-800 px-3 py-2 text-left font-semibold'; });
+      table.querySelectorAll('td').forEach(td => { td.className = 'border border-slate-700 px-3 py-2 align-top'; });
+      const wrapper = document.createElement('div');
+      wrapper.className = 'overflow-x-auto my-6';
+      table.parentNode?.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+    });
+
+    // Style images
+    tempDiv.querySelectorAll('img').forEach(img => {
+      img.className = 'w-full rounded-lg shadow-lg my-6';
+      if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+    });
+    tempDiv.querySelectorAll('figcaption').forEach(c => { c.className = 'text-sm text-gray-400 text-center -mt-3 mb-6'; });
+
     // Style blockquotes
     const blockquotes = tempDiv.querySelectorAll('blockquote');
     blockquotes.forEach(quote => {
@@ -125,6 +143,12 @@ const BlogContentProcessor: React.FC<BlogContentProcessorProps> = ({ content, ti
       
       // Add styling
       link.className = 'text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/50 hover:decoration-cyan-300';
+
+      // External links open in a new tab safely
+      if (href && /^https?:\/\//i.test(href) && !/alperrefrigerants\.com/i.test(href)) {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener');
+      }
       
       // Convert refrigerant mentions to actual product links
       if (!href) {

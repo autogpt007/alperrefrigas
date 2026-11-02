@@ -21,6 +21,8 @@ interface BlogSEOProps {
 }
 
 const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
+  const rawImage = post.banner_image_url || post.featured_image_url;
+  const absImage = rawImage ? (rawImage.startsWith('http') ? rawImage : `https://alperrefrigerants.com${rawImage}`) : undefined;
   // Extract keywords from content and tags
   const extractKeywords = (): string => {
     const keywords = new Set<string>();
@@ -52,7 +54,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
     "@type": "Article",
     "headline": post.title,
     "description": post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, ''),
-    "image": post.banner_image_url || post.featured_image_url || "https://alperrefrigerants.com/logo.png",
+    "image": absImage || "https://alperrefrigerants.com/logo.png",
     "author": {
       "@type": "Organization",
       "name": "Alper Refrigerants",
@@ -110,7 +112,27 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
   };
 
   const cleanExcerpt = post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, '');
-  const currentUrl = canonical || `https://alperrefrigerants.com/blog/${post.slug}`;
+  const currentUrl = `https://alperrefrigerants.com/blog/${post.slug}`;
+  void canonical;
+
+  // FAQPage schema from the "Frequently Asked Questions" section (h3 question + following p answer)
+  const faqStructuredData = (() => {
+    const idx = post.body.search(/<h2[^>]*>\s*Frequently Asked Questions/i);
+    if (idx < 0) return null;
+    const section = post.body.slice(idx);
+    const items: { q: string; a: string }[] = [];
+    const re = /<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(section))) {
+      items.push({ q: m[1].replace(/<[^>]*>/g, '').trim(), a: m[2].replace(/<[^>]*>/g, '').trim() });
+    }
+    if (!items.length) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": items.map(i => ({ "@type": "Question", "name": i.q, "acceptedAnswer": { "@type": "Answer", "text": i.a } })),
+    };
+  })();
 
   return (
     <Helmet>
@@ -129,7 +151,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta property="og:locale" content="en_US" />
       {(post.banner_image_url || post.featured_image_url) && (
         <>
-          <meta property="og:image" content={post.banner_image_url || post.featured_image_url} />
+          <meta property="og:image" content={absImage} />
           <meta property="og:image:alt" content={post.title} />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
@@ -150,7 +172,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta name="twitter:title" content={post.title} />
       <meta name="twitter:description" content={cleanExcerpt} />
       {(post.banner_image_url || post.featured_image_url) && (
-        <meta name="twitter:image" content={post.banner_image_url || post.featured_image_url} />
+        <meta name="twitter:image" content={absImage} />
       )}
 
       {/* Additional SEO Tags */}
@@ -167,6 +189,11 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <script type="application/ld+json">
         {JSON.stringify(breadcrumbStructuredData)}
       </script>
+      {faqStructuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(faqStructuredData)}
+        </script>
+      )}
     </Helmet>
   );
 };
