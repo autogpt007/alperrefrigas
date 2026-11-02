@@ -67,6 +67,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }
     }
     
+    // Non-refrigerant products (ACs, equipment): single-unit price on cards
+    if (product.product_type && product.product_type !== 'refrigerant') {
+      return product.price;
+    }
+
     // Refrigerant 3-tier pricing
     const basePrice = product.price;
     switch (packageType) {
