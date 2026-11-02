@@ -140,7 +140,7 @@ const OrderConfirmation = () => {
         // Track quote/lead conversion
         console.log('[OrderConfirmation] Tracking quote lead conversion:', data.quote_number);
         trackFBLead();
-        trackGoogleAdsLead();
+        trackGoogleAdsLead(undefined, 'USD', data.quote_number);
         pushToDataLayer('generate_lead', {
           currency: 'USD',
           lead_type: 'quote_request',
