@@ -20,7 +20,7 @@ const ProductCategory = () => {
     const categoryData: Record<string, { title: string; description: string; keywords: string }> = {
       'hfc': {
         title: 'HFC Refrigerants | R-410A, R-134a Bulk | Alper',
-        description: 'Shop HFC refrigerants at wholesale prices. R-410A, R-134a, R-404A, R-407C bulk supply. EPA certified, 99.9% purity guarantee, MOQ 40 cylinders. Same-day shipping from TX, FL, CA.',
+        description: 'Shop HFC refrigerants at wholesale prices. R-410A, R-134a, R-404A, R-407C bulk supply. EPA certified, Sold by cylinder, pallet or container.',
         keywords: 'HFC refrigerants wholesale, R-410A bulk, R-134a wholesale, R-404A distributor, R-407C bulk pricing, hydrofluorocarbon refrigerants, EPA certified HFC'
       },
       'hfo': {
@@ -52,7 +52,7 @@ const ProductCategory = () => {
     
     return categoryData[cat] || {
       title: 'Refrigerant Products Catalog | Alper',
-      description: 'Browse our complete refrigerant catalog. HFC, HFO, natural refrigerants with EPA certification. Wholesale pricing, MOQ 40 cylinders, expert technical support.',
+      description: 'Browse our complete refrigerant catalog. HFC, HFO, natural refrigerants with EPA certification. Wholesale pricing, Single cylinders, pallets and containers.',
       keywords: 'refrigerant products, HVAC refrigerants, professional distribution, EPA certified, wholesale pricing'
     };
   };

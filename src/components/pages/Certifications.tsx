@@ -433,13 +433,6 @@ const Certifications = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-semibold">AHRI Membership</h4>
-                        <p className="text-sm text-gray-600">Air-Conditioning, Heating & Refrigeration Institute</p>
-                      </div>
-                      <Badge className="bg-blue-100 text-blue-800">Member</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
                         <h4 className="font-semibold">ARCA Membership</h4>
                         <p className="text-sm text-gray-600">Appliance Recycling Centers of America</p>
                       </div>
