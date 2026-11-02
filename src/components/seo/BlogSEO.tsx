@@ -110,7 +110,27 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
   };
 
   const cleanExcerpt = post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, '');
-  const currentUrl = canonical || `https://alperrefrigerants.com/blog/${post.slug}`;
+  const currentUrl = `https://alperrefrigerants.com/blog/${post.slug}`;
+  void canonical;
+
+  // FAQPage schema from the "Frequently Asked Questions" section (h3 question + following p answer)
+  const faqStructuredData = (() => {
+    const idx = post.body.search(/<h2[^>]*>\s*Frequently Asked Questions/i);
+    if (idx < 0) return null;
+    const section = post.body.slice(idx);
+    const items: { q: string; a: string }[] = [];
+    const re = /<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(section))) {
+      items.push({ q: m[1].replace(/<[^>]*>/g, '').trim(), a: m[2].replace(/<[^>]*>/g, '').trim() });
+    }
+    if (!items.length) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": items.map(i => ({ "@type": "Question", "name": i.q, "acceptedAnswer": { "@type": "Answer", "text": i.a } })),
+    };
+  })();
 
   return (
     <Helmet>
@@ -167,6 +187,11 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <script type="application/ld+json">
         {JSON.stringify(breadcrumbStructuredData)}
       </script>
+      {faqStructuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(faqStructuredData)}
+        </script>
+      )}
     </Helmet>
   );
 };
