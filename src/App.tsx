@@ -1,4 +1,7 @@
 
+import SeoContentPage from './components/pages/seo/SeoContentPage';
+import GuidesIndex from './components/pages/seo/GuidesIndex';
+import { SEO_PAGES } from './components/pages/seo/seoPages';
 import React, { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -192,6 +195,10 @@ function App() {
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
                                  <Route path="/products/r-22-replacements" element={<R22ReplacementsPage />} />
+                                 <Route path="/products/r-410a" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/r-410a")!} />} />
+                                 <Route path="/products/r-32" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/r-32")!} />} />
+                                 <Route path="/products/ptac-units" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/ptac-units")!} />} />
+
                                  <Route path="/products/category/:category" element={<ProductCategory />} />
                                  <Route path="/products/accessories/:category" element={<ProductCategory />} />
                                  <Route path="/products/:productSlug" element={<ProductDetails />} />
@@ -222,6 +229,13 @@ function App() {
                                <Route path="/auth" element={<UserAuthPage />} />
                                <Route path="/admin-auth" element={<AuthPage />} />
                                <Route path="/blog" element={<BlogPage />} />
+                               <Route path="/guides" element={<GuidesIndex />} />
+                               <Route path="/brands/mrcool" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/brands/mrcool")!} />} />
+                               <Route path="/brands/senville" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/brands/senville")!} />} />
+                               <Route path="/guides/r-454b-vs-r-32" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/r-454b-vs-r-32")!} />} />
+                               <Route path="/guides/who-can-buy-refrigerant" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/who-can-buy-refrigerant")!} />} />
+                               <Route path="/guides/r-454b-handling" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/r-454b-handling")!} />} />
+
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />
                                <Route path="/news/:slug" element={<BlogPostRedirect />} />
                                <Route path="/kyc/:token" element={<KYCVerificationPage />} />

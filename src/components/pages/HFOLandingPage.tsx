@@ -66,7 +66,7 @@ const HFOLandingPage = () => {
     <>
       <SEOComponent
         title="HFO Refrigerants Wholesale | Low-GWP"
-        description="Buy HFO refrigerants wholesale: R-1234yf, R-1234ze, R-454B, R-513A. Ultra-low GWP, EPA AIM Act compliant. Bulk container pricing, same-day shipping from TX, FL, CA."
+        description="Buy HFO refrigerants wholesale: R-1234yf, R-1234ze, R-454B, R-513A. Ultra-low GWP, EPA AIM Act compliant. Cylinder, pallet and container pricing."
         keywords="HFO refrigerants wholesale, low GWP refrigerant supplier, R-1234yf wholesale, R-1234ze bulk, R-454B supplier, R-513A distributor, hydrofluoroolefin refrigerants, AIM Act compliant refrigerants, environmental refrigerants, buy HFO refrigerant"
         canonicalUrl="/products/hfo-refrigerants"
         structuredData={structuredData}
@@ -190,7 +190,7 @@ const HFOLandingPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
                 { icon: <Globe className="h-6 w-6" />, title: "International Shipping", desc: "Worldwide delivery from US distribution centers" },
-                { icon: <Truck className="h-6 w-6" />, title: "Same-Day Dispatch", desc: "In-stock HFO orders ship same business day" },
+                { icon: <Truck className="h-6 w-6" />, title: "Clear Dispatch Times", desc: "Orders handled in 0-3 business days" },
                 { icon: <Shield className="h-6 w-6" />, title: "Full Documentation", desc: "SDS, certificates of analysis, EPA compliance docs" },
                 { icon: <CheckCircle className="h-6 w-6" />, title: "99.9% Purity", desc: "Every batch lab-tested and certified" },
                 { icon: <Package className="h-6 w-6" />, title: "Flexible Quantities", desc: "From pallets to full container loads" },
