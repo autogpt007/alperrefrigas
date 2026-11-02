@@ -21,6 +21,8 @@ interface BlogSEOProps {
 }
 
 const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
+  const rawImage = post.banner_image_url || post.featured_image_url;
+  const absImage = rawImage ? (rawImage.startsWith('http') ? rawImage : `https://alperrefrigerants.com${rawImage}`) : undefined;
   // Extract keywords from content and tags
   const extractKeywords = (): string => {
     const keywords = new Set<string>();
@@ -52,7 +54,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
     "@type": "Article",
     "headline": post.title,
     "description": post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, ''),
-    "image": post.banner_image_url || post.featured_image_url || "https://alperrefrigerants.com/logo.png",
+    "image": absImage || "https://alperrefrigerants.com/logo.png",
     "author": {
       "@type": "Organization",
       "name": "Alper Refrigerants",
@@ -149,7 +151,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta property="og:locale" content="en_US" />
       {(post.banner_image_url || post.featured_image_url) && (
         <>
-          <meta property="og:image" content={post.banner_image_url || post.featured_image_url} />
+          <meta property="og:image" content={absImage} />
           <meta property="og:image:alt" content={post.title} />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
@@ -170,7 +172,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta name="twitter:title" content={post.title} />
       <meta name="twitter:description" content={cleanExcerpt} />
       {(post.banner_image_url || post.featured_image_url) && (
-        <meta name="twitter:image" content={post.banner_image_url || post.featured_image_url} />
+        <meta name="twitter:image" content={absImage} />
       )}
 
       {/* Additional SEO Tags */}
