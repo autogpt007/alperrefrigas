@@ -464,7 +464,7 @@ const HomePage = () => {
                         Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose Alper Refrigerant products, you're getting products that perform consistently and reliably in the field.
                       </p>
                       <p className="text-gray-100 leading-relaxed">
-                        We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
+                        We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer clear upfront pricing, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
                       </p>
                     </div>
                   </div>

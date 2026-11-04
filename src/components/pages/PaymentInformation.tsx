@@ -113,22 +113,16 @@ const PaymentInformation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                  Commercial Credit Terms
+                  Payment Before Shipment
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>Net Payment Terms (Qualified Accounts):</strong></p>
-                <p className="text-sm text-gray-600 mb-4">Commercial credit terms available for established business accounts with approved credit applications.</p>
+                <p><strong>We do not offer Net 15, Net 30, cash on delivery, or any other credit or deferred payment terms.</strong></p>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>Net 30:</strong> Available for accounts with $10,000+ monthly volume</li>
-                  <li><strong>Net 15:</strong> Standard terms for new commercial accounts</li>
-                  <li><strong>COD:</strong> Cash on delivery available for first-time buyers</li>
-                  <li><strong>Credit Application:</strong> Required for net terms approval</li>
-                  <li><strong>Late Payment:</strong> 1.5% monthly finance charge on overdue balances</li>
+                  <li>Every order ships only after full payment is confirmed.</li>
+                  <li>Accepted payment methods: credit/debit card and bank wire transfer.</li>
+                  <li>This applies to all customers, including commercial and repeat accounts.</li>
                 </ul>
-                <p className="text-sm mt-4">
-                  To apply for commercial credit terms, contact: <strong>credit@alperrefrigerants.com</strong>
-                </p>
               </CardContent>
             </Card>
 

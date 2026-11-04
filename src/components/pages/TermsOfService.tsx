@@ -122,7 +122,7 @@ const TermsOfService = () => {
               <CardContent className="prose max-w-none">
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Prices are subject to change without notice due to market fluctuations</li>
-                  <li>Payment is due upon order confirmation unless credit terms are pre-approved</li>
+                  <li>Full payment is required before shipment. We do not offer Net 15, Net 30 or any credit terms</li>
                   <li>Late payment charges of 1.5% per month may apply to overdue accounts</li>
                   <li>All prices are FOB shipping point unless otherwise specified</li>
                   <li>Hazmat shipping and handling charges are additional</li>

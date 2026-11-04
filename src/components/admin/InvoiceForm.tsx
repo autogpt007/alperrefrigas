@@ -154,7 +154,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   const [amountPaid, setAmountPaid] = useState(Number(initialData?.amount_paid ?? 0));
   const [notes, setNotes] = useState(initialData?.notes || '');
   const [paymentMethod, setPaymentMethod] = useState(initialData?.payment_method || 'bank-wire');
-  const [paymentTerms, setPaymentTerms] = useState(initialData?.payment_terms || 'Due upon receipt');
+  const [paymentTerms, setPaymentTerms] = useState(initialData?.payment_terms || 'Due before shipment');
   const [validityDays, setValidityDays] = useState(Number(initialData?.validity_days ?? 30));
   const [shipToAddress, setShipToAddress] = useState(initialData?.ship_to_address || '');
   const [poNumber, setPoNumber] = useState(initialData?.po_number || '');
