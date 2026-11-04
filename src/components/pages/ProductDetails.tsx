@@ -1021,7 +1021,7 @@ const ProductDetails = () => {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Award className="h-3.5 w-3.5 text-amber-600" />
-                  <a href="tel:+16822152974" className="hover:underline">682-215-2974</a>
+                  <a href="tel:+17869870501" className="hover:underline">786-987-0501</a>
                 </div>
               </div>
 
@@ -1429,7 +1429,7 @@ const ProductDetails = () => {
                     <Link to="/products?type=refrigerant" className="text-primary hover:underline">browse bulk refrigerants</Link>
                     {product.refrigerantType ? ` including ${product.refrigerantType}` : ''}, or see the full{' '}
                     <Link to="/products" className="text-primary hover:underline">product catalog</Link>. Questions on sizing or
-                    freight: call 682-215-2974.
+                    freight: call 786-987-0501.
                   </p>
                 </div>
               </CardContent>

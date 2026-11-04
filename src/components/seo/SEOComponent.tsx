@@ -82,7 +82,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   const siteUrl = SITE_URL;
   const businessName = 'Alper Refrigerants';
   const legalName = 'Alper Chemical Group';
-  const mainPhone = '+1-682-215-2974';
+  const mainPhone = '+1-786-987-0501';
   const salesEmail = 'sales@alperrefrigerants.com';
   
   const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName}`;

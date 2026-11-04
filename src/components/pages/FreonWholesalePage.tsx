@@ -21,7 +21,7 @@ const FreonWholesalePage = () => {
         "legalName": "Alper Chemical Group",
         "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
         "url": "https://alperrefrigerants.com/products",
-        "telephone": "+1-682-215-2974",
+        "telephone": "+1-786-987-0501",
         "email": "sales@alperrefrigerants.com",
         "address": {
           "@type": "PostalAddress",
@@ -44,7 +44,7 @@ const FreonWholesalePage = () => {
         "logo": "https://alperrefrigerants.com/logo.png",
         "contactPoint": {
           "@type": "ContactPoint",
-          "telephone": "+1-682-215-2974",
+          "telephone": "+1-786-987-0501",
           "contactType": "wholesale sales",
           "email": "sales@alperrefrigerants.com"
         }
