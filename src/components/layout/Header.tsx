@@ -191,7 +191,7 @@ const Header = () => {
             {logoSettings?.logo_url ? (
               <img 
                 src={logoSettings.logo_url} 
-                alt={logoSettings.company_name || 'Company Logo'} 
+                alt={logoSettings.company_name || 'Alper Refrigerants logo'} 
                 className="h-16 w-auto max-w-[9rem] flex-shrink-0 object-contain sm:h-20 sm:max-w-[13rem] lg:max-w-[15rem]"
               />
             ) : (
@@ -219,7 +219,7 @@ const Header = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="rounded-r-none"
               />
-              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" aria-label="Search products" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -263,6 +263,7 @@ const Header = () => {
               variant="ghost"
               size="sm"
               className="md:hidden"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -379,7 +380,7 @@ const Header = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="rounded-r-none"
               />
-              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" aria-label="Search products" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
                 <Search className="h-4 w-4" />
               </Button>
             </form>

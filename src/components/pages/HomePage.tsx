@@ -233,7 +233,7 @@ const HomePage = () => {
     <>
       <SEOComponent
         title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
-        description="Leading wholesale refrigerant distributor. EPA-certified bulk supplier of R-410A, R-134a, R-22, R-404A, HFO-1234yf sold by cylinder, pallet or container. Card or bank wire."
+        description="Wholesale refrigerant and HVAC supplier. Buy R-410A, R-134a, R-404A, R-32 and mini-split systems by cylinder, pallet or container."
         keywords="hfo refrigerant for sale, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, buy hfo 1234yf, EPA certified refrigerants, bulk r-454b, r-513a supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
@@ -258,9 +258,9 @@ const HomePage = () => {
                 <Shield className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t('home.hero.badge')}
               </Badge>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
                   dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}>
-              </h2>
+              </h1>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm line-clamp-3 sm:line-clamp-none">
                 {t('home.hero.description')}
               </p>

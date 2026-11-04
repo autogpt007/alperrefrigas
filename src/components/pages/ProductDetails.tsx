@@ -516,11 +516,15 @@ const ProductDetails = () => {
     setPackaging('');
   };
   // Enhanced product description - different for each product type
-  const enhancedDescription = product.product_type === 'air_conditioner'
+  const fullDescription = product.product_type === 'air_conditioner'
     ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`
     : product.product_type === 'accessory'
     ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Estimated delivery 0-13 business days.`
-    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`;
+    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - sold by single cylinder, pallet or container. ${product.category} refrigerant. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`;
+
+  const enhancedDescription = fullDescription.length > 158
+    ? fullDescription.slice(0, 155).replace(/\s+\S*$/, '') + '...'
+    : fullDescription;
 
   // Product FAQ data for better SEO - different for each product type
   const verifiedFAQ: { question: string; answer: string }[] = Array.isArray(product.technicalSpecs?.faq)
