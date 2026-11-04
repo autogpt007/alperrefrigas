@@ -327,6 +327,8 @@ const RFQPage = () => {
                       />
                     </div>
 
+                    <p className="text-xs text-muted-foreground">Orders ship after payment is confirmed. No credit or Net terms.</p>
+
                     <Button 
                       type="submit" 
                       size="lg" 
