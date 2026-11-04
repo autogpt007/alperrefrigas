@@ -602,7 +602,7 @@ const ProductDetails = () => {
           question: "Do you provide Safety Data Sheets (SDS)?",
           answer: "Yes, we provide comprehensive Safety Data Sheets for all our refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
         }
-      ];
+      ])];
 
   // Dynamic SEO keyword mapping with short-form aliases
   const currentYear = new Date().getFullYear();
