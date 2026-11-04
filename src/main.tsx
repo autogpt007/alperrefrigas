@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import './index.css';
+import { installPhoneCallTracking } from './utils/googleAdsConversions';
+installPhoneCallTracking();
 
 const THIRD_PARTY_ERROR_HOSTS = [
   'tawk.to',
