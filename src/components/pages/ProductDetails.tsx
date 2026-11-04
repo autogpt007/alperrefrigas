@@ -275,6 +275,15 @@ const ProductDetails = () => {
       if (product.comes_with_base?.length) specs.push({ label: 'What Ships In The Box', value: product.comes_with_base.join(', ') });
     }
     if (product.epaApproved !== undefined && product.product_type !== 'air_conditioner') specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
+    const ts = product.technicalSpecs || {};
+    const seen = new Set(specs.map((s) => s.label.toLowerCase()));
+    Object.entries(ts).forEach(([k, v]) => {
+      if (k === 'faq' || k === 'sources' || /source/i.test(k)) return;
+      if (v === null || v === undefined || v === '' || typeof v === 'object') return;
+      if (seen.has(k.toLowerCase())) return;
+      seen.add(k.toLowerCase());
+      specs.push({ label: k, value: String(v) });
+    });
     if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
     return specs;
 
@@ -514,7 +523,10 @@ const ProductDetails = () => {
     : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`;
 
   // Product FAQ data for better SEO - different for each product type
-  const productFAQ = product.product_type === 'air_conditioner'
+  const verifiedFAQ: { question: string; answer: string }[] = Array.isArray(product.technicalSpecs?.faq)
+    ? product.technicalSpecs!.faq.filter((f: any) => f?.question && f?.answer)
+    : [];
+  const productFAQ = [...verifiedFAQ, ...(product.product_type === 'air_conditioner'
     ? [
         {
           question: `What size room does ${product.name} cool?`,
