@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Fix homepage search and social-preview metadata to represent wholesale refrigerants and HVAC systems; restore consent-first script order as requested.
+
 - [x] Correct 29 Needs AC Config listings using manufacturer voltage ratings and save source links; verified in admin and buyer product pages, prices unchanged.
 - [ ] Finish Midea MAW18RV1CWT and MAW05M1WWT AC configuration — blocked on manufacturer electrical specification sheets or rating-label photos; official pages/manuals omit voltage.
 

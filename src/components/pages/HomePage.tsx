@@ -232,8 +232,8 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
-        description="Wholesale refrigerant and HVAC supplier. Buy R-410A, R-134a, R-404A, R-32 and mini-split systems by cylinder, pallet or container."
+        title="Wholesale Refrigerant & HVAC Supplier | Alper Refrigerants"
+        description="Shop wholesale refrigerants by cylinder, pallet or container, plus mini-splits, heat pumps and HVAC tools. Browse Alper Refrigerants or request a bulk quote."
         keywords="hfo refrigerant for sale, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, buy hfo 1234yf, EPA certified refrigerants, bulk r-454b, r-513a supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
