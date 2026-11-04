@@ -181,3 +181,23 @@ export const initGoogleAdsConfig = () => {
     console.error('[Google Ads] Error initializing config:', error);
   }
 };
+
+/**
+ * Phone call click conversion ("Alper Phone Call Click (786-987-0501)").
+ * Fires once per page load when any tel: link is clicked. Consent is handled
+ * by Cookiebot via Google Consent Mode.
+ */
+const PHONE_CALL_SEND_TO = 'AW-18423146954/yD2zCLmpprIdEMrT69BE';
+let phoneTrackingInstalled = false;
+export const installPhoneCallTracking = () => {
+  if (phoneTrackingInstalled || typeof document === 'undefined') return;
+  phoneTrackingInstalled = true;
+  let sent = false;
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement | null)?.closest?.('a[href^="tel:"]');
+    if (!link || sent || !isGtagAvailable()) return;
+    sent = true;
+    window.gtag('event', 'conversion', { send_to: PHONE_CALL_SEND_TO, value: 0, currency: 'USD' });
+    pushToDataLayer('google_ads_conversion', { conversion_type: 'phone_call_click' });
+  }, true);
+};
