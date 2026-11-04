@@ -1100,6 +1100,10 @@
       <g:gtin>00084691944294</g:gtin>
       <g:mpn>AWGH18WWF</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>55.43 kg</g:shipping_weight>
+      <g:shipping_length>66 cm</g:shipping_length>
+      <g:shipping_width>67 cm</g:shipping_width>
+      <g:shipping_height>46 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
@@ -1117,6 +1121,10 @@
       <g:gtin>00084691963370</g:gtin>
       <g:mpn>AHEC05AC</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>16.30 kg</g:shipping_weight>
+      <g:shipping_length>38 cm</g:shipping_length>
+      <g:shipping_width>42 cm</g:shipping_width>
+      <g:shipping_height>32 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
@@ -1149,6 +1157,10 @@
       <g:gtin>00084691963363</g:gtin>
       <g:mpn>AWCS06BWF</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>17.24 kg</g:shipping_weight>
+      <g:shipping_length>34 cm</g:shipping_length>
+      <g:shipping_width>42 cm</g:shipping_width>
+      <g:shipping_height>32 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
@@ -1166,6 +1178,10 @@
       <g:gtin>00084691944270</g:gtin>
       <g:mpn>AWGH08WWF</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>36.22 kg</g:shipping_weight>
+      <g:shipping_length>62 cm</g:shipping_length>
+      <g:shipping_width>57 cm</g:shipping_width>
+      <g:shipping_height>41 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
@@ -1183,6 +1199,10 @@
       <g:gtin>00084691894865</g:gtin>
       <g:mpn>AHTT08BC</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>32.00 kg</g:shipping_weight>
+      <g:shipping_length>71 cm</g:shipping_length>
+      <g:shipping_width>50 cm</g:shipping_width>
+      <g:shipping_height>32 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>
@@ -1200,6 +1220,10 @@
       <g:gtin>00084691917977</g:gtin>
       <g:mpn>PHNT10CC</g:mpn>
       <g:identifier_exists>yes</g:identifier_exists>
+      <g:shipping_weight>36.29 kg</g:shipping_weight>
+      <g:shipping_length>71 cm</g:shipping_length>
+      <g:shipping_width>50 cm</g:shipping_width>
+      <g:shipping_height>32 cm</g:shipping_height>
       <g:adult>no</g:adult>
       <g:product_type>Air Conditioners</g:product_type>
       <g:google_product_category>605</g:google_product_category>

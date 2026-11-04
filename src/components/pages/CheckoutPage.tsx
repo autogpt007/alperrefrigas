@@ -1475,7 +1475,7 @@ const CheckoutPage = () => {
                         freight and delivery timing.
                       </p>
                     )}
-                    <p>Questions? Call 682-215-2974.</p>
+                    <p>Questions? Call 786-987-0501.</p>
                   </div>
 
                   {/* Security Notice */}

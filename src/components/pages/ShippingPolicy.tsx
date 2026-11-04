@@ -33,7 +33,7 @@ const ShippingPolicy = () => {
                 <span itemProp="addressLocality">Miami</span>, <span itemProp="addressRegion">FL</span>{' '}
                 <span itemProp="postalCode">33179</span>, <span itemProp="addressCountry">United States</span>
               </address><br />
-              Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com<br />
+              Tel: +1-786-987-0501 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -618,7 +618,7 @@ const ShippingPolicy = () => {
                 <br />
                 <strong>Email:</strong> sales@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> +1-682-215-2974
+                <strong>Phone:</strong> +1-786-987-0501
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 7:00 AM - 6:00 PM EST
               </p>

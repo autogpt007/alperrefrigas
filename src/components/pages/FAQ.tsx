@@ -366,10 +366,10 @@ const FAQ = () => {
                 Contact Support
               </a>
               <a
-                href="tel:+16822152974"
+                href="tel:+17869870501"
                 className="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center"
               >
-                Call 1-682-215-2974
+                Call 1-786-987-0501
               </a>
             </div>
           </CardContent>

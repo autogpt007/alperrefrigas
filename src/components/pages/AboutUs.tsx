@@ -118,7 +118,7 @@ const AboutUs = () => {
         "postalCode": "33179",
         "addressCountry": "US"
       },
-      "telephone": "+1-682-215-2974",
+      "telephone": "+1-786-987-0501",
       "email": "sales@alperrefrigerants.com"
     }
   };
@@ -175,7 +175,7 @@ const AboutUs = () => {
                 </div>
                 <div className="flex items-center gap-2 text-blue-200 mb-1">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <a href="tel:+16822152974" className="hover:text-white transition-colors">+1-682-215-2974</a>
+                  <a href="tel:+17869870501" className="hover:text-white transition-colors">+1-786-987-0501</a>
                 </div>
                 <div className="flex items-center gap-2 text-blue-200">
                   <Mail className="h-4 w-4 flex-shrink-0" />

@@ -158,7 +158,7 @@ const ContactUs = () => {
     {
       icon: Phone,
       title: "Phone",
-      details: "+1 (682) 215-2974",
+      details: "+1 (786) 987-0501",
       description: "Monday-Friday, 8AM-6PM EST"
     },
     {
@@ -209,7 +209,7 @@ const ContactUs = () => {
         {
           "@type": "ContactPoint",
           "contactType": "sales",
-          "telephone": "+1-682-215-2974",
+          "telephone": "+1-786-987-0501",
           "email": "sales@alperrefrigerants.com",
           "areaServed": "US",
           "availableLanguage": ["English", "Spanish"]
@@ -217,7 +217,7 @@ const ContactUs = () => {
         {
           "@type": "ContactPoint", 
           "contactType": "customer service",
-          "telephone": "+1-682-215-2974",
+          "telephone": "+1-786-987-0501",
           "email": "sales@alperrefrigerants.com",
           "hoursAvailable": "Mo-Fr 07:00-18:00"
         }
@@ -244,7 +244,7 @@ const ContactUs = () => {
               <h2 className="text-xl font-bold text-white mb-2">Alper Chemical Group</h2>
               <p className="text-blue-200 text-sm">
                 382 NE 191st St, Miami, FL 33179, United States<br />
-                Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com
+                Tel: +1-786-987-0501 | Email: sales@alperrefrigerants.com
               </p>
               <p className="text-cyan-400 text-xs mt-2 font-medium">
                 B2B Supplier – Sales to EPA-certified HVAC professionals only
@@ -293,7 +293,7 @@ const ContactUs = () => {
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold">
                     <Phone className="h-4 w-4 mr-2" />
-                    Emergency: +1 (682) 215-2974
+                    Emergency: +1 (786) 987-0501
                   </Button>
                 </CardContent>
               </Card>
