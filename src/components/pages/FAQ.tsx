@@ -17,6 +17,10 @@ const FAQ = () => {
       color: 'bg-cyan-100 text-cyan-800',
       questions: [
         {
+          question: 'Do you offer Net 30, Net 15 or credit terms?',
+          answer: 'No. We do not offer Net 15, Net 30, cash on delivery or any credit or deferred payment terms. All orders ship only after full payment is confirmed by card or bank wire transfer.'
+        },
+        {
           question: 'What refrigerant types do you carry?',
           answer: 'We stock HFC blends (R-410A, R-134a, R-404A, R-407C, R-507A, R-422B, R-438A), low-GWP HFO and HFO blends (R-454B, R-32, R-1234yf, R-513A, R-452A), and natural refrigerants (R-290 propane, R-600a isobutane, R-744 CO2). All cylinders are factory-sealed and sourced from established manufacturers such as Chemours, Honeywell and Arkema.'
         },

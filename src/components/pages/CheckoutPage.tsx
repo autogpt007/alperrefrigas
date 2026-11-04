@@ -1097,7 +1097,7 @@ const CheckoutPage = () => {
 
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Shield className="h-4 w-4" />
-                        <span>Secure checkout. No payment is taken until your order is reviewed by our sales team.</span>
+                        <span>Secure checkout. No payment is taken until your order is reviewed by our sales team. Orders ship after payment is confirmed. No credit or Net terms.</span>
                       </div>
 
                       {/* Bank Wire Details */}
