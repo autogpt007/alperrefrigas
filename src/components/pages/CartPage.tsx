@@ -244,6 +244,7 @@ const CartPage = () => {
                 </div>
 
                 <div className="space-y-3 pt-4">
+                  <p className="text-xs text-muted-foreground">Orders ship after payment is confirmed. No credit or Net terms.</p>
                   {user ? (
                     <Button 
                       size="lg" 
