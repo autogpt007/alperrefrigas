@@ -2,8 +2,8 @@
 
 - [x] Buyer flow step 1: guest checkout and secure guest RFQ submission, verified without sign-in; test quote and both sent email events confirmed.
 - [x] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification; guest panel submission and both sent emails verified.
-- [ ] Buyer flow step 3: visible mobile search, cylinder/pallet modes, inline checkout errors and sticky order button.
-- [ ] Buyer flow step 4: mobile sales assistance and accurate freight reassurance without changing shipping rates.
+- [x] Buyer flow step 3: visible mobile search, cylinder/pallet modes, inline checkout errors and sticky order button; mobile browser checks and validation tests passed.
+- [x] Buyer flow step 4: mobile sales assistance and accurate freight reassurance without changing shipping rates; mobile quick quote opens the current product panel.
 
 - [x] Fix homepage search and social-preview metadata to represent wholesale refrigerants and HVAC systems; restore consent-first script order as requested. Static HTML and rendered homepage verified; publication pending.
 
