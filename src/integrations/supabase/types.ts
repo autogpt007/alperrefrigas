@@ -1612,6 +1612,24 @@ export type Database = {
           },
         ]
       }
+      quote_submission_limits: {
+        Row: {
+          attempts: number
+          ip_hash: string
+          window_start: string
+        }
+        Insert: {
+          attempts?: number
+          ip_hash: string
+          window_start?: string
+        }
+        Update: {
+          attempts?: number
+          ip_hash?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       quotes: {
         Row: {
           company_name: string | null
@@ -2106,6 +2124,10 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      submit_buyer_quote: {
+        Args: { ip_hash_value: string; payload: Json; requester: string }
+        Returns: Json
       }
     }
     Enums: {
