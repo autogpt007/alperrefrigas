@@ -697,31 +697,34 @@ const CheckoutPage = () => {
                       <div>
                         <Label htmlFor="customerName">Full Name *</Label>
                         <Input
-                          id="customerName"
+                          aria-invalid={!!fieldErrors.customerName} aria-describedby={fieldErrors.customerName ? "customerName-error" : undefined} id="customerName"
                           value={formData.customerName}
                           onChange={(e) => handleInputChange('customerName', e.target.value)}
                           required
                         />
+{fieldErrors.customerName && <p id="customerName-error" className="text-xs text-destructive mt-1">{fieldErrors.customerName}</p>}
                       </div>
                       <div>
                         <Label htmlFor="customerEmail">Email Address *</Label>
                         <Input
-                          id="customerEmail"
+                          aria-invalid={!!fieldErrors.customerEmail} aria-describedby={fieldErrors.customerEmail ? "customerEmail-error" : undefined} id="customerEmail"
                           type="email"
                           value={formData.customerEmail}
                           onChange={(e) => handleInputChange('customerEmail', e.target.value)}
                           required
                         />
+{fieldErrors.customerEmail && <p id="customerEmail-error" className="text-xs text-destructive mt-1">{fieldErrors.customerEmail}</p>}
                       </div>
                       <div className="md:col-span-2">
                         <Label htmlFor="phoneNumber">Phone Number *</Label>
                         <Input
-                          id="phoneNumber"
+                          aria-invalid={!!fieldErrors.phoneNumber} aria-describedby={fieldErrors.phoneNumber ? "phoneNumber-error" : undefined} id="phoneNumber"
                           type="tel"
                           value={formData.phoneNumber}
                           onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                           required
                         />
+{fieldErrors.phoneNumber && <p id="phoneNumber-error" className="text-xs text-destructive mt-1">{fieldErrors.phoneNumber}</p>}
                       </div>
                     </div>
                   </CardContent>
@@ -739,32 +742,35 @@ const CheckoutPage = () => {
                     <div>
                       <Label htmlFor="street">Street Address *</Label>
                       <Input
-                        id="street"
+                        aria-invalid={!!fieldErrors.street} aria-describedby={fieldErrors.street ? "street-error" : undefined} id="street"
                         value={formData.street}
                         onChange={(e) => handleInputChange('street', e.target.value)}
                         required
                       />
+{fieldErrors.street && <p id="street-error" className="text-xs text-destructive mt-1">{fieldErrors.street}</p>}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City *</Label>
                         <Input
-                          id="city"
+                          aria-invalid={!!fieldErrors.city} aria-describedby={fieldErrors.city ? "city-error" : undefined} id="city"
                           value={formData.city}
                           onChange={(e) => handleInputChange('city', e.target.value)}
                           required
                         />
+{fieldErrors.city && <p id="city-error" className="text-xs text-destructive mt-1">{fieldErrors.city}</p>}
                       </div>
                       <div>
                         <Label htmlFor="zipCode">{formData.countryCode === 'US' ? 'ZIP Code' : 'Postal Code'} *</Label>
                         <Input
-                          id="zipCode"
+                          aria-invalid={!!fieldErrors.zipCode} aria-describedby={fieldErrors.zipCode ? "zipCode-error" : undefined} id="zipCode"
                           value={formData.zipCode}
                           onChange={(e) => handleInputChange('zipCode', e.target.value)}
                           placeholder={formData.countryCode === 'US' ? '12345' : 'Enter postal code'}
                           maxLength={formData.countryCode === 'US' ? 10 : 20}
                           required
                         />
+{fieldErrors.zipCode && <p id="zipCode-error" className="text-xs text-destructive mt-1">{fieldErrors.zipCode}</p>}
                         {formData.countryCode === 'US' && formData.zipCode && formData.state && (
                           <p className="text-xs text-gray-500 mt-1">
                             Detected: {US_STATES.find(s => s.code === formData.state)?.name || formData.state}
@@ -827,11 +833,12 @@ const CheckoutPage = () => {
                       <div className="md:col-span-2">
                         <Label htmlFor="state">Region/Province</Label>
                         <Input
-                          id="state"
+                          aria-invalid={!!fieldErrors.state} aria-describedby={fieldErrors.state ? "state-error" : undefined} id="state"
                           value={formData.state}
                           onChange={(e) => handleInputChange('state', e.target.value)}
                           placeholder="Enter region or province"
                         />
+{fieldErrors.state && <p id="state-error" className="text-xs text-destructive mt-1">{fieldErrors.state}</p>}
                       </div>
                     )}
 
@@ -1023,7 +1030,7 @@ const CheckoutPage = () => {
                             <div className="md:col-span-2">
                               <Label htmlFor="cardNumber">Card Number *</Label>
                               <Input
-                                id="cardNumber"
+                                aria-invalid={!!fieldErrors.cardNumber} aria-describedby={fieldErrors.cardNumber ? "cardNumber-error" : undefined} id="cardNumber"
                                 type="text"
                                 placeholder="1234 5678 9012 3456"
                                 value={formData.cardNumber}
@@ -1031,11 +1038,12 @@ const CheckoutPage = () => {
                                 maxLength={19}
                                 required
                               />
+{fieldErrors.cardNumber && <p id="cardNumber-error" className="text-xs text-destructive mt-1">{fieldErrors.cardNumber}</p>}
                             </div>
                             <div>
                               <Label htmlFor="expiryDate">Expiry Date *</Label>
                               <Input
-                                id="expiryDate"
+                                aria-invalid={!!fieldErrors.expiryDate} aria-describedby={fieldErrors.expiryDate ? "expiryDate-error" : undefined} id="expiryDate"
                                 type="text"
                                 placeholder="MM/YY"
                                 value={formData.expiryDate}
@@ -1043,11 +1051,12 @@ const CheckoutPage = () => {
                                 maxLength={5}
                                 required
                               />
+{fieldErrors.expiryDate && <p id="expiryDate-error" className="text-xs text-destructive mt-1">{fieldErrors.expiryDate}</p>}
                             </div>
                             <div>
                               <Label htmlFor="cvv">CVV *</Label>
                               <Input
-                                id="cvv"
+                                aria-invalid={!!fieldErrors.cvv} aria-describedby={fieldErrors.cvv ? "cvv-error" : undefined} id="cvv"
                                 type="text"
                                 placeholder="123"
                                 value={formData.cvv}
@@ -1055,15 +1064,17 @@ const CheckoutPage = () => {
                                 maxLength={4}
                                 required
                               />
+{fieldErrors.cvv && <p id="cvv-error" className="text-xs text-destructive mt-1">{fieldErrors.cvv}</p>}
                             </div>
                             <div className="md:col-span-2">
                               <Label htmlFor="cardholderName">Cardholder Name *</Label>
                               <Input
-                                id="cardholderName"
+                                aria-invalid={!!fieldErrors.cardholderName} aria-describedby={fieldErrors.cardholderName ? "cardholderName-error" : undefined} id="cardholderName"
                                 value={formData.cardholderName}
                                 onChange={(e) => handleInputChange('cardholderName', e.target.value)}
                                 required
                               />
+{fieldErrors.cardholderName && <p id="cardholderName-error" className="text-xs text-destructive mt-1">{fieldErrors.cardholderName}</p>}
                             </div>
                           </div>
 
