@@ -1463,6 +1463,7 @@ const ProductDetails = () => {
           )}
         </div>
       </div>
+      <ProductQuoteSheet open={quoteOpen} onOpenChange={setQuoteOpen} item={{ product_id: product.id, product_name: product.name, quantity: product.product_type === 'air_conditioner' ? acQuantity : product.product_type === 'refrigerant' ? 1 : quantity, packaging: product.product_type === 'air_conditioner' ? 'AC units' : product.product_type === 'refrigerant' ? (orderByCylinder ? `${cylinderQty} cylinders` : getPalletPackagingLabel(palletQuantity)) : packaging || 'Individual' }} />
     </div>
   );
 };
