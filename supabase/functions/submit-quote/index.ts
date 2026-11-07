@@ -39,7 +39,7 @@ Deno.serve(async req => {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
     const ipHash = await sign(`quote-ip:${ip}`);
     const { data, error } = await admin.rpc('submit_buyer_quote', { payload, requester, ip_hash_value: ipHash });
-    if (error) throw error;
+    if (error) { console.error('Quote storage failed', { code: error.code, message: error.message }); throw error; }
     if (data?.rate_limited) return reply({ error: 'Too many requests. Please wait five minutes.' }, 429);
     const results = await Promise.all([
       admin.functions.invoke('send-transactional-email', { body: { templateName: 'quote-confirmation', recipientEmail: payload.customer_email, idempotencyKey: `quote-confirm-${data.id}`, templateData: { customerName: payload.customer_name, quoteNumber: data.quote_number } } }),
