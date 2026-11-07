@@ -22,6 +22,7 @@ import ACConfigurator, { ACConfiguration, getDefaultConfiguration, formatConfigu
 import ShipToSelector from '../ui/ShipToSelector';
 import { useShippingCountry } from '@/contexts/ShippingCountryContext';
 import { getDispatchHub, getDutiesNote, getRefrigerantCompliance } from '@/lib/dispatchHub';
+import ProductQuoteSheet from '../ui/ProductQuoteSheet';
 
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
@@ -42,6 +43,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [acQuantity, setAcQuantity] = useState(1); // AC products can be bought as single units
   const [packaging, setPackaging] = useState('');
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const { countryCode: shipCountry } = useShippingCountry();
   const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
   
@@ -318,6 +320,9 @@ const ProductDetails = () => {
   // Create SEO-friendly canonical URL
   const canonicalUrl = `/products/${createProductSlug(product.name)}`;
   const handleAddToRFQ = () => {
+    setQuoteOpen(true);
+    return;
+    /* Legacy quote basket path retained below for reference.
     // Refrigerants derive packaging from pallet count
     if (product.product_type === 'refrigerant') {
       const packagingLabel = getPalletPackagingLabel(palletQuantity);
@@ -356,6 +361,7 @@ const ProductDetails = () => {
     });
     setQuantity(1);
     setPackaging('');
+    */
   };
   const handleAddToCart = () => {
     // AC products have different validation
