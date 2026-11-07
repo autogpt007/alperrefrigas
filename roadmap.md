@@ -1,5 +1,10 @@
 # Roadmap
 
+- [ ] Buyer flow step 1: guest checkout and secure guest RFQ submission, verified without sign-in.
+- [ ] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification.
+- [ ] Buyer flow step 3: visible mobile search, cylinder/pallet modes, inline checkout errors and sticky order button.
+- [ ] Buyer flow step 4: mobile sales assistance and accurate freight reassurance without changing shipping rates.
+
 - [x] Fix homepage search and social-preview metadata to represent wholesale refrigerants and HVAC systems; restore consent-first script order as requested. Static HTML and rendered homepage verified; publication pending.
 
 - [x] Correct 29 Needs AC Config listings using manufacturer voltage ratings and save source links; verified in admin and buyer product pages, prices unchanged.
