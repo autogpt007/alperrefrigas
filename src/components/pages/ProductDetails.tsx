@@ -44,6 +44,11 @@ const ProductDetails = () => {
   const [acQuantity, setAcQuantity] = useState(1); // AC products can be bought as single units
   const [packaging, setPackaging] = useState('');
   const [quoteOpen, setQuoteOpen] = useState(false);
+  React.useEffect(() => {
+    const openQuote = () => setQuoteOpen(true);
+    window.addEventListener('open-product-quote', openQuote);
+    return () => window.removeEventListener('open-product-quote', openQuote);
+  }, []);
   const { countryCode: shipCountry } = useShippingCountry();
   const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
   
@@ -107,7 +112,7 @@ const ProductDetails = () => {
 
   // Pallet quantity for tier 1 and tier 2
   const [palletQuantity, setPalletQuantity] = useState(1);
-  const [orderByCylinder, setOrderByCylinder] = useState(false);
+  const [orderByCylinder, setOrderByCylinder] = useState(true);
   const [cylinderQty, setCylinderQty] = useState(1);
 
   // Container/Truck constants
@@ -1050,6 +1055,7 @@ const ProductDetails = () => {
                       <div className="grid grid-cols-2 gap-2" role="group" aria-label="Order unit">
                         <Button
                           variant={orderByCylinder ? "default" : "outline"}
+                          aria-pressed={orderByCylinder}
                           size="sm"
                           onClick={() => setOrderByCylinder(true)}
                         >
@@ -1057,6 +1063,7 @@ const ProductDetails = () => {
                         </Button>
                         <Button
                           variant={!orderByCylinder ? "default" : "outline"}
+                          aria-pressed={!orderByCylinder}
                           size="sm"
                           onClick={() => setOrderByCylinder(false)}
                         >
@@ -1239,6 +1246,7 @@ const ProductDetails = () => {
                   )}
 
                   <div className="grid grid-cols-2 gap-3">
+                    <p className="col-span-2 text-xs text-muted-foreground flex items-start gap-2"><Truck className="h-4 w-4 shrink-0" />Shipping and taxes appear at checkout. For freight or import requirements, request a quote with your delivery destination.</p>
                     <Link to="/cart">
                       <Button variant="outline" className="w-full">
                         View Cart
