@@ -31,6 +31,7 @@ import { useShippingZones, getShippingZoneForCountry, calculateShippingCost } fr
 import { ACConfigSummary, ACConfiguration } from '../ui/ACConfigSummary';
 import { useShippingCountry } from '@/contexts/ShippingCountryContext';
 import { getDispatchHub } from '@/lib/dispatchHub';
+import { buyerFieldErrors } from '@/lib/checkoutValidation';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const CheckoutPage = () => {
     zipCode: '',
     countryCode: shipCountry, // Prefilled from the buyer's Shipping-to country
     country: getCountryByCode(shipCountry)?.name || 'United States',
-    paymentMethod: '', // No payment method preselected
+    paymentMethod: 'credit_card',
     notes: '',
     // Credit card details for offline processing
     cardNumber: '',
@@ -92,6 +93,12 @@ const CheckoutPage = () => {
   const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [validationAttempted, setValidationAttempted] = useState(false);
+  useEffect(() => {
+    if (!validationAttempted) return;
+    setFieldErrors(buyerFieldErrors(formData));
+  }, [formData, validationAttempted]);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
@@ -285,6 +292,15 @@ const CheckoutPage = () => {
   };
 
   const validateForm = () => {
+    setValidationAttempted(true);
+    const errors = buyerFieldErrors(formData);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) {
+      const first = document.getElementById(Object.keys(errors)[0]);
+      first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      first?.focus({ preventScroll: true });
+      return false;
+    }
     // Check payment method is selected
     if (!formData.paymentMethod || formData.paymentMethod.trim() === '') {
       toast({
@@ -295,7 +311,7 @@ const CheckoutPage = () => {
       return false;
     }
 
-    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'state', 'zipCode'];
+    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'zipCode', ...(formData.countryCode === 'US' ? ['state'] : [])];
     const missing = required.filter(field => !formData[field as keyof typeof formData]);
     
     if (missing.length > 0) {
@@ -656,7 +672,7 @@ const CheckoutPage = () => {
         canonicalUrl="/checkout"
       />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-44 md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Secure Checkout</h1>
@@ -666,7 +682,8 @@ const CheckoutPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form id="buyer-checkout" onSubmit={handleSubmit} noValidate className="space-y-6">
+                {Object.keys(fieldErrors).length > 0 && <div role="alert" className="border border-destructive rounded-md p-3 text-sm text-destructive">Please complete the highlighted fields before placing your order.</div>}
                 {/* Customer Information */}
                 <Card>
                   <CardHeader>
@@ -1466,8 +1483,7 @@ const CheckoutPage = () => {
                     <p className="font-medium text-foreground">What happens next</p>
                     {formData.paymentMethod === 'bank_wire' ? (
                       <p>
-                        You'll get an order confirmation by email with our bank wire payment
-                        details. Our team calls or emails you within one business day to confirm freight and release the shipment once payment clears.
+                        You'll get an order confirmation by email. Sales will send your payment invoice separately; shipment follows payment confirmation.
                       </p>
                     ) : (
                       <p>
@@ -1488,6 +1504,9 @@ const CheckoutPage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="fixed bottom-20 inset-x-4 z-40 border bg-background p-3 shadow-lg md:hidden">
+        <Button className="w-full" size="lg" onClick={handleSubmit} disabled={isProcessing}>{isProcessing ? 'Processing…' : `Place Order — ${formatCurrency(finalTotal)}`}</Button>
       </div>
     </div>
   );

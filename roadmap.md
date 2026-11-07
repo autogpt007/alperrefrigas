@@ -1,7 +1,7 @@
 # Roadmap
 
 - [x] Buyer flow step 1: guest checkout and secure guest RFQ submission, verified without sign-in; test quote and both sent email events confirmed.
-- [ ] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification.
+- [x] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification; guest panel submission and both sent emails verified.
 - [ ] Buyer flow step 3: visible mobile search, cylinder/pallet modes, inline checkout errors and sticky order button.
 - [ ] Buyer flow step 4: mobile sales assistance and accurate freight reassurance without changing shipping rates.
 

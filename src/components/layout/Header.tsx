@@ -74,6 +74,7 @@ const Header = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
+      setIsMenuOpen(false);
     }
   };
 
@@ -272,6 +273,10 @@ const Header = () => {
         </div>
 
         {/* Navigation - Desktop */}
+        <form onSubmit={handleSearch} className="flex gap-2 pb-3 md:hidden">
+          <Input aria-label="Search products" placeholder="Search refrigerants, AC & tools" maxLength={200} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <Button type="submit" size="icon" aria-label="Search catalog"><Search className="h-4 w-4" /></Button>
+        </form>
         <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
           <NavigationMenu>
             <NavigationMenuList className="space-x-8">
