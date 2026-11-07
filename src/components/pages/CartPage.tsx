@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ACConfigSummary } from '@/components/ui/ACConfigSummary';
 import { ACConfiguration } from '@/components/ui/ACConfigurator';
 import ShipToSelector from '@/components/ui/ShipToSelector';
+import { checkoutDestination } from '@/lib/quoteRequest';
 // Extracted cart item component for cleaner code
 interface CartItemCardProps {
   item: CartItem;
@@ -125,11 +126,7 @@ const CartPage = () => {
   }, []); // Only track on initial load
 
   const handleProceedToCheckout = () => {
-    if (user) {
-      navigate('/checkout');
-    } else {
-      navigate('/auth?returnTo=/checkout');
-    }
+    navigate(checkoutDestination(!!user));
   };
 
   if (items.length === 0) {

@@ -12,11 +12,15 @@ import { useQuotes } from '../../contexts/QuotesContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/use-toast';
 import SEOComponent from '../seo/SEOComponent';
+import { supabase } from '@/integrations/supabase/client';
 
 const RFQPage = () => {
   const navigate = useNavigate();
   const { items, updateQuantity, removeItem, clearRFQ } = useRFQ();
-  const { createQuote } = useQuotes();
+  const { createQuote, loading, error } = useQuotes();
+  const [formToken, setFormToken] = useState('');
+  const [website, setWebsite] = useState('');
+  React.useEffect(() => { supabase.functions.invoke('submit-quote', { body: { action: 'challenge' } }).then(({ data }) => setFormToken(data?.formToken || '')); }, []);
   const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -35,15 +39,6 @@ const RFQPage = () => {
 
   const handleSubmitRFQ = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to submit a quote request",
-        variant: "destructive"
-      });
-      return;
-    }
     
     if (items.length === 0) {
       toast({
@@ -65,7 +60,7 @@ const RFQPage = () => {
 
     try {
       const quoteData = {
-        user_id: user.id,
+        user_id: user?.id ?? null,
         customer_name: formData.customerName,
         customer_email: formData.email,
         company_name: formData.companyName,
@@ -81,7 +76,7 @@ const RFQPage = () => {
         }))
       };
 
-      const quote = await createQuote(quoteData);
+      const quote = await createQuote(quoteData, { formToken, website });
       
       if (quote) {
         clearRFQ();
@@ -248,6 +243,8 @@ const RFQPage = () => {
                 </CardHeader>
                 <CardContent className="p-6">
                   <form onSubmit={handleSubmitRFQ} className="space-y-4">
+                    <div className="hidden" aria-hidden="true"><input tabIndex={-1} autoComplete="off" name="website" value={website} onChange={e => setWebsite(e.target.value)} /></div>
+                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
                     <div>
                       <Label htmlFor="customerName" className="text-sm font-medium">Full Name *</Label>
                       <Input
@@ -331,6 +328,7 @@ const RFQPage = () => {
 
                     <Button 
                       type="submit" 
+                      disabled={loading || !formToken}
                       size="lg" 
                       className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     >

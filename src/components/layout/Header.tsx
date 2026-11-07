@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench, Wind } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench, Wind, Phone } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -74,6 +74,7 @@ const Header = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
+      setIsMenuOpen(false);
     }
   };
 
@@ -272,6 +273,10 @@ const Header = () => {
         </div>
 
         {/* Navigation - Desktop */}
+        <form onSubmit={handleSearch} className="flex gap-2 pb-3 md:hidden">
+          <Input aria-label="Search products" placeholder="Search refrigerants, AC & tools" maxLength={200} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <Button type="submit" size="icon" aria-label="Search catalog"><Search className="h-4 w-4" /></Button>
+        </form>
         <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
           <NavigationMenu>
             <NavigationMenuList className="space-x-8">
@@ -461,6 +466,10 @@ const Header = () => {
       )}
     </header>
     <TrustBar />
+    {!/^\/(admin|auth|kyc|quote-confirmation|order-confirmation)/.test(location.pathname) && <div className="fixed bottom-4 right-4 left-20 z-40 grid grid-cols-2 gap-2 border rounded-md bg-background p-2 shadow-lg md:hidden">
+      <Button asChild variant="outline" size="sm"><a href={`tel:${(logoSettings?.main_phone || '17869870501').replace(/[^+\d]/g, '')}`}><Phone className="h-4 w-4 mr-2" />Call sales</a></Button>
+      {location.pathname.startsWith('/products/') && !productMenuItems.some(item => item.href === location.pathname) ? <Button size="sm" onClick={() => window.dispatchEvent(new Event('open-product-quote'))}><FileText className="h-4 w-4 mr-2" />Quick quote</Button> : <QuoteTypeSelector><Button size="sm"><FileText className="h-4 w-4 mr-2" />Quick quote</Button></QuoteTypeSelector>}
+    </div>}
     </>
   );
 };
