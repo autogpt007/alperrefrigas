@@ -321,47 +321,6 @@ const ProductDetails = () => {
   const canonicalUrl = `/products/${createProductSlug(product.name)}`;
   const handleAddToRFQ = () => {
     setQuoteOpen(true);
-    return;
-    /* Legacy quote basket path retained below for reference.
-    // Refrigerants derive packaging from pallet count
-    if (product.product_type === 'refrigerant') {
-      const packagingLabel = getPalletPackagingLabel(palletQuantity);
-      addToRFQ({
-        productId: product.id,
-        productName: product.name,
-        quantity: 1,
-        packaging: packagingLabel,
-        imageUrl: product.image
-      });
-      toast({
-        title: "Added to Quote Request",
-        description: `${packagingLabel} of ${product.name} added to your quote request.`
-      });
-      return;
-    }
-
-    if (!packaging) {
-      toast({
-        title: "Please select packaging",
-        description: "You must select a packaging option before adding to quote request.",
-        variant: "destructive"
-      });
-      return;
-    }
-    addToRFQ({
-      productId: product.id,
-      productName: product.name,
-      quantity,
-      packaging,
-      imageUrl: product.image
-    });
-    toast({
-      title: "Added to Quote Request",
-      description: `${quantity} ${packaging} of ${product.name} added to your quote request.`
-    });
-    setQuantity(1);
-    setPackaging('');
-    */
   };
   const handleAddToCart = () => {
     // AC products have different validation
