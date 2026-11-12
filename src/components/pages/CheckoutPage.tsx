@@ -36,11 +36,11 @@ const CheckoutPage = () => {
   const { t } = useTranslation();
   const { items, total, clearCart, freeShippingThreshold, shippingCost: cartShippingCost, finalTotal: cartFinalTotal } = useCart();
   const { createOrder } = useOrders();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { formatPrice: formatCurrency, currency, currencyName, currencySymbol } = useCurrency();
   const [searchParams] = useSearchParams();
-  const isGuest = searchParams.get('guest') === 'true';
+  const isGuest = searchParams.get('guest') === 'true' || (!authLoading && !user);
   
   // Handle direct checkout from Google Merchant Center links
   const { isLoading: isDirectCheckoutLoading, error: directCheckoutError } = useDirectCheckout();
@@ -304,7 +304,7 @@ const CheckoutPage = () => {
       return false;
     }
 
-    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'state', 'zipCode'];
+    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'zipCode', ...(formData.countryCode === 'US' ? ['state'] : [])];
     const missing = required.filter(field => !formData[field as keyof typeof formData]);
     
     if (missing.length > 0) {

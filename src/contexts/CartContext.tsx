@@ -56,10 +56,33 @@ interface CartContextType {
   finalTotal: number;
 }
 
+const CART_STORAGE_KEY = 'alper_cart_v1';
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? window.localStorage.getItem(CART_STORAGE_KEY) : null;
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try { window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items)); } catch { /* storage unavailable */ }
+  }, [items]);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== CART_STORAGE_KEY) return;
+      try { const next = e.newValue ? JSON.parse(e.newValue) : []; if (Array.isArray(next)) setItems(next); } catch { /* ignore */ }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   // Fetch free shipping threshold from settings
   const { data: shippingSettings } = useQuery({
