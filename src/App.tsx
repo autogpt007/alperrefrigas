@@ -43,6 +43,7 @@ const OrderConfirmation = lazy(() => import("./components/pages/OrderConfirmatio
 const AboutUs = lazy(() => import("./components/pages/AboutUs"));
 const ContactUs = lazy(() => import("./components/pages/ContactUs"));
 const FAQ = lazy(() => import("./components/pages/FAQ"));
+const RefrigerantAdvisor = lazy(() => import("./components/pages/RefrigerantAdvisor"));
 const ShippingCalculator = lazy(() => import("./components/pages/ShippingCalculator"));
 const EPACompliance = lazy(() => import("./components/pages/EPACompliance"));
 const Certifications = lazy(() => import("./components/pages/Certifications"));
@@ -199,6 +200,7 @@ function App() {
                         <Route path="/testimonials" element={<Navigate to="/about" replace />} />
                         <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
+                              <Route path="/refrigerant-advisor" element={<RefrigerantAdvisor />} />
                               <Route path="/faq" element={<FAQ />} />
                               <Route path="/shipping" element={<Navigate to="/shipping-policy" replace />} />
                               <Route path="/compliance" element={<EPACompliance />} />
