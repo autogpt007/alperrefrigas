@@ -185,11 +185,11 @@ const Sitemap = () => {
                   <ul className="space-y-2 text-sm">
                     <li className="flex justify-between">
                       <span>Emergency Hotline:</span>
-                      <strong className="text-red-600">1-786-987-0501</strong>
+                      <strong className="text-red-600">1-682-215-2974</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>Technical Support:</span>
-                      <strong>1-786-987-0501</strong>
+                      <strong>1-682-215-2974</strong>
                     </li>
                     <li className="flex justify-between">
                       <span>EPA Compliance:</span>
@@ -202,11 +202,13 @@ const Sitemap = () => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-gray-800">Business Address</h4>
+                  <h4 className="font-semibold mb-3 text-gray-800">Distribution Centers</h4>
                   <ul className="space-y-2 text-sm">
-                    <li>Alper Chemical Group (DBA Alper Refrigerants)</li>
-                    <li>382 NE 191st St</li>
-                    <li>Miami, FL 33179, US</li>
+                    <li>Houston, TX - Central Distribution Hub</li>
+                    <li>Atlanta, GA - Southeast Distribution</li>
+                    <li>Los Angeles, CA - West Coast Distribution</li>
+                    <li>Toronto, ON - Canadian Distribution</li>
+                    <li>Chicago, IL - Midwest Distribution</li>
                   </ul>
                 </div>
               </div>
@@ -225,8 +227,8 @@ const Sitemap = () => {
             <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-700">
               <div>
                 <strong>General Support:</strong><br />
-                Email: sales@alperrefrigerants.com<br />
-                Phone: 1-786-987-0501
+                Email: support@alperrefrigerants.com<br />
+                Phone: 1-682-215-2974
               </div>
               <div>
                 <strong>Technical Questions:</strong><br />

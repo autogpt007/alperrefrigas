@@ -19,10 +19,6 @@ import { trackViewItem, productToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBViewContent } from '@/utils/facebookPixel';
 import ACBulkPricing, { calculateACPricingTier } from '../ui/ACBulkPricing';
 import ACConfigurator, { ACConfiguration, getDefaultConfiguration, formatConfigurationSummary } from '../ui/ACConfigurator';
-import ShipToSelector from '../ui/ShipToSelector';
-import { useShippingCountry } from '@/contexts/ShippingCountryContext';
-import { getDispatchHub, getDutiesNote, getRefrigerantCompliance } from '@/lib/dispatchHub';
-import ProductQuoteSheet from '../ui/ProductQuoteSheet';
 
 const ProductDetails = () => {
   const { id, productSlug } = useParams();
@@ -41,15 +37,8 @@ const ProductDetails = () => {
     toast
   } = useToast();
   const [quantity, setQuantity] = useState(1);
-  const [acQuantity, setAcQuantity] = useState(1); // AC products can be bought as single units
+  const [acQuantity, setAcQuantity] = useState(5); // AC products have MOQ of 5
   const [packaging, setPackaging] = useState('');
-  const [quoteOpen, setQuoteOpen] = useState(false);
-  React.useEffect(() => {
-    const openQuote = () => setQuoteOpen(true);
-    window.addEventListener('open-product-quote', openQuote);
-    return () => window.removeEventListener('open-product-quote', openQuote);
-  }, []);
-  const { countryCode: shipCountry } = useShippingCountry();
   const [acConfiguration, setAcConfiguration] = useState<ACConfiguration | null>(null);
   
   // Find product by ID or by slug with better logic
@@ -64,21 +53,6 @@ const ProductDetails = () => {
     }
     return null;
   }, [products, id, productSlug]);
-
-  // Packaging options: fall back to the second list when the first is empty;
-  // products with no options are sold individually (no dropdown).
-  const packagingOptions: string[] = React.useMemo(() => {
-    const a = (product?.packaging_options || []).filter(Boolean);
-    if (a.length) return a;
-    return (product?.packaging || []).filter(Boolean);
-  }, [product]);
-
-  React.useEffect(() => {
-    if (product && product.product_type !== 'refrigerant' && product.product_type !== 'air_conditioner'
-      && packagingOptions.length === 0 && !packaging) {
-      setPackaging('Individual');
-    }
-  }, [product, packagingOptions, packaging]);
 
   // Initialize AC configuration when product loads
   React.useEffect(() => {
@@ -112,8 +86,6 @@ const ProductDetails = () => {
 
   // Pallet quantity for tier 1 and tier 2
   const [palletQuantity, setPalletQuantity] = useState(1);
-  const [orderByCylinder, setOrderByCylinder] = useState(true);
-  const [cylinderQty, setCylinderQty] = useState(1);
 
   // Container/Truck constants
   const CYLINDERS_PER_PALLET = 40;
@@ -152,8 +124,6 @@ const ProductDetails = () => {
     const total = perCylinder * cylinders;
     return { markup, label, perCylinder, total, tierHint, cylinders };
   };
-  // Single cylinders use the same per-cylinder rate as 1–10 pallets (base + $20)
-  const singleCylinderPrice = product ? product.price + 20 : 0;
 
   // Derive packaging label from pallet count
   const getPalletPackagingLabel = (qty: number): string => {
@@ -222,40 +192,12 @@ const ProductDetails = () => {
         });
       }
     } else if (product.product_type === 'air_conditioner') {
-      if (product.applications?.length) {
-        product.applications.forEach(app => {
-          if (!cases.includes(app)) cases.push(app);
-        });
-      }
-      if (cases.length === 0) {
-        switch (product.ac_type) {
-          case 'Window AC':
-          case 'Inverter Window AC':
-            cases.push('Apartment and rental unit cooling', 'Hotel and motel guest rooms', 'Student housing and dormitories', 'Small offices and reception areas', 'Seasonal dealer inventory');
-            break;
-          case 'Portable AC':
-            cases.push('Leased spaces where no installation is allowed', 'Server rooms and telecom closets', 'Event and tent cooling', 'Temporary cooling during system repair', 'Workshops and garages');
-            break;
-          case 'Multi-Zone Mini-Split':
-            cases.push('Whole-home ductless retrofits', 'Multi-office build-outs', 'Apartment and duplex renovations', 'Short-term rental properties', 'Buildings with no duct space');
-            break;
-          case 'Ceiling Cassette':
-            cases.push('Retail floors and showrooms', 'Restaurants and cafes', 'Open-plan offices', 'Conference and training rooms', 'Suspended-ceiling retrofits');
-            break;
-          case 'PTAC':
-          case 'PTAC Heat Pump':
-            cases.push('Hotel and motel guest rooms', 'Apartment and condo units', 'Assisted-living and senior housing', 'Dormitories and barracks', 'Through-wall unit replacement');
-            break;
-          default:
-            cases.push('Single-room additions and bonus rooms', 'Garage and ADU conversions', 'Small retail and salon spaces', 'Home offices and studios', 'Ductless retrofits in older buildings');
-        }
-      }
+      cases.push('Residential cooling', 'Commercial office buildings', 'Retail and hospitality venues', 'Data center cooling', 'Warehouse climate control');
     } else {
       cases.push('Professional HVAC installation', 'Maintenance and servicing', 'System retrofitting');
     }
     return cases;
   }, [product]);
-
 
   // Specifications for table (must be before early returns to maintain hook order)
   const specsTableData = React.useMemo(() => {
@@ -270,30 +212,9 @@ const ProductDetails = () => {
     if (product.hazardClass) specs.push({ label: 'Hazard Class', value: product.hazardClass });
     if (product.shippingWeight) specs.push({ label: 'Shipping Weight', value: product.shippingWeight });
     if (product.refrigerantType) specs.push({ label: 'Refrigerant Type', value: product.refrigerantType });
-    if (product.product_type === 'air_conditioner') {
-      if (product.btu) specs.push({ label: 'Cooling Capacity', value: `${product.btu.toLocaleString()} BTU/h` });
-      if (product.ac_type) specs.push({ label: 'Unit Type', value: product.ac_type });
-      if (product.max_room_size) specs.push({ label: 'Coverage Area', value: product.max_room_size });
-      if (product.efficiency_label) specs.push({ label: 'Efficiency Rating', value: product.efficiency_label });
-      if (product.voltage) specs.push({ label: 'Voltage', value: product.voltage });
-      if (product.plug_type) specs.push({ label: 'Electrical Connection', value: product.plug_type });
-      if (product.phase) specs.push({ label: 'Phase', value: product.phase });
-      if (product.frequency) specs.push({ label: 'Frequency', value: product.frequency });
-      if (product.comes_with_base?.length) specs.push({ label: 'What Ships In The Box', value: product.comes_with_base.join(', ') });
-    }
-    if (product.epaApproved !== undefined && product.product_type !== 'air_conditioner') specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
-    const ts = product.technicalSpecs || {};
-    const seen = new Set(specs.map((s) => s.label.toLowerCase()));
-    Object.entries(ts).forEach(([k, v]) => {
-      if (k === 'faq' || k === 'sources' || /source/i.test(k)) return;
-      if (v === null || v === undefined || v === '' || typeof v === 'object') return;
-      if (seen.has(k.toLowerCase())) return;
-      seen.add(k.toLowerCase());
-      specs.push({ label: k, value: String(v) });
-    });
+    if (product.epaApproved !== undefined) specs.push({ label: 'EPA Approved', value: product.epaApproved ? 'Yes' : 'No' });
     if (product.availability) specs.push({ label: 'Availability', value: product.availability === 'in_stock' ? 'In Stock' : 'Contact for availability' });
     return specs;
-
   }, [product]);
 
   // Show loading state while products are being fetched
@@ -325,17 +246,54 @@ const ProductDetails = () => {
   // Create SEO-friendly canonical URL
   const canonicalUrl = `/products/${createProductSlug(product.name)}`;
   const handleAddToRFQ = () => {
-    setQuoteOpen(true);
+    // Refrigerants derive packaging from pallet count
+    if (product.product_type === 'refrigerant') {
+      const packagingLabel = getPalletPackagingLabel(palletQuantity);
+      addToRFQ({
+        productId: product.id,
+        productName: product.name,
+        quantity: 1,
+        packaging: packagingLabel,
+        imageUrl: product.image
+      });
+      toast({
+        title: "Added to Quote Request",
+        description: `${packagingLabel} of ${product.name} added to your quote request.`
+      });
+      return;
+    }
+
+    if (!packaging) {
+      toast({
+        title: "Please select packaging",
+        description: "You must select a packaging option before adding to quote request.",
+        variant: "destructive"
+      });
+      return;
+    }
+    addToRFQ({
+      productId: product.id,
+      productName: product.name,
+      quantity,
+      packaging,
+      imageUrl: product.image
+    });
+    toast({
+      title: "Added to Quote Request",
+      description: `${quantity} ${packaging} of ${product.name} added to your quote request.`
+    });
+    setQuantity(1);
+    setPackaging('');
   };
   const handleAddToCart = () => {
     // AC products have different validation
     if (product.product_type === 'air_conditioner') {
       const tier = calculateACPricingTier(product, acQuantity);
       if (!tier) {
-        if (acQuantity < 1) {
+        if (acQuantity < 5) {
           toast({
-            title: "Invalid Quantity",
-            description: "Please enter at least 1 unit.",
+            title: "Minimum Order Quantity",
+            description: "Air conditioners require a minimum order of 5 units.",
             variant: "destructive"
           });
         } else {
@@ -401,27 +359,6 @@ const ProductDetails = () => {
       return;
     }
     
-    // Refrigerant: single cylinders (1-39) at the 1-10 pallet per-cylinder rate
-    if (product.product_type === 'refrigerant' && orderByCylinder) {
-      const label = `${cylinderQty} cylinder${cylinderQty > 1 ? 's' : ''}`;
-      addToCart({
-        id: `${product.id}-refrigerant-${cylinderQty}c`,
-        name: product.name,
-        price: Number((singleCylinderPrice * cylinderQty).toFixed(2)),
-        image: product.image || '/placeholder.svg',
-        sku: product.sku || 'N/A',
-        epaApproved: product.epaApproved || false,
-        packaging: label,
-        product_type: 'refrigerant'
-      });
-      toast({
-        title: "Added to Cart",
-        description: `${label} of ${product.name} added to your cart.`,
-        action: <Button variant="outline" size="sm" onClick={() => navigate('/cart')}>View Cart</Button>
-      });
-      return;
-    }
-
     // Refrigerant: derive from pallet count
     if (product.product_type === 'refrigerant') {
       const tier = getTierFromPalletCount(palletQuantity);
@@ -486,66 +423,32 @@ const ProductDetails = () => {
     setPackaging('');
   };
   // Enhanced product description - different for each product type
-  const fullDescription = product.product_type === 'air_conditioner'
-    ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`
+  const enhancedDescription = product.product_type === 'air_conditioner'
+    ? `${product.description || `${product.name} - High-efficiency air conditioning unit`}. Bulk quantities available with tiered pricing. ${product.category} category. Fast shipping from multiple distribution centers.`
     : product.product_type === 'accessory'
-    ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Estimated delivery 0-13 business days.`
-    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - sold by single cylinder, pallet or container. ${product.category} refrigerant. Ships from regional hubs (US, Poland, Turkey, Thailand) in an estimated 0-13 business days.`;
-
-  const enhancedDescription = fullDescription.length > 158
-    ? fullDescription.slice(0, 155).replace(/\s+\S*$/, '') + '...'
-    : fullDescription;
+    ? `${product.description || `${product.name} - Professional HVAC accessory`}. Quality equipment for HVAC professionals. Fast shipping available.`
+    : `${product.description || `${product.name} refrigerant for professional HVAC applications`} - EPA approved, bulk quantities available. Minimum Order Quantity (MOQ): 40 cylinders per pallet. ${product.epaApproved ? 'EPA certified' : ''} ${product.category} refrigerant. Fast shipping from multiple distribution centers in TX, FL, and CA.`;
 
   // Product FAQ data for better SEO - different for each product type
-  const verifiedFAQ: { question: string; answer: string }[] = Array.isArray(product.technicalSpecs?.faq)
-    ? product.technicalSpecs!.faq.filter((f: any) => f?.question && f?.answer)
-    : [];
-  const productFAQ = [...verifiedFAQ, ...(product.product_type === 'air_conditioner'
+  const productFAQ = product.product_type === 'air_conditioner'
     ? [
         {
-          question: `What size room does ${product.name} cool?`,
-          answer: product.max_room_size
-            ? `At ${product.btu ? product.btu.toLocaleString() + ' BTU/h' : 'its rated capacity'} this unit is sized for ${product.max_room_size.toLowerCase()}. Rooms with large west-facing glass, high ceilings, poor insulation or heat-producing equipment need extra capacity, while a shaded, well-insulated room can run at the lower end of the range.`
-            : 'Coverage depends on the unit capacity listed in the specifications table. Rooms with large glazing, high ceilings or heat-producing equipment need extra capacity.'
-        },
-        {
-          question: `What electrical supply does ${product.name} need?`,
-          answer: `${product.voltage ? `It runs on ${product.voltage}` : 'Voltage is listed in the specifications'}${product.phase ? `, ${product.phase}` : ''}${product.frequency ? `, ${product.frequency}` : ''}${product.plug_type ? `, connecting via ${product.plug_type}` : ''}. ${product.voltage === '230V' ? 'A dedicated 230V circuit is required, and hardwired models need a licensed electrician.' : 'It works from a standard building circuit, but it should be on its own breaker rather than shared with lighting or appliances.'}`
-        },
-        {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: 'You can order a single unit. Orders of one to four units carry a 20% handling rate, unit rates improve from five units, and the lowest per-unit price applies at full pallet or container volume.'
+          answer: "Our minimum order quantity (MOQ) for air conditioners is 5 units. We offer tiered bulk pricing with better rates at higher quantities."
         },
         {
-          question: 'Is it cheaper to buy in bulk?',
-          answer: `Yes. Per-unit pricing drops in tiers as quantity rises${product.q20_units ? `, reaching the lowest rate from ${product.q20_units} units` : ''}. Bank wire payments receive an additional discount at checkout.`
+          question: `What warranty does ${product.name} come with?`,
+          answer: `${product.name} comes with a manufacturer warranty. Contact us for specific warranty details and coverage information.`
         },
         {
-          question: `Does ${product.name} need professional installation?`,
-          answer: product.ac_type === 'Portable AC'
-            ? 'No. It rolls into place, vents through the supplied window kit and plugs into a standard outlet, so no technician is required.'
-            : product.ac_type === 'Window AC' || product.ac_type === 'Inverter Window AC'
-            ? 'No refrigerant work is involved: the chassis fits a standard double-hung window opening and plugs in. A maintenance crew can install it, though heavier units need two people.'
-            : product.ac_type === 'PTAC' || product.ac_type === 'PTAC Heat Pump'
-            ? 'The unit slides into a standard through-wall sleeve, but it is hardwired, so a licensed electrician should make the connection.'
-            : 'Yes. Refrigerant line sets must be evacuated and charge verified, so a licensed HVAC technician should commission the system.'
+          question: "What are your shipping terms?",
+          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments include fast, secure delivery with tracking information."
         },
         {
-          question: 'What refrigerant does it use, and can I buy it here?',
-          answer: product.refrigerantType
-            ? `This unit is charged with ${product.refrigerantType}. We stock ${product.refrigerantType} in bulk, so service gas can ship alongside the equipment on the same order.`
-            : 'The factory charge is listed in the specifications table, and we stock matching service refrigerant in bulk.'
-        },
-        {
-          question: 'How are air conditioners shipped, and what does freight cost?',
-          answer: `Units ship from our regional hub for your country (${getDispatchHub(shipCountry)}), palletised for larger orders.`+' Air conditioners are not hazardous material, so no HazMat surcharge applies.'
-        },
-        {
-          question: 'What warranty applies?',
-          answer: 'Units carry the manufacturer factory warranty. Contact us with the model before ordering and we will confirm the exact term and coverage in writing.'
+          question: "Do you offer installation services?",
+          answer: "We recommend professional installation for all air conditioning units. Contact us for referrals to certified HVAC installers in your area."
         }
       ]
-
     : product.product_type === 'accessory'
     ? [
         {
@@ -554,13 +457,13 @@ const ProductDetails = () => {
         },
         {
           question: "What are your shipping terms?",
-          answer: "We ship from our Miami, Florida distribution center. Fast, secure delivery with tracking information."
+          answer: "We ship from distribution centers in Texas, Florida, and California. Fast, secure delivery with tracking information."
         }
       ]
     : [
         {
           question: `What is the minimum order quantity for ${product.name}?`,
-          answer: "You can order a single cylinder. Single cylinders (1-39) are priced at our standard pallet rate per cylinder. Volume pricing continues by the pallet (40 cylinders each), 20ft containers (28 pallets / 1,120 cylinders), 40ft containers (56 pallets / 2,240 cylinders), and truck loads (44 pallets / 1,760 cylinders)."
+          answer: "Our minimum order is 1 pallet (40 cylinders). We offer tiered volume pricing: 1-5 pallets, 5-10 pallets, 20ft containers (28 pallets / 1,120 cylinders), 40ft containers (56 pallets / 2,240 cylinders), and truck loads (44 pallets / 1,760 cylinders)."
         },
         {
           question: `Is ${product.name} EPA approved?`,
@@ -570,21 +473,18 @@ const ProductDetails = () => {
         },
         {
           question: "What are your shipping terms?",
-          answer: "We ship from our Miami, Florida distribution center. All shipments are DOT certified and include fast, secure delivery with tracking information."
+          answer: "We ship from distribution centers in Texas, Florida, and California. All shipments are DOT certified and include fast, secure delivery with tracking information."
         },
         {
           question: "Do you provide Safety Data Sheets (SDS)?",
           answer: "Yes, we provide comprehensive Safety Data Sheets for all our refrigerant products. SDS documents include handling instructions, safety precautions, and technical specifications."
         }
-      ])];
+      ];
 
   // Dynamic SEO keyword mapping with short-form aliases
   const currentYear = new Date().getFullYear();
   const isRefrigerant = product.product_type === 'refrigerant';
   const isAC = product.product_type === 'air_conditioner';
-  // Headline price for AC/heat pumps must match what the cart actually charges
-  // for one unit (5-19 tier plus the single-unit surcharge).
-  const singleUnitPrice = calculateACPricingTier(product, 1)?.unitPrice ?? product.price;
   
   // Extract short-form name for SEO (e.g., "R-134A" from "R-134A Refrigerant Gas | Alper Refrigerant Gas")
   const shortName = (() => {
@@ -607,15 +507,8 @@ const ProductDetails = () => {
       return candidate.length <= 60 ? candidate : `${shortName} Bulk Price ${currentYear} | Alper`;
     }
     if (isAC) {
-      const btuLabel = product.btu ? `${product.btu.toLocaleString()} BTU` : '';
-      const typeLabel = product.ac_type || 'Air Conditioner';
-      const candidates = [
-        `${product.brand || ''} ${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
-        `${btuLabel} ${typeLabel} Wholesale`.replace(/\s+/g, ' ').trim(),
-        `${shortName} Wholesale ${currentYear}`
-      ];
-      const pick = candidates.find(c => `${c} | Alper`.length <= 60) || product.name.substring(0, 45);
-      return `${pick} | Alper`;
+      const candidate = `${shortName} Wholesale ${currentYear} | Alper`;
+      return candidate.length <= 60 ? candidate : `${product.name.substring(0, 35)} | Alper`;
     }
     // Accessories: use brand + model
     const candidate = `${shortName} — Buy Wholesale | Alper`;
@@ -623,11 +516,10 @@ const ProductDetails = () => {
   })();
 
   const seoDescription = isRefrigerant
-    ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Card or bank wire.`
+    ? `Buy ${shortName} wholesale from $${product.price}/cylinder. EPA approved, bulk pallet & container quantities. Fast shipping from TX, FL, CA warehouses.`
     : isAC
-    ? `${product.brand || ''} ${product.btu ? product.btu.toLocaleString() + ' BTU' : ''} ${product.ac_type || 'air conditioner'} from ${formatPrice(singleUnitPrice)}/unit single, ${formatPrice(product.price)}/unit at 5+${product.max_room_size ? `. Cools ${product.max_room_size.toLowerCase()}` : ''}${product.efficiency_label ? `, ${product.efficiency_label}` : ''}. US stock.`.replace(/\s+/g, ' ').trim().substring(0, 158)
-    : `Buy ${product.name} at wholesale prices. Professional HVAC tool from Alper Refrigerants. Card or bank wire.`.substring(0, 158);
-
+    ? `Buy ${product.name} wholesale. Bulk pricing from ${formatPrice(product.price)}/unit. MOQ 5 units. Fast shipping across the US.`
+    : `Buy ${product.name} at wholesale prices. Professional HVAC tool with fast shipping. In stock at Alper Refrigerants.`;
     
   // Include both full name AND short aliases for keyword coverage
   const seoKeywords = isRefrigerant
@@ -654,9 +546,8 @@ const ProductDetails = () => {
         
         product={{
           name: product.name,
-          // Price must match the headline price on the page and the Merchant feed:
-          // per-cylinder for refrigerants, single-unit rate for AC/heat-pump units.
-          price: isAC ? singleUnitPrice : (isRefrigerant ? product.price : (product.base_unit_price || product.price)),
+          // Per-unit price to match Google Merchant Center feed (per-cylinder for refrigerants, per-piece for accessories, per-unit for AC)
+          price: isRefrigerant ? product.price : (product.base_unit_price || product.price),
           currency: 'USD',
           availability: product.availability === 'in_stock' ? 'InStock' : 'OutOfStock',
           brand: product.brand || 'Alper Refrigerant',
@@ -664,8 +555,8 @@ const ProductDetails = () => {
           gtin: product.gtin,
           description: enhancedDescription,
           image: product.thumbnailUrl || product.images?.[0] || product.image || '',
+          moq: 40,
           category: product.category,
-          productType: product.product_type,
           specifications: {
             chemicalFormula: product.chemicalFormula,
             casNumber: product.casNumber,
@@ -701,87 +592,9 @@ const ProductDetails = () => {
                 </Badge>
               </div>
             </div>
-
-            {/* Mobile price summary — keeps price above the fold on phones */}
-            <div className="lg:hidden mb-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-4">
-              <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
-              <p className="text-3xl font-bold text-primary">
-                {formatPrice(isAC ? singleUnitPrice : product.price)}
-                <span className="text-sm font-medium text-muted-foreground">
-                  {product.product_type === 'refrigerant' ? '/cylinder' : product.product_type === 'air_conditioner' ? '/unit' : '/piece'}
-                </span>
-              </p>
-              {product.product_type === 'air_conditioner' && (
-                <p className="text-xs text-blue-800 mt-1">Price for a single unit &middot; {formatPrice(product.price)}/unit from 5 units</p>
-              )}
-              <Button
-                className="mt-3 w-full"
-                onClick={() => document.getElementById('purchase-options')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                See order options
-              </Button>
-            </div>
-
-            {/* Product overview — sits directly under the product image */}
-            {product.description && (
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-lg">
-                    <FileText className="h-5 w-5 mr-2" />
-                    About the {product.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm sm:text-base leading-relaxed text-gray-600 space-y-3">
-                    {product.description.split('\n').filter(Boolean).map((line, index) => (
-                      <p key={index}>{line}</p>
-                    ))}
-                  </div>
-                  {product.sdsUrl && (
-                    <Button variant="outline" className="mt-4 w-full sm:w-auto" asChild>
-                      <a href={product.sdsUrl} target="_blank" rel="noopener noreferrer">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Safety Data Sheet
-                      </a>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Quick facts — fills the column with scannable data */}
-            {isAC && (
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="text-lg">At a glance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <dl className="grid grid-cols-2 gap-3 text-sm">
-                    {[
-                      product.btu ? { k: 'Cooling capacity', v: `${product.btu.toLocaleString()} BTU/h` } : null,
-                      product.max_room_size ? { k: 'Covers', v: product.max_room_size } : null,
-                      product.efficiency_label ? { k: 'Efficiency', v: product.efficiency_label } : null,
-                      product.refrigerantType ? { k: 'Refrigerant', v: product.refrigerantType } : null,
-                      product.voltage ? { k: 'Power', v: `${product.voltage}${product.phase ? ` · ${product.phase}` : ''}` } : null,
-                      product.plug_type ? { k: 'Connection', v: product.plug_type } : null
-                    ].filter(Boolean).map((row, idx) => (
-                      <div key={idx} className="rounded-lg border bg-muted/40 p-3">
-                        <dt className="text-xs uppercase tracking-wide text-muted-foreground">{row!.k}</dt>
-                        <dd className="font-semibold text-gray-900">{row!.v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </CardContent>
-              </Card>
-            )}
-
+            
             {/* Technical Specifications */}
             <Card className="mb-6">
-
-
-            
-
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="h-5 w-5 mr-2" />
@@ -845,6 +658,10 @@ const ProductDetails = () => {
                     </>
                   )}
                   <div className="flex items-center">
+                    <Shield className="h-4 w-4 text-green-600 mr-2" />
+                    <span>ISO 9001 Quality Assured</span>
+                  </div>
+                  <div className="flex items-center">
                     <Truck className="h-4 w-4 text-blue-600 mr-2" />
                     <span>Fast & Secure Shipping</span>
                   </div>
@@ -883,17 +700,14 @@ const ProductDetails = () => {
               
               {/* Starting Price display - show different content for AC products */}
               {product.product_type === 'air_conditioner' ? (
-                <div className="mb-4 p-4 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50">
-                  <p className="text-4xl font-bold text-primary mb-1">
-                    {formatPrice(singleUnitPrice)}
-                    <span className="text-lg font-medium text-muted-foreground">/unit</span>
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 mb-1">Full Container Base Price</p>
+                  <p className="text-lg font-semibold text-blue-900">
+                    {product.base_unit_price ? formatPrice(product.base_unit_price) : 'Not configured'}/unit
                   </p>
-                  <p className="text-sm text-blue-800">Price for a single unit &middot; {formatPrice(product.price)}/unit from 5 units</p>
-                  {product.base_unit_price && product.base_unit_price < product.price && (
-                    <p className="text-xs text-emerald-600 mt-2">
-                      💡 As low as {formatPrice(product.base_unit_price)}/unit at full container volume
-                    </p>
-                  )}
+                  <p className="text-xs text-blue-600">
+                    Tiered bulk pricing: MOQ 5 units. Best price at full container quantities.
+                  </p>
                 </div>
               ) : product.product_type === 'accessory' ? (
                 <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -914,16 +728,14 @@ const ProductDetails = () => {
                   <div className="mb-4">
                     <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
                       <div className="flex items-center gap-2 mb-3">
-                        <Badge className="bg-primary text-primary-foreground text-xs">{orderByCylinder ? 'Single Cylinders' : tier.label}</Badge>
+                        <Badge className="bg-primary text-primary-foreground text-xs">{tier.label}</Badge>
                         <span className="text-sm text-muted-foreground">
-                          {orderByCylinder
-                            ? `${cylinderQty} cylinder${cylinderQty > 1 ? 's' : ''}`
-                            : `${palletQuantity} pallet${palletQuantity > 1 ? 's' : ''} · ${tier.cylinders?.toLocaleString()} cylinders`}
+                          {palletQuantity} pallet{palletQuantity > 1 ? 's' : ''} · {tier.cylinders?.toLocaleString()} cylinders
                         </span>
                       </div>
                       {/* Per-cylinder price is the HERO */}
                       <p className="text-4xl font-bold text-primary mb-1">
-                        {formatPrice(orderByCylinder ? singleCylinderPrice : tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
+                        {formatPrice(tier.perCylinder)}<span className="text-lg font-medium text-muted-foreground">/cylinder</span>
                       </p>
                       {tier.markup > 0 && (
                         <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
@@ -964,39 +776,8 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              {/* Delivery info for the buyer's country */}
-              <div className="mb-4 rounded-lg border bg-muted/40 p-3 text-sm space-y-1.5">
-                <ShipToSelector />
-                <p className="text-muted-foreground"><strong className="text-foreground">Ships from:</strong> {getDispatchHub(shipCountry)}</p>
-                <p className="text-muted-foreground"><strong className="text-foreground">Estimated delivery:</strong> 0-3 business days handling + 0-10 business days transit</p>
-                <p className="text-muted-foreground"><strong className="text-foreground">Taxes &amp; duties:</strong> {getDutiesNote(shipCountry)}</p>
-                {product.product_type === 'refrigerant' && (
-                  <p className="text-muted-foreground"><strong className="text-foreground">Compliance:</strong> {getRefrigerantCompliance(shipCountry)}</p>
-                )}
-              </div>
-
-              {/* Trust strip */}
-              <div className="mb-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-4">
-                <div className="flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>{product.product_type === 'refrigerant' ? 'EPA 608 certified' : 'Factory warranty'}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Truck className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Ships from {getDispatchHub(shipCountry)}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Secure payment</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Award className="h-3.5 w-3.5 text-amber-600" />
-                  <a href="tel:+17869870501" className="hover:underline">786-987-0501</a>
-                </div>
-              </div>
-
               {/* Purchase Options - Moved up for better UX */}
-              <Card className="mb-6" id="purchase-options">
+              <Card className="mb-6">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -1036,7 +817,7 @@ const ProductDetails = () => {
                         <Button 
                           onClick={handleAddToCart} 
                           className="w-full bg-orange-500 hover:bg-orange-600"
-                          disabled={acQuantity < 1 || !calculateACPricingTier(product, acQuantity)}
+                          disabled={acQuantity < 5 || !calculateACPricingTier(product, acQuantity)}
                         >
                           <ShoppingCart className="h-4 w-4 mr-2" />
                           Add to Cart
@@ -1050,62 +831,6 @@ const ProductDetails = () => {
                     </>
                   ) : product.product_type === 'refrigerant' ? (
                     <>
-                      {/* Order-size clarity for small buyers vs bulk buyers */}
-                      {/* Order by cylinder or by pallet */}
-                      <div className="grid grid-cols-2 gap-2" role="group" aria-label="Order unit">
-                        <Button
-                          variant={orderByCylinder ? "default" : "outline"}
-                          aria-pressed={orderByCylinder}
-                          size="sm"
-                          onClick={() => setOrderByCylinder(true)}
-                        >
-                          Single cylinders
-                        </Button>
-                        <Button
-                          variant={!orderByCylinder ? "default" : "outline"}
-                          aria-pressed={!orderByCylinder}
-                          size="sm"
-                          onClick={() => setOrderByCylinder(false)}
-                        >
-                          Pallets (40 cyl)
-                        </Button>
-                      </div>
-
-                      {orderByCylinder ? (
-                        <div>
-                          <label className="block text-sm font-medium text-foreground mb-2">
-                            How many cylinders do you need?
-                          </label>
-                          <div className="flex items-center space-x-3 mb-2">
-                            <Button variant="outline" size="sm" aria-label="Fewer cylinders" onClick={() => setCylinderQty(Math.max(1, cylinderQty - 1))}>
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <span className="text-2xl font-bold w-16 text-center text-foreground">{cylinderQty}</span>
-                            <Button variant="outline" size="sm" aria-label="More cylinders" onClick={() => setCylinderQty(Math.min(CYLINDERS_PER_PALLET - 1, cylinderQty + 1))}>
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {formatPrice(singleCylinderPrice)} per cylinder · 1–{CYLINDERS_PER_PALLET - 1} cylinders
-                          </p>
-                          {cylinderQty === CYLINDERS_PER_PALLET - 1 && (
-                            <button type="button" className="text-xs text-primary underline mt-1" onClick={() => { setOrderByCylinder(false); setPalletQuantity(1); }}>
-                              Need 40 or more? Switch to 1 pallet
-                            </button>
-                          )}
-                        </div>
-                      ) : (
-                      <>
-                      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-2">
-                        <p className="text-sm font-semibold text-blue-900">
-                          Sold by the pallet — 1 pallet = {CYLINDERS_PER_PALLET} cylinders
-                        </p>
-                        <p className="text-xs text-blue-800 leading-relaxed">
-                          Per-cylinder pricing improves as pallet count rises. Pallet orders ship by LTL
-                          freight carrier, quoted for your delivery address.
-                        </p>
-                      </div>
-
                       {/* Refrigerant: Pallet quantity slider */}
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
@@ -1168,13 +893,11 @@ const ProductDetails = () => {
                           </Button>
                         </div>
                       </div>
-                      </>
-                      )}
 
                       <div className="space-y-3 pt-4 border-t">
                         <Button onClick={handleAddToCart} className="w-full bg-orange-500 hover:bg-orange-600">
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart — {formatPrice(orderByCylinder ? singleCylinderPrice * cylinderQty : getTierFromPalletCount(palletQuantity).total)}
+                          Add to Cart — {formatPrice(getTierFromPalletCount(palletQuantity).total)}
                         </Button>
 
                         <Button onClick={handleAddToRFQ} variant="outline" className="w-full">
@@ -1185,8 +908,8 @@ const ProductDetails = () => {
                     </>
                   ) : (
                     <>
-                      {/* Accessory products: Packaging selector (hidden when product has no options) */}
-                      {packagingOptions.length > 0 && <div>
+                      {/* Accessory products: Packaging selector */}
+                      <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
                           Packaging Type *
                         </label>
@@ -1195,7 +918,7 @@ const ProductDetails = () => {
                             <SelectValue placeholder="Select packaging option" />
                           </SelectTrigger>
                           <SelectContent>
-                            {packagingOptions.map(pkg => (
+                            {(product.packaging_options || product.packaging)?.map(pkg => (
                               <SelectItem key={pkg} value={pkg}>
                                 <div className="flex justify-between items-center w-full">
                                   <span>{pkg}</span>
@@ -1213,7 +936,7 @@ const ProductDetails = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                      </div>}
+                      </div>
 
                       {/* Quantity selector - for accessories */}
                       <div>
@@ -1246,7 +969,6 @@ const ProductDetails = () => {
                   )}
 
                   <div className="grid grid-cols-2 gap-3">
-                    <p className="col-span-2 text-xs text-muted-foreground flex items-start gap-2"><Truck className="h-4 w-4 shrink-0" />Shipping and taxes appear at checkout. For freight or import requirements, request a quote with your delivery destination.</p>
                     <Link to="/cart">
                       <Button variant="outline" className="w-full">
                         View Cart
@@ -1272,8 +994,19 @@ const ProductDetails = () => {
                   </div>
                 </CardContent>
               </Card>
-
-
+              
+              <div className="text-gray-600 mb-6 whitespace-pre-line">
+                {product.description?.split('\n').map((line, index) => (
+                  <p key={index} className="mb-2 last:mb-0">
+                    {line}
+                  </p>
+                ))}
+              </div>
+              
+              {product.sdsUrl && <Button variant="outline" className="mb-6">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Safety Data Sheet
+                </Button>}
             </div>
 
             {/* Applications */}
@@ -1355,62 +1088,7 @@ const ProductDetails = () => {
             </Card>
           )}
 
-          {/* AC Buying Guide with internal links */}
-          {isAC && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Buying guide: choosing the right unit</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm text-muted-foreground">
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">1. Match capacity to the room</h3>
-                  <p>
-                    As a rule of thumb allow roughly 20 BTU per square foot, then add capacity for large glazing,
-                    high ceilings, top-floor rooms, kitchens or equipment loads.
-                    {product.btu && product.max_room_size
-                      ? ` This unit's ${product.btu.toLocaleString()} BTU/h suits ${product.max_room_size.toLowerCase()}.`
-                      : ''}
-                    {' '}Oversizing is not a safe default: an oversized unit short-cycles, leaves humidity behind and wears faster.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">2. Pick the format that fits the building</h3>
-                  <p>
-                    <Link to="/products?category=window-ac" className="text-primary hover:underline">Window units</Link> are the
-                    fastest and cheapest way to cool existing rooms.{' '}
-                    <Link to="/products?category=portable-ac" className="text-primary hover:underline">Portable units</Link> suit
-                    leases that forbid modification.{' '}
-                    <Link to="/products?category=mini-splits" className="text-primary hover:underline">Single-zone mini-splits</Link> are
-                    the quiet, efficient choice for additions and conversions,{' '}
-                    <Link to="/products?category=multi-zone" className="text-primary hover:underline">multi-zone systems</Link> cover
-                    several rooms from one condenser, and{' '}
-                    <Link to="/products?category=ptac-commercial" className="text-primary hover:underline">PTAC units</Link> are the
-                    standard for hotel and apartment through-wall sleeves.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">3. Check power and efficiency before you order</h3>
-                  <p>
-                    Confirm the circuit matches the unit{product.voltage ? ` (${product.voltage}${product.plug_type ? `, ${product.plug_type}` : ''} here)` : ''}.
-                    Higher SEER2 or CEER ratings cost more up front and less to run — worth paying for where units run all season.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">4. Plan service gas with the equipment</h3>
-                  <p>
-                    Stock the matching refrigerant while you are ordering:{' '}
-                    <Link to="/products?type=refrigerant" className="text-primary hover:underline">browse bulk refrigerants</Link>
-                    {product.refrigerantType ? ` including ${product.refrigerantType}` : ''}, or see the full{' '}
-                    <Link to="/products" className="text-primary hover:underline">product catalog</Link>. Questions on sizing or
-                    freight: call 786-987-0501.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* FAQ Accordion */}
-
           {productFAQ.length > 0 && (
             <Card>
               <CardHeader>
@@ -1430,7 +1108,6 @@ const ProductDetails = () => {
           )}
         </div>
       </div>
-      <ProductQuoteSheet open={quoteOpen} onOpenChange={setQuoteOpen} item={{ product_id: product.id, product_name: product.name, quantity: product.product_type === 'air_conditioner' ? acQuantity : product.product_type === 'refrigerant' ? 1 : quantity, packaging: product.product_type === 'air_conditioner' ? 'AC units' : product.product_type === 'refrigerant' ? (orderByCylinder ? `${cylinderQty} cylinders` : getPalletPackagingLabel(palletQuantity)) : packaging || 'Individual' }} />
     </div>
   );
 };

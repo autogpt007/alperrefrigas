@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CreditCard, Building, Smartphone, DollarSign, Shield, Clock, AlertTriangle } from 'lucide-react';
+import { CreditCard, Building, Smartphone, Bitcoin, DollarSign, Shield, Clock, AlertTriangle } from 'lucide-react';
 import SEOComponent from '../seo/SEOComponent';
 
 const PaymentInformation = () => {
@@ -28,7 +28,7 @@ const PaymentInformation = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-786-987-0501 | Email: sales@alperrefrigerants.com<br />
+              Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -96,10 +96,25 @@ const PaymentInformation = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Smartphone className="h-5 w-5 mr-2 text-purple-600" />
-                  Invoice Payment Options
+                  Digital Payment Options
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
+                <p><strong>Zelle:</strong></p>
+                <ul className="list-disc pl-6 space-y-1 mb-4">
+                  <li>Instant transfers from your bank account</li>
+                  <li>No transaction fees</li>
+                  <li>Available through most major US banks</li>
+                  <li>Send to our registered Zelle email (provided at checkout)</li>
+                </ul>
+                
+                <p><strong>CashApp:</strong></p>
+                <ul className="list-disc pl-6 space-y-1 mb-4">
+                  <li>Quick payment via $cashtag</li>
+                  <li>Instant confirmation</li>
+                  <li>Our $cashtag provided at checkout</li>
+                </ul>
+
                 <p><strong>PayPal:</strong></p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Business PayPal accepted</li>
@@ -112,17 +127,46 @@ const PaymentInformation = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                  Payment Before Shipment
+                  <Bitcoin className="h-5 w-5 mr-2 text-orange-600" />
+                  Cryptocurrency Payments
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>We do not offer Net 15, Net 30, cash on delivery, or any other credit or deferred payment terms.</strong></p>
+                <p><strong>Accepted Cryptocurrencies:</strong></p>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>Every order ships only after full payment is confirmed.</li>
-                  <li>Accepted payment methods: credit/debit card and bank wire transfer.</li>
-                  <li>This applies to all customers, including commercial and repeat accounts.</li>
+                  <li><strong>Bitcoin (BTC):</strong> Primary cryptocurrency option</li>
+                  <li><strong>Ethereum (ETH):</strong> Accepted on ERC-20 network</li>
+                  <li><strong>USDT (Tether):</strong> Stablecoin option available</li>
+                  <li><strong>USDC:</strong> USD Coin accepted</li>
                 </ul>
+                <div className="bg-orange-50 p-4 rounded-lg mt-4 border border-orange-200">
+                  <p className="text-orange-800 text-sm">
+                    <strong>⏱️ Payment Window:</strong> Cryptocurrency payments must be completed within 30 minutes of order placement. Exchange rate locked at time of checkout.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
+                  Commercial Credit Terms
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose max-w-none">
+                <p><strong>Net Payment Terms (Qualified Accounts):</strong></p>
+                <p className="text-sm text-gray-600 mb-4">Commercial credit terms available for established business accounts with approved credit applications.</p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li><strong>Net 30:</strong> Available for accounts with $10,000+ monthly volume</li>
+                  <li><strong>Net 15:</strong> Standard terms for new commercial accounts</li>
+                  <li><strong>COD:</strong> Cash on delivery available for first-time buyers</li>
+                  <li><strong>Credit Application:</strong> Required for net terms approval</li>
+                  <li><strong>Late Payment:</strong> 1.5% monthly finance charge on overdue balances</li>
+                </ul>
+                <p className="text-sm mt-4">
+                  To apply for commercial credit terms, contact: <strong>credit@alperrefrigerants.com</strong>
+                </p>
               </CardContent>
             </Card>
 
@@ -149,8 +193,23 @@ const PaymentInformation = () => {
                       <td className="py-2">Same day</td>
                     </tr>
                     <tr className="border-b">
+                      <td className="py-2">Zelle</td>
+                      <td className="py-2">Instant</td>
+                      <td className="py-2">Same day</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-2">CashApp</td>
+                      <td className="py-2">Instant</td>
+                      <td className="py-2">Same day</td>
+                    </tr>
+                    <tr className="border-b">
                       <td className="py-2">Wire Transfer</td>
                       <td className="py-2">1-3 business days</td>
+                      <td className="py-2">Upon confirmation</td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-2">Cryptocurrency</td>
+                      <td className="py-2">10-60 minutes</td>
                       <td className="py-2">Upon confirmation</td>
                     </tr>
                     <tr>
@@ -206,7 +265,7 @@ const PaymentInformation = () => {
                 <br />
                 <strong>Email:</strong> billing@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> +1-786-987-0501
+                <strong>Phone:</strong> +1-682-215-2974
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 7:00 AM - 6:00 PM EST
               </p>

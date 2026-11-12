@@ -26,24 +26,16 @@ const ProductCatalog = () => {
   const [sortBy, setSortBy] = useState('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const isHeatPumpPath = location.pathname.includes('/heating-heat-pumps');
-  const isToolsPath = location.pathname.includes('/hvac-tools');
-
   // Determine product type from URL
   const getProductTypeFromUrl = () => {
     if (location.pathname.includes('/refrigerants')) return 'refrigerant';
-    if (location.pathname.includes('/accessories') || isToolsPath) return 'accessory';
-    if (location.pathname.includes('/air-conditioners') || isHeatPumpPath) return 'air_conditioner';
+    if (location.pathname.includes('/accessories')) return 'accessory';
+    if (location.pathname.includes('/air-conditioners')) return 'air_conditioner';
     return 'all';
   };
 
   // Get AC subcategory from URL if applicable
   const getACSubcategory = () => {
-    if (isHeatPumpPath) {
-      const hpMatch = location.pathname.match(/\/heating-heat-pumps\/([^/]+)/);
-      if (!hpMatch) return null;
-      return hpMatch[1].startsWith('heat-pump-') ? hpMatch[1] : `heat-pump-${hpMatch[1]}`;
-    }
     const match = location.pathname.match(/\/air-conditioners\/([^/]+)/);
     return match ? match[1] : null;
   };
@@ -88,22 +80,12 @@ const ProductCatalog = () => {
         { value: 'safety', label: 'Safety Equipment' },
         { value: 'valves', label: 'Valves & Controls' }
       ];
-    } else if (isHeatPumpPath) {
-      return [
-        { value: 'all', label: 'All Heat Pumps' },
-        { value: 'heat-pump-single-zone', label: 'Single-Zone Heat Pumps' },
-        { value: 'heat-pump-multi-zone', label: 'Multi-Zone Heat Pumps' },
-        { value: 'heat-pump-ptac', label: 'PTAC Heat Pumps' }
-      ];
     } else if (productType === 'air_conditioner') {
       return [
         { value: 'all', label: 'All Air Conditioners' },
         { value: 'mini-splits', label: 'Ductless Mini-Splits' },
         { value: 'window-ac', label: 'Window AC Units' },
-        { value: 'portable-ac', label: 'Portable AC Units' },
-        { value: 'multi-zone', label: 'Multi-Zone Systems' },
-        { value: 'ptac-commercial', label: 'PTAC & Commercial' },
-        { value: 'ducted-split', label: 'Ducted Split Systems' }
+        { value: 'portable-ac', label: 'Portable AC Units' }
       ];
     } else {
       return [
@@ -129,13 +111,6 @@ const ProductCatalog = () => {
     // Filter by product type first
     if (productType !== 'all' && product.product_type !== productType) {
       return false;
-    }
-
-    // Heat pumps live inside the air_conditioner product type but have their own section
-    const isHeatPumpProduct = (product.category || '').toLowerCase().startsWith('heat-pump');
-    if (productType === 'air_conditioner') {
-      if (isHeatPumpPath && !isHeatPumpProduct) return false;
-      if (!isHeatPumpPath && isHeatPumpProduct) return false;
     }
 
     // Normalize search query and product text for better matching
@@ -303,7 +278,7 @@ const ProductCatalog = () => {
           {/* Reduced text content */}
           <div className="mb-3">
             <Badge variant="outline" className="text-xs">
-              {product.product_type === 'refrigerant' ? `${product.category} Refrigerant` : product.category}
+              {product.product_type === 'accessory' ? product.category : `${product.category} Refrigerant`}
             </Badge>
           </div>
           
@@ -313,9 +288,7 @@ const ProductCatalog = () => {
               <span className="text-lg font-bold text-blue-600">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-xs text-gray-500">
-                {product.product_type === 'refrigerant' ? t('products.perCylinder') : 'per unit'}
-              </span>
+              <span className="text-xs text-gray-500">{t('products.perCylinder')}</span>
             </div>
             
             <Link to={`/products/${createProductSlug(product.name)}`}>
@@ -334,7 +307,6 @@ const ProductCatalog = () => {
 
   // Get page title and description based on product type - UNIQUE titles for SEO
   const getPageTitle = () => {
-    if (isHeatPumpPath) return 'Wholesale Heat Pumps';
     if (productType === 'refrigerant') return 'Refrigerant Gas Products';
     if (productType === 'accessory') return 'HVAC Accessories & Professional Tools';
     if (productType === 'air_conditioner') return 'Wholesale Air Conditioning Units';
@@ -371,7 +343,7 @@ const ProductCatalog = () => {
         },
         {
           question: "How fast is refrigerant shipping?",
-          answer: "We offer same-day shipping for in-stock refrigerants from our our Miami, Florida distribution center. Most orders arrive within 1-3 business days."
+          answer: "We offer same-day shipping for in-stock refrigerants from our distribution centers in Texas, Florida, and California. Most orders arrive within 1-3 business days."
         }
       ];
     } else if (productType === 'accessory') {
@@ -417,9 +389,6 @@ const ProductCatalog = () => {
 
   // Generate unique SEO title based on product type and category for no duplicates
   const getSEOTitle = () => {
-    if (isHeatPumpPath) {
-      return `${getCategoryDisplayName()} Wholesale | Alper`;
-    }
     if (productType === 'refrigerant') {
       return `${getCategoryDisplayName()} Refrigerants | Alper`;
     }
@@ -434,11 +403,8 @@ const ProductCatalog = () => {
 
   // Generate unique SEO description based on product type for no duplicates
   const getSEODescription = () => {
-    if (isHeatPumpPath) {
-      return `Shop ${getCategoryDisplayName().toLowerCase()} at trade prices. Inverter heat pumps from 9,000 to 36,000 BTU that heat and cool, R-410A pre-charged, single units to full container loads.`;
-    }
     if (productType === 'refrigerant') {
-      return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale. Single cylinders, pallets or containers. EPA 608 certification required.`;
+      return `⭐ Shop ${getCategoryDisplayName().toLowerCase()} refrigerant gases. R-410A, R-134a, R-404A, R-22 wholesale with 99.9% purity. MOQ 40 cylinders. EPA certified, same-day shipping from TX, FL, CA distribution centers.`;
     }
     if (productType === 'accessory') {
       return `🔧 Shop professional HVAC accessories & tools including ${getCategoryDisplayName().toLowerCase()}. Gauges, manifolds, recovery equipment, fittings. Quality brands with fast shipping for contractors.`;
@@ -452,7 +418,7 @@ const ProductCatalog = () => {
   // Generate unique keywords based on product type
   const getSEOKeywords = () => {
     if (productType === 'refrigerant') {
-      return `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, EPA 608 refrigerant, ${getCategoryDisplayName().toLowerCase()}`;
+      return `refrigerant catalog, bulk refrigerant prices, HFC wholesale, HFO refrigerants, natural refrigerants, R-410A price, R-134a wholesale, R-404A bulk, MOQ 40 cylinders, EPA certified, fast shipping, ${getCategoryDisplayName().toLowerCase()}`;
     }
     if (productType === 'accessory') {
       return "HVAC accessories, refrigeration tools, manifold gauges, recovery equipment, leak detectors, professional HVAC tools, contractor supplies, bulk pricing";
@@ -480,14 +446,10 @@ const ProductCatalog = () => {
               {getPageTitle()}
             </h1>
             <p className="text-lg sm:text-xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              {isHeatPumpPath
-                ? 'Inverter heat pumps that heat and cool, from 9,000 to 36,000 BTU. Pre-charged with R-410A, single units to full container loads.'
-                : productType === 'refrigerant' 
+              {productType === 'refrigerant' 
                 ? 'Professional-grade refrigerants for HVAC, automotive, and industrial applications. EPA certified with guaranteed purity.'
                 : productType === 'accessory'
                 ? 'Complete range of HVAC tools and accessories for professional contractors and technicians.'
-                : productType === 'air_conditioner'
-                ? 'Mini-splits, multi-zone systems, window, portable and PTAC units at container-load pricing. MOQ 5 units with tiered bulk discounts.'
                 : t('products.description')
               }
             </p>
@@ -563,7 +525,7 @@ const ProductCatalog = () => {
 
           <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             <div className="text-gray-600 text-sm">
-              {sortedProducts.length} {t('products.productsFound', { count: sortedProducts.length })}
+              {t('products.productsFound', { count: sortedProducts.length })}
             </div>
             
             <div className="flex items-center gap-2">

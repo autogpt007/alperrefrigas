@@ -66,6 +66,7 @@ interface BankAccount {
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD'];
 const PAYMENT_METHODS = [
   { value: 'bank-wire', label: 'Bank Wire / ACH Transfer' },
+  { value: 'zelle', label: 'Zelle' },
   { value: 'other', label: 'Other / Discuss with sales' },
 ];
 
@@ -122,16 +123,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   const [orderPickerOpen, setOrderPickerOpen] = useState(false);
   const [orderOptions, setOrderOptions] = useState<Array<{ id: string; label: string; sub: string }>>([]);
 
-  const [quoteRequestId, setQuoteRequestId] = useState<string>((initialData as any)?.quote_request_id || '');
-  const [requestPickerOpen, setRequestPickerOpen] = useState(false);
-  const [requestOptions, setRequestOptions] = useState<
-    Array<{ id: string; label: string; sub: string; alreadyQuoted: boolean }>
-  >([]);
-  const [productPickerOpen, setProductPickerOpen] = useState(false);
-  const [productOptions, setProductOptions] = useState<
-    Array<{ id: string; name: string; sku: string | null; category: string | null; price: number; packaging: any }>
-  >([]);
-
   const [buyer, setBuyer] = useState({
     name: initialData?.buyer_name || '',
     company: initialData?.buyer_company || '',
@@ -154,7 +145,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   const [amountPaid, setAmountPaid] = useState(Number(initialData?.amount_paid ?? 0));
   const [notes, setNotes] = useState(initialData?.notes || '');
   const [paymentMethod, setPaymentMethod] = useState(initialData?.payment_method || 'bank-wire');
-  const [paymentTerms, setPaymentTerms] = useState(initialData?.payment_terms || 'Due before shipment');
+  const [paymentTerms, setPaymentTerms] = useState(initialData?.payment_terms || 'Due upon receipt');
   const [validityDays, setValidityDays] = useState(Number(initialData?.validity_days ?? 30));
   const [shipToAddress, setShipToAddress] = useState(initialData?.ship_to_address || '');
   const [poNumber, setPoNumber] = useState(initialData?.po_number || '');
@@ -162,6 +153,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
 
   const notesAutoRef = useRef(!initialData?.notes);
 
+  const [zelle, setZelle] = useState({ recipient: '', handle: '' });
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const [selectedBankId, setSelectedBankId] = useState('');
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
@@ -181,6 +173,8 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         .select('setting_key, setting_value')
         .in('setting_key', [
           'invoice_bank_accounts',
+          'invoice_zelle_recipient',
+          'invoice_zelle_handle',
           'invoice_logo_url',
           'invoice_signature_url',
           'invoice_signature_name',
@@ -200,6 +194,10 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
       setBankAccounts(accounts);
       if (accounts.length) setSelectedBankId((prev) => prev || accounts[0].id);
 
+      setZelle({
+        recipient: map.get('invoice_zelle_recipient') || '',
+        handle: map.get('invoice_zelle_handle') || '',
+      });
       setBranding({
         logoUrl: map.get('invoice_logo_url') || map.get('logo_url') || '',
         signatureUrl: map.get('invoice_signature_url') || '',
@@ -254,6 +252,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
       paymentMethod,
       orderNumber: documentNumber,
       bank: account,
+      zelle,
     });
     setNotes(generated);
     notesAutoRef.current = true;
@@ -263,7 +262,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
   useEffect(() => {
     if (!notes || notesAutoRef.current) regenerateNotes(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentMethod, selectedBankId, bankAccounts]);
+  }, [paymentMethod, selectedBankId, bankAccounts, zelle]);
 
   // ---------- settings persistence ----------
   const saveSetting = async (key: string, value: string) => {
@@ -286,6 +285,18 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
     }
   };
 
+  const persistZelle = async () => {
+    setSavingSettings(true);
+    try {
+      await saveSetting('invoice_zelle_recipient', zelle.recipient);
+      await saveSetting('invoice_zelle_handle', zelle.handle);
+      toast.success('Zelle details saved');
+    } catch (e: any) {
+      toast.error(`Failed to save Zelle details: ${e.message}`);
+    } finally {
+      setSavingSettings(false);
+    }
+  };
 
   const persistBranding = async (patch: Partial<typeof branding>) => {
     const next = { ...branding, ...patch };
@@ -336,132 +347,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
     setTaxAmount(Number(order.tax_amount || 0));
     toast.success('Order imported');
   };
-
-  // ---------- catalogue + quote request sources ----------
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from('products')
-        .select('id, name, sku, category, price, packaging')
-        .order('name', { ascending: true })
-        .limit(500);
-      setProductOptions(
-        (data || []).map((p: any) => ({
-          id: p.id,
-          name: p.name,
-          sku: p.sku || null,
-          category: p.category || null,
-          price: Number(p.price || 0),
-          packaging: p.packaging,
-        }))
-      );
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (documentType !== 'quote') return;
-    (async () => {
-      const [{ data: reqs }, { data: docs }] = await Promise.all([
-        supabase
-          .from('quotes')
-          .select('id, quote_number, company_name, customer_name, customer_email, status, created_at')
-          .order('created_at', { ascending: false })
-          .limit(100),
-        supabase.from('generated_documents').select('quote_request_id').not('quote_request_id', 'is', null),
-      ]);
-      const quoted = new Set((docs || []).map((d: any) => d.quote_request_id));
-      setRequestOptions(
-        (reqs || []).map((q: any) => ({
-          id: q.id,
-          label: `${q.quote_number || `#${q.id.slice(0, 8).toUpperCase()}`} — ${q.company_name || q.customer_name || 'Customer'}`,
-          sub: `${new Date(q.created_at).toLocaleDateString()} · ${q.customer_name || ''} · ${q.customer_email || ''} · ${q.status || 'pending'}`,
-          alreadyQuoted: quoted.has(q.id),
-        }))
-      );
-    })();
-  }, [documentType]);
-
-  const firstPackaging = (packaging: any): string => {
-    if (!packaging) return 'cyl';
-    if (Array.isArray(packaging)) {
-      const first = packaging[0];
-      if (typeof first === 'string') return first;
-      if (first && typeof first === 'object') return first.size || first.label || first.name || 'cyl';
-    }
-    if (typeof packaging === 'string') return packaging;
-    return 'cyl';
-  };
-
-  const addProductLine = (p: { name: string; price: number; packaging: any }) => {
-    setItems((prev) => {
-      const next = prev.filter((i) => i.isDetail || i.description.trim() || Number(i.unitPrice || 0) > 0);
-      return [
-        ...next,
-        { description: p.name, quantity: 1, unit: firstPackaging(p.packaging), unitPrice: Number(p.price || 0) },
-      ];
-    });
-    toast.success(`${p.name} added`);
-  };
-
-  const importFromQuoteRequest = async (id: string) => {
-    const { data: request, error } = await supabase
-      .from('quotes')
-      .select('*, quote_items(*)')
-      .eq('id', id)
-      .maybeSingle();
-    if (error || !request) {
-      toast.error('Could not load that quote request');
-      return;
-    }
-    setQuoteRequestId(id);
-    setBuyer((b) => ({
-      ...b,
-      name: (request as any).customer_name || b.name,
-      company: (request as any).company_name || b.company,
-      email: (request as any).customer_email || b.email,
-      phone: (request as any).phone || b.phone,
-      address: formatAddress((request as any).shipping_address) || b.address,
-    }));
-    setShipToAddress(formatAddress((request as any).shipping_address) || '');
-
-    const lines = ((request as any).quote_items || []) as any[];
-    if (!lines.length) {
-      toast.success('Request imported — no products were listed, add line items manually');
-      return;
-    }
-
-    const ids = lines.map((l) => l.product_id).filter(Boolean);
-    const priceById = new Map<string, number>();
-    if (ids.length) {
-      const { data: prods } = await supabase.from('products').select('id, price').in('id', ids);
-      (prods || []).forEach((p: any) => priceById.set(p.id, Number(p.price || 0)));
-    }
-    const priceByName = new Map<string, number>();
-    productOptions.forEach((p) => priceByName.set(p.name.toLowerCase().trim(), p.price));
-
-    let missing = 0;
-    const mapped: InvoiceItem[] = lines.map((li) => {
-      const price =
-        (li.product_id ? priceById.get(li.product_id) : undefined) ??
-        priceByName.get(String(li.product_name || '').toLowerCase().trim()) ??
-        0;
-      if (!price) missing++;
-      return {
-        description: [li.product_name, li.packaging].filter(Boolean).join(' — '),
-        quantity: Number(li.quantity || 1),
-        unit: li.packaging || 'cyl',
-        unitPrice: price,
-      };
-    });
-    setItems(mapped);
-    toast.success(
-      missing
-        ? `Request imported — ${mapped.length} lines, ${missing} need a price`
-        : `Request imported — ${mapped.length} lines priced from the catalogue`
-    );
-  };
-
-  const selectedRequest = requestOptions.find((r) => r.id === quoteRequestId);
 
   // ---------- PDF ----------
   const buildDoc = () => ({
@@ -528,7 +413,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         document_type: documentType,
         document_number: documentNumber,
         order_id: orderId || null,
-        quote_request_id: quoteRequestId || null,
         buyer_name: buyer.name,
         buyer_company: buyer.company || null,
         buyer_email: buyer.email || null,
@@ -580,36 +464,33 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-3">
           <div className="space-y-1.5 md:col-span-3">
-            <Label>Add products from catalogue</Label>
-            <Popover open={productPickerOpen} onOpenChange={setProductPickerOpen}>
+            <Label>Import from order (optional)</Label>
+            <Popover open={orderPickerOpen} onOpenChange={setOrderPickerOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
-                  Search products…
+                  {selectedOrder ? selectedOrder.label : 'Select an order…'}
                   <ChevronsUpDown className="h-4 w-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[520px] p-0" align="start">
                 <Command>
-                  <CommandInput placeholder="Search by name, SKU or category…" />
+                  <CommandInput placeholder="Search orders…" />
                   <CommandList>
-                    <CommandEmpty>No products found.</CommandEmpty>
+                    <CommandEmpty>No orders found.</CommandEmpty>
                     <CommandGroup>
-                      {productOptions.map((p) => (
+                      {orderOptions.map((o) => (
                         <CommandItem
-                          key={p.id}
-                          value={`${p.name} ${p.sku || ''} ${p.category || ''} ${p.id}`}
+                          key={o.id}
+                          value={`${o.label} ${o.sub}`}
                           onSelect={() => {
-                            setProductPickerOpen(false);
-                            addProductLine(p);
+                            setOrderPickerOpen(false);
+                            importFromOrder(o.id);
                           }}
-                          className="cursor-pointer"
                         >
-                          <Plus className="mr-2 h-4 w-4 opacity-70" />
+                          <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
                           <div>
-                            <div className="text-sm font-medium">{p.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {[p.sku, p.category, `USD ${Number(p.price || 0).toFixed(2)}`].filter(Boolean).join(' · ')}
-                            </div>
+                            <div className="text-sm font-medium">{o.label}</div>
+                            <div className="text-xs text-muted-foreground">{o.sub}</div>
                           </div>
                         </CommandItem>
                       ))}
@@ -619,94 +500,6 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
               </PopoverContent>
             </Popover>
           </div>
-
-          {documentType === 'quote' && (
-            <div className="space-y-1.5 md:col-span-3">
-              <Label>Import a received quote request (optional)</Label>
-              <Popover open={requestPickerOpen} onOpenChange={setRequestPickerOpen}>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    {selectedRequest ? selectedRequest.label : 'Select a customer request…'}
-                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[560px] p-0" align="start">
-                  <Command>
-                    <CommandInput placeholder="Search requests…" />
-                    <CommandList>
-                      <CommandEmpty>No quote requests found.</CommandEmpty>
-                      <CommandGroup>
-                        {requestOptions.map((q) => (
-                          <CommandItem
-                            key={q.id}
-                            value={`${q.label} ${q.sub} ${q.id}`}
-                            onSelect={() => {
-                              setRequestPickerOpen(false);
-                              importFromQuoteRequest(q.id);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <Check className={cn('mr-2 h-4 w-4', quoteRequestId === q.id ? 'opacity-100' : 'opacity-0')} />
-                            <div>
-                              <div className="text-sm font-medium">
-                                {q.label}
-                                {q.alreadyQuoted && (
-                                  <span className="ml-2 text-xs font-normal text-amber-600">already quoted</span>
-                                )}
-                              </div>
-                              <div className="text-xs text-muted-foreground">{q.sub}</div>
-                            </div>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-          )}
-
-          {documentType === 'invoice' && (
-            <div className="space-y-1.5 md:col-span-3">
-              <Label>Import from order (optional)</Label>
-              <Popover open={orderPickerOpen} onOpenChange={setOrderPickerOpen}>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    {selectedOrder ? selectedOrder.label : 'Select an order…'}
-                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[520px] p-0" align="start">
-                  <Command>
-                    <CommandInput placeholder="Search orders…" />
-                    <CommandList>
-                      <CommandEmpty>No orders found.</CommandEmpty>
-                      <CommandGroup>
-                        {orderOptions.map((o) => (
-                          <CommandItem
-                            key={o.id}
-                            value={`${o.label} ${o.sub} ${o.id}`}
-                            onSelect={() => {
-                              setOrderPickerOpen(false);
-                              importFromOrder(o.id);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <Check className={cn('mr-2 h-4 w-4', orderId === o.id ? 'opacity-100' : 'opacity-0')} />
-                            <div>
-                              <div className="text-sm font-medium">{o.label}</div>
-                              <div className="text-xs text-muted-foreground">{o.sub}</div>
-                            </div>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-          )}
-
 
           <div className="space-y-1.5">
             <Label>PO number</Label>
@@ -887,7 +680,7 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
         <CardHeader>
           <CardTitle>Payment details</CardTitle>
           <CardDescription>
-            Bank wire details entered here are saved for reuse and printed on the PDF.
+            Bank wire and Zelle details entered here are saved for reuse and printed on the PDF.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -1002,6 +795,23 @@ const InvoiceForm = ({ documentType, initialData, onComplete }: Props) => {
             )}
           </div>
 
+          {/* Zelle */}
+          <div className="rounded-md border p-4 space-y-3">
+            <h4 className="font-medium text-sm">Zelle details</h4>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Recipient name</Label>
+                <Input value={zelle.recipient} onChange={(e) => setZelle({ ...zelle, recipient: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Zelle email or phone</Label>
+                <Input value={zelle.handle} onChange={(e) => setZelle({ ...zelle, handle: e.target.value })} />
+              </div>
+            </div>
+            <Button type="button" size="sm" variant="outline" disabled={savingSettings} onClick={persistZelle}>
+              <Save className="h-4 w-4 mr-1" /> Save Zelle details
+            </Button>
+          </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">

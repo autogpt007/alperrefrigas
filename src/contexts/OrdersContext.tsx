@@ -33,8 +33,6 @@ export interface Order {
   payment_details?: any;
   cashapp_tag?: string;
   zelle_tag?: string;
-  phone?: string | null;
-  coupon_code?: string | null;
   created_at: string;
   updated_at: string;
   items: OrderItem[];
@@ -176,8 +174,6 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
         body: {
           customer_name: orderData.customer_name,
           customer_email: orderData.customer_email,
-          phone: orderData.phone ?? null,
-          coupon_code: orderData.coupon_code ?? null,
           status: orderData.status,
           total_amount: orderData.total_amount,
           shipping_cost: orderData.shipping_cost || 0,
@@ -211,12 +207,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
       setOrders(prev => [formattedOrder, ...prev]);
 
-      // Send notification to admin (never block a successfully created order)
-      try {
-        await sendOrderNotification(formattedOrder);
-      } catch (notifyErr) {
-        console.error('Admin order notification failed:', notifyErr);
-      }
+      // Send notification to admin
+      await sendOrderNotification(formattedOrder);
 
       // Send order confirmation email to customer
       try {

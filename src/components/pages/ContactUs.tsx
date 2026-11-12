@@ -158,20 +158,20 @@ const ContactUs = () => {
     {
       icon: Phone,
       title: "Phone",
-      details: "+1 (786) 987-0501",
+      details: "+1 (800) 555-COOL",
       description: "Monday-Friday, 8AM-6PM EST"
     },
     {
       icon: Mail,
       title: "Email",
-      details: "sales@alperrefrigerants.com",
+      details: "info@alperrefrigerants.com",
       description: "We respond within 4 hours"
     },
     {
       icon: MapPin,
       title: "Address",
-      details: "382 NE 191st St",
-      description: "Miami, FL 33179, United States"
+      details: "1234 Industrial Blvd, Suite 100",
+      description: "Houston, TX 77041"
     },
     {
       icon: Clock,
@@ -195,8 +195,8 @@ const ContactUs = () => {
     "@type": "ContactPage",
     "mainEntity": {
       "@type": "Organization",
-      "name": "Alper Refrigerants",
-      "legalName": "Alper Chemical Group",
+      "name": "Alper Chemical Group",
+      "alternateName": "Alper Refrigerants",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "382 NE 191st St",
@@ -209,7 +209,7 @@ const ContactUs = () => {
         {
           "@type": "ContactPoint",
           "contactType": "sales",
-          "telephone": "+1-786-987-0501",
+          "telephone": "+1-682-215-2974",
           "email": "sales@alperrefrigerants.com",
           "areaServed": "US",
           "availableLanguage": ["English", "Spanish"]
@@ -217,8 +217,8 @@ const ContactUs = () => {
         {
           "@type": "ContactPoint", 
           "contactType": "customer service",
-          "telephone": "+1-786-987-0501",
-          "email": "sales@alperrefrigerants.com",
+          "telephone": "+1-682-215-2974",
+          "email": "support@alperrefrigerants.com",
           "hoursAvailable": "Mo-Fr 07:00-18:00"
         }
       ]
@@ -244,7 +244,7 @@ const ContactUs = () => {
               <h2 className="text-xl font-bold text-white mb-2">Alper Chemical Group</h2>
               <p className="text-blue-200 text-sm">
                 382 NE 191st St, Miami, FL 33179, United States<br />
-                Tel: +1-786-987-0501 | Email: sales@alperrefrigerants.com
+                Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com
               </p>
               <p className="text-cyan-400 text-xs mt-2 font-medium">
                 B2B Supplier – Sales to EPA-certified HVAC professionals only
@@ -293,7 +293,7 @@ const ContactUs = () => {
                   </p>
                   <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold">
                     <Phone className="h-4 w-4 mr-2" />
-                    Emergency: +1 (786) 987-0501
+                    Emergency: +1 (800) 555-HELP
                   </Button>
                 </CardContent>
               </Card>

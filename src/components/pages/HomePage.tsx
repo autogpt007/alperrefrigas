@@ -15,18 +15,10 @@ import { ContactDisplay } from '@/components/ui/ContactDisplay';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductSlug } from '@/lib/slugs';
 import SEOComponent from '@/components/seo/SEOComponent';
-import EquipmentGasFinder from '@/components/widgets/EquipmentGasFinder';
 import { useCart } from '@/contexts/CartContext';
 import { useOrders } from '@/contexts/OrdersContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-
-// Public fallback: show real catalog products when no curated selection exists
-const pickFallbackProducts = (products: any[]) => {
-  if (!products || products.length === 0) return [];
-  const refrigerants = products.filter((p: any) => p.product_type !== 'air_conditioner');
-  return (refrigerants.length > 0 ? refrigerants : products).slice(0, 3);
-};
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -59,16 +51,9 @@ const HomePage = () => {
         const productList = featuredData?.map(item => ({
           name: item.products?.name || '',
           href: `/products/${createProductSlug(item.products?.name || '')}` // Use consistent slug generation
-        })).filter(p => p.name) || [];
+        })) || [];
 
-        setHomepageProducts(
-          productList.length > 0
-            ? productList
-            : pickFallbackProducts(products).map((p: any) => ({
-                name: p.name,
-                href: `/products/${createProductSlug(p.name || '')}`,
-              }))
-        );
+        setHomepageProducts(productList);
       } catch (error) {
         console.error('Error fetching homepage products:', error);
         // Fallback to default products
@@ -170,16 +155,13 @@ const HomePage = () => {
           applications: item.products?.applications || [],
           stock_quantity: item.products?.stock_quantity,
           availability: item.products?.availability
-        })).filter(p => p.id) || [];
+        })) || [];
 
-        if (productList.length > 0) {
-          setFeaturedProducts(productList);
-        } else {
-          setFeaturedProducts(pickFallbackProducts(products));
-        }
+        setFeaturedProducts(productList);
       } catch (error) {
         console.error('Error fetching featured products:', error);
-        setFeaturedProducts(pickFallbackProducts(products));
+        // Fallback to first 3 products from main products list
+        setFeaturedProducts(products.slice(0, 3));
       }
     };
 
@@ -191,13 +173,23 @@ const HomePage = () => {
   const homepageStructuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Alper Refrigerants",
+    "name": "Alper Refrigerant - Professional Refrigerant Distributor",
     "url": "https://alperrefrigerants.com",
     "description": "Leading wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC professionals, contractors, and industrial facilities.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://alperrefrigerants.com/products?search={search_term_string}",
       "query-input": "required name=search_term_string"
+    },
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Alper Refrigerant",
+      "alternateName": "Alper Refrigerants",
+      "specialty": ["Refrigerant Distribution", "HVAC Supplies", "EPA Compliance", "Bulk Refrigerants"],
+      "serviceArea": {
+        "@type": "Country",
+        "name": "United States"
+      }
     }
   };
 
@@ -209,7 +201,7 @@ const HomePage = () => {
     },
     {
       question: "Do you ship refrigerants internationally?",
-      answer: "Yes, we ship refrigerants globally from our our Miami, Florida distribution center. All shipments are DOT certified and comply with international shipping regulations."
+      answer: "Yes, we ship refrigerants globally from our distribution centers in Texas, Florida, and California. All shipments are DOT certified and comply with international shipping regulations."
     },
     {
       question: "Are your refrigerants EPA approved?",
@@ -221,7 +213,7 @@ const HomePage = () => {
     },
     {
       question: "How fast is your shipping?",
-      answer: "Orders are handled in 0-3 business days and ship from the regional hub for your country (Miami for the Americas). Typical total delivery time is 0-13 business days; see our shipping policy for details."
+      answer: "We offer same-day shipping for in-stock items from our Texas, Florida, and California distribution centers. Most orders arrive within 1-3 business days depending on location."
     },
     {
       question: "Do you provide Safety Data Sheets?",
@@ -232,8 +224,8 @@ const HomePage = () => {
   return (
     <>
       <SEOComponent
-        title="Wholesale Refrigerant & HVAC Supplier | Alper Refrigerants"
-        description="Shop wholesale refrigerants by cylinder, pallet or container, plus mini-splits, heat pumps and HVAC tools. Browse Alper Refrigerants or request a bulk quote."
+        title="HFO Refrigerant For Sale | Bulk R-1234yf | Alper"
+        description="Leading wholesale refrigerant distributor. EPA-certified bulk supplier of R-410A, R-134a, R-22, R-404A, HFO-1234yf with 99.9% purity. MOQ 40 cylinders. Same-day shipping from TX, FL, CA."
         keywords="hfo refrigerant for sale, wholesale refrigerant distributor, bulk refrigerant supplier, R-410A wholesale, R-134a bulk, R-22 distributor, HFC refrigerants, HFO refrigerants, buy hfo 1234yf, EPA certified refrigerants, bulk r-454b, r-513a supplier"
         canonicalUrl="/"
         structuredData={homepageStructuredData}
@@ -258,10 +250,10 @@ const HomePage = () => {
                 <Shield className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t('home.hero.badge')}
               </Badge>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight" 
                   dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}>
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm line-clamp-3 sm:line-clamp-none">
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
                 {t('home.hero.description')}
               </p>
             </div>
@@ -309,9 +301,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Equipment & Refrigerant Finder */}
-      <EquipmentGasFinder />
 
       {/* SEO Content Section */}
       <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-b from-slate-900 to-slate-800/50 relative overflow-hidden">
@@ -464,7 +453,7 @@ const HomePage = () => {
                         Quality assurance is paramount in everything we do. Our state-of-the-art testing facility conducts purity analysis, moisture content verification, and contaminant screening on every batch. This meticulous attention to detail ensures that when you choose Alper Refrigerant products, you're getting products that perform consistently and reliably in the field.
                       </p>
                       <p className="text-gray-100 leading-relaxed">
-                        We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer clear upfront pricing, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
+                        We understand that HVAC professionals need more than just products – they need a partner who understands their business challenges. That's why we offer flexible payment terms, bulk pricing options, and customized delivery schedules that align with your project timelines and cash flow requirements.
                       </p>
                     </div>
                   </div>
@@ -635,10 +624,10 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">Our featured selection is being updated. Browse the full refrigerant catalog in the meantime.</p>
-              <Link to="/products" className="inline-block mt-4">
+              <p className="text-gray-400 text-lg">No products available yet. Please add some products in the admin panel.</p>
+              <Link to="/admin" className="inline-block mt-4">
                 <Button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600">
-                  View All Products
+                  Go to Admin Panel
                 </Button>
               </Link>
             </div>
@@ -671,9 +660,9 @@ const HomePage = () => {
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-6">
                 <Truck className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Clear Delivery Times</h3>
+              <h3 className="text-xl font-bold text-white mb-4">Lightning Fast Delivery</h3>
               <p className="text-white leading-relaxed font-medium text-shadow-sm">
-                Orders are handled in 0-3 business days and ship from the regional hub that serves your country, with typical delivery in 0-13 business days.
+                Same-day processing and 48-hour delivery to most locations. Our nationwide distribution network ensures your projects stay on schedule.
               </p>
             </div>
 

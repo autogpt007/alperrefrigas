@@ -4,12 +4,6 @@ import SEOComponent from '../seo/SEOComponent';
 import { Wind, Thermometer, Zap, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 
 const subcategories = [
   {
@@ -36,68 +30,6 @@ const subcategories = [
     href: '/products/air-conditioners/portable-ac',
     features: ['Mobility', 'No Install Required', 'Dual Hose Options'],
   },
-  {
-    id: 'multi-zone',
-    title: 'Multi-Zone Mini-Split Systems',
-    description: 'Dual, tri and quad-zone condensers that cool multiple rooms from one outdoor unit. Ideal for whole-home and light commercial projects.',
-    icon: Wind,
-    href: '/products/air-conditioners/multi-zone',
-    features: ['2-4 Indoor Zones', 'Inverter Compressor', 'Heat Pump Ready'],
-  },
-  {
-    id: 'ptac-commercial',
-    title: 'PTAC & Commercial Units',
-    description: 'Packaged terminal air conditioners and ceiling cassettes for hotels, apartments and light commercial buildings.',
-    icon: Thermometer,
-    href: '/products/air-conditioners/ptac-commercial',
-    features: ['Hospitality Grade', 'Electric Heat Option', '208/230V'],
-  },
-  {
-    id: 'ducted-split',
-    title: 'Central Inverter Ducted Split Systems',
-    description: 'Matched 2 to 5 ton inverter heat pump condensers with multi-position air handlers for whole-home and light commercial changeouts.',
-    icon: Zap,
-    href: '/products/air-conditioners/ducted-split',
-    features: ['2 to 5 Ton', 'Up to 18 SEER2', 'Multi-Position Air Handler'],
-  },
-];
-
-const acFaqs = [
-  {
-    question: 'Can I buy a single air conditioner, or is there a minimum order?',
-    answer:
-      'You can order a single unit. Per-unit pricing improves with quantity, through custom bulk tiers from five units up to half-container and full 20ft or 40ft container loads.',
-  },
-  {
-    question: 'How many BTU do I need for a room?',
-    answer:
-      'Allow roughly 20 BTU per square foot of floor area, then add capacity for high ceilings, large windows or a top floor under an uninsulated roof. A 12,000 BTU unit suits about 550 sq ft and a 24,000 BTU unit about 1,100 sq ft.',
-  },
-  {
-    question: 'What is the difference between mini-split, window and portable units?',
-    answer:
-      'A ductless mini-split pairs an outdoor condenser with one or more indoor heads and is the quietest and most efficient option. Window units are self-contained and mount in an opening. Portable units need no permanent installation and vent through a hose.',
-  },
-  {
-    question: 'Which refrigerant do the units use?',
-    answer:
-      'Units are supplied pre-charged, with the exact refrigerant listed on each product page. Refrigerant connection and commissioning must be carried out by a qualified technician.',
-  },
-  {
-    question: 'How do air conditioners ship?',
-    answer:
-      'Units ship from our Miami, Florida warehouse. Small quantities move by parcel or LTL freight, and pallet or container volumes are quoted by freight carrier for your delivery address.',
-  },
-  {
-    question: 'Do you ship air conditioners internationally?',
-    answer:
-      'Yes. Equipment ships worldwide on a standard commercial invoice, with duties and taxes settled on delivery. Pre-charged equipment may require an equipment import licence in the EU or Australia.',
-  },
-  {
-    question: 'What payment methods do you accept for bulk AC orders?',
-    answer:
-      'Credit card and bank wire transfer. Bank wire orders receive a 15% discount, and our sales team emails a proforma invoice with payment details.',
-  },
 ];
 
 const AirConditionersPage: React.FC = () => {
@@ -105,7 +37,7 @@ const AirConditionersPage: React.FC = () => {
     <>
       <SEOComponent
         title="Wholesale Air Conditioners | Bulk AC"
-        description="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. Single units available."
+        description="Buy wholesale air conditioners in bulk. Mini-splits, window units, and portable AC systems at competitive container pricing. MOQ 5 units."
         keywords="wholesale air conditioners, bulk AC units, mini splits wholesale, window AC bulk, portable air conditioner wholesale"
         canonicalUrl="/products/air-conditioners"
         breadcrumbs={[
@@ -113,7 +45,6 @@ const AirConditionersPage: React.FC = () => {
           { name: 'Products', url: '/products' },
           { name: 'Air Conditioners', url: '/products/air-conditioners' }
         ]}
-        faq={acFaqs}
       />
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -126,8 +57,8 @@ const AirConditionersPage: React.FC = () => {
                 Wholesale Air Conditioners
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Premium air conditioning units for distributors and contractors. Order a single unit or
-                a full container, with better unit pricing as quantity grows.
+                Premium bulk air conditioning units for distributors and contractors. 
+                Container-load pricing with minimum order quantity of 5 units.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link to="/contact">
@@ -151,7 +82,7 @@ const AirConditionersPage: React.FC = () => {
             <div className="flex flex-wrap justify-center items-center gap-8 text-center">
               <div>
                 <p className="text-sm text-muted-foreground">Minimum Order</p>
-                <p className="text-2xl font-bold text-primary">1 Unit</p>
+                <p className="text-2xl font-bold text-primary">5 Units</p>
               </div>
               <div className="hidden md:block h-12 w-px bg-border" />
               <div>
@@ -253,35 +184,12 @@ const AirConditionersPage: React.FC = () => {
                     <div>
                       <h3 className="font-semibold text-foreground">Custom Bulk (5+ Units)</h3>
                       <p className="text-muted-foreground">
-                        Flexible ordering from a single unit up, with tiered pricing based on quantity.
+                        Flexible ordering from 5 units up with tiered pricing based on quantity.
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold text-foreground text-center mb-8">
-                Air Conditioner Buying Questions
-              </h2>
-              <Accordion type="single" collapsible className="bg-card rounded-xl border px-4">
-                {acFaqs.map((item, idx) => (
-                  <AccordionItem key={idx} value={`ac-faq-${idx}`}>
-                    <AccordionTrigger className="text-left text-base font-semibold">
-                      {item.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {item.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
             </div>
           </div>
         </section>

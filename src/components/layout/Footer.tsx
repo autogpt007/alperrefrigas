@@ -34,7 +34,7 @@ const Footer = () => {
       return {
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distribution',
-        main_phone: settingsMap.main_phone || '1-786-987-0501'
+        main_phone: settingsMap.main_phone || '1-682-215-2974'
       };
     },
   });
@@ -63,7 +63,7 @@ const Footer = () => {
       
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-3 mb-6">
@@ -82,6 +82,10 @@ const Footer = () => {
               <div className="flex items-center text-sm text-gray-300">
                 <Award className="h-4 w-4 mr-2 text-blue-400" />
                 {t('footer.epaCertified')}
+              </div>
+              <div className="flex items-center text-sm text-gray-300">
+                <Shield className="h-4 w-4 mr-2 text-green-400" />
+                {t('footer.ahriMember')}
               </div>
             </div>
           </div>
@@ -112,22 +116,6 @@ const Footer = () => {
               <li><Link to="/products?category=automotive" className="text-gray-300 hover:text-white transition-colors">{t('footer.automotive')}</Link></li>
               <li><Link to="/products?category=commercial" className="text-gray-300 hover:text-white transition-colors">{t('footer.commercialHvac')}</Link></li>
               <li><Link to="/products?category=industrial" className="text-gray-300 hover:text-white transition-colors">{t('footer.industrial')}</Link></li>
-              <li><Link to="/products/r-410a" className="text-gray-300 hover:text-white transition-colors">R-410A</Link></li>
-              <li><Link to="/products/r-32" className="text-gray-300 hover:text-white transition-colors">R-32</Link></li>
-            </ul>
-          </div>
-
-          {/* Equipment & Guides */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Equipment &amp; Guides</h4>
-            <ul className="space-y-3">
-              <li><Link to="/brands/mrcool" className="text-gray-300 hover:text-white transition-colors">MRCOOL Mini Splits</Link></li>
-              <li><Link to="/brands/senville" className="text-gray-300 hover:text-white transition-colors">Senville Mini Splits</Link></li>
-              <li><Link to="/products/ptac-units" className="text-gray-300 hover:text-white transition-colors">PTAC Units</Link></li>
-              <li><Link to="/products/hvac-tools" className="text-gray-300 hover:text-white transition-colors">HVAC Tools &amp; Gauges</Link></li>
-              <li><Link to="/products/r-22-replacements" className="text-gray-300 hover:text-white transition-colors">R-22 Replacements</Link></li>
-              <li><Link to="/products/r-454b" className="text-gray-300 hover:text-white transition-colors">R-454B Guide</Link></li>
-              <li><Link to="/guides" className="text-gray-300 hover:text-white transition-colors">Refrigerant Guides</Link></li>
             </ul>
           </div>
 
@@ -139,7 +127,7 @@ const Footer = () => {
                 <Phone className="h-4 w-4 text-blue-400" />
                 <div>
                   <div className="font-medium">Sales & Support</div>
-                  <div className="text-sm text-gray-300">{companyInfo?.main_phone || '1-786-987-0501'}</div>
+                  <div className="text-sm text-gray-300">{companyInfo?.main_phone || '1-682-215-2974'}</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -156,23 +144,15 @@ const Footer = () => {
                   <div className="text-sm text-gray-300">Monday - Friday: 7:00 AM - 6:00 PM EST</div>
                 </div>
               </div>
-              <div className="flex items-start space-x-3" itemScope itemType="https://schema.org/Organization">
+              <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-blue-400 mt-1" />
                 <div>
-                  <div className="font-medium">
-                    Legal Entity: <span itemProp="name">Alper Chemical Group</span>
+                  <div className="font-medium">Alper Chemical Group</div>
+                  <div className="text-sm text-gray-300">
+                    382 NE 191st St<br />
+                    Miami, FL 33179<br />
+                    United States
                   </div>
-                  <address
-                    className="text-sm text-gray-300 not-italic"
-                    itemProp="address"
-                    itemScope
-                    itemType="https://schema.org/PostalAddress"
-                  >
-                    <span itemProp="streetAddress">382 NE 191st St</span><br />
-                    <span itemProp="addressLocality">Miami</span>, <span itemProp="addressRegion">FL</span>{' '}
-                    <span itemProp="postalCode">33179</span><br />
-                    <span itemProp="addressCountry">United States</span>
-                  </address>
                 </div>
               </div>
             </div>

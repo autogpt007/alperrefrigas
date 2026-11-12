@@ -25,29 +25,12 @@ const ShippingPolicy = () => {
           </div>
 
           {/* Business Identity */}
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6" itemScope itemType="https://schema.org/Organization">
-            <h3 className="font-semibold text-blue-900 mb-2" itemProp="name">Alper Chemical Group</h3>
+          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-6">
+            <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
-              <address className="not-italic inline" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
-                <span itemProp="streetAddress">382 NE 191st St</span>,{' '}
-                <span itemProp="addressLocality">Miami</span>, <span itemProp="addressRegion">FL</span>{' '}
-                <span itemProp="postalCode">33179</span>, <span itemProp="addressCountry">United States</span>
-              </address><br />
-              Tel: +1-786-987-0501 | Email: sales@alperrefrigerants.com<br />
+              382 NE 191st St, Miami, FL 33179, United States<br />
+              Tel: +1-682-215-2974 | Email: sales@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
-            </p>
-          </div>
-
-          {/* Return shipping responsibility (mirrors Refund & Return Policy) */}
-          <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Return Shipping Costs</h3>
-            <ul className="text-sm text-gray-700 space-y-1">
-              <li>• <strong>We pay return shipping</strong> for defective, damaged, or incorrectly shipped orders (prepaid hazmat label provided, no restocking fee).</li>
-              <li>• <strong>The customer pays return shipping</strong> for change-of-mind returns or ordering errors; a 15% restocking fee applies if original packaging was opened.</li>
-              <li>• Original outbound shipping charges are non-refundable except where the fault is ours.</li>
-            </ul>
-            <p className="text-sm text-gray-500 mt-2">
-              Full terms: <a href="/refund-policy" className="text-blue-600 underline">Refund &amp; Return Policy</a>
             </p>
           </div>
 
@@ -60,42 +43,16 @@ const ShippingPolicy = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 not-prose mb-4">
-                  <p className="text-blue-900 font-semibold">Delivery timeline (all destinations)</p>
-                  <ul className="text-sm text-blue-800 mt-2 space-y-1">
-                    <li><strong>Handling time:</strong> 0-3 business days</li>
-                    <li><strong>Transit time:</strong> 0-10 business days</li>
-                    <li><strong>Total estimated delivery:</strong> 0-13 business days</li>
-                  </ul>
-                </div>
+                <p><strong>Standard Processing:</strong> All orders are processed within 1-2 business days after EPA certification verification.</p>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>Verification:</strong> Refrigerant orders require certification/licence verification (EPA 608, F-Gas, or ARC) before handling begins</li>
-                  <li><strong>Business Days:</strong> Monday through Friday, excluding public holidays</li>
-                  <li><strong>Pallet &amp; container orders:</strong> Freight is booked after proforma invoice payment; the delivery date is confirmed in writing on your invoice</li>
+                  <li><strong>EPA Verification:</strong> All refrigerant orders require EPA Section 608 certification verification before processing</li>
+                  <li><strong>Business Days:</strong> Monday through Friday, excluding federal holidays</li>
+                  <li><strong>Cut-off Time:</strong> Orders placed before 2:00 PM EST are processed same business day</li>
+                  <li><strong>Large Orders:</strong> Bulk orders (pallet quantities) may require 2-3 business days for processing</li>
+                  <li><strong>Container Orders:</strong> 20ft and 40ft container orders require 5-7 business days for preparation</li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4">
-                  <strong>Note:</strong> Customs clearance in the destination country can add time outside our control. You will receive tracking information once your order ships.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-blue-200">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MapPin className="h-5 w-5 mr-2 text-blue-600" />
-                  Where Your Order Ships From
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <p>Our business is registered in Miami, Florida. Orders are dispatched from the regional hub closest to you:</p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>United States, Canada &amp; Americas:</strong> dispatched from Miami, FL, USA</li>
-                  <li><strong>European Union &amp; United Kingdom:</strong> dispatched from our hubs in Poland and Turkey</li>
-                  <li><strong>Australia &amp; New Zealand:</strong> dispatched from our hub in Thailand</li>
-                </ul>
-                <p className="text-sm text-gray-600">
-                  The dispatch hub for your order is confirmed in your order confirmation or proforma invoice. Shipments from Turkey or Thailand
-                  are imported into your country; import duties and taxes are handled as described in the Customs section below.
+                  <strong>Note:</strong> Processing times do not include transit time. You will receive tracking information once your order ships.
                 </p>
               </CardContent>
             </Card>
@@ -166,122 +123,50 @@ const ShippingPolicy = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
-                <p><strong>We ship to 54 countries.</strong> Rates below are per-order base rates; a HazMat surcharge applies to refrigerant shipments.</p>
+                <p><strong>We ship internationally to the following regions:</strong></p>
                 <div className="bg-gray-50 p-4 rounded-lg mb-4 overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-2">Zone</th>
+                        <th className="text-left py-2">Region</th>
                         <th className="text-left py-2">Countries</th>
+                        <th className="text-left py-2">Processing</th>
                         <th className="text-left py-2">Transit</th>
                         <th className="text-left py-2">Base Rate</th>
-                        <th className="text-left py-2">HazMat</th>
                         <th className="text-left py-2">Free Shipping</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b">
-                        <td className="py-2 font-medium">United States (Continental)</td>
-                        <td className="py-2">US (48 states)</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$45</td>
-                        <td className="py-2">+$25</td>
-                        <td className="py-2">Orders $500+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Alaska &amp; Hawaii</td>
-                        <td className="py-2">US-AK, US-HI</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$89</td>
-                        <td className="py-2">+$45</td>
-                        <td className="py-2">Orders $1,000+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">US Territories</td>
-                        <td className="py-2">Puerto Rico</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$89</td>
-                        <td className="py-2">+$45</td>
-                        <td className="py-2">Orders $1,000+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Canada</td>
-                        <td className="py-2">Canada</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$75</td>
-                        <td className="py-2">+$35</td>
-                        <td className="py-2">Orders $750+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">United Kingdom</td>
-                        <td className="py-2">United Kingdom</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$120</td>
-                        <td className="py-2">+$50</td>
-                        <td className="py-2">Orders $1,000+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">European Union</td>
-                        <td className="py-2">Austria, Belgium, Czechia, Denmark, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Netherlands, Poland, Portugal, Romania, Slovakia, Spain, Sweden and all other EU states</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$150</td>
-                        <td className="py-2">+$60</td>
-                        <td className="py-2">Orders $1,500+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Non-EU Europe</td>
-                        <td className="py-2">Switzerland, Norway, Ukraine, Russia, Georgia</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$165</td>
-                        <td className="py-2">+$65</td>
-                        <td className="py-2">Orders $1,500+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Latin America &amp; Caribbean</td>
-                        <td className="py-2">Mexico, Brazil, Argentina, Chile, Colombia, Peru, Ecuador, Uruguay, Paraguay, Costa Rica, Panama, El Salvador, Nicaragua, Dominican Republic</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$145</td>
-                        <td className="py-2">+$70</td>
-                        <td className="py-2">Orders $1,500+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Middle East</td>
-                        <td className="py-2">United Arab Emirates, Saudi Arabia, Kuwait, Bahrain, Oman, Israel</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$195</td>
-                        <td className="py-2">+$80</td>
+                        <td className="py-2 font-medium">🇬🇧 United Kingdom</td>
+                        <td className="py-2">GB</td>
+                        <td className="py-2">2-3 days</td>
+                        <td className="py-2">5-10 days</td>
+                        <td className="py-2">$79.99</td>
                         <td className="py-2">Orders $2,000+</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-2 font-medium">Asia-Pacific</td>
-                        <td className="py-2">Hong Kong, Malaysia, Thailand, Philippines</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$185</td>
-                        <td className="py-2">+$80</td>
-                        <td className="py-2">Orders $2,000+</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 font-medium">Australia &amp; New Zealand</td>
-                        <td className="py-2">Australia, New Zealand</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$180</td>
-                        <td className="py-2">+$75</td>
-                        <td className="py-2">Orders $2,000+</td>
+                        <td className="py-2 font-medium">🇪🇺 European Union</td>
+                        <td className="py-2">27 EU countries</td>
+                        <td className="py-2">2-3 days</td>
+                        <td className="py-2">7-14 days</td>
+                        <td className="py-2">$99.99</td>
+                        <td className="py-2">Orders $3,000+</td>
                       </tr>
                       <tr>
-                        <td className="py-2 font-medium">Africa</td>
-                        <td className="py-2">South Africa</td>
-                        <td className="py-2">0-10 business days</td>
-                        <td className="py-2">$220</td>
-                        <td className="py-2">+$90</td>
-                        <td className="py-2">Orders $2,500+</td>
+                        <td className="py-2 font-medium">🇦🇺 Australia</td>
+                        <td className="py-2">AU</td>
+                        <td className="py-2">3-5 days</td>
+                        <td className="py-2">10-21 days</td>
+                        <td className="py-2">$149.99</td>
+                        <td className="py-2">Orders $5,000+</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <p className="text-sm text-gray-600">
                   <strong>Note:</strong> International shipping rates are estimates. Actual rates may vary based on weight, dimensions, and customs requirements.
-                  Container shipments and pallet quantities require custom freight quotes. Destinations outside the zones above are quoted individually before shipment.
+                  Container shipments and pallet quantities require custom freight quotes.
                 </p>
               </CardContent>
             </Card>
@@ -296,9 +181,9 @@ const ShippingPolicy = () => {
               </CardHeader>
               <CardContent className="prose max-w-none">
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>DHL Express:</strong> UK, EU – within our 0-10 business day transit window with full tracking and customs pre-clearance</li>
-                  <li><strong>FedEx International Priority:</strong> All regions – within our 0-10 business day transit window with temperature-controlled options</li>
-                  <li><strong>UPS Worldwide:</strong> UK, EU, AU – within our 0-10 business day transit window with HazMat certification</li>
+                  <li><strong>DHL Express:</strong> UK, EU – 5-10 business days with full tracking and customs pre-clearance</li>
+                  <li><strong>FedEx International Priority:</strong> All regions – 5-14 business days with temperature-controlled options</li>
+                  <li><strong>UPS Worldwide:</strong> UK, EU, AU – 7-14 business days with HazMat certification</li>
                   <li><strong>Freight Forwarders:</strong> Container and pallet shipments – transit times by arrangement</li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4">
@@ -312,30 +197,29 @@ const ShippingPolicy = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Calculator className="h-5 w-5 mr-2 text-yellow-600" />
-                  Customs, Duties &amp; Import Taxes
+                  Customs, Duties & Import Taxes
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
                 <p><strong>Import Responsibility:</strong> International buyers are responsible for all import-related costs:</p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li><strong>Import Duties:</strong> Tariffs based on product classification and country of import</li>
-                  <li><strong>VAT/GST:</strong> Value Added Tax (EU/UK) or Goods &amp; Services Tax (Australia)</li>
+                  <li><strong>VAT/GST:</strong> Value Added Tax (EU/UK) or Goods & Services Tax (Australia)</li>
                   <li><strong>Customs Clearance Fees:</strong> Broker fees and administrative charges</li>
                   <li><strong>Inspection Fees:</strong> Some countries require chemical product inspection</li>
                 </ul>
-
+                
                 <div className="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-200">
-                  <h4 className="font-semibold text-blue-900 mb-2">How tax is handled at checkout</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2">💡 Tax Payment Options at Checkout</h4>
+                  <p className="text-blue-800 text-sm mb-2">International customers have two options:</p>
                   <ul className="list-disc pl-6 text-blue-800 text-sm space-y-1">
-                    <li><strong>United States:</strong> Sales tax is calculated from your shipping ZIP code and state rate.</li>
-                    <li><strong>European Union, United Kingdom, Australia:</strong> VAT or GST is charged at the standard rate for your country at checkout.</li>
-                    <li><strong>All other destinations (DDU):</strong> No tax is charged at checkout. Import VAT, duties and customs clearance fees are payable to the carrier or customs authority on delivery and are the buyer's responsibility.</li>
+                    <li><strong>Prepay at Checkout (DDP):</strong> Pay VAT/GST during checkout for faster customs clearance. Tax is included in your order total.</li>
+                    <li><strong>Pay at Customs (DDU):</strong> Choose to pay duties and taxes directly to customs upon delivery. Your invoice will show 0% tax.</li>
                   </ul>
                   <p className="text-blue-700 text-xs mt-2">
-                    <strong>DDU = Delivered Duty Unpaid</strong> — the buyer settles import charges with customs.
+                    <strong>DDP = Delivered Duty Paid</strong> (we handle customs) | <strong>DDU = Delivered Duty Unpaid</strong> (you handle customs)
                   </p>
                 </div>
-
 
                 <div className="bg-gray-100 p-4 rounded-lg mt-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Estimated Tax Rates</h4>
@@ -379,48 +263,12 @@ const ShippingPolicy = () => {
               </CardContent>
             </Card>
 
-            {/* Equipment vs Bulk Gas classification */}
-            <Card className="border-indigo-200">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-indigo-600" />
-                  International Orders: Equipment vs. Bulk Refrigerant Gas
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <p>Export requirements differ by product type. Please review which category your order falls under.</p>
-                <div className="grid gap-4 md:grid-cols-2 mt-4">
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-green-900 mb-2">HVAC Equipment, Tools &amp; Gauges</h4>
-                    <ul className="list-disc pl-5 text-sm text-green-800 space-y-1">
-                      <li>Mini-splits, heat pumps, PTAC units, manifolds, gauges, scales and detectors</li>
-                      <li>Ship on a standard commercial invoice and customs declaration</li>
-                      <li>No chemical import permit required</li>
-                      <li>Pre-charged equipment may still require an equipment import licence in the EU and Australia</li>
-                    </ul>
-                  </div>
-                  <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                    <h4 className="font-semibold text-orange-900 mb-2">Bulk Refrigerant Cylinders &amp; Pallets</h4>
-                    <ul className="list-disc pl-5 text-sm text-orange-800 space-y-1">
-                      <li>Move as Dangerous Goods under IATA and IMDG rules with a Dangerous Goods Declaration</li>
-                      <li>Require a valid import/handling licence in the destination country before booking freight</li>
-                      <li>Quoted individually and settled by bank wire against a proforma invoice, so customs paperwork is prepared with your broker</li>
-                      <li>Released for shipment only after our export team verifies your licence</li>
-                    </ul>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mt-4">
-                  For overseas pallet or container quantities, please submit a request through our quote form so freight, routing and clearance can be tailored to your destination port.
-                </p>
-              </CardContent>
-            </Card>
-
             {/* EU F-Gas Regulations */}
             <Card className="border-orange-200 bg-orange-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2 text-orange-600" />
-                  EU &amp; UK F-Gas Regulations (EU Regulation 2024/573)
+                  EU F-Gas Regulations (Regulation 517/2014)
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
@@ -429,9 +277,7 @@ const ShippingPolicy = () => {
                     ⚠️ MANDATORY FOR EU CUSTOMERS PURCHASING REFRIGERANTS
                   </p>
                   <p className="text-orange-800 text-sm">
-                    Under EU Regulation 2024/573 (which replaced Regulation 517/2014), purchasers of fluorinated greenhouse gases (F-gases)
-                    must hold valid F-Gas certification, and importers of bulk HFCs must be registered in the EU F-Gas Portal and HFC Registry
-                    with sufficient quota for the quantity imported. Buyers in Great Britain are covered by the retained UK F-Gas Regulation.
+                    Under EU Regulation 517/2014, purchasers of fluorinated greenhouse gases (F-gases) must hold valid F-Gas certification.
                   </p>
                 </div>
 
@@ -440,8 +286,6 @@ const ShippingPolicy = () => {
                   <li><strong>Valid F-Gas Certification:</strong> Required at checkout for all EU refrigerant orders</li>
                   <li><strong>Certification Number:</strong> Your national F-Gas certification number must be provided</li>
                   <li><strong>Validity Confirmation:</strong> You must confirm your certification is current and valid</li>
-                  <li><strong>Bulk Imports:</strong> For cylinder and pallet quantities we also request your F-Gas Portal registration (HFC Registry) ID and confirmation of available quota before freight is booked</li>
-                  <li><strong>EORI Number:</strong> Required by your customs broker to clear the shipment</li>
                 </ul>
 
                 <h4 className="font-semibold mt-4">Covered Products (F-Gases)</h4>
@@ -468,53 +312,6 @@ const ShippingPolicy = () => {
                     If you are unable to provide valid certification, please contact us to discuss alternative arrangements.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Australian import compliance */}
-            <Card className="border-orange-200 bg-orange-50/30">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="h-5 w-5 mr-2 text-orange-600" />
-                  Australian Import Compliance (OPSGGM Act)
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <div className="bg-orange-100 p-4 rounded-lg mb-4 border border-orange-300">
-                  <p className="text-orange-900 font-semibold mb-2">
-                    ⚠️ MANDATORY FOR AUSTRALIAN CUSTOMERS PURCHASING REFRIGERANTS
-                  </p>
-                  <p className="text-orange-800 text-sm">
-                    Imports of HFC and HCFC refrigerants into Australia are controlled under the Ozone Protection and Synthetic Greenhouse Gas
-                    Management Act 1989, administered by the Department of Climate Change, Energy, the Environment and Water (DCCEEW).
-                  </p>
-                </div>
-
-                <h4 className="font-semibold">Licence Requirements</h4>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li><strong>Controlled Substances Licence:</strong> A DCCEEW licence (with HFC quota where applicable) is required to import bulk refrigerant gas</li>
-                  <li><strong>ARC Authorisation:</strong> Buyers acquiring or handling refrigerant must hold an ARC Refrigerant Trading Authorisation (RTA) or Refrigerant Handling Licence (RHL)</li>
-                  <li><strong>Equipment Licence:</strong> Pre-charged air conditioning and heat pump equipment requires an Equipment Licence (EQPL) or import under the relevant exemption</li>
-                  <li><strong>Checkout Verification:</strong> Australian refrigerant orders must include your licence number, which our export team verifies with the issuing authority before freight is booked</li>
-                </ul>
-
-                <h4 className="font-semibold mt-4">New Zealand</h4>
-                <p className="text-sm">
-                  New Zealand buyers are covered by the Ozone Layer Protection Act 1996 and the synthetic greenhouse gas levy; an EPA import permit
-                  is required for bulk refrigerant gas.
-                </p>
-
-                <div className="bg-red-50 p-4 rounded-lg mt-4 border border-red-200">
-                  <p className="text-red-800 text-sm">
-                    <strong>❌ Orders Without a Valid Licence:</strong> Cannot be processed for Australian or New Zealand delivery.
-                    HVAC equipment, tools and gauges are unaffected and ship on a standard commercial invoice.
-                  </p>
-                </div>
-
-                <p className="text-xs text-gray-500 mt-4">
-                  This summary is provided for guidance only and does not replace advice from your customs broker or the relevant authority.
-                  Import rules change; buyers are responsible for confirming their current obligations.
-                </p>
               </CardContent>
             </Card>
 
@@ -616,9 +413,9 @@ const ShippingPolicy = () => {
               <p className="text-blue-800">
                 For shipping inquiries or to request a freight quote:
                 <br />
-                <strong>Email:</strong> sales@alperrefrigerants.com
+                <strong>Email:</strong> shipping@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> +1-786-987-0501
+                <strong>Phone:</strong> +1-682-215-2974
                 <br />
                 <strong>Business Hours:</strong> Monday-Friday, 7:00 AM - 6:00 PM EST
               </p>

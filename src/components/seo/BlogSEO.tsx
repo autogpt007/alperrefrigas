@@ -21,8 +21,6 @@ interface BlogSEOProps {
 }
 
 const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
-  const rawImage = post.banner_image_url || post.featured_image_url;
-  const absImage = rawImage ? (rawImage.startsWith('http') ? rawImage : `https://alperrefrigerants.com${rawImage}`) : undefined;
   // Extract keywords from content and tags
   const extractKeywords = (): string => {
     const keywords = new Set<string>();
@@ -54,25 +52,25 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
     "@type": "Article",
     "headline": post.title,
     "description": post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, ''),
-    "image": absImage || "https://alperrefrigerants.com/logo.png",
+    "image": post.banner_image_url || post.featured_image_url || "https://northamericanrefrigerants.com/logo.svg",
     "author": {
       "@type": "Organization",
-      "name": "Alper Refrigerants",
-      "url": "https://alperrefrigerants.com"
+      "name": "North American Refrigerants",
+      "url": "https://northamericanrefrigerants.com"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Alper Refrigerants",
+      "name": "North American Refrigerants",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://alperrefrigerants.com/logo.png"
+        "url": "https://northamericanrefrigerants.com/logo.svg"
       }
     },
     "datePublished": post.created_at,
     "dateModified": post.updated_at,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": canonical || `https://alperrefrigerants.com/blog/${post.slug}`
+      "@id": canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`
     },
     "articleSection": "Refrigerant Industry",
     "keywords": extractKeywords(),
@@ -94,50 +92,30 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://alperrefrigerants.com"
+        "item": "https://northamericanrefrigerants.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "News",
-        "item": "https://alperrefrigerants.com/blog"
+        "item": "https://northamericanrefrigerants.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": post.title,
-        "item": canonical || `https://alperrefrigerants.com/blog/${post.slug}`
+        "item": canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`
       }
     ]
   };
 
   const cleanExcerpt = post.excerpt || post.body.substring(0, 160).replace(/<[^>]*>/g, '');
-  const currentUrl = `https://alperrefrigerants.com/blog/${post.slug}`;
-  void canonical;
-
-  // FAQPage schema from the "Frequently Asked Questions" section (h3 question + following p answer)
-  const faqStructuredData = (() => {
-    const idx = post.body.search(/<h2[^>]*>\s*Frequently Asked Questions/i);
-    if (idx < 0) return null;
-    const section = post.body.slice(idx);
-    const items: { q: string; a: string }[] = [];
-    const re = /<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(section))) {
-      items.push({ q: m[1].replace(/<[^>]*>/g, '').trim(), a: m[2].replace(/<[^>]*>/g, '').trim() });
-    }
-    if (!items.length) return null;
-    return {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": items.map(i => ({ "@type": "Question", "name": i.q, "acceptedAnswer": { "@type": "Answer", "text": i.a } })),
-    };
-  })();
+  const currentUrl = canonical || `https://northamericanrefrigerants.com/blog/${post.slug}`;
 
   return (
     <Helmet>
       {/* Basic Meta Tags */}
-      <title>{post.title} | Alper Refrigerants</title>
+      <title>{post.title} | North American Refrigerants - Expert Refrigerant Solutions</title>
       <meta name="description" content={cleanExcerpt} />
       <meta name="keywords" content={extractKeywords()} />
       <link rel="canonical" href={currentUrl} />
@@ -147,11 +125,11 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta property="og:description" content={cleanExcerpt} />
       <meta property="og:type" content="article" />
       <meta property="og:url" content={currentUrl} />
-      <meta property="og:site_name" content="Alper Refrigerants" />
+      <meta property="og:site_name" content="North American Refrigerants" />
       <meta property="og:locale" content="en_US" />
       {(post.banner_image_url || post.featured_image_url) && (
         <>
-          <meta property="og:image" content={absImage} />
+          <meta property="og:image" content={post.banner_image_url || post.featured_image_url} />
           <meta property="og:image:alt" content={post.title} />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
@@ -161,7 +139,7 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       {/* Article Meta Tags */}
       <meta property="article:published_time" content={post.created_at} />
       <meta property="article:modified_time" content={post.updated_at} />
-      <meta property="article:author" content="Alper Refrigerants" />
+      <meta property="article:author" content="North American Refrigerants" />
       <meta property="article:section" content="Refrigerant Industry" />
       {post.tags && post.tags.map(tag => (
         <meta key={tag} property="article:tag" content={tag} />
@@ -172,13 +150,13 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <meta name="twitter:title" content={post.title} />
       <meta name="twitter:description" content={cleanExcerpt} />
       {(post.banner_image_url || post.featured_image_url) && (
-        <meta name="twitter:image" content={absImage} />
+        <meta name="twitter:image" content={post.banner_image_url || post.featured_image_url} />
       )}
 
       {/* Additional SEO Tags */}
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
       <meta name="googlebot" content="index, follow" />
-      <meta name="author" content="Alper Refrigerants" />
+      <meta name="author" content="North American Refrigerants" />
       <meta name="article:opinion" content="false" />
       <meta name="news_keywords" content={extractKeywords()} />
       
@@ -189,11 +167,6 @@ const BlogSEO: React.FC<BlogSEOProps> = ({ post, canonical }) => {
       <script type="application/ld+json">
         {JSON.stringify(breadcrumbStructuredData)}
       </script>
-      {faqStructuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(faqStructuredData)}
-        </script>
-      )}
     </Helmet>
   );
 };

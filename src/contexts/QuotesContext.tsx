@@ -2,11 +2,10 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { quoteRequestSchema } from '@/lib/quoteRequest';
 
 export interface QuoteItem {
   id?: string;
-  product_id?: string | null;
+  product_id?: string;
   product_name: string;
   quantity: number;
   packaging?: string;
@@ -15,7 +14,7 @@ export interface QuoteItem {
 export interface Quote {
   id: string;
   quote_number: string;
-  user_id: string | null;
+  user_id: string;
   customer_name: string;
   customer_email: string;
   company_name?: string;
@@ -33,7 +32,7 @@ interface QuotesContextType {
   loading: boolean;
   error: string | null;
   fetchQuotes: () => Promise<void>;
-  createQuote: (quoteData: Omit<Quote, 'id' | 'quote_number' | 'created_at' | 'updated_at'>, protection?: { formToken: string; website: string }) => Promise<Quote | null>;
+  createQuote: (quoteData: Omit<Quote, 'id' | 'quote_number' | 'created_at' | 'updated_at'>) => Promise<Quote | null>;
 }
 
 const QuotesContext = createContext<QuotesContextType | undefined>(undefined);
@@ -89,23 +88,97 @@ export const QuotesProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createQuote = async (quoteData: Omit<Quote, 'id' | 'quote_number' | 'created_at' | 'updated_at'>, protection?: { formToken: string; website: string }): Promise<Quote | null> => {
+  const createQuote = async (quoteData: Omit<Quote, 'id' | 'quote_number' | 'created_at' | 'updated_at'>): Promise<Quote | null> => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to submit a quote request",
+        variant: "destructive"
+      });
+      return null;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const payload = quoteRequestSchema.parse(quoteData);
-      if (!protection?.formToken) throw new Error('Please reopen the quote form and try again.');
-      const { data: result, error: submitError } = await supabase.functions.invoke('submit-quote', { body: { ...payload, ...protection } });
-      if (submitError || !result?.success) throw new Error(result?.error || 'Unable to submit your request. Please try again.');
+      // Create the quote
+      const { data: newQuote, error: quoteError } = await supabase
+        .from('quotes')
+        .insert({
+          user_id: user.id,
+          customer_name: quoteData.customer_name,
+          customer_email: quoteData.customer_email,
+          company_name: quoteData.company_name,
+          phone: quoteData.phone,
+          shipping_address: quoteData.shipping_address,
+          status: quoteData.status,
+          notes: quoteData.notes
+        })
+        .select()
+        .single();
+
+      if (quoteError) throw quoteError;
+
+      // Create quote items
+      if (quoteData.items && quoteData.items.length > 0) {
+        const quoteItems = quoteData.items.map(item => ({
+          quote_id: newQuote.id,
+          product_id: item.product_id,
+          product_name: item.product_name,
+          quantity: item.quantity,
+          packaging: item.packaging
+        }));
+
+        const { error: itemsError } = await supabase
+          .from('quote_items')
+          .insert(quoteItems);
+
+        if (itemsError) throw itemsError;
+      }
+
+      // Fetch the complete quote with items
+      const { data: completeQuote, error: fetchError } = await supabase
+        .from('quotes')
+        .select(`
+          *,
+          quote_items (
+            id,
+            product_id,
+            product_name,
+            quantity,
+            packaging
+          )
+        `)
+        .eq('id', newQuote.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
       const formattedQuote: Quote = {
-        ...quoteData, user_id: user?.id ?? null, id: result.id, quote_number: result.quote_number,
-        created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+        ...completeQuote,
+        status: completeQuote.status as Quote['status'],
+        items: completeQuote.quote_items || []
       };
 
       setQuotes(prev => [formattedQuote, ...prev]);
 
-      if (!result.notificationsQueued) toast({ title: 'Quote saved', description: 'Email delivery is delayed. Your request is available to our sales team.' });
+      // Send quote confirmation email to customer
+      try {
+        await supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'quote-confirmation',
+            recipientEmail: formattedQuote.customer_email,
+            idempotencyKey: `quote-confirm-${formattedQuote.id}`,
+            templateData: {
+              customerName: formattedQuote.customer_name,
+              quoteNumber: formattedQuote.quote_number,
+            },
+          },
+        });
+      } catch (emailErr) {
+        console.error('Quote confirmation email failed:', emailErr);
+      }
 
       toast({
         title: "Quote request submitted!",

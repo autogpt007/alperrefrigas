@@ -29,7 +29,7 @@ const TermsOfService = () => {
             <h3 className="font-semibold text-blue-900 mb-2">Alper Chemical Group</h3>
             <p className="text-blue-800 text-sm">
               382 NE 191st St, Miami, FL 33179, United States<br />
-              Tel: +1-786-987-0501 | Email: legal@alperrefrigerants.com<br />
+              Tel: +1-682-215-2974 | Email: legal@alperrefrigerants.com<br />
               <strong>B2B Supplier – Sales to EPA-certified HVAC professionals only</strong>
             </p>
           </div>
@@ -122,7 +122,7 @@ const TermsOfService = () => {
               <CardContent className="prose max-w-none">
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Prices are subject to change without notice due to market fluctuations</li>
-                  <li>Full payment is required before shipment. We do not offer Net 15, Net 30 or any credit terms</li>
+                  <li>Payment is due upon order confirmation unless credit terms are pre-approved</li>
                   <li>Late payment charges of 1.5% per month may apply to overdue accounts</li>
                   <li>All prices are FOB shipping point unless otherwise specified</li>
                   <li>Hazmat shipping and handling charges are additional</li>
@@ -203,7 +203,7 @@ const TermsOfService = () => {
                 <br />
                 <strong>Email:</strong> legal@alperrefrigerants.com
                 <br />
-                <strong>Phone:</strong> +1-786-987-0501
+                <strong>Phone:</strong> +1-682-215-2974
                 <br />
                 <strong>Address:</strong> 382 NE 191st St, Miami, FL 33179, United States
                 <br />

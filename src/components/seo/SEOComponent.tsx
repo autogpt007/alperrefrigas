@@ -34,7 +34,6 @@ interface SEOProps {
     image: string;
     moq?: number;
     category?: string;
-    productType?: string;
     specifications?: Record<string, any>;
   };
   aggregateRating?: {
@@ -65,7 +64,7 @@ const SEOComponent: React.FC<SEOProps> = ({
   description,
   keywords,
   canonicalUrl,
-  ogImage = '/logo.png',
+  ogImage = '/logo.svg',
   ogType = 'website',
   structuredData,
   robotsContent,
@@ -82,8 +81,9 @@ const SEOComponent: React.FC<SEOProps> = ({
   const siteUrl = SITE_URL;
   const businessName = 'Alper Refrigerants';
   const legalName = 'Alper Chemical Group';
-  const mainPhone = '+1-786-987-0501';
+  const mainPhone = '+1-682-215-2974';
   const salesEmail = 'sales@alperrefrigerants.com';
+  const supportEmail = 'support@alperrefrigerants.com';
   
   const fullTitle = title.includes('Alper') ? title : `${title} | ${businessName}`;
   
@@ -112,16 +112,7 @@ const SEOComponent: React.FC<SEOProps> = ({
     "availability": normalizeAvailability(availability),
     "itemCondition": "https://schema.org/NewCondition",
     "url": offerUrl || `${siteUrl}/products/${sku?.toLowerCase() || ''}`,
-    "seller": { "@type": "Organization", "name": businessName },
-    // Mirrors the published /refund-policy page (30-day window, returns by mail)
-    "hasMerchantReturnPolicy": ["US", "GB", "CA"].map((country) => ({
-      "@type": "MerchantReturnPolicy",
-      "applicableCountry": country,
-      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-      "merchantReturnDays": 30,
-      "returnMethod": "https://schema.org/ReturnByMail",
-      "merchantReturnLink": `${siteUrl}/refund-policy`
-    }))
+    "seller": { "@type": "Organization", "name": businessName }
   });
 
 
@@ -193,23 +184,108 @@ const SEOComponent: React.FC<SEOProps> = ({
     }))
   } : null;
 
-  // Verified legal and contact identity shared by every public page.
+  // Enhanced Organization structured data
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": businessName,
     "legalName": legalName,
+    "alternateName": ["Alper Refrigerant", "Alper Chemical Group"],
     "url": siteUrl,
-    "logo": `${siteUrl}/logo.png`,
-    "telephone": mainPhone,
-    "email": salesEmail,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "382 NE 191st St",
-      "addressLocality": "Miami",
-      "addressRegion": "FL",
-      "postalCode": "33179",
-      "addressCountry": "US"
+    "logo": `${siteUrl}/logo.svg`,
+    "description": "Professional wholesale refrigerant distributor specializing in HFC, HFO, and natural refrigerants for HVAC, automotive, and industrial applications. EPA certified with competitive bulk pricing.",
+    "foundingDate": "2020",
+    "serviceArea": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Country", "name": "Canada" },
+      { "@type": "Country", "name": "Australia" },
+      { "@type": "AdministrativeArea", "name": "European Union" }
+    ],
+    "areaServed": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Country", "name": "Canada" },
+      { "@type": "Country", "name": "Australia" },
+      { "@type": "AdministrativeArea", "name": "European Union" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Refrigerant Products",
+      "itemListElement": [
+        {
+          "@type": "OfferCatalog",
+          "name": "HFC Refrigerants",
+          "description": "High-performance HFC refrigerants for commercial and industrial applications"
+        },
+        {
+          "@type": "OfferCatalog", 
+          "name": "HFO Refrigerants",
+          "description": "Next-generation low-GWP HFO refrigerants for environmental compliance"
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "Natural Refrigerants",
+          "description": "Eco-friendly natural refrigerant solutions"
+        }
+      ]
+    },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": mainPhone,
+        "contactType": "sales",
+        "email": salesEmail,
+        "availableLanguage": ["English", "Spanish"],
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "17:00"
+        }
+      },
+      {
+        "@type": "ContactPoint", 
+        "telephone": mainPhone,
+        "contactType": "customer service",
+        "email": supportEmail,
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "17:00"
+        }
+      }
+    ],
+    "address": [
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "TX",
+        "addressLocality": "Houston",
+        "postalCode": "77001"
+      },
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "FL", 
+        "addressLocality": "Miami"
+      },
+      {
+        "@type": "PostalAddress",
+        "addressCountry": "US",
+        "addressRegion": "CA",
+        "addressLocality": "Los Angeles"
+      }
+    ],
+    "sameAs": [
+      "https://www.facebook.com/alperrefrigerants",
+      "https://www.linkedin.com/company/alperrefrigerants"
+    ],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${siteUrl}/products?search={search_term_string}`,
+      "query-input": "required name=search_term_string"
     }
   };
 

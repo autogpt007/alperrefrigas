@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,11 +17,6 @@ interface SubmissionData {
   shipping_address?: string;
   notes?: string;
   type: 'contact' | 'newsletter' | 'quote';
-  item?: {
-    product_name?: string;
-    quantity?: number | string;
-    packaging?: string;
-  };
 }
 
 // Rate limiting storage (in-memory for demo - use Redis in production)
@@ -126,18 +121,7 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Attach the quote to the signed-in customer when the caller sent a session
-    // token, so it shows up in their account. Anonymous callers stay anonymous.
-    let requesterId: string | null = null;
-    const authHeader = req.headers.get('Authorization') ?? '';
-    const token = authHeader.replace('Bearer ', '').trim();
-    if (token) {
-      const { data: userData } = await supabaseClient.auth.getUser(token);
-      requesterId = userData?.user?.id ?? null;
-    }
-
     let insertResult;
-    let quoteNumber: string | null = null;
 
     // Insert based on submission type
     switch (sanitizedData.type) {
@@ -195,30 +179,8 @@ serve(async (req) => {
             shipping_address: sanitizedData.shipping_address,
             notes: sanitizedData.notes,
             status: 'pending',
-            user_id: requesterId // null for anonymous submissions
-          })
-          .select('id, quote_number')
-          .single();
-
-        if (!insertResult.error && insertResult.data) {
-          quoteNumber = insertResult.data.quote_number ?? null;
-
-          const item = submissionData.item;
-          if (item?.product_name) {
-            const quantity = Number(item.quantity) > 0 ? Number(item.quantity) : 1;
-            const { error: itemError } = await supabaseClient
-              .from('quote_items')
-              .insert({
-                quote_id: insertResult.data.id,
-                product_name: sanitizeInput(String(item.product_name)).slice(0, 300),
-                quantity,
-                packaging: item.packaging ? sanitizeInput(String(item.packaging)).slice(0, 120) : null,
-              });
-            if (itemError) {
-              console.error('Error inserting quote item:', itemError);
-            }
-          }
-        }
+            user_id: null // Anonymous submission
+          });
         break;
     }
 
@@ -251,7 +213,6 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: `${sanitizedData.type} submitted successfully`,
-        quote_number: quoteNumber,
         type: sanitizedData.type
       }),
       {

@@ -50,7 +50,7 @@ const R454BLandingPage = () => {
     },
     {
       question: "Where can I buy R-454B in bulk?",
-      answer: "Alper Refrigerants is a wholesale R-454B supplier headquartered in Miami, Florida. We sell by cylinder, pallet or container, verify EPA 608 certification before shipping, and handle orders in 0-3 business days."
+      answer: "Alper Refrigerants is a wholesale R-454B supplier shipping from distribution centers in Texas, Florida, and California. We provide EPA-compliant documentation, competitive container-load pricing, and same-day shipping."
     }
   ];
 
@@ -64,7 +64,7 @@ const R454BLandingPage = () => {
     <>
       <SEOComponent
         title="R-454B Wholesale | R-410A Replacement"
-        description="Buy R-454B (Opteon XL41) wholesale. The EPA-approved low-GWP replacement for R-410A with 78% lower warming potential. Cylinder, pallet and container pricing."
+        description="Buy R-454B (Opteon XL41) wholesale. The EPA-approved low-GWP replacement for R-410A with 78% lower warming potential. Bulk pricing, container loads, same-day shipping."
         keywords="R-454B wholesale, R-454B refrigerant, Opteon XL41, R-410A replacement, low GWP refrigerant, A2L refrigerant wholesale, R-454B bulk pricing, R-454B supplier, buy R-454B, R-454B container load, AIM Act refrigerant"
         canonicalUrl="/products/r-454b"
         structuredData={structuredData}
@@ -204,12 +204,12 @@ const R454BLandingPage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
-                { icon: <Globe className="h-6 w-6" />, title: "Global Shipping", desc: "Regional dispatch hubs for the Americas, Europe and Asia-Pacific" },
-                { icon: <Truck className="h-6 w-6" />, title: "Clear Delivery Times", desc: "Handled in 0-3 business days, delivered in 0-13" },
+                { icon: <Globe className="h-6 w-6" />, title: "Global Shipping", desc: "Distribution centers in TX, FL, CA with international delivery" },
+                { icon: <Truck className="h-6 w-6" />, title: "Same-Day Shipping", desc: "In-stock orders ship same day, 1-3 day delivery" },
                 { icon: <Shield className="h-6 w-6" />, title: "EPA Compliant", desc: "Full documentation, SDS, and certificates of analysis" },
                 { icon: <CheckCircle className="h-6 w-6" />, title: "99.9% Purity", desc: "Lab-verified purity guarantee on every shipment" },
                 { icon: <Package className="h-6 w-6" />, title: "Container Loads", desc: "20ft and 40ft container-load pricing available" },
-                { icon: <Award className="h-6 w-6" />, title: "Single Cylinders or Pallets", desc: "Order 1-39 cylinders or switch to pallet pricing at 40" },
+                { icon: <Award className="h-6 w-6" />, title: "13+ Years Experience", desc: "Trusted by 500+ HVAC contractors and distributors" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4 p-4">
                   <div className="text-primary mt-1">{item.icon}</div>

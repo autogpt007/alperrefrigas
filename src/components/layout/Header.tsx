@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench, Wind, Phone } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, FileText, ChevronDown, Package, Snowflake, Wrench, Wind } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useRFQ } from '@/contexts/RFQContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,7 +14,6 @@ import LanguageSwitcher from '../ui/LanguageSwitcher';
 import CurrencySwitcher from '../ui/CurrencySwitcher';
 import QuoteDialog from '../ui/QuoteDialog';
 import QuoteTypeSelector from '../ui/QuoteTypeSelector';
-import TrustBar from './TrustBar';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -56,8 +55,8 @@ const Header = () => {
         logo_url: settingsMap.logo_url || '',
         company_name: settingsMap.company_name || 'Alper Refrigerants',
         company_tagline: settingsMap.company_tagline || 'Professional Refrigerant Distributor',
-        main_phone: settingsMap.main_phone || '1-786-987-0501',
-        header_email: settingsMap.header_email || 'sales@alperrefrigerants.com'
+        main_phone: settingsMap.main_phone || '1-682-215-2974',
+        header_email: settingsMap.header_email || 'info@alperrefrigerants.com'
       };
     },
   });
@@ -74,7 +73,6 @@ const Header = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
-      setIsMenuOpen(false);
     }
   };
 
@@ -111,18 +109,6 @@ const Header = () => {
       description: 'Bulk wholesale AC units - mini-splits, window & portable',
       icon: 'wind'
     },
-    {
-      title: 'Heating & Heat Pumps',
-      href: '/products/heating-heat-pumps',
-      description: 'Single-zone, multi-zone and PTAC heat pumps that heat and cool',
-      icon: 'wind'
-    },
-    {
-      title: 'HVAC Tools & Gauges',
-      href: '/products/hvac-tools',
-      description: 'Manifold gauges, vacuum pumps, recovery gear and safety kit',
-      icon: 'wrench'
-    },
     { 
       title: 'Accessories',
       href: '/products/accessories', 
@@ -132,14 +118,13 @@ const Header = () => {
   ];
 
   return (
-    <>
     <header className="bg-white shadow-lg sticky top-0 z-50" style={{"--header-height": "83px"} as React.CSSProperties}>
       <div className="container mx-auto px-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b border-gray-200">
           <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
-            <span>📞 {logoSettings?.main_phone || '1-786-987-0501'}</span>
-            <span className="hidden md:inline">📧 {logoSettings?.header_email || 'sales@alperrefrigerants.com'}</span>
+            <span>📞 {logoSettings?.main_phone || '1-682-215-2974'}</span>
+            <span className="hidden md:inline">📧 {logoSettings?.header_email || 'info@alperrefrigerants.com'}</span>
           </div>
           <div className="flex items-center space-x-4 ml-auto">
             <div className="hidden sm:flex items-center space-x-4">
@@ -186,28 +171,26 @@ const Header = () => {
         </div>
 
         {/* Main Header */}
-        <div className="flex items-center justify-between gap-2 py-2">
+        <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link to="/" className="flex min-w-0 flex-shrink items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             {logoSettings?.logo_url ? (
               <img 
                 src={logoSettings.logo_url} 
-                alt={logoSettings.company_name || 'Alper Refrigerants logo'} 
-                className="h-16 w-auto max-w-[9rem] flex-shrink-0 object-contain sm:h-20 sm:max-w-[13rem] lg:max-w-[15rem]"
+                alt={logoSettings.company_name || 'Company Logo'} 
+                className="h-12 w-auto object-contain"
               />
             ) : (
-              <div className="flex min-w-0 items-center space-x-2">
-                <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">
-                    {logoSettings?.company_name?.charAt(0) || 'A'}
-                  </span>
-                </div>
-                <div className="min-w-0">
-                  <span className="block truncate text-base sm:text-2xl font-bold text-gray-900 leading-tight">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
-                  <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
-                </div>
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">
+                  {logoSettings?.company_name?.charAt(0) || 'FF'}
+                </span>
               </div>
             )}
+            <div>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900 block">{logoSettings?.company_name || 'Alper Refrigerants'}</span>
+              <p className="hidden sm:block text-sm text-gray-600">{logoSettings?.company_tagline || 'Professional Refrigerant Distributor'}</p>
+            </div>
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -220,7 +203,7 @@ const Header = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="rounded-r-none"
               />
-              <Button type="submit" aria-label="Search products" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -264,7 +247,6 @@ const Header = () => {
               variant="ghost"
               size="sm"
               className="md:hidden"
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -273,10 +255,6 @@ const Header = () => {
         </div>
 
         {/* Navigation - Desktop */}
-        <form onSubmit={handleSearch} className="flex gap-2 pb-3 md:hidden">
-          <Input aria-label="Search products" placeholder="Search refrigerants, AC & tools" maxLength={200} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-          <Button type="submit" size="icon" aria-label="Search catalog"><Search className="h-4 w-4" /></Button>
-        </form>
         <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-gray-200">
           <NavigationMenu>
             <NavigationMenuList className="space-x-8">
@@ -370,8 +348,6 @@ const Header = () => {
         </nav>
       </div>
 
-
-
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
@@ -385,7 +361,7 @@ const Header = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="rounded-r-none"
               />
-              <Button type="submit" aria-label="Search products" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="rounded-l-none bg-blue-600 hover:bg-blue-700">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -446,8 +422,8 @@ const Header = () => {
               ))}
               {/* Mobile-only contact info and switchers */}
               <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
-                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-786-987-0501'}</div>
-                <div className="text-sm text-gray-600">📧 {logoSettings?.header_email || 'sales@alperrefrigerants.com'}</div>
+                <div className="text-sm text-gray-600">📞 {logoSettings?.main_phone || '1-682-215-2974'}</div>
+                <div className="text-sm text-gray-600">📧 {logoSettings?.header_email || 'info@alperrefrigerants.com'}</div>
                 <div className="flex items-center space-x-4 pt-2">
                   <CurrencySwitcher />
                   <LanguageSwitcher />
@@ -465,12 +441,6 @@ const Header = () => {
         </div>
       )}
     </header>
-    <TrustBar />
-    {!/^\/(admin|auth|kyc|quote-confirmation|order-confirmation)/.test(location.pathname) && <div className="fixed bottom-4 right-4 left-20 z-40 grid grid-cols-2 gap-2 border rounded-md bg-background p-2 shadow-lg md:hidden">
-      <Button asChild variant="outline" size="sm"><a href={`tel:${(logoSettings?.main_phone || '17869870501').replace(/[^+\d]/g, '')}`}><Phone className="h-4 w-4 mr-2" />Call sales</a></Button>
-      {location.pathname.startsWith('/products/') && !productMenuItems.some(item => item.href === location.pathname) ? <Button size="sm" onClick={() => window.dispatchEvent(new Event('open-product-quote'))}><FileText className="h-4 w-4 mr-2" />Quick quote</Button> : <QuoteTypeSelector><Button size="sm"><FileText className="h-4 w-4 mr-2" />Quick quote</Button></QuoteTypeSelector>}
-    </div>}
-    </>
   );
 };
 

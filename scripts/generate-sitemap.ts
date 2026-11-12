@@ -11,7 +11,6 @@
 
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { ADDITIONAL_DISCOVERY_PATHS, isPublicDiscoveryPath, pageLastmod, renderCrawlerPolicy } from "../src/lib/crawlerPolicy";
 
 const DEFAULT_SITE_URL = "https://alperrefrigerants.com";
 
@@ -36,6 +35,7 @@ interface SitemapEntry {
   priority?: string;
 }
 
+const today = new Date().toISOString().split("T")[0];
 
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
@@ -54,7 +54,6 @@ const staticEntries: SitemapEntry[] = [
   { path: "/products/category/industrial", changefreq: "weekly", priority: "0.8" },
   { path: "/products/r-454b", changefreq: "weekly", priority: "0.9" },
   { path: "/products/hfo-refrigerants", changefreq: "weekly", priority: "0.9" },
-  { path: "/products/r-22-replacements", changefreq: "weekly", priority: "0.9" },
   { path: "/certifications", changefreq: "monthly", priority: "0.6" },
   { path: "/compliance", changefreq: "monthly", priority: "0.6" },
   { path: "/shipping-policy", changefreq: "monthly", priority: "0.5" },
@@ -99,7 +98,7 @@ async function dynamicEntries(): Promise<SitemapEntry[]> {
       if (!p?.name) continue;
       entries.push({
         path: `/products/${createSlug(p.name)}`,
-        lastmod: pageLastmod(p.updated_at),
+        lastmod: (p.updated_at || "").split("T")[0] || today,
         changefreq: "weekly",
         priority: "0.7",
       });
@@ -113,7 +112,7 @@ async function dynamicEntries(): Promise<SitemapEntry[]> {
       if (!b?.slug) continue;
       entries.push({
         path: `/blog/${b.slug}`,
-        lastmod: pageLastmod(b.updated_at),
+        lastmod: (b.updated_at || "").split("T")[0] || today,
         changefreq: "monthly",
         priority: "0.6",
       });
@@ -146,16 +145,67 @@ function renderSitemap(entries: SitemapEntry[]): string {
   ].join("\n");
 }
 
+function renderRobots(): string {
+  return `User-agent: *
+Allow: /
+
+# Search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Social preview crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OpenAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Private / utility areas
+Disallow: /admin
+Disallow: /admin/
+Disallow: /account
+Disallow: /checkout
+Disallow: /cart
+Disallow: /order-confirmation
+Disallow: /kyc/
+Disallow: /crypto-payment
+Disallow: /unsubscribe
+Disallow: /health
+
+Sitemap: ${BASE_URL}/sitemap.xml
+`;
+}
+
 async function main() {
   const entries = [
-    ...staticEntries,
-    ...ADDITIONAL_DISCOVERY_PATHS.map(path => ({ path, changefreq: "weekly" as const, priority: "0.7" })),
+    ...staticEntries.map((e) => ({ lastmod: today, ...e })),
     ...(await dynamicEntries()),
   ];
-  const publicEntries = [...new Map(entries.filter(e => isPublicDiscoveryPath(e.path)).map(e => [e.path, e])).values()];
-  writeFileSync(resolve("public/sitemap.xml"), renderSitemap(publicEntries));
-  writeFileSync(resolve("public/robots.txt"), renderCrawlerPolicy(BASE_URL));
-  console.log(`sitemap.xml written for ${BASE_URL} (${publicEntries.length} URLs) + robots.txt`);
+  writeFileSync(resolve("public/sitemap.xml"), renderSitemap(entries));
+  writeFileSync(resolve("public/robots.txt"), renderRobots());
+  console.log(`sitemap.xml written for ${BASE_URL} (${entries.length} URLs) + robots.txt`);
 }
 
 main().catch((error) => {

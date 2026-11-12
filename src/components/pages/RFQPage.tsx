@@ -12,15 +12,11 @@ import { useQuotes } from '../../contexts/QuotesContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/use-toast';
 import SEOComponent from '../seo/SEOComponent';
-import { supabase } from '@/integrations/supabase/client';
 
 const RFQPage = () => {
   const navigate = useNavigate();
   const { items, updateQuantity, removeItem, clearRFQ } = useRFQ();
-  const { createQuote, loading, error } = useQuotes();
-  const [formToken, setFormToken] = useState('');
-  const [website, setWebsite] = useState('');
-  React.useEffect(() => { supabase.functions.invoke('submit-quote', { body: { action: 'challenge' } }).then(({ data }) => setFormToken(data?.formToken || '')); }, []);
+  const { createQuote } = useQuotes();
   const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -39,6 +35,15 @@ const RFQPage = () => {
 
   const handleSubmitRFQ = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to submit a quote request",
+        variant: "destructive"
+      });
+      return;
+    }
     
     if (items.length === 0) {
       toast({
@@ -60,7 +65,7 @@ const RFQPage = () => {
 
     try {
       const quoteData = {
-        user_id: user?.id ?? null,
+        user_id: user.id,
         customer_name: formData.customerName,
         customer_email: formData.email,
         company_name: formData.companyName,
@@ -76,7 +81,7 @@ const RFQPage = () => {
         }))
       };
 
-      const quote = await createQuote(quoteData, { formToken, website });
+      const quote = await createQuote(quoteData);
       
       if (quote) {
         clearRFQ();
@@ -210,29 +215,6 @@ const RFQPage = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* International export & import permit guidance */}
-              <Card className="mt-6 border-blue-200 bg-blue-50/40">
-                <CardHeader className="border-b border-blue-100">
-                  <CardTitle className="text-lg text-blue-900">International Orders: Export &amp; Import Permits</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 text-sm text-blue-900 space-y-3">
-                  <p>
-                    We export to Europe, the United Kingdom, Australia and New Zealand. Every overseas shipment includes a commercial invoice,
-                    packing list and, for refrigerant gas, a Dangerous Goods Declaration for your customs broker.
-                  </p>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>HVAC equipment, tools and gauges:</strong> ship on a standard commercial invoice, no chemical permit needed.</li>
-                    <li><strong>European Union &amp; UK bulk gas:</strong> valid F-Gas certification plus F-Gas Portal / HFC Registry ID and quota (EU Regulation 2024/573).</li>
-                    <li><strong>Australia bulk gas:</strong> DCCEEW controlled substances licence and ARC Refrigerant Trading Authorisation or Handling Licence.</li>
-                    <li><strong>New Zealand bulk gas:</strong> EPA import permit.</li>
-                  </ul>
-                  <p>
-                    Please include your licence or registration details with this request so freight and clearance can be quoted accurately.
-                    Full details are on our <a href="/shipping-policy" className="underline">Shipping Policy</a> page.
-                  </p>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Contact Form */}
@@ -243,8 +225,6 @@ const RFQPage = () => {
                 </CardHeader>
                 <CardContent className="p-6">
                   <form onSubmit={handleSubmitRFQ} className="space-y-4">
-                    <div className="hidden" aria-hidden="true"><input tabIndex={-1} autoComplete="off" name="website" value={website} onChange={e => setWebsite(e.target.value)} /></div>
-                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
                     <div>
                       <Label htmlFor="customerName" className="text-sm font-medium">Full Name *</Label>
                       <Input
@@ -324,11 +304,8 @@ const RFQPage = () => {
                       />
                     </div>
 
-                    <p className="text-xs text-muted-foreground">Orders ship after payment is confirmed. No credit or Net terms.</p>
-
                     <Button 
                       type="submit" 
-                      disabled={loading || !formToken}
                       size="lg" 
                       className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     >

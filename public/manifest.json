@@ -9,17 +9,17 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/favicon.png?v=20260907",
-      "sizes": "64x64",
-      "type": "image/png"
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
     },
     {
-      "src": "/logo192.png?v=20260907",
+      "src": "/logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/logo512.png?v=20260907",
+      "src": "/logo512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

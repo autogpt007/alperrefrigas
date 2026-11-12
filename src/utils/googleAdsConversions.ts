@@ -8,17 +8,15 @@
 import { isGtagAvailable, pushToDataLayer } from './tracking';
 
 // GOOGLE ADS CONVERSION IDS
-// Must match the gtag.js tag loaded in index.html
 const GOOGLE_ADS_CONVERSION_IDS = {
-  CONVERSION_ID: 'AW-18423146954',
-
-  // Conversion labels for different actions (from Google Ads > Goals > Conversions)
-  PURCHASE: 'wz62CIr4yewcEMrT69BE', // paste the purchase conversion label here
+  CONVERSION_ID: 'AW-17583624817',
+  
+  // Conversion labels for different actions
+  PURCHASE: 'TTjaCLGmkM0bEPGkw8BB',
   ADD_TO_CART: '', // Optional - add label if needed
   BEGIN_CHECKOUT: '', // Optional - add label if needed
-  LEAD: 'O6O2CJit9bAdEMrT69BE', // "Alper Quote Request (RFQ)" conversion action
+  LEAD: '', // For quote submissions - add label if needed
 };
-
 
 // Check if Google Ads is configured
 const isGoogleAdsConfigured = (): boolean => {
@@ -45,26 +43,13 @@ export const trackGoogleAdsPurchase = (
   }
 
   try {
-    const sendTo = GOOGLE_ADS_CONVERSION_IDS.PURCHASE
-      ? `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`
-      : GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID;
-
     // Track conversion via gtag
     window.gtag('event', 'conversion', {
-      send_to: sendTo,
+      send_to: `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.PURCHASE}`,
       value: value,
       currency: currency,
       transaction_id: transactionId
     });
-
-    // Standard purchase event so Ads can attribute clicks -> orders
-    window.gtag('event', 'purchase', {
-      send_to: GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID,
-      transaction_id: transactionId,
-      value: value,
-      currency: currency
-    });
-
 
     // Also push to dataLayer for GTM
     pushToDataLayer('google_ads_conversion', {
@@ -137,8 +122,7 @@ export const trackGoogleAdsBeginCheckout = (
  */
 export const trackGoogleAdsLead = (
   value?: number,
-  currency: string = 'USD',
-  transactionId?: string
+  currency: string = 'USD'
 ) => {
   if (!isGoogleAdsConfigured() || !GOOGLE_ADS_CONVERSION_IDS.LEAD) {
     console.log('[Google Ads] Lead conversion not configured');
@@ -151,7 +135,6 @@ export const trackGoogleAdsLead = (
     const conversionData: any = {
       send_to: `${GOOGLE_ADS_CONVERSION_IDS.CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_IDS.LEAD}`
     };
-    if (transactionId) conversionData.transaction_id = transactionId;
 
     if (value !== undefined) {
       conversionData.value = value;
@@ -180,24 +163,4 @@ export const initGoogleAdsConfig = () => {
   } catch (error) {
     console.error('[Google Ads] Error initializing config:', error);
   }
-};
-
-/**
- * Phone call click conversion ("Alper Phone Call Click (786-987-0501)").
- * Fires once per page load when any tel: link is clicked. Consent is handled
- * by Cookiebot via Google Consent Mode.
- */
-const PHONE_CALL_SEND_TO = 'AW-18423146954/yD2zCLmpprIdEMrT69BE';
-let phoneTrackingInstalled = false;
-export const installPhoneCallTracking = () => {
-  if (phoneTrackingInstalled || typeof document === 'undefined') return;
-  phoneTrackingInstalled = true;
-  let sent = false;
-  document.addEventListener('click', (e) => {
-    const link = (e.target as HTMLElement | null)?.closest?.('a[href^="tel:"]');
-    if (!link || sent || !isGtagAvailable()) return;
-    sent = true;
-    window.gtag('event', 'conversion', { send_to: PHONE_CALL_SEND_TO, value: 0, currency: 'USD' });
-    pushToDataLayer('google_ads_conversion', { conversion_type: 'phone_call_click' });
-  }, true);
 };

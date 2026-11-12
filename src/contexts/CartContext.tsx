@@ -58,68 +58,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = 'alper_cart_v1';
-
-const readStoredCart = (): CartItem[] => {
-  try {
-    const raw = localStorage.getItem(CART_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
-
-const CART_SYNC_EVENT = 'alper_cart_sync';
-
-const writeStoredCart = (next: CartItem[]) => {
-  try {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
-  } catch {
-    // storage unavailable (private mode) - cart stays in memory only
-  }
-  // Notify other components in this same tab (storage events only fire cross-tab)
-  try {
-    window.dispatchEvent(new CustomEvent(CART_SYNC_EVENT));
-  } catch {
-    // no-op
-  }
-};
-
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>(readStoredCart);
-
-  /**
-   * Every mutation re-reads the latest persisted cart before applying its
-   * change, so two tabs adding different products never overwrite each other.
-   */
-  const mutateCart = (updater: (current: CartItem[]) => CartItem[]) => {
-    const latest = readStoredCart();
-    const next = updater(latest);
-    writeStoredCart(next);
-    setItems(next);
-  };
-
-  // Keep every tab and every component in sync with the persisted cart
-  useEffect(() => {
-    const resync = () => setItems(readStoredCart());
-
-    const onStorage = (event: StorageEvent) => {
-      if (event.key === null || event.key === CART_STORAGE_KEY) resync();
-    };
-
-    window.addEventListener('storage', onStorage);
-    window.addEventListener(CART_SYNC_EVENT, resync);
-    // Re-read when the tab regains focus in case it was changed while hidden
-    window.addEventListener('focus', resync);
-
-    return () => {
-      window.removeEventListener('storage', onStorage);
-      window.removeEventListener(CART_SYNC_EVENT, resync);
-      window.removeEventListener('focus', resync);
-    };
-  }, []);
+  const [items, setItems] = useState<CartItem[]>([]);
 
   // Fetch free shipping threshold from settings
   const { data: shippingSettings } = useQuery({
@@ -129,10 +69,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         .from('site_settings')
         .select('setting_value')
         .eq('setting_key', 'free_shipping_threshold')
-        .maybeSingle();
+        .single();
 
-      if (error) throw error;
-
+      if (error && error.code !== 'PGRST116') throw error;
       return parseFloat(data?.setting_value || '500');
     }
   });
@@ -141,59 +80,79 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const standardShippingCost = 50; // Standard shipping cost
 
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
-    mutateCart(currentItems => {
-      const existingItemIndex = currentItems.findIndex(item =>
+    console.log('Adding item to cart:', newItem);
+    
+    setItems(currentItems => {
+      const existingItemIndex = currentItems.findIndex(item => 
         item.id === newItem.id && item.packaging === newItem.packaging
       );
-
+      
       if (existingItemIndex !== -1) {
+        // Update existing item quantity
         const updatedItems = [...currentItems];
         updatedItems[existingItemIndex] = {
           ...updatedItems[existingItemIndex],
           quantity: updatedItems[existingItemIndex].quantity + 1
         };
-
+        console.log('Updated existing item, new cart:', updatedItems);
+        
+        // Track add to cart in GA4 and Facebook Pixel
         const itemToTrack = updatedItems[existingItemIndex];
         trackAddToCart(cartItemToGA4Item({ ...itemToTrack, quantity: 1 }));
         trackFBAddToCart(itemToTrack.sku || itemToTrack.id, itemToTrack.name, itemToTrack.price, 'USD', 1);
         trackGoogleAdsAddToCart(itemToTrack.price);
-
+        
         return updatedItems;
       }
-
+      
+      // Add new item
       const newCart = [...currentItems, { ...newItem, quantity: 1 }];
-
+      console.log('Added new item, new cart:', newCart);
+      
+      // Track add to cart in GA4 and Facebook Pixel
       trackAddToCart(cartItemToGA4Item({ ...newItem, quantity: 1 }));
       trackFBAddToCart(newItem.sku || newItem.id, newItem.name, newItem.price, 'USD', 1);
       trackGoogleAdsAddToCart(newItem.price);
-
+      
       return newCart;
     });
   };
 
   const removeItem = (id: string) => {
-    mutateCart(currentItems => {
+    console.log('Removing item from cart:', id);
+    setItems(currentItems => {
+      // Find the item being removed for GA4 tracking
       const removedItem = currentItems.find(item => item.id === id);
       if (removedItem) {
         trackRemoveFromCart(cartItemToGA4Item(removedItem));
       }
-      return currentItems.filter(item => item.id !== id);
+      
+      const newItems = currentItems.filter(item => item.id !== id);
+      console.log('Cart after removal:', newItems);
+      return newItems;
     });
   };
 
   const updateQuantity = (id: string, quantity: number) => {
+    console.log('Updating quantity for item:', id, 'to:', quantity);
+    
     if (quantity <= 0) {
       removeItem(id);
       return;
     }
-
-    mutateCart(currentItems =>
-      currentItems.map(item => (item.id === id ? { ...item, quantity } : item))
-    );
+    
+    setItems(currentItems => {
+      const updatedItems = currentItems.map(item =>
+        item.id === id ? { ...item, quantity } : item
+      );
+      console.log('Cart after quantity update:', updatedItems);
+      return updatedItems;
+    });
   };
 
   const updateItemConfiguration = (id: string, configuration: CartItem['configuration_json']) => {
-    mutateCart(currentItems =>
+    console.log('Updating configuration for item:', id, configuration);
+    setItems(currentItems =>
       currentItems.map(item =>
         item.id === id ? { ...item, configuration_json: configuration } : item
       )
@@ -201,7 +160,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = () => {
-    mutateCart(() => []);
+    console.log('Clearing cart');
+    setItems([]);
   };
 
   const getTotalItems = () => {
@@ -214,6 +174,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const shippingCost = qualifiesForFreeShipping ? 0 : standardShippingCost;
   const finalTotal = total + shippingCost;
 
+  console.log('Cart state:', { 
+    items, 
+    total, 
+    itemCount, 
+    freeShippingThreshold, 
+    qualifiesForFreeShipping, 
+    shippingCost, 
+    finalTotal 
+  });
 
   const value = {
     items,

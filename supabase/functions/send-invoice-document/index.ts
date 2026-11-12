@@ -8,9 +8,8 @@ const corsHeaders = {
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 // Must stay in sync with supabase/functions/send-transactional-email/index.ts —
 // the verified sender subdomain is what Resend authorises the send against.
-const SENDER_DOMAIN = "notify.alperrefrigas.com";
-// Must align with SENDER_DOMAIN's root domain or the email API rejects the send.
-const FROM_DOMAIN = "alperrefrigas.com";
+const SENDER_DOMAIN = "notify.alperrefrigerants.com";
+const FROM_DOMAIN = "alperrefrigerants.com";
 const FROM_EMAIL =
   Deno.env.get("INVOICE_FROM_EMAIL") || `Alper Refrigerants <invoices@${FROM_DOMAIN}>`;
 const REPLY_TO = "sales@alperrefrigerants.com";
@@ -70,7 +69,7 @@ function emailHtml(d: {
         ${d.paymentTerms ? `<p style="margin:4px 0 0;color:#64748b;font-size:14px;">Payment terms: ${esc(d.paymentTerms)}</p>` : ""}
       </div>
       ${d.notes ? `<p style="color:#475569;font-size:14px;white-space:pre-line;">${esc(d.notes)}</p>` : ""}
-      <p style="color:#64748b;font-size:14px;">Questions? Reply to this email or contact ${REPLY_TO} · +1-786-987-0501.</p>
+      <p style="color:#64748b;font-size:14px;">Questions? Reply to this email or contact ${REPLY_TO} · +1-682-215-2974.</p>
     </div>
     <div style="background:#f8fafc;padding:16px;text-align:center;border-top:1px solid #e2e8f0;">
       <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>

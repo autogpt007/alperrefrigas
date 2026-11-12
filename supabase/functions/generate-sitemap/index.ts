@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,6 +37,7 @@ serve(async (req: Request) => {
 
     const products = productsRes.data || [];
     const blogs = blogsRes.data || [];
+    const today = new Date().toISOString().split("T")[0];
 
     // Static pages
     const staticUrls = [
@@ -46,9 +47,8 @@ serve(async (req: Request) => {
       { loc: "/products/refrigerants", changefreq: "daily", priority: "0.9" },
       { loc: "/products/accessories", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/air-conditioners", changefreq: "weekly", priority: "0.8" },
-      { loc: "/products/heating-heat-pumps", changefreq: "weekly", priority: "0.8" },
-      { loc: "/products/hvac-tools", changefreq: "weekly", priority: "0.8" },
       { loc: "/contact", changefreq: "monthly", priority: "0.7" },
+      { loc: "/rfq", changefreq: "weekly", priority: "0.8" },
       { loc: "/bulk-pricing", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/category/hfc", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/category/hfo", changefreq: "weekly", priority: "0.8" },
@@ -58,16 +58,6 @@ serve(async (req: Request) => {
       { loc: "/products/category/industrial", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/r-454b", changefreq: "weekly", priority: "0.9" },
       { loc: "/products/hfo-refrigerants", changefreq: "weekly", priority: "0.9" },
-      { loc: "/products/r-22-replacements", changefreq: "weekly", priority: "0.9" },
-      { loc: "/products/r-410a", changefreq: "weekly", priority: "0.8" },
-      { loc: "/products/r-32", changefreq: "weekly", priority: "0.8" },
-      { loc: "/products/ptac-units", changefreq: "weekly", priority: "0.8" },
-      { loc: "/brands/mrcool", changefreq: "weekly", priority: "0.8" },
-      { loc: "/brands/senville", changefreq: "weekly", priority: "0.8" },
-      { loc: "/guides", changefreq: "monthly", priority: "0.7" },
-      { loc: "/guides/r-454b-vs-r-32", changefreq: "monthly", priority: "0.8" },
-      { loc: "/guides/who-can-buy-refrigerant", changefreq: "monthly", priority: "0.8" },
-      { loc: "/guides/r-454b-handling", changefreq: "monthly", priority: "0.8" },
       { loc: "/certifications", changefreq: "monthly", priority: "0.6" },
       { loc: "/compliance", changefreq: "monthly", priority: "0.7" },
       { loc: "/shipping-policy", changefreq: "monthly", priority: "0.6" },
@@ -91,6 +81,7 @@ serve(async (req: Request) => {
     for (const page of staticUrls) {
       xml += `  <url>
     <loc>${BASE_URL}${page.loc}</loc>
+    <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>
@@ -100,11 +91,11 @@ serve(async (req: Request) => {
     // Product pages
     for (const p of products) {
       const slug = createSlug(p.name);
-      const lastmod = p.updated_at ? p.updated_at.split("T")[0] : undefined;
+      const lastmod = p.updated_at ? p.updated_at.split("T")[0] : today;
       const priority = p.product_type === "refrigerant" ? "0.8" : "0.7";
       xml += `  <url>
     <loc>${BASE_URL}/products/${slug}</loc>
-${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
+    <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>
   </url>
@@ -113,10 +104,10 @@ ${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
 
     // Blog posts
     for (const b of blogs) {
-      const lastmod = b.updated_at ? b.updated_at.split("T")[0] : undefined;
+      const lastmod = b.updated_at ? b.updated_at.split("T")[0] : today;
       xml += `  <url>
     <loc>${BASE_URL}/blog/${b.slug}</loc>
-${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
+    <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

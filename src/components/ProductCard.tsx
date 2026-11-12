@@ -67,11 +67,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }
     }
     
-    // Non-refrigerant products (ACs, equipment): single-unit price on cards
-    if (product.product_type && product.product_type !== 'refrigerant') {
-      return product.price;
-    }
-
     // Refrigerant 3-tier pricing
     const basePrice = product.price;
     switch (packageType) {
@@ -161,7 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
 
           {/* Professional Use Only Badge for Refrigerants */}
-          {product.product_type === 'refrigerant' && (
+          {product.product_type !== 'accessory' && (
             <div className="absolute bottom-3 left-3 right-3">
               <Badge className="bg-yellow-500/90 text-yellow-900 border-0 shadow-lg text-xs w-full justify-center py-1">
                 <AlertTriangle className="h-3 w-3 mr-1" />
@@ -227,7 +222,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center justify-between mb-3">
             <div className="space-y-1">
               {/* Per-cylinder price is the HERO for refrigerants */}
-              {product.product_type === 'refrigerant' ? (
+              {product.product_type !== 'accessory' ? (
                 <>
                   <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                     {formatPrice(
@@ -243,14 +238,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </div>
               )}
               <div className="text-xs text-gray-400 leading-tight">
-                {product.product_type === 'refrigerant' ? (
-                  'Price per cylinder'
-                ) : product.product_type === 'air_conditioner' ? (
-                  'Price per unit'
-                ) : (
+                {product.product_type === 'accessory' ? (
                   selectedPackaging === 'Individual' ? 'Per piece' :
                   selectedPackaging === '5-Pack' ? '5 pieces' :
                   selectedPackaging === '10-Pack' ? '10 pieces' : 'Per piece'
+                ) : (
+                  'Price per cylinder'
                 )}
               </div>
               {getDiscountPercentage() > 0 && (

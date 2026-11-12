@@ -17,23 +17,31 @@ const FreonWholesalePage = () => {
       {
         "@type": "LocalBusiness",
         "@id": "https://alperrefrigerants.com/#business",
-        "name": "Alper Refrigerants",
-        "legalName": "Alper Chemical Group",
+        "name": "Alper Refrigerants - Bulk Freon Distributor for Contractors",
         "description": "Specialized bulk freon distributor serving HVAC contractors with commercial wholesale pricing. R-22, R-410A, R-134a volume discounts up to 25%, contractor program, EPA certified.",
         "url": "https://alperrefrigerants.com/products",
-        "telephone": "+1-786-987-0501",
-        "email": "sales@alperrefrigerants.com",
+        "telephone": "+1-682-215-2974",
+        "email": "wholesale@alperrefrigerants.com",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "382 NE 191st St",
-          "addressLocality": "Miami",
-          "addressRegion": "FL",
-          "postalCode": "33179",
-          "addressCountry": "US"
+          "addressCountry": "US",
+          "addressRegion": "TX"
         },
+        "geo": {
+          "@type": "GeoCoordinates", 
+          "latitude": "29.4241",
+          "longitude": "-98.4936"
+        },
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "priceRange": "$$",
         "serviceArea": {
           "@type": "Country",
           "name": "United States"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "247"
         }
       },
       {
@@ -41,12 +49,12 @@ const FreonWholesalePage = () => {
         "@id": "https://alperrefrigerants.com/#organization", 
         "name": "Alper Refrigerants",
         "url": "https://alperrefrigerants.com",
-        "logo": "https://alperrefrigerants.com/logo.png",
+        "logo": "https://alperrefrigerants.com/logo.svg",
         "contactPoint": {
           "@type": "ContactPoint",
-          "telephone": "+1-786-987-0501",
+          "telephone": "+1-682-215-2974",
           "contactType": "wholesale sales",
-          "email": "sales@alperrefrigerants.com"
+          "email": "wholesale@alperrefrigerants.com"
         }
       }
     ]
@@ -96,7 +104,7 @@ const FreonWholesalePage = () => {
     },
     {
       question: "How quickly can you deliver bulk freon orders?",
-      answer: "Orders are handled in 0-3 business days, with typical delivery in 0-13 business days depending on destination."
+      answer: "We offer same-day shipping on in-stock freon products with emergency delivery available for urgent contractor needs. Most orders are processed within 24 hours of quote approval."
     },
     {
       question: "Do you provide EPA certified freon with purity guarantees?",
@@ -150,7 +158,7 @@ const FreonWholesalePage = () => {
     <>
       <SEOComponent
         title="Bulk Freon Wholesale | R-22, R-410A, R-134a | Alper"
-        description="HVAC contractor specialists. Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%. EPA 608 certification required."
+        description="HVAC contractor specialists. Bulk freon distributor with commercial wholesale pricing on R-22, R-410A, R-134a. Volume discounts up to 25%, same-day shipping, EPA certified."
         keywords="bulk freon distributor contractors, R-22 R-410A R-134a wholesale, commercial refrigerant wholesale, HVAC contractor pricing, EPA certified bulk freon"
         canonicalUrl="/products"
         structuredData={enhancedStructuredData}
@@ -179,7 +187,7 @@ const FreonWholesalePage = () => {
                   Bulk Freon Distributor for HVAC Contractors
                 </h1>
                 <p className="text-xl md:text-2xl text-enhanced-secondary max-w-4xl mx-auto leading-relaxed text-shadow-sm">
-                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA 608 certification required to order.
+                  Specialized commercial wholesale pricing on bulk R-22, R-410A, R-134a refrigerant for HVAC contractors. Volume discounts up to 25%, EPA certified with same-day shipping nationwide.
                 </p>
               </div>
 
@@ -194,7 +202,7 @@ const FreonWholesalePage = () => {
                   </Button>
                 </Link>
                 <EmailObfuscator 
-                  email="sales@alperrefrigerants.com"
+                  email="wholesale@alperrefrigerants.com"
                   className="inline-block"
                 >
                   <Button 
@@ -318,7 +326,7 @@ const FreonWholesalePage = () => {
                     <h3 className="text-2xl font-bold text-white mb-4 text-shadow-sm">Fast Delivery</h3>
                     <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3">
                       <p className="text-white text-lg leading-relaxed font-medium">
-                        Orders handled in 0-3 business days, typical delivery in 0-13 business days.
+                        Same-day shipping on in-stock refrigerant. Emergency delivery available for urgent contractor needs.
                       </p>
                     </div>
                   </CardContent>
@@ -534,10 +542,10 @@ const FreonWholesalePage = () => {
                     <Mail className="h-12 w-12 text-green-400 mx-auto mb-4" />
                     <h3 className="text-xl font-bold text-white mb-2">Email Wholesale Team</h3>
                     <EmailObfuscator 
-                      email="sales@alperrefrigerants.com"
+                      email="wholesale@alperrefrigerants.com"
                       className="text-green-400 text-lg font-semibold hover:text-green-300"
                     >
-                      sales@alperrefrigerants.com
+                      wholesale@alperrefrigerants.com
                     </EmailObfuscator>
                     <p className="text-gray-300 text-sm mt-2">24-hour response guaranteed</p>
                   </CardContent>

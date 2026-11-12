@@ -15,10 +15,11 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { PaymentMethodSelector } from '../ui/PaymentMethodSelector';
-import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
+import { ShoppingCart, CreditCard, Truck, MapPin, DollarSign, AlertTriangle, Scale, Shield, Smartphone, Zap, Bitcoin, Wallet, QrCode, ExternalLink, AlertCircle, Info, Calculator, Loader2, Globe, Snowflake } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import SEOComponent from '../seo/SEOComponent';
+import { usePaymentWallets } from '@/hooks/usePaymentWallets';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
@@ -29,24 +30,17 @@ import { US_STATES } from '@/utils/zipCodeUtils';
 import { useDirectCheckout } from '@/hooks/useDirectCheckout';
 import { useShippingZones, getShippingZoneForCountry, calculateShippingCost } from '@/hooks/useShippingZones';
 import { ACConfigSummary, ACConfiguration } from '../ui/ACConfigSummary';
-import { useShippingCountry } from '@/contexts/ShippingCountryContext';
-import { getDispatchHub } from '@/lib/dispatchHub';
-import { buyerFieldErrors } from '@/lib/checkoutValidation';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { items, total, clearCart, freeShippingThreshold, shippingCost: cartShippingCost, finalTotal: cartFinalTotal } = useCart();
   const { createOrder } = useOrders();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const { formatPrice: formatCurrency, currency, currencyName, currencySymbol } = useCurrency();
   const [searchParams] = useSearchParams();
-  const { countryCode: shipCountry, setCountry: setShipCountry } = useShippingCountry();
-  // Guests can check out without an account. The ?guest=true flag lets a signed-in
-  // user deliberately place an order as a guest; otherwise anyone without a
-  // session is treated as a guest instead of being bounced to the login page.
-  const isGuest = searchParams.get('guest') === 'true' || (!authLoading && !user);
+  const isGuest = searchParams.get('guest') === 'true';
   
   // Handle direct checkout from Google Merchant Center links
   const { isLoading: isDirectCheckoutLoading, error: directCheckoutError } = useDirectCheckout();
@@ -65,9 +59,9 @@ const CheckoutPage = () => {
     city: '',
     state: '',
     zipCode: '',
-    countryCode: shipCountry, // Prefilled from the buyer's Shipping-to country
-    country: getCountryByCode(shipCountry)?.name || 'United States',
-    paymentMethod: 'credit_card',
+    countryCode: 'US', // Use country code for international support
+    country: 'United States',
+    paymentMethod: '', // No payment method preselected
     notes: '',
     // Credit card details for offline processing
     cardNumber: '',
@@ -79,32 +73,29 @@ const CheckoutPage = () => {
     billingState: '',
     billingZipCode: '',
     billingCountry: 'United States',
+    cashappTag: '',
+    zelleTag: '',
+    zellePhone: '',
     // F-Gas certification for EU orders
     fGasCertificationNumber: '',
     fGasCertificationValid: false,
-    // Australian OPSGGM / ARC licence for AU refrigerant orders
-    auLicenceNumber: '',
-    auLicenceValid: false,
     // VAT exemption for international orders
     payVatAtCustoms: false
   });
 
-  // Check if cart contains actual refrigerant products (EPA/DOT rules apply to these only)
-  const hasRefrigerantProducts = items.some(item => item.product_type === 'refrigerant');
+  // Check if cart contains refrigerant products (non-accessories)
+  const hasRefrigerantProducts = items.some(item => item.product_type !== 'accessory');
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [validationAttempted, setValidationAttempted] = useState(false);
-  useEffect(() => {
-    if (!validationAttempted) return;
-    setFieldErrors(buyerFieldErrors(formData));
-  }, [formData, validationAttempted]);
+  const [bankWireDetails, setBankWireDetails] = useState<any>(null);
   const [legalAcknowledged, setLegalAcknowledged] = useState(false);
+  const [selectedCryptoWallet, setSelectedCryptoWallet] = useState<string>('');
   const [acConfigConfirmed, setAcConfigConfirmed] = useState(false);
 
   // Check if cart has AC products
   const hasACProducts = items.some(item => item.product_type === 'air_conditioner');
   const acItems = items.filter(item => item.product_type === 'air_conditioner');
+  const { wallets, loading: walletsLoading, getCryptoWallets, getTraditionalWallets } = usePaymentWallets();
 
   // Shipping zones for dynamic rates
   const { data: shippingZones } = useShippingZones();
@@ -140,6 +131,23 @@ const CheckoutPage = () => {
     }
   }, [user, isGuest]);
 
+  // Fetch bank wire details
+  useEffect(() => {
+    const fetchBankWireDetails = async () => {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('setting_key, setting_value')
+        .in('setting_key', ['bank_wire_instructions', 'bank_name', 'bank_routing_number', 'bank_account_number', 'bank_swift_code']);
+      
+      const details: any = {};
+      data?.forEach(setting => {
+        details[setting.setting_key] = setting.setting_value;
+      });
+      setBankWireDetails(details);
+    };
+    
+    fetchBankWireDetails();
+  }, []);
 
   // Track begin_checkout event when user lands on checkout page
   useEffect(() => {
@@ -270,13 +278,7 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
-  // Bank wire settlement discount (applied after any coupon)
-  const PAYMENT_DISCOUNT_METHODS = ['bank_wire'];
-  const isPaymentDiscountEligible = PAYMENT_DISCOUNT_METHODS.includes(formData.paymentMethod);
-  const paymentDiscount = isPaymentDiscountEligible
-    ? Math.max(0, subtotal - couponDiscount) * 0.15
-    : 0;
-  const discountAmount = couponDiscount + paymentDiscount;
+  const discountAmount = couponDiscount;
   const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
 
@@ -292,15 +294,6 @@ const CheckoutPage = () => {
   };
 
   const validateForm = () => {
-    setValidationAttempted(true);
-    const errors = buyerFieldErrors(formData);
-    setFieldErrors(errors);
-    if (Object.keys(errors).length) {
-      const first = document.getElementById(Object.keys(errors)[0]);
-      first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      first?.focus({ preventScroll: true });
-      return false;
-    }
     // Check payment method is selected
     if (!formData.paymentMethod || formData.paymentMethod.trim() === '') {
       toast({
@@ -311,7 +304,7 @@ const CheckoutPage = () => {
       return false;
     }
 
-    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'zipCode', ...(formData.countryCode === 'US' ? ['state'] : [])];
+    const required = ['customerName', 'customerEmail', 'phoneNumber', 'street', 'city', 'state', 'zipCode'];
     const missing = required.filter(field => !formData[field as keyof typeof formData]);
     
     if (missing.length > 0) {
@@ -337,6 +330,47 @@ const CheckoutPage = () => {
       }
     }
 
+    if (formData.paymentMethod === 'zelle') {
+      if (!formData.zelleTag || !formData.zelleTag.trim()) {
+        toast({
+          title: "Missing Zelle Information",
+          description: "Please provide your Zelle email address",
+          variant: "destructive",
+        });
+        return false;
+      }
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.zelleTag)) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address for Zelle",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
+    if (formData.paymentMethod === 'cashapp') {
+      if (!formData.cashappTag || !formData.cashappTag.trim()) {
+        toast({
+          title: "Missing CashApp Information",
+          description: "Please provide your CashApp $cashtag",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
+    if (formData.paymentMethod.startsWith('crypto_') && !selectedCryptoWallet) {
+      toast({
+        title: "Missing Crypto Wallet",
+        description: "Please select a crypto wallet for payment",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     // F-Gas validation for EU refrigerant orders
     if (taxCalculation.region === 'EU' && hasRefrigerantProducts) {
       if (!formData.fGasCertificationNumber.trim()) {
@@ -351,26 +385,6 @@ const CheckoutPage = () => {
         toast({
           title: "Please Confirm F-Gas Certification",
           description: "You must confirm that your F-Gas certification is valid",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    // Australian import licence validation for AU refrigerant orders
-    if (formData.countryCode === 'AU' && hasRefrigerantProducts) {
-      if (!formData.auLicenceNumber.trim()) {
-        toast({
-          title: "Australian Licence Required",
-          description: "Australian law (OPSGGM Act) requires a refrigerant handling or import licence number",
-          variant: "destructive",
-        });
-        return false;
-      }
-      if (!formData.auLicenceValid) {
-        toast({
-          title: "Please Confirm Your Licence",
-          description: "You must confirm that your Australian licence is current and valid",
           variant: "destructive",
         });
         return false;
@@ -489,12 +503,11 @@ const CheckoutPage = () => {
           phoneNumber: formData.phoneNumber
         },
         payment_method: formData.paymentMethod,
-        coupon_code: appliedCoupon?.code ?? null,
-        notes: [formData.notes, taxCalculation.taxNotice].filter(Boolean).join('\n\n'),
+        notes: formData.notes,
         shipping_cost: shippingCost,
         tax_amount: taxAmount,
-        zelle_tag: null,
-        cashapp_tag: null,
+        zelle_tag: formData.paymentMethod === 'zelle' ? (formData.zelleTag || formData.zellePhone) : null,
+        cashapp_tag: formData.paymentMethod === 'cashapp' ? formData.cashappTag : null,
         // user_id intentionally removed - OrdersContext will handle it based on auth state
         payment_details: {
           // Tax information for audit trail
@@ -514,14 +527,6 @@ const CheckoutPage = () => {
               country: formData.countryCode
             }
           } : {}),
-          // Australian import/handling licence for AU orders
-          ...(formData.countryCode === 'AU' && hasRefrigerantProducts ? {
-            au_import_licence: {
-              number: formData.auLicenceNumber,
-              confirmed_valid: formData.auLicenceValid,
-              country: formData.countryCode
-            }
-          } : {}),
           // Credit card details if applicable
           ...(formData.paymentMethod === 'credit_card' ? {
             card_number: formData.cardNumber,
@@ -537,11 +542,10 @@ const CheckoutPage = () => {
               country: formData.billingCountry || formData.country
             }
           } : {}),
-          // Settlement discount for bank wire (server re-verifies)
-          ...(paymentDiscount > 0 ? {
-            payment_discount_percent: 15,
-            payment_discount_amount: Number(paymentDiscount.toFixed(2)),
-            payment_discount_reason: 'bank_wire'
+          // Crypto wallet details if applicable
+          ...(formData.paymentMethod.startsWith('crypto_') ? {
+            selected_wallet: selectedCryptoWallet,
+            wallet_type: formData.paymentMethod.replace('crypto_', '')
           } : {})
         },
       };
@@ -666,13 +670,13 @@ const CheckoutPage = () => {
     <div className="min-h-screen bg-gray-50">
       <SEOComponent
         title="Secure Checkout - Alper Refrigerant"
-        description="Complete your refrigerant order with our secure checkout process. Pay by credit card or bank wire transfer."
-        keywords="secure checkout, refrigerant purchase, credit card payment, bank wire payment"
+        description="Complete your refrigerant order with our secure checkout process. Multiple payment options available including credit card, Zelle, and CashApp."
+        keywords="secure checkout, refrigerant purchase, credit card payment, Zelle payment, CashApp payment"
         robotsContent="noindex, nofollow"
         canonicalUrl="/checkout"
       />
       
-      <div className="container mx-auto px-4 py-8 pb-44 md:pb-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Secure Checkout</h1>
@@ -682,8 +686,7 @@ const CheckoutPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
-              <form id="buyer-checkout" onSubmit={handleSubmit} noValidate className="space-y-6">
-                {Object.keys(fieldErrors).length > 0 && <div role="alert" className="border border-destructive rounded-md p-3 text-sm text-destructive">Please complete the highlighted fields before placing your order.</div>}
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Customer Information */}
                 <Card>
                   <CardHeader>
@@ -697,34 +700,31 @@ const CheckoutPage = () => {
                       <div>
                         <Label htmlFor="customerName">Full Name *</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.customerName} aria-describedby={fieldErrors.customerName ? "customerName-error" : undefined} id="customerName"
+                          id="customerName"
                           value={formData.customerName}
                           onChange={(e) => handleInputChange('customerName', e.target.value)}
                           required
                         />
-{fieldErrors.customerName && <p id="customerName-error" className="text-xs text-destructive mt-1">{fieldErrors.customerName}</p>}
                       </div>
                       <div>
                         <Label htmlFor="customerEmail">Email Address *</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.customerEmail} aria-describedby={fieldErrors.customerEmail ? "customerEmail-error" : undefined} id="customerEmail"
+                          id="customerEmail"
                           type="email"
                           value={formData.customerEmail}
                           onChange={(e) => handleInputChange('customerEmail', e.target.value)}
                           required
                         />
-{fieldErrors.customerEmail && <p id="customerEmail-error" className="text-xs text-destructive mt-1">{fieldErrors.customerEmail}</p>}
                       </div>
                       <div className="md:col-span-2">
                         <Label htmlFor="phoneNumber">Phone Number *</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.phoneNumber} aria-describedby={fieldErrors.phoneNumber ? "phoneNumber-error" : undefined} id="phoneNumber"
+                          id="phoneNumber"
                           type="tel"
                           value={formData.phoneNumber}
                           onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                           required
                         />
-{fieldErrors.phoneNumber && <p id="phoneNumber-error" className="text-xs text-destructive mt-1">{fieldErrors.phoneNumber}</p>}
                       </div>
                     </div>
                   </CardContent>
@@ -742,35 +742,32 @@ const CheckoutPage = () => {
                     <div>
                       <Label htmlFor="street">Street Address *</Label>
                       <Input
-                        aria-invalid={!!fieldErrors.street} aria-describedby={fieldErrors.street ? "street-error" : undefined} id="street"
+                        id="street"
                         value={formData.street}
                         onChange={(e) => handleInputChange('street', e.target.value)}
                         required
                       />
-{fieldErrors.street && <p id="street-error" className="text-xs text-destructive mt-1">{fieldErrors.street}</p>}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City *</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.city} aria-describedby={fieldErrors.city ? "city-error" : undefined} id="city"
+                          id="city"
                           value={formData.city}
                           onChange={(e) => handleInputChange('city', e.target.value)}
                           required
                         />
-{fieldErrors.city && <p id="city-error" className="text-xs text-destructive mt-1">{fieldErrors.city}</p>}
                       </div>
                       <div>
                         <Label htmlFor="zipCode">{formData.countryCode === 'US' ? 'ZIP Code' : 'Postal Code'} *</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.zipCode} aria-describedby={fieldErrors.zipCode ? "zipCode-error" : undefined} id="zipCode"
+                          id="zipCode"
                           value={formData.zipCode}
                           onChange={(e) => handleInputChange('zipCode', e.target.value)}
                           placeholder={formData.countryCode === 'US' ? '12345' : 'Enter postal code'}
                           maxLength={formData.countryCode === 'US' ? 10 : 20}
                           required
                         />
-{fieldErrors.zipCode && <p id="zipCode-error" className="text-xs text-destructive mt-1">{fieldErrors.zipCode}</p>}
                         {formData.countryCode === 'US' && formData.zipCode && formData.state && (
                           <p className="text-xs text-gray-500 mt-1">
                             Detected: {US_STATES.find(s => s.code === formData.state)?.name || formData.state}
@@ -785,7 +782,6 @@ const CheckoutPage = () => {
                         onValueChange={(value) => {
                           const country = getCountryByCode(value);
                           handleInputChange('countryCode', value);
-                          setShipCountry(value);
                           handleInputChange('country', country?.name || value);
                           // Clear state when switching to non-US country
                           if (value !== 'US') {
@@ -833,12 +829,11 @@ const CheckoutPage = () => {
                       <div className="md:col-span-2">
                         <Label htmlFor="state">Region/Province</Label>
                         <Input
-                          aria-invalid={!!fieldErrors.state} aria-describedby={fieldErrors.state ? "state-error" : undefined} id="state"
+                          id="state"
                           value={formData.state}
                           onChange={(e) => handleInputChange('state', e.target.value)}
                           placeholder="Enter region or province"
                         />
-{fieldErrors.state && <p id="state-error" className="text-xs text-destructive mt-1">{fieldErrors.state}</p>}
                       </div>
                     )}
 
@@ -910,52 +905,6 @@ const CheckoutPage = () => {
                   </Card>
                 )}
 
-                {/* Australian Import / Handling Licence for AU Orders */}
-                {formData.countryCode === 'AU' && hasRefrigerantProducts && (
-                  <Card className="border-orange-200 bg-orange-50/50">
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-orange-800">
-                        <Shield className="h-5 w-5 mr-2" />
-                        Australian Refrigerant Licence Required (OPSGGM Act)
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <Alert className="bg-orange-100 border-orange-300">
-                        <AlertTriangle className="h-4 w-4" />
-                        <AlertDescription className="text-orange-800">
-                          Australian law requires a valid licence to import or acquire synthetic greenhouse gas refrigerants.
-                          Provide your ARC Refrigerant Trading Authorisation, Refrigerant Handling Licence, or DCCEEW import licence number.
-                        </AlertDescription>
-                      </Alert>
-                      <div>
-                        <Label htmlFor="auLicenceNumber" className="text-orange-900">ARC / DCCEEW Licence Number *</Label>
-                        <Input
-                          id="auLicenceNumber"
-                          value={formData.auLicenceNumber}
-                          onChange={(e) => handleInputChange('auLicenceNumber', e.target.value)}
-                          placeholder="Enter your ARC RTA, RHL, or DCCEEW licence number"
-                          className="border-orange-200 focus:border-orange-400"
-                          required
-                        />
-                        <p className="text-xs text-orange-700 mt-1">
-                          Bulk cylinder and pallet shipments are released only after our export team verifies your licence with the issuing authority.
-                        </p>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <Checkbox
-                          id="auLicenceValid"
-                          checked={formData.auLicenceValid}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, auLicenceValid: checked === true }))}
-                          className="mt-1"
-                        />
-                        <Label htmlFor="auLicenceValid" className="text-sm text-orange-900">
-                          I confirm that my licence is current and valid, and that I am authorised to acquire and import controlled refrigerants under the Ozone Protection and Synthetic Greenhouse Gas Management Act.
-                        </Label>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
                 {/* VAT Exemption Option for International Orders */}
                 {formData.countryCode !== 'US' && (
                   <Card className="border-blue-200 bg-blue-50/50">
@@ -1011,14 +960,32 @@ const CheckoutPage = () => {
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                    <CardContent className="space-y-6">
-                      <PaymentMethodSelector
-                        selectedMethod={formData.paymentMethod}
-                        onMethodSelect={(method) => {
-                          handleInputChange('paymentMethod', method);
-                        }}
-                        availableMethods={['credit_card', 'bank_wire']}
-                      />
+                   <CardContent className="space-y-6">
+                     {walletsLoading ? (
+                       <div className="text-center py-8">
+                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                         <p className="text-sm text-gray-500 mt-2">Loading payment methods...</p>
+                       </div>
+                     ) : (
+                       <PaymentMethodSelector
+                         selectedMethod={formData.paymentMethod}
+                         onMethodSelect={(method) => {
+                           handleInputChange('paymentMethod', method);
+                           if (method.includes('crypto_')) {
+                             const cryptoType = method.replace('crypto_', '');
+                             const wallet = getCryptoWallets().find(w => w.payment_type === cryptoType);
+                             if (wallet) setSelectedCryptoWallet(wallet.id);
+                           }
+                         }}
+                           availableMethods={[
+                             'credit_card',
+                             'bank_wire',
+                             'zelle',
+                             'cashapp',
+                             ...getCryptoWallets().map(w => `crypto_${w.payment_type}`)
+                           ]}
+                       />
+                     )}
 
                     {/* Payment Method Details */}
                     <div className="border-t pt-6">
@@ -1030,7 +997,7 @@ const CheckoutPage = () => {
                             <div className="md:col-span-2">
                               <Label htmlFor="cardNumber">Card Number *</Label>
                               <Input
-                                aria-invalid={!!fieldErrors.cardNumber} aria-describedby={fieldErrors.cardNumber ? "cardNumber-error" : undefined} id="cardNumber"
+                                id="cardNumber"
                                 type="text"
                                 placeholder="1234 5678 9012 3456"
                                 value={formData.cardNumber}
@@ -1038,12 +1005,11 @@ const CheckoutPage = () => {
                                 maxLength={19}
                                 required
                               />
-{fieldErrors.cardNumber && <p id="cardNumber-error" className="text-xs text-destructive mt-1">{fieldErrors.cardNumber}</p>}
                             </div>
                             <div>
                               <Label htmlFor="expiryDate">Expiry Date *</Label>
                               <Input
-                                aria-invalid={!!fieldErrors.expiryDate} aria-describedby={fieldErrors.expiryDate ? "expiryDate-error" : undefined} id="expiryDate"
+                                id="expiryDate"
                                 type="text"
                                 placeholder="MM/YY"
                                 value={formData.expiryDate}
@@ -1051,12 +1017,11 @@ const CheckoutPage = () => {
                                 maxLength={5}
                                 required
                               />
-{fieldErrors.expiryDate && <p id="expiryDate-error" className="text-xs text-destructive mt-1">{fieldErrors.expiryDate}</p>}
                             </div>
                             <div>
                               <Label htmlFor="cvv">CVV *</Label>
                               <Input
-                                aria-invalid={!!fieldErrors.cvv} aria-describedby={fieldErrors.cvv ? "cvv-error" : undefined} id="cvv"
+                                id="cvv"
                                 type="text"
                                 placeholder="123"
                                 value={formData.cvv}
@@ -1064,17 +1029,15 @@ const CheckoutPage = () => {
                                 maxLength={4}
                                 required
                               />
-{fieldErrors.cvv && <p id="cvv-error" className="text-xs text-destructive mt-1">{fieldErrors.cvv}</p>}
                             </div>
                             <div className="md:col-span-2">
                               <Label htmlFor="cardholderName">Cardholder Name *</Label>
                               <Input
-                                aria-invalid={!!fieldErrors.cardholderName} aria-describedby={fieldErrors.cardholderName ? "cardholderName-error" : undefined} id="cardholderName"
+                                id="cardholderName"
                                 value={formData.cardholderName}
                                 onChange={(e) => handleInputChange('cardholderName', e.target.value)}
                                 required
                               />
-{fieldErrors.cardholderName && <p id="cardholderName-error" className="text-xs text-destructive mt-1">{fieldErrors.cardholderName}</p>}
                             </div>
                           </div>
 
@@ -1123,22 +1086,110 @@ const CheckoutPage = () => {
                         </div>
                       )}
 
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Shield className="h-4 w-4" />
-                        <span>Secure checkout. No payment is taken until your order is reviewed by our sales team. Orders ship after payment is confirmed. No credit or Net terms.</span>
-                      </div>
+                      {/* Zelle Details */}
+                      {formData.paymentMethod === 'zelle' && (
+                        <div className="space-y-4">
+                          {getTraditionalWallets().filter(w => w.payment_type === 'zelle').length > 0 && (
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                              <h4 className="font-medium text-blue-900 mb-2">Our Zelle Information</h4>
+                              {getTraditionalWallets().filter(w => w.payment_type === 'zelle').map((wallet) => (
+                                <div key={wallet.id} className="text-sm text-blue-800">
+                                  <p className="font-mono">{wallet.wallet_address}</p>
+                                  {wallet.label && <p className="text-xs opacity-75">{wallet.label}</p>}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="zelle-email">Your Zelle Email *</Label>
+                              <Input
+                                id="zelle-email"
+                                type="email"
+                                placeholder="email@example.com"
+                                value={formData.zelleTag}
+                                onChange={(e) => handleInputChange('zelleTag', e.target.value)}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="zelle-phone">Your Zelle Phone (Optional)</Label>
+                              <Input
+                                id="zelle-phone"
+                                type="tel"
+                                placeholder="(555) 123-4567"
+                                value={formData.zellePhone}
+                                onChange={(e) => handleInputChange('zellePhone', e.target.value)}
+                              />
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Provide your Zelle-registered email (required). You'll receive a proforma invoice and payment request within 24 hours.
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            We'll contact you with payment instructions. Provide either email or phone for Zelle.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* CashApp Details */}
+                      {formData.paymentMethod === 'cashapp' && (
+                        <div className="space-y-4">
+                          {getTraditionalWallets().filter(w => w.payment_type === 'cashapp').length > 0 && (
+                            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                              <h4 className="font-medium text-green-900 mb-2">Our CashApp Information</h4>
+                              {getTraditionalWallets().filter(w => w.payment_type === 'cashapp').map((wallet) => (
+                                <div key={wallet.id} className="text-sm text-green-800">
+                                  <p className="font-mono">{wallet.wallet_address}</p>
+                                  {wallet.label && <p className="text-xs opacity-75">{wallet.label}</p>}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div>
+                            <Label htmlFor="cashapp-tag">Your CashApp Tag *</Label>
+                            <Input
+                              id="cashapp-tag"
+                              placeholder="$your-cashtag (e.g., $username)"
+                              value={formData.cashappTag}
+                              onChange={(e) => handleInputChange('cashappTag', e.target.value)}
+                              required
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Enter your CashApp $cashtag. You'll receive a proforma invoice and payment request within 24 hours.
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Bank Wire Details */}
                       {formData.paymentMethod === 'bank_wire' && (
                         <div className="space-y-4">
                           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <h4 className="font-medium text-blue-900 mb-2">Bank Wire Transfer</h4>
+                            <h4 className="font-medium text-blue-900 mb-2">Bank Wire Transfer Instructions</h4>
                             <div className="text-sm text-blue-800 space-y-1">
-                              <p>After you place your order, our sales team will email you a proforma invoice with the bank wire payment instructions.</p>
+                              <p>Wire transfer details will be provided after order confirmation.</p>
                               <p className="text-xs opacity-75">Processing time: 1-3 business days</p>
+                              {bankWireDetails && (
+                                <div className="mt-3 space-y-1 font-mono text-xs">
+                                  {bankWireDetails.bank_name && <p><strong>Bank:</strong> {bankWireDetails.bank_name}</p>}
+                                  {bankWireDetails.bank_account_number && <p><strong>Account:</strong> {bankWireDetails.bank_account_number}</p>}
+                                  {bankWireDetails.bank_routing_number && <p><strong>Routing:</strong> {bankWireDetails.bank_routing_number}</p>}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
+                      )}
+
+                      {/* Cryptocurrency Payment Information */}
+                      {formData.paymentMethod.startsWith('crypto_') && (
+                        <Alert className="border-orange-300 bg-orange-50">
+                          <Bitcoin className="h-4 w-4 text-orange-600" />
+                          <AlertDescription className="text-orange-800">
+                            Payment details will be provided after order confirmation. You'll have 30 minutes to complete the cryptocurrency payment.
+                          </AlertDescription>
+                        </Alert>
                       )}
                     </div>
                   </CardContent>
@@ -1169,7 +1220,7 @@ const CheckoutPage = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Show EPA compliance only if cart contains refrigerants */}
-                    {hasRefrigerantProducts && (
+                    {items.some(item => item.product_type !== 'accessory') && (
                       <>
                         <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-300">
                           <h4 className="font-semibold mb-2 text-yellow-900 flex items-center">
@@ -1182,7 +1233,7 @@ const CheckoutPage = () => {
                             <p>• Sales restricted to licensed HVAC professionals and certified technicians only</p>
                             <p>• Proper handling, recovery, and disposal regulations must be followed</p>
                             <p>• DOT HazMat shipping regulations apply to all refrigerant shipments</p>
-                            <p>• Certification details may be verified before regulated items ship</p>
+                            <p>• False certification claims are subject to federal penalties up to $44,539 per day per violation</p>
                           </div>
                         </div>
                         
@@ -1205,24 +1256,18 @@ const CheckoutPage = () => {
                       </>
                     )}
                     
-                    {/* Show general terms for non-refrigerant orders (equipment & accessories) */}
-                    {!hasRefrigerantProducts && (
-                      <div className="space-y-3">
-                        <div className="bg-muted/50 p-4 rounded-lg border text-sm text-muted-foreground space-y-1">
-                          <p>Equipment ships from {getDispatchHub(formData.countryCode)} with manufacturer warranty included.</p>
-                          <p>Estimated delivery: 0-3 business days handling + 0-10 business days transit.</p>
-                        </div>
-                        <div className="flex items-start space-x-2">
-                          <Checkbox
-                            id="legal-acknowledgment"
-                            checked={legalAcknowledged}
-                            onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
-                          />
-                          <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
-                            I acknowledge that I understand the terms of purchase and agree to use these products
-                            in accordance with manufacturer specifications and safety guidelines.
-                          </Label>
-                        </div>
+                    {/* Show general terms for accessories only */}
+                    {items.every(item => item.product_type === 'accessory') && (
+                      <div className="flex items-start space-x-2">
+                        <Checkbox
+                          id="legal-acknowledgment"
+                          checked={legalAcknowledged}
+                          onCheckedChange={(checked) => setLegalAcknowledged(checked === true)}
+                        />
+                        <Label htmlFor="legal-acknowledgment" className="text-sm leading-5">
+                          I acknowledge that I understand the terms of purchase and agree to use these products
+                          in accordance with manufacturer specifications and safety guidelines.
+                        </Label>
                       </div>
                     )}
                   </CardContent>
@@ -1247,19 +1292,8 @@ const CheckoutPage = () => {
                       <div key={index} className="flex justify-between items-start">
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          {item.product_type === 'air_conditioner' ? (
-                            <>
-                              <p className="text-xs text-gray-500">{item.packaging}</p>
-                              <p className="text-xs text-gray-500">
-                                Total shown covers all units in this minimum order{item.quantity > 1 ? ` × ${item.quantity} orders` : ''}
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <p className="text-xs text-gray-500">{item.packaging}</p>
-                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                            </>
-                          )}
+                          <p className="text-xs text-gray-500">{item.packaging}</p>
+                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                           {/* AC Configuration Summary */}
                           {item.product_type === 'air_conditioner' && item.configuration_json && (
                             <div className="mt-1">
@@ -1379,16 +1413,10 @@ const CheckoutPage = () => {
                       </span>
                     </div>
                     
-                    {couponDiscount > 0 && (
+                    {discountAmount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount:</span>
-                        <span>-{formatCurrency(couponDiscount)}</span>
-                      </div>
-                    )}
-                    {paymentDiscount > 0 && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Bank wire discount (15%):</span>
-                        <span>-{formatCurrency(paymentDiscount)}</span>
+                        <span>-{formatCurrency(discountAmount)}</span>
                       </div>
                     )}
                     <Separator />
@@ -1396,12 +1424,6 @@ const CheckoutPage = () => {
                       <span>Total:</span>
                       <span>{formatCurrency(finalTotal)}</span>
                     </div>
-                  </div>
-
-                  <div className="bg-muted/50 p-3 rounded-lg border text-xs text-muted-foreground">
-                    <p className="font-medium text-foreground mb-1 flex items-center gap-1"><Truck className="h-3 w-3" /> Delivery estimate</p>
-                    <p>Handling 0-3 business days · Transit 0-10 business days (0-13 total).</p>
-                    <p>Ships from: {getDispatchHub(formData.countryCode)}</p>
                   </div>
 
                   {/* Currency Conversion Notice */}
@@ -1422,8 +1444,7 @@ const CheckoutPage = () => {
                       <Info className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
                       <div className="text-xs text-gray-600">
                         <p className="font-medium mb-1">
-                          {taxCalculation.isDDU ? 'Import Duties & Taxes' :
-                           taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
+                          {taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
                            taxCalculation.taxType === 'GST' ? 'GST Information' : 
                            'Sales Tax Information'}
                         </p>
@@ -1438,8 +1459,6 @@ const CheckoutPage = () => {
                                 <span> Your order will be taxed at {taxCalculation.taxRate}%.</span>
                               )}
                             </>
-                          ) : taxCalculation.isDDU ? (
-                            <>{taxCalculation.taxNotice} Charges are set by {taxCalculation.countryName || 'your country'}'s customs authority and are the buyer's responsibility.</>
                           ) : taxCalculation.region === 'EU' ? (
                             <>
                               VAT is applied at the standard rate of {taxCalculation.taxRate}% for {taxCalculation.countryName}.
@@ -1489,22 +1508,6 @@ const CheckoutPage = () => {
                     )}
                   </Button>
 
-                  {/* What happens next */}
-                  <div className="mt-4 rounded-lg border bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
-                    <p className="font-medium text-foreground">What happens next</p>
-                    {formData.paymentMethod === 'bank_wire' ? (
-                      <p>
-                        You'll get an order confirmation by email. Sales will send your payment invoice separately; shipment follows payment confirmation.
-                      </p>
-                    ) : (
-                      <p>
-                        You'll get an order confirmation by email, then our team calls or emails you within one business day to confirm
-                        freight and delivery timing.
-                      </p>
-                    )}
-                    <p>Questions? Call 786-987-0501.</p>
-                  </div>
-
                   {/* Security Notice */}
                   <div className="flex items-center justify-center text-xs text-gray-500 mt-4">
                     <Shield className="h-3 w-3 mr-1" />
@@ -1515,9 +1518,6 @@ const CheckoutPage = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="fixed bottom-20 inset-x-4 z-40 border bg-background p-3 shadow-lg md:hidden">
-        <Button className="w-full" size="lg" onClick={handleSubmit} disabled={isProcessing}>{isProcessing ? 'Processing…' : `Place Order — ${formatCurrency(finalTotal)}`}</Button>
       </div>
     </div>
   );

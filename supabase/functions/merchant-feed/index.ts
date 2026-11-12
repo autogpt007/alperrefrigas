@@ -49,33 +49,6 @@ function absoluteImage(url: unknown): string | null {
   return `${BASE_URL}${raw.startsWith("/") ? raw : `/${raw}`}`;
 }
 
-type MerchantAvailability = "in_stock" | "out_of_stock" | "preorder" | "backorder";
-
-function merchantAvailability(value: unknown, stockQuantity: unknown): MerchantAvailability {
-  const status = String(value ?? "").toLowerCase();
-  if (status === "preorder" || status === "backorder" || status === "out_of_stock") {
-    return status;
-  }
-  if (stockQuantity !== null && stockQuantity !== undefined && Number(stockQuantity) <= 0) {
-    return "out_of_stock";
-  }
-  return "in_stock";
-}
-
-function googleProductCategory(product: Record<string, unknown>): string | null {
-  const category = String(product.category ?? "").toLowerCase();
-  const name = String(product.name ?? "").toLowerCase();
-
-  if (category.startsWith("heat-pump") || product.product_type === "air_conditioner") return "605";
-  if (product.product_type !== "accessory") return null;
-  if (category === "safety") return "2047";
-  if (category === "fittings" || category === "valves") return "1810";
-  if (category === "gauges" || name.includes("gauge") || name.includes("analyzer")) return "1732";
-  if (name.includes("leak detector")) return "1991";
-  if (name.includes("scale")) return "1698";
-  return "1167";
-}
-
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -87,9 +60,8 @@ Deno.serve(async (req: Request) => {
     const columns = [
       "id", "name", "description", "price", "sku", "gtin", "mpn", "brand", "condition",
       "availability", "stock_quantity", "images", "thumbnail_url", "google_product_category",
-      "product_type", "category", "weight_kg", "length_cm", "width_cm", "height_cm",
+      "product_type", "weight_kg", "length_cm", "width_cm", "height_cm",
       "identifier_exists", "updated_at",
-      "base_unit_price", "q20_units", "custom_uplift_5_19",
     ].join(",");
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -129,25 +101,14 @@ Deno.serve(async (req: Request) => {
         .filter((url): url is string => !!url && url !== primaryImage)
         .slice(0, 10);
 
-      const availability = merchantAvailability(p.availability, p.stock_quantity);
+      const inStock =
+        p.availability === "out_of_stock"
+          ? false
+          : p.stock_quantity === null || p.stock_quantity === undefined
+            ? true
+            : Number(p.stock_quantity) > 0;
 
       const hasIdentifier = !!(p.gtin || (p.brand && p.mpn));
-
-      // GMC rule: feed price must match the price a single unit sells for on the
-      // landing page. AC / mini-split / heat-pump units are orderable from qty 1,
-      // so emit the single-unit rate (5+ rate + 20% small-order surcharge), the
-      // same calculation the storefront's calculateACPricingTier(product, 1) runs.
-      const categoryPre = String(p.category ?? "").toLowerCase();
-      const isHvacUnitPre =
-        categoryPre.startsWith("heat-pump") || p.product_type === "air_conditioner";
-      let feedPrice = Number(p.price);
-      if (isHvacUnitPre && p.base_unit_price && p.q20_units) {
-        const uplift5_19 = Number(p.custom_uplift_5_19 ?? 35);
-        feedPrice =
-          Math.round(
-            Number(p.base_unit_price) * (1 + uplift5_19 / 100) * 1.2 * 100,
-          ) / 100;
-      }
 
       const parts: string[] = [
         `      <g:id>${esc(p.sku || p.id)}</g:id>`,
@@ -156,8 +117,10 @@ Deno.serve(async (req: Request) => {
         `      <g:link>${esc(link)}</g:link>`,
         `      <g:image_link>${esc(primaryImage)}</g:image_link>`,
         ...additionalImages.map((url) => `      <g:additional_image_link>${esc(url)}</g:additional_image_link>`),
-        `      <g:availability>${availability}</g:availability>`,
-        `      <g:price>${feedPrice.toFixed(2)} USD</g:price>`,
+        `      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>`,
+        // Per-cylinder / per-unit price only — must match the price shown on the
+        // product page, otherwise GMC reports a mismatched-price violation.
+        `      <g:price>${Number(p.price).toFixed(2)} USD</g:price>`,
         `      <g:condition>${esc(p.condition || "new")}</g:condition>`,
         `      <g:brand>${esc(p.brand || SHOP_TITLE)}</g:brand>`,
       ];
@@ -170,6 +133,9 @@ Deno.serve(async (req: Request) => {
         }</g:identifier_exists>`,
       );
 
+      if (p.google_product_category) {
+        parts.push(`      <g:google_product_category>${esc(p.google_product_category)}</g:google_product_category>`);
+      }
       if (p.weight_kg) parts.push(`      <g:shipping_weight>${Number(p.weight_kg).toFixed(2)} kg</g:shipping_weight>`);
       if (p.length_cm) parts.push(`      <g:shipping_length>${Number(p.length_cm).toFixed(0)} cm</g:shipping_length>`);
       if (p.width_cm) parts.push(`      <g:shipping_width>${Number(p.width_cm).toFixed(0)} cm</g:shipping_width>`);
@@ -177,21 +143,7 @@ Deno.serve(async (req: Request) => {
 
       // B2B / professional-only catalogue.
       parts.push(`      <g:adult>no</g:adult>`);
-      const category = String(p.category ?? "").toLowerCase();
-      const isHvacUnit = category.startsWith("heat-pump") || p.product_type === "air_conditioner";
-      const feedProductType = category.startsWith("heat-pump")
-        ? "Heat Pumps"
-        : p.product_type === "air_conditioner"
-          ? "Air Conditioners"
-          : p.product_type === "accessory"
-            ? "HVAC Tools"
-            : "Refrigerants";
-      parts.push(`      <g:product_type>${esc(feedProductType)}</g:product_type>`);
-
-      // Use verified numeric IDs from Google's official US taxonomy. Refrigerants
-      // are left uncategorized because the taxonomy has no accurate refrigerant class.
-      const taxonomyId = googleProductCategory(p);
-      if (taxonomyId) parts.push(`      <g:google_product_category>${taxonomyId}</g:google_product_category>`);
+      parts.push(`      <g:product_type>${esc(p.product_type === "air_conditioner" ? "Air Conditioners" : "Refrigerants")}</g:product_type>`);
 
       items.push(`    <item>\n${parts.join("\n")}\n    </item>`);
     }

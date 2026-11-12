@@ -21,6 +21,11 @@ export interface BankDetails {
   address?: string;
 }
 
+export interface ZelleDetails {
+  recipient?: string;
+  handle?: string;
+}
+
 export interface InvoiceBranding {
   logoUrl?: string | null;
   signatureUrl?: string | null;
@@ -63,7 +68,7 @@ export const COMPANY = {
   tradeName: "Alper Refrigerants",
   address1: "382 NE 191st St",
   address2: "Miami, FL 33179, United States",
-  phone: "+1 786-987-0501",
+  phone: "+1 682-215-2974",
   email: "sales@alperrefrigerants.com",
   get website() {
     return SITE_DOMAIN;
@@ -88,6 +93,7 @@ const isWire = (method?: string | null) => {
   const m = (method || "").toLowerCase();
   return m.includes("bank") || m.includes("wire") || m.includes("ach");
 };
+const isZelle = (method?: string | null) => (method || "").toLowerCase().includes("zelle");
 
 /**
  * Builds the human-readable payment instruction block printed on the PDF.
@@ -97,6 +103,7 @@ export const buildPaymentNotes = (opts: {
   paymentMethod?: string | null;
   orderNumber?: string;
   bank?: BankDetails;
+  zelle?: ZelleDetails;
 }): string => {
   const lines: string[] = [];
   const ref = opts.orderNumber ? ` (reference ${opts.orderNumber})` : "";
@@ -111,6 +118,12 @@ export const buildPaymentNotes = (opts: {
     if (b.swift) lines.push(`SWIFT / BIC: ${b.swift}`);
     if (b.address) lines.push(`Bank Address: ${b.address}`);
     lines.push("Please include the document number on the wire reference.");
+  } else if (isZelle(opts.paymentMethod)) {
+    const z = opts.zelle || {};
+    lines.push(`Payment by Zelle${ref}:`);
+    if (z.recipient) lines.push(`Recipient: ${z.recipient}`);
+    if (z.handle) lines.push(`Zelle Email / Phone: ${z.handle}`);
+    lines.push("Please include the document number in the Zelle memo.");
   } else {
     lines.push(
       `Payment instructions will be confirmed by our sales team${ref}. Contact ${COMPANY.email}.`
@@ -240,11 +253,7 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Items table ----------
   const billable = doc.items.filter((i) => !i.isDetail);
   const subtotal = billable.reduce((s, i) => s + Number(i.quantity || 0) * Number(i.unitPrice || 0), 0);
-  // Only the discount entered on the document is applied, so the PDF total
-  // always matches the admin preview and the saved record.
-  const effectiveDiscountPercent = Number(doc.discountPercent || 0);
-  const discountLabel = `Discount (${effectiveDiscountPercent}%)`;
-  const discountAmount = subtotal * (effectiveDiscountPercent / 100);
+  const discountAmount = subtotal * (Number(doc.discountPercent || 0) / 100);
   const total =
     subtotal - discountAmount + Number(doc.shippingCost || 0) + Number(doc.taxAmount || 0);
   const balanceDue = Math.max(0, total - Number(doc.amountPaid || 0));
@@ -281,7 +290,7 @@ export const generateInvoicePDF = async (doc: InvoiceDocument): Promise<Blob> =>
   // ---------- Totals ----------
   const totalsX = pageW - M - 240;
   const rows: Array<[string, string, boolean?]> = [["Subtotal", money(subtotal, currency)]];
-  if (effectiveDiscountPercent) rows.push([discountLabel, `- ${money(discountAmount, currency)}`]);
+  if (doc.discountPercent) rows.push([`Discount (${doc.discountPercent}%)`, `- ${money(discountAmount, currency)}`]);
   if (doc.shippingCost) rows.push(["Shipping", money(Number(doc.shippingCost), currency)]);
   if (doc.taxAmount) rows.push(["Tax", money(Number(doc.taxAmount), currency)]);
   rows.push([doc.documentType === "invoice" ? "Total" : "Quoted Total", money(total, currency), true]);

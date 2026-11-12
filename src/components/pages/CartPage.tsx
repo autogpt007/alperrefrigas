@@ -13,8 +13,6 @@ import { trackViewCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ACConfigSummary } from '@/components/ui/ACConfigSummary';
 import { ACConfiguration } from '@/components/ui/ACConfigurator';
-import ShipToSelector from '@/components/ui/ShipToSelector';
-import { checkoutDestination } from '@/lib/quoteRequest';
 // Extracted cart item component for cleaner code
 interface CartItemCardProps {
   item: CartItem;
@@ -126,7 +124,11 @@ const CartPage = () => {
   }, []); // Only track on initial load
 
   const handleProceedToCheckout = () => {
-    navigate(checkoutDestination(!!user));
+    if (user) {
+      navigate('/checkout');
+    } else {
+      navigate('/auth?returnTo=/checkout');
+    }
   };
 
   if (items.length === 0) {
@@ -172,7 +174,6 @@ const CartPage = () => {
             Continue Shopping
           </Button>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <ShipToSelector className="mt-2" />
           <Badge variant="secondary" className="ml-auto">
             {itemCount} {itemCount === 1 ? 'Item' : 'Items'}
           </Badge>
@@ -226,22 +227,7 @@ const CartPage = () => {
                   </Alert>
                 )}
                 
-                {/* Estimated Shipping & Tax Disclosure */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2">
-                  <h4 className="text-sm font-semibold text-gray-900">Estimated Shipping &amp; Tax</h4>
-                  <p className="text-xs text-gray-600">
-                    <span className="font-medium">Estimated Shipping:</span> Calculated at checkout. US Continental base rate $45.00 plus $25.00 HazMat surcharge for refrigerants; rates for Alaska, Hawaii, Canada, UK, EU and other regions shown at checkout.
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    <span className="font-medium">Estimated Tax:</span> Calculated at checkout based on your delivery ZIP code (US) or destination country VAT/GST (international).
-                  </p>
-                  <p className="text-xs text-gray-500 italic">
-                    Final shipping and taxes are confirmed on the checkout page before payment.
-                  </p>
-                </div>
-
                 <div className="space-y-3 pt-4">
-                  <p className="text-xs text-muted-foreground">Orders ship after payment is confirmed. No credit or Net terms.</p>
                   {user ? (
                     <Button 
                       size="lg" 

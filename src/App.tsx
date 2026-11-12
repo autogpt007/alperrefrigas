@@ -1,7 +1,4 @@
 
-import SeoContentPage from './components/pages/seo/SeoContentPage';
-import GuidesIndex from './components/pages/seo/GuidesIndex';
-import { SEO_PAGES } from './components/pages/seo/seoPages';
 import React, { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,7 +18,6 @@ import { RFQProvider } from "./contexts/RFQContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
 import { QuotesProvider } from "./contexts/QuotesContext";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
-import { ShippingCountryProvider } from "./contexts/ShippingCountryContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import { ChatToggle } from "./components/ui/ChatToggle";
@@ -32,13 +28,9 @@ import "./App.css";
 // Critical path - eagerly loaded
 import HomePage from "./components/pages/HomePage";
 import ProductCatalog from "./components/pages/ProductCatalog";
-import AirConditionersPage from "./components/pages/AirConditionersPage";
-import HeatPumpsPage from "./components/pages/HeatPumpsPage";
-import HVACToolsPage from "./components/pages/HVACToolsPage";
 import ProductDetails from "./components/pages/ProductDetails";
 
 // Lazy-loaded routes
-const R22ReplacementsPage = lazy(() => import("./components/pages/R22ReplacementsPage"));
 const R454BLandingPage = lazy(() => import("./components/pages/R454BLandingPage"));
 const HFOLandingPage = lazy(() => import("./components/pages/HFOLandingPage"));
 const ProductCategory = lazy(() => import("./components/pages/ProductCategory"));
@@ -62,6 +54,7 @@ const ShippingPolicy = lazy(() => import("./components/pages/ShippingPolicy"));
 const PaymentInformation = lazy(() => import("./components/pages/PaymentInformation"));
 const Sitemap = lazy(() => import("./components/pages/Sitemap"));
 const CustomerSupport = lazy(() => import("./components/pages/CustomerSupport"));
+const CryptoPaymentPage = lazy(() => import("./components/pages/CryptoPaymentPage"));
 const MyAccount = lazy(() => import("./components/pages/MyAccount"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
 const UserAuthPage = lazy(() => import("./components/auth/UserAuthPage"));
@@ -85,6 +78,7 @@ const LogoManagement = lazy(() => import("./components/admin/LogoManagement"));
 const ContactManagement = lazy(() => import("./components/admin/ContactManagement"));
 const ContactInfoManagement = lazy(() => import("./components/admin/ContactInfoManagement"));
 const AdminSettings = lazy(() => import("./components/admin/AdminSettings"));
+const PaymentManagement = lazy(() => import("./components/admin/PaymentManagement"));
 const TeamManagement = lazy(() => import("./components/admin/TeamManagement"));
 const CertificationManagement = lazy(() => import("./components/admin/CertificationManagement"));
 const ContentManagement = lazy(() => import("./components/admin/ContentManagement"));
@@ -124,7 +118,6 @@ function App() {
       <SecurityMonitor />
       <QueryClientProvider client={queryClient}>
         <CurrencyProvider>
-        <ShippingCountryProvider>
           <TooltipProvider>
           <AuthProvider>
             <ProductsProvider>
@@ -158,6 +151,7 @@ function App() {
                          <Route path="adverts" element={<AdvertManagement />} />
                          <Route path="google-ads-engine" element={<GoogleAdsEngine />} />
                           <Route path="coupons" element={<CouponManagement />} />
+                          <Route path="payment-methods" element={<PaymentManagement />} />
                           <Route path="tax-rates" element={<TaxRatesManagement />} />
                           <Route path="international-taxes" element={<InternationalTaxManagement />} />
                           <Route path="exchange-rates" element={<ExchangeRateManagement />} />
@@ -187,18 +181,10 @@ function App() {
                                 <Route path="/products" element={<ProductCatalog />} />
                                 <Route path="/products/refrigerants" element={<ProductCatalog />} />
                                 <Route path="/products/accessories" element={<ProductCatalog />} />
-                                <Route path="/products/air-conditioners" element={<AirConditionersPage />} />
+                                <Route path="/products/air-conditioners" element={<Navigate to="/products/accessories" replace />} />
                                 <Route path="/products/air-conditioners/:subcategory" element={<ProductCatalog />} />
-                                <Route path="/products/heating-heat-pumps" element={<HeatPumpsPage />} />
-                                <Route path="/products/heating-heat-pumps/:subcategory" element={<ProductCatalog />} />
-                                <Route path="/products/hvac-tools" element={<HVACToolsPage />} />
                                  <Route path="/products/r-454b" element={<R454BLandingPage />} />
                                  <Route path="/products/hfo-refrigerants" element={<HFOLandingPage />} />
-                                 <Route path="/products/r-22-replacements" element={<R22ReplacementsPage />} />
-                                 <Route path="/products/r-410a" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/r-410a")!} />} />
-                                 <Route path="/products/r-32" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/r-32")!} />} />
-                                 <Route path="/products/ptac-units" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/products/ptac-units")!} />} />
-
                                  <Route path="/products/category/:category" element={<ProductCategory />} />
                                  <Route path="/products/accessories/:category" element={<ProductCategory />} />
                                  <Route path="/products/:productSlug" element={<ProductDetails />} />
@@ -207,6 +193,7 @@ function App() {
                                <Route path="/bulk-pricing" element={<BulkPricing />} />
                               <Route path="/rfq" element={<RFQPage />} />
                                <Route path="/checkout" element={<CheckoutPage />} />
+                               <Route path="/crypto-payment/:orderNumber" element={<CryptoPaymentPage />} />
                                <Route path="/order-confirmation" element={<OrderConfirmation />} />
                               <Route path="/quote-confirmation" element={<OrderConfirmation />} />
                         <Route path="/testimonials" element={<TestimonialsPage />} />
@@ -229,13 +216,6 @@ function App() {
                                <Route path="/auth" element={<UserAuthPage />} />
                                <Route path="/admin-auth" element={<AuthPage />} />
                                <Route path="/blog" element={<BlogPage />} />
-                               <Route path="/guides" element={<GuidesIndex />} />
-                               <Route path="/brands/mrcool" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/brands/mrcool")!} />} />
-                               <Route path="/brands/senville" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/brands/senville")!} />} />
-                               <Route path="/guides/r-454b-vs-r-32" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/r-454b-vs-r-32")!} />} />
-                               <Route path="/guides/who-can-buy-refrigerant" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/who-can-buy-refrigerant")!} />} />
-                               <Route path="/guides/r-454b-handling" element={<SeoContentPage config={SEO_PAGES.find(x => x.path === "/guides/r-454b-handling")!} />} />
-
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />
                                <Route path="/news/:slug" element={<BlogPostRedirect />} />
                                <Route path="/kyc/:token" element={<KYCVerificationPage />} />
@@ -258,7 +238,6 @@ function App() {
             </ProductsProvider>
           </AuthProvider>
         </TooltipProvider>
-        </ShippingCountryProvider>
         </CurrencyProvider>
       </QueryClientProvider>
     </>
