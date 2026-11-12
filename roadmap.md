@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] AI search accessibility: correct crawler groups, refresh AI-readable site guidance, align public sitemap and fallback content, and verify crawler responses; full product/article HTML requires an approved rendering upgrade.
+
 - [x] Buyer flow step 1: guest checkout and secure guest RFQ submission, verified without sign-in; test quote and both sent email events confirmed.
 - [x] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification; guest panel submission and both sent emails verified.
 - [x] Buyer flow step 3: visible mobile search, cylinder/pallet modes, inline checkout errors and sticky order button; mobile browser checks and validation tests passed.
