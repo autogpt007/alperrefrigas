@@ -138,12 +138,6 @@ export const generateSitemap = (products: Product[]): SitemapEntry[] => {
       changefreq: 'weekly',
       priority: 0.7
     },
-    {
-      url: `${baseUrl}/testimonials`,
-      lastmod: currentDate,
-      changefreq: 'weekly',
-      priority: 0.6
-    },
     
     // Legal Pages
     {

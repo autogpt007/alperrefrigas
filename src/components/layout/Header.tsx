@@ -89,7 +89,6 @@ const Header = () => {
 
   const navItems = [
     { label: t('nav.about'), path: '/about' },
-    { label: 'Testimonials', path: '/testimonials' },
     { label: t('nav.contact'), path: '/contact' },
     { label: 'Blog', path: '/blog' },
     { label: 'EPA Compliance', path: '/compliance' },

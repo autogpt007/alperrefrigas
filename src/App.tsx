@@ -58,7 +58,6 @@ const CryptoPaymentPage = lazy(() => import("./components/pages/CryptoPaymentPag
 const MyAccount = lazy(() => import("./components/pages/MyAccount"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
 const UserAuthPage = lazy(() => import("./components/auth/UserAuthPage"));
-const TestimonialsPage = lazy(() => import("./components/pages/TestimonialsPage"));
 const BlogPage = lazy(() => import("./components/pages/BlogPage"));
 const BlogPostDetail = lazy(() => import("./components/pages/BlogPostDetail"));
 const BlogPostRedirect = lazy(() => import("./components/pages/BlogPostRedirect"));
@@ -196,7 +195,7 @@ function App() {
                                <Route path="/crypto-payment/:orderNumber" element={<CryptoPaymentPage />} />
                                <Route path="/order-confirmation" element={<OrderConfirmation />} />
                               <Route path="/quote-confirmation" element={<OrderConfirmation />} />
-                        <Route path="/testimonials" element={<TestimonialsPage />} />
+                        <Route path="/testimonials" element={<Navigate to="/about" replace />} />
                         <Route path="/about" element={<AboutUs />} />
                               <Route path="/contact" element={<ContactUs />} />
                               <Route path="/faq" element={<FAQ />} />
