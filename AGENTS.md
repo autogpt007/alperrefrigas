@@ -5,3 +5,6 @@
 - Product quote sheets submit the current selection independently of the quote basket; mobile assistance opens the same sheet without duplicating leads.
 - Keep checkout field validation in a shared helper and preserve destination-specific requirements; mobile order controls use the same guarded submission handler as desktop.
 - Load the application after startup error handlers, with a visible render/import fallback and storage-safe one-time chunk recovery, so failed deployments cannot silently leave a blank root.
+- Generate crawler permissions through the shared crawler policy so every search, user-fetch and retained training agent respects the same private-page exclusions.
+- Sitemap modification dates must come only from page-specific content timestamps, never the current build or generation date, to avoid false freshness signals.
+- Keep the AI directory limited to public canonical links and stable verified business facts; product pages remain authoritative for changing prices and specifications.

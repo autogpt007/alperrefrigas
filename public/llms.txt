@@ -1,82 +1,45 @@
-# Alper Refrigerants - AI Summary
+# Alper Refrigerants
 
-## Company Overview
-Alper Refrigerants is a professional wholesale refrigerant distributor serving HVAC contractors, technicians, and industrial facilities across North America and internationally. We are EPA Section 608 certified and specialize in bulk sales of refrigerant gases.
+> Refrigerants, air conditioners, heat pumps and HVAC tools for professional buyers.
 
-## Business Details
-- **Company Name**: Alper Chemical Group (DBA: Alper Refrigerants)
-- **Location**: 382 NE 191st St, Miami, FL 33179, United States
-- **Phone**: +1-786-987-0501
-- **Email**: sales@alperrefrigerants.com
-- **Website**: https://alperrefrigerants.com
-- **Business Type**: B2B Wholesale Refrigerant Distributor
-- **Target Audience**: EPA-certified HVAC professionals, licensed contractors, industrial buyers
+Alper Refrigerants is the trading name of Alper Chemical Group. The canonical website is https://alperrefrigerants.com. Contact sales@alperrefrigerants.com or +1-786-987-0501. Business address: 382 NE 191st St, Miami, FL 33179, United States.
 
-## Product Categories
+Use the current product page for specifications, price, availability and packaging. Refrigerant selection depends on equipment compatibility and destination requirements; alternatives are not automatically drop-in replacements. Shipping, taxes and compliance requirements depend on the order and destination. This directory does not replace manufacturer documentation or store policies.
 
-### HFC Refrigerants
-- R-410A (Puron) - Modern HVAC systems
-- R-134a - Automotive and commercial
-- R-404A - Commercial refrigeration
-- R-407C - Retrofit applications
-- R-507A - Low-temperature applications
+## Products
+- [Product catalog](https://alperrefrigerants.com/products): Refrigerants, equipment and accessories.
+- [Refrigerants](https://alperrefrigerants.com/products/refrigerants): Refrigerant listings and packaging options.
+- [HFO refrigerants](https://alperrefrigerants.com/products/hfo-refrigerants): HFO product information.
+- [R-454B](https://alperrefrigerants.com/products/r-454b): A2L refrigerant for compatible equipment.
+- [R-410A](https://alperrefrigerants.com/products/r-410a): R-410A buying information.
+- [R-32](https://alperrefrigerants.com/products/r-32): R-32 buying information.
+- [R-22 alternatives](https://alperrefrigerants.com/products/r-22-replacements): Retrofit considerations and alternatives.
+- [Air conditioners](https://alperrefrigerants.com/products/air-conditioners): Air-conditioning equipment.
+- [Heating and heat pumps](https://alperrefrigerants.com/products/heating-heat-pumps): Heat-pump equipment.
+- [PTAC units](https://alperrefrigerants.com/products/ptac-units): Packaged terminal air-conditioning buying information.
+- [HVAC tools](https://alperrefrigerants.com/products/hvac-tools): Contractor tools and equipment.
+- [Accessories](https://alperrefrigerants.com/products/accessories): HVAC accessories.
+- [Bulk pricing](https://alperrefrigerants.com/bulk-pricing): Volume-order information.
 
-### HFO Refrigerants (Low-GWP)
-- R-1234yf - Automotive
-- R-1234ze - Commercial chillers
-- R-513A - Medium pressure systems
+## Guides and articles
+- [Buying guides](https://alperrefrigerants.com/guides): Refrigerant and HVAC guides.
+- [R-454B versus R-32](https://alperrefrigerants.com/guides/r-454b-vs-r-32): Compatibility and selection considerations.
+- [Who can buy refrigerant](https://alperrefrigerants.com/guides/who-can-buy-refrigerant): Buyer certification requirements.
+- [R-454B handling](https://alperrefrigerants.com/guides/r-454b-handling): A2L handling considerations.
+- [Blog](https://alperrefrigerants.com/blog): Published HVAC and refrigerant articles.
+- [Frequently asked questions](https://alperrefrigerants.com/faq): Buyer questions and answers.
 
-### Natural Refrigerants
-- R-290 (Propane) - Eco-friendly
-- R-600a (Isobutane) - Commercial refrigeration
-- R-744 (CO2) - Industrial applications
+## Business and policies
+- [About Alper](https://alperrefrigerants.com/about): Business information.
+- [Contact sales](https://alperrefrigerants.com/contact): Sales contact information.
+- [Refrigerant compliance](https://alperrefrigerants.com/compliance): Professional-use and certification guidance.
+- [Shipping policy](https://alperrefrigerants.com/shipping-policy): Delivery, freight and destination requirements.
+- [Refund policy](https://alperrefrigerants.com/refund-policy): Returns and refund conditions.
+- [Payment information](https://alperrefrigerants.com/payment-info): Card and bank-wire information; shipment follows payment confirmation.
+- [Terms](https://alperrefrigerants.com/terms): Store terms.
+- [Privacy](https://alperrefrigerants.com/privacy): Privacy policy.
 
-### HCFC Refrigerants (Legacy)
-- R-22 (Freon) - Existing systems only
-
-### Air Conditioners
-- Ductless Mini-Splits
-- Window AC Units
-- Portable AC Units
-
-### Accessories
-- Manifold gauges
-- Recovery equipment
-- Fittings and adapters
-- Safety equipment
-
-## Key Services
-- Refrigerants sold by single cylinder (1-39), pallet (40+) or container
-- Container-load pricing (20ft and 40ft containers)
-- Orders handled in 0-3 business days; regional dispatch hubs (Miami for the Americas, Poland/Turkey for Europe and UK, Thailand for Australia/NZ)
-- Technical support and EPA compliance assistance
-- Safety Data Sheets (SDS) for all products
-- International shipping to UK, EU, Canada, Australia
-
-## Certifications & Compliance
-- EPA Section 608 Certified
-- DOT HazMat Compliant
-- F-Gas Certification support for EU shipments
-
-## Pricing Structure
-- Pallet pricing (40+ cylinders)
-- 20ft container pricing (1,140 cylinders)
-- 40ft container pricing (2,280 cylinders)
-- Contractor volume discounts up to 25%
-
-## Contact Information
-For wholesale quotes and bulk orders:
-- Sales: sales@alperrefrigerants.com
-- Support: support@alperrefrigerants.com
-- Phone: +1-786-987-0501
-- Request Quote: https://alperrefrigerants.com/bulk-pricing
-
-## Important Pages
-- Products: https://alperrefrigerants.com/products
-- Refrigerants: https://alperrefrigerants.com/products/refrigerants
-- Air Conditioners: https://alperrefrigerants.com/products/air-conditioners
-- Bulk Pricing: https://alperrefrigerants.com/bulk-pricing
-- About Us: https://alperrefrigerants.com/about
-- Contact: https://alperrefrigerants.com/contact
-- FAQ: https://alperrefrigerants.com/faq
-- Certifications: https://alperrefrigerants.com/certifications
+## Optional
+- [MRCOOL](https://alperrefrigerants.com/brands/mrcool): Brand buying information.
+- [Senville](https://alperrefrigerants.com/brands/senville): Brand buying information.
+- [Public sitemap](https://alperrefrigerants.com/sitemap.xml): Current public product and published article URLs.

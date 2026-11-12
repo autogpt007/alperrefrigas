@@ -37,7 +37,6 @@ serve(async (req: Request) => {
 
     const products = productsRes.data || [];
     const blogs = blogsRes.data || [];
-    const today = new Date().toISOString().split("T")[0];
 
     // Static pages
     const staticUrls = [
@@ -47,8 +46,9 @@ serve(async (req: Request) => {
       { loc: "/products/refrigerants", changefreq: "daily", priority: "0.9" },
       { loc: "/products/accessories", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/air-conditioners", changefreq: "weekly", priority: "0.8" },
+      { loc: "/products/heating-heat-pumps", changefreq: "weekly", priority: "0.8" },
+      { loc: "/products/hvac-tools", changefreq: "weekly", priority: "0.8" },
       { loc: "/contact", changefreq: "monthly", priority: "0.7" },
-      { loc: "/rfq", changefreq: "weekly", priority: "0.8" },
       { loc: "/bulk-pricing", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/category/hfc", changefreq: "weekly", priority: "0.8" },
       { loc: "/products/category/hfo", changefreq: "weekly", priority: "0.8" },
@@ -91,7 +91,6 @@ serve(async (req: Request) => {
     for (const page of staticUrls) {
       xml += `  <url>
     <loc>${BASE_URL}${page.loc}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>
@@ -101,11 +100,11 @@ serve(async (req: Request) => {
     // Product pages
     for (const p of products) {
       const slug = createSlug(p.name);
-      const lastmod = p.updated_at ? p.updated_at.split("T")[0] : today;
+      const lastmod = p.updated_at ? p.updated_at.split("T")[0] : undefined;
       const priority = p.product_type === "refrigerant" ? "0.8" : "0.7";
       xml += `  <url>
     <loc>${BASE_URL}/products/${slug}</loc>
-    <lastmod>${lastmod}</lastmod>
+${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>
   </url>
@@ -114,10 +113,10 @@ serve(async (req: Request) => {
 
     // Blog posts
     for (const b of blogs) {
-      const lastmod = b.updated_at ? b.updated_at.split("T")[0] : today;
+      const lastmod = b.updated_at ? b.updated_at.split("T")[0] : undefined;
       xml += `  <url>
     <loc>${BASE_URL}/blog/${b.slug}</loc>
-    <lastmod>${lastmod}</lastmod>
+${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

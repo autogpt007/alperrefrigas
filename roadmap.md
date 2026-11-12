@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] AI search accessibility: correct crawler groups, refresh AI-readable site guidance, align public sitemap and fallback content, and verify crawler responses; full product/article HTML requires an approved rendering upgrade.
+- [x] AI search phase 1: corrected shared crawler groups/private exclusions, refreshed AI directory and fallback content, generated 206 public sitemap URLs with genuine modification dates; 35 tests passed, desktop/mobile pages and quote panel verified. Publish required for static files.
+- [ ] AI search phase 2: full product/article HTML readability — waiting for approval of the separate server-rendering migration.
 
 - [x] Buyer flow step 1: guest checkout and secure guest RFQ submission, verified without sign-in; test quote and both sent email events confirmed.
 - [x] Buyer flow step 2: immediate product quote panel with buyer confirmation and sales notification; guest panel submission and both sent emails verified.
