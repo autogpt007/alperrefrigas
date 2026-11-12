@@ -12,6 +12,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, Package, Truck, CheckCircle, XCircle, Clock, Eye, EyeOff, Shield, Trash2, Snowflake, Zap, UserCheck, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ZelleDetailsDialog from './ZelleDetailsDialog';
+import { DollarSign } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 
 interface ACConfiguration {
@@ -58,6 +60,7 @@ interface OrderItem {
 }
 
 const OrderManagement = () => {
+  const [zelleOrder, setZelleOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState('list');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -410,6 +413,15 @@ const OrderManagement = () => {
                             >
                               <UserCheck className="h-4 w-4 mr-1" />
                               KYC
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setZelleOrder(order)}
+                              className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10"
+                            >
+                              <DollarSign className="h-4 w-4 mr-1" />
+                              Zelle
                             </Button>
                             <Select
                               value={order.status}
@@ -927,6 +939,7 @@ const OrderManagement = () => {
           </TabsContent>
         )}
       </Tabs>
+    <ZelleDetailsDialog order={zelleOrder} onClose={() => setZelleOrder(null)} />
     </div>
   );
 };
