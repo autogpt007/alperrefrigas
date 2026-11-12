@@ -1,7 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import App from './App.tsx';
+import { StartupErrorBoundary, StartupFailure } from './components/StartupErrorBoundary';
+import { isChunkLoadError, reloadStaleChunkOnce } from './lib/startupRecovery';
 import './index.css';
 import { installPhoneCallTracking } from './utils/googleAdsConversions';
 installPhoneCallTracking();
@@ -124,17 +125,12 @@ if (typeof window !== 'undefined') {
 // When the user has an old index.html cached, dynamically imported chunk hashes
 // no longer exist on the server and Vite throws "Importing a module script failed"
 // or "Failed to fetch dynamically imported module". Force a one-time reload.
-const isChunkLoadError = (message: string) =>
-  /Importing a module script failed/i.test(message) ||
-  /Failed to fetch dynamically imported module/i.test(message) ||
-  /error loading dynamically imported module/i.test(message);
-
 const tryReloadOnce = () => {
-  if (typeof sessionStorage === 'undefined') return;
-  const key = '__chunk_reload__';
-  if (sessionStorage.getItem(key)) return;
-  sessionStorage.setItem(key, '1');
-  window.location.reload();
+  try {
+    return reloadStaleChunkOnce(window.sessionStorage, () => window.location.reload());
+  } catch {
+    return false;
+  }
 };
 
 if (typeof window !== 'undefined') {
@@ -151,19 +147,23 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Initialize i18n after React is set up
-import('./i18n/i18n').then(() => {
-  const container = document.getElementById("root");
-  if (!container) {
-    throw new Error("Root element not found");
-  }
-
-  const root = createRoot(container);
+// Install recovery before loading the application graph so startup failures are caught.
+const container = document.getElementById('root');
+if (!container) throw new Error('Root element not found');
+const root = createRoot(container);
+Promise.all([import('./i18n/i18n'), import('./App.tsx')]).then(([, { default: App }]) => {
   root.render(
     <React.StrictMode>
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
+      <StartupErrorBoundary>
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
+      </StartupErrorBoundary>
     </React.StrictMode>
   );
-}).catch(console.error);
+}).catch((error: unknown) => {
+  console.error('[Runtime] Application startup failed', error);
+  const message = error instanceof Error ? error.message : String(error);
+  if (isChunkLoadError(message) && tryReloadOnce()) return;
+  root.render(<StartupFailure />);
+});
