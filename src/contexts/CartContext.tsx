@@ -1,6 +1,8 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useWebMCP } from 'use-webmcp-tool';
+import { runWebMCPTool } from '@/lib/webmcp-telemetry';
 import { supabase } from '@/integrations/supabase/client';
 import { trackAddToCart, trackRemoveFromCart, cartItemToGA4Item } from '@/utils/ga4Ecommerce';
 import { trackFBAddToCart } from '@/utils/facebookPixel';
@@ -205,6 +207,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     qualifiesForFreeShipping, 
     shippingCost, 
     finalTotal 
+  });
+
+  useWebMCP({
+    name: 'view_cart',
+    description: "List the items in the shopper's cart with quantity and per-unit USD price, plus the cart subtotal.",
+    annotations: { readOnlyHint: true, untrustedContentHint: true },
+    execute: () => runWebMCPTool('view_cart', () =>
+      items.length === 0
+        ? 'The cart is empty.'
+        : items.map((i) => `${i.quantity} x ${i.name}${i.packaging ? ` (${i.packaging})` : ''} @ $${i.price.toFixed(2)}`).join('\n') + `\nSubtotal: $${total.toFixed(2)}`),
   });
 
   const value = {

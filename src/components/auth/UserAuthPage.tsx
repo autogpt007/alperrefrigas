@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { oauthReturnPath } from '@/lib/oauth-return-path';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,7 +27,9 @@ const UserAuthPage = () => {
   const { login, register, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const returnTo = searchParams.get('returnTo');
+  const rawReturn = searchParams.get('returnTo') ?? searchParams.get('next');
+  const returnTo = rawReturn ? oauthReturnPath(rawReturn) : null;
+  const emailReturnUrl = new URL(returnTo ?? '/', window.location.origin).href;
 
   // Rate limiter for authentication attempts
   const rateLimiter = useRef(new RateLimiter(5, 900000)); // 5 attempts per 15 minutes
@@ -78,7 +81,7 @@ const UserAuthPage = () => {
       const { error: resendError } = await supabase.auth.resend({
         type: 'signup',
         email,
-        options: { emailRedirectTo: `${window.location.origin}/` },
+        options: { emailRedirectTo: emailReturnUrl },
       });
 
       if (resendError) {
@@ -192,7 +195,8 @@ const UserAuthPage = () => {
         email: validatedData.email.toLowerCase().trim(),
         password: validatedData.password,
         company: validatedData.company ? sanitizeInput(validatedData.company) : undefined,
-        epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined
+        epaLicense: validatedData.epaLicense ? sanitizeInput(validatedData.epaLicense) : undefined,
+        redirectTo: emailReturnUrl,
       });
       
       if (result.error) {

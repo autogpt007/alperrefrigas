@@ -20,6 +20,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hcaptcha/react-hcaptcha": "^1.16.0",
     "@hookform/resolvers": "^3.9.0",
+    "@lovable.dev/mcp-js": "^3.5.0",
     "@octokit/rest": "^22.0.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -85,6 +86,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "use-webmcp-tool": "^0.3.0",
     "vaul": "^0.9.3",
     "vitest": "^3.2.4",
     "zod": "^4.0.5"

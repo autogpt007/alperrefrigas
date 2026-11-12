@@ -57,6 +57,7 @@ const CustomerSupport = lazy(() => import("./components/pages/CustomerSupport"))
 const CryptoPaymentPage = lazy(() => import("./components/pages/CryptoPaymentPage"));
 const MyAccount = lazy(() => import("./components/pages/MyAccount"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const UserAuthPage = lazy(() => import("./components/auth/UserAuthPage"));
 const BlogPage = lazy(() => import("./components/pages/BlogPage"));
 const BlogPostDetail = lazy(() => import("./components/pages/BlogPostDetail"));
@@ -213,6 +214,7 @@ function App() {
                                <Route path="/health" element={<Health />} />
                                <Route path="/account" element={<MyAccount />} />
                                <Route path="/auth" element={<UserAuthPage />} />
+                               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
                                <Route path="/admin-auth" element={<AuthPage />} />
                                <Route path="/blog" element={<BlogPage />} />
                                <Route path="/blog/:slug" element={<BlogPostDetail />} />

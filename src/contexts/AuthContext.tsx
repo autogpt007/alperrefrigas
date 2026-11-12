@@ -19,7 +19,7 @@ interface AuthContextType {
   authError: string | null;
   signOut: () => Promise<void>;
   login: (email: string, password: string) => Promise<{ error: any }>;
-  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
+  register: (data: { name: string; email: string; password: string; company?: string; epaLicense?: string; redirectTo?: string }) => Promise<{ error: any; needsEmailConfirmation?: boolean; email?: string }>;
   logout: () => Promise<void>;
   resetLocalSession: () => Promise<void>;
 }
@@ -240,7 +240,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string }) => {
+  const register = async (data: { name: string; email: string; password: string; company?: string; epaLicense?: string; redirectTo?: string }) => {
     try {
       console.log('Starting registration for:', data.email);
       
@@ -253,7 +253,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             company: data.company,
             epa_license: data.epaLicense,
           },
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: data.redirectTo ?? `${window.location.origin}/`,
         },
       });
       
