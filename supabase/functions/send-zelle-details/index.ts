@@ -66,6 +66,10 @@ Deno.serve(async (req) => {
       <p style="margin:0;"><strong>Zelle email / phone:</strong> ${esc(zelleContact)}</p>
     </div>
     <p>Please put <strong>#${esc(order.order_number)}</strong> in the Zelle memo so we can match your payment.</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:20px 0;">
+      <p style="margin:0 0 6px;"><strong>After you pay:</strong> take a screenshot of the payment confirmation in your bank or Zelle app.</p>
+      <p style="margin:0;">Email that screenshot to <a href="mailto:${REPLY_TO}?subject=Payment%20screenshot%20for%20order%20%23${esc(order.order_number)}" style="color:#0284c7;">${REPLY_TO}</a> so we can confirm your payment and dispatch your order right away.</p>
+    </div>
     ${note ? `<p style="white-space:pre-line;">${esc(note)}</p>` : ""}
     <p style="color:#64748b;">Questions? Reply to this email or contact ${REPLY_TO} · +1-786-987-0501.</p>
   </div>
@@ -73,7 +77,7 @@ Deno.serve(async (req) => {
     <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>
   </div>
 </div>`;
-    const text = `Payment details for order #${order.order_number}\nAmount due: ${total}\nZelle name: ${zelleName}\nZelle email/phone: ${zelleContact}\nMemo: #${order.order_number}\n${note ?? ""}`;
+    const text = `Payment details for order #${order.order_number}\nAmount due: ${total}\nZelle name: ${zelleName}\nZelle email/phone: ${zelleContact}\nMemo: #${order.order_number}\n\nAfter you pay: take a screenshot of the payment confirmation in your bank or Zelle app and email it to ${REPLY_TO} so we can confirm your payment and dispatch your order.\n${note ?? ""}`;
 
     const r = await fetch(`${GATEWAY_URL}/emails`, {
       method: "POST",
