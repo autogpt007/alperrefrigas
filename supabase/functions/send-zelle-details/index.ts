@@ -1,3 +1,4 @@
+import { sendAndLog } from "../_shared/transactional-email-templates/send-and-log.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3";
 
@@ -7,15 +8,10 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const SENDER_DOMAIN = "notify.alperrefrigerants.com";
-const FROM_EMAIL = "Alper Refrigerants <invoices@alperrefrigerants.com>";
 const REPLY_TO = "sales@alperrefrigerants.com";
 
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-const esc = (s: unknown) =>
-  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 
 const Body = z.object({
   orderId: z.string().uuid(),
@@ -28,11 +24,8 @@ const Body = z.object({
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const url = Deno.env.get("SUPABASE_URL")!;
     const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    if (!LOVABLE_API_KEY || !RESEND_API_KEY) return json({ error: "Server configuration error" }, 500);
 
     const token = (req.headers.get("Authorization") || "").replace("Bearer ", "").trim();
     if (!token) return json({ error: "Unauthorized" }, 401);
@@ -51,44 +44,11 @@ Deno.serve(async (req) => {
     if (!order) return json({ error: "Order not found" }, 404);
 
     const total = `USD ${Number(order.total_amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const html = `
-<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-  <div style="background:#0f172a;padding:28px;text-align:center;">
-    <h1 style="color:#22d3ee;margin:0;font-size:22px;">Payment details for order #${esc(order.order_number)}</h1>
-  </div>
-  <div style="padding:24px;color:#334155;font-size:14px;">
-    <p>Dear ${esc(order.customer_name)},</p>
-    <p>As discussed, here are the Zelle details to pay for your order.</p>
-    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:16px;margin:20px 0;">
-      <p style="margin:0 0 6px;"><strong>Order:</strong> #${esc(order.order_number)}</p>
-      <p style="margin:0 0 6px;"><strong>Amount due:</strong> ${esc(total)}</p>
-      <p style="margin:0 0 6px;"><strong>Zelle name:</strong> ${esc(zelleName)}</p>
-      <p style="margin:0;"><strong>Zelle email / phone:</strong> ${esc(zelleContact)}</p>
-    </div>
-    <p>Please put <strong>#${esc(order.order_number)}</strong> in the Zelle memo so we can match your payment.</p>
-    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:20px 0;">
-      <p style="margin:0 0 6px;"><strong>After you pay:</strong> take a screenshot of the payment confirmation in your bank or Zelle app.</p>
-      <p style="margin:0;">Email that screenshot to <a href="mailto:${REPLY_TO}?subject=Payment%20screenshot%20for%20order%20%23${esc(order.order_number)}" style="color:#0284c7;">${REPLY_TO}</a> so we can confirm your payment and dispatch your order right away.</p>
-    </div>
-    ${note ? `<p style="white-space:pre-line;">${esc(note)}</p>` : ""}
-    <p style="color:#64748b;">Questions? Reply to this email or contact ${REPLY_TO} · +1-786-987-0501.</p>
-  </div>
-  <div style="background:#f8fafc;padding:14px;text-align:center;border-top:1px solid #e2e8f0;">
-    <p style="margin:0;color:#94a3b8;font-size:12px;">Alper Chemical Group | 382 NE 191st St, Miami, FL 33179</p>
-  </div>
-</div>`;
-    const text = `Payment details for order #${order.order_number}\nAmount due: ${total}\nZelle name: ${zelleName}\nZelle email/phone: ${zelleContact}\nMemo: #${order.order_number}\n\nAfter you pay: take a screenshot of the payment confirmation in your bank or Zelle app and email it to ${REPLY_TO} so we can confirm your payment and dispatch your order.\n${note ?? ""}`;
-
-    const r = await fetch(`${GATEWAY_URL}/emails`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}`, "X-Connection-Api-Key": RESEND_API_KEY },
-      body: JSON.stringify({
-        from: FROM_EMAIL, sender_domain: SENDER_DOMAIN, to: [recipientEmail], reply_to: REPLY_TO,
-        subject: `Payment details for order #${order.order_number} - Alper Refrigerants`, html, text,
-      }),
+    const r = await sendAndLog("zelle-payment-details", recipientEmail, {
+      templateData: { customerName: order.customer_name, orderNumber: order.order_number, total, zelleName, zelleContact, note },
+      replyTo: REPLY_TO,
     });
-    const result = await r.json().catch(() => ({}));
-    if (!r.ok) return json({ error: (result as any)?.message || `Email provider rejected the send (${r.status})` }, 502);
+    if (!r.sent) return json({ error: r.reason === "recipient_suppressed" ? "This buyer's email is blocked (bounced or unsubscribed earlier)." : (r.error || "Email could not be sent") }, 502);
 
     await admin.from("admin_audit_log").insert({
       admin_id: u.user.id, admin_email: u.user.email, action: "order.zelle_details_sent",

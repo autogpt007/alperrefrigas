@@ -16,6 +16,7 @@ import { template as kycRequest } from './kyc-request.tsx'
 import { template as kycApproved } from './kyc-approved.tsx'
 import { template as kycRejected } from './kyc-rejected.tsx'
 import { template as invoiceDelivery } from './invoice-delivery.tsx'
+import { template as zellePaymentDetails } from './zelle-payment-details.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'order-confirmation': orderConfirmation,
@@ -25,4 +26,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'kyc-approved': kycApproved,
   'kyc-rejected': kycRejected,
   'invoice-delivery': invoiceDelivery,
+  'zelle-payment-details': zellePaymentDetails,
 }
