@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Must stay in sync with supabase/functions/send-transactional-email/index.ts
+// Must stay in sync with supabase/functions/_shared/transactional-email-templates/send-email.ts
 const EXPECTED_SENDER_DOMAIN = "notify.alperrefrigerants.com";
 const EXPECTED_FROM_DOMAIN = "alperrefrigerants.com";
 const EXPECTED_FROM_ADDRESS = `noreply@${EXPECTED_FROM_DOMAIN}`;

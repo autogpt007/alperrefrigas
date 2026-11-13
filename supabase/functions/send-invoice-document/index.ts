@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-// Must stay in sync with supabase/functions/send-transactional-email/index.ts —
+// Must stay in sync with supabase/functions/_shared/transactional-email-templates/send-email.ts —
 // the verified sender subdomain is what Resend authorises the send against.
 const SENDER_DOMAIN = "notify.alperrefrigerants.com";
 const FROM_DOMAIN = "alperrefrigerants.com";

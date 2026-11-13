@@ -165,16 +165,8 @@ export const QuotesProvider = ({ children }: { children: ReactNode }) => {
 
       // Send quote confirmation email to customer
       try {
-        await supabase.functions.invoke('send-transactional-email', {
-          body: {
-            templateName: 'quote-confirmation',
-            recipientEmail: formattedQuote.customer_email,
-            idempotencyKey: `quote-confirm-${formattedQuote.id}`,
-            templateData: {
-              customerName: formattedQuote.customer_name,
-              quoteNumber: formattedQuote.quote_number,
-            },
-          },
+        await supabase.functions.invoke('send-quote-confirmation', {
+          body: { quoteId: formattedQuote.id },
         });
       } catch (emailErr) {
         console.error('Quote confirmation email failed:', emailErr);

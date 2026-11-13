@@ -212,18 +212,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
       // Send order confirmation email to customer
       try {
-        await supabase.functions.invoke('send-transactional-email', {
-          body: {
-            templateName: 'order-confirmation',
-            recipientEmail: formattedOrder.customer_email,
-            idempotencyKey: `order-confirm-${formattedOrder.id}`,
-            templateData: {
-              customerName: formattedOrder.customer_name,
-              orderNumber: formattedOrder.order_number,
-              totalAmount: formattedOrder.total_amount,
-              items: formattedOrder.items,
-            },
-          },
+        await supabase.functions.invoke('send-order-confirmation', {
+          body: { orderId: formattedOrder.id },
         });
       } catch (emailErr) {
         console.error('Order confirmation email failed:', emailErr);

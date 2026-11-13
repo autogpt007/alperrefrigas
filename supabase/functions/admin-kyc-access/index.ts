@@ -1,3 +1,4 @@
+import { sendAndLog } from "../_shared/transactional-email-templates/send-and-log.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -102,14 +103,7 @@ serve(async (req) => {
           .from("orders").select("*").eq("id", orderId).single();
 
         if (order) {
-          await supabaseClient.functions.invoke("send-transactional-email", {
-            body: {
-              templateName: "kyc-approved",
-              recipientEmail: order.customer_email,
-              idempotencyKey: `kyc-approved-${orderId}`,
-              templateData: { customerName: order.customer_name, orderNumber: order.order_number },
-            },
-          });
+          await sendAndLog("kyc-approved", order.customer_email, { idempotencyKey: `kyc-approved-${orderId}`, templateData: { customerName: order.customer_name, orderNumber: order.order_number } });
         }
       }
 
@@ -134,14 +128,7 @@ serve(async (req) => {
           .from("orders").select("*").eq("id", orderId).single();
 
         if (order) {
-          await supabaseClient.functions.invoke("send-transactional-email", {
-            body: {
-              templateName: "kyc-rejected",
-              recipientEmail: order.customer_email,
-              idempotencyKey: `kyc-rejected-${orderId}`,
-              templateData: { customerName: order.customer_name, orderNumber: order.order_number, reason: notes },
-            },
-          });
+          await sendAndLog("kyc-rejected", order.customer_email, { idempotencyKey: `kyc-rejected-${orderId}`, templateData: { customerName: order.customer_name, orderNumber: order.order_number, reason: notes } });
         }
       }
 
