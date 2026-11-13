@@ -278,6 +278,19 @@ const CheckoutPage = () => {
   // Calculate totals with coupon and tax (support VAT exemption) - use dynamic shipping rates
   const subtotal = total;
   const shippingCost = dynamicShipping.isFreeShipping ? 0 : dynamicShipping.shippingCost;
+  // Free-freight threshold comes from the buyer's own shipping zone, not the site-wide default
+  const zoneFreeShippingThreshold = shippingZone?.free_shipping_threshold != null
+    ? Number(shippingZone.free_shipping_threshold)
+    : freeShippingThreshold;
+  // Zone label, without repeating the country when the zone is already named after it
+  const shippingZoneLabel = (() => {
+    if (!shippingZone) return '';
+    const countryName = getCountryByCode(formData.countryCode)?.name;
+    if (!countryName || shippingZone.region_name.toLowerCase().includes(countryName.toLowerCase())) {
+      return shippingZone.region_name;
+    }
+    return `${shippingZone.region_name} — ${countryName}`;
+  })();
   const discountAmount = couponDiscount;
   const taxAmount = formData.payVatAtCustoms ? 0 : taxCalculation.taxAmount;
   const finalTotal = Math.max(0, subtotal + shippingCost + taxAmount - discountAmount);
@@ -924,12 +937,12 @@ const CheckoutPage = () => {
                         />
                         <div className="space-y-1">
                           <Label htmlFor="payVatAtCustoms" className="font-medium text-blue-900">
-                            I will pay {taxCalculation.taxType || 'VAT/GST'} at customs
+                            I will pay {taxCalculation.taxType === 'DDU' ? 'import duties and taxes' : taxCalculation.taxType || 'VAT/GST'} at customs
                           </Label>
                           <p className="text-xs text-blue-700">
                             Select this option if you are a VAT-registered business or prefer to pay 
                             import duties and taxes directly to customs upon delivery. 
-                            Your invoice will show 0% {taxCalculation.taxType || 'tax'}.
+                            Your invoice will show 0% tax.
                           </p>
                         </div>
                       </div>
@@ -1438,6 +1451,46 @@ const CheckoutPage = () => {
                     </Alert>
                   )}
 
+                  {/* Shipping Details for the Buyer's Own Zone */}
+                  {shippingZone && (
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                      <div className="flex items-start gap-2">
+                        <Truck className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs text-gray-600 space-y-1">
+                          <p className="font-medium text-gray-700">{shippingZoneLabel}</p>
+                          <p>
+                            Freight:{' '}
+                            {dynamicShipping.isFreeShipping
+                              ? 'FREE'
+                              : formatCurrency(shippingCost)}
+                            {hasRefrigerantProducts && shippingZone.hazmat_surcharge && !dynamicShipping.isFreeShipping && (
+                              <> including {formatCurrency(Number(shippingZone.hazmat_surcharge))} hazmat surcharge</>
+                            )}
+                          </p>
+                          <p>Estimated transit: {dynamicShipping.transitDays}</p>
+                          {shippingZone.free_shipping_threshold != null && (
+                            <p>
+                              Free freight on orders over{' '}
+                              {formatCurrency(Number(shippingZone.free_shipping_threshold))}.
+                            </p>
+                          )}
+                          {taxCalculation.taxType === 'DDU' ? (
+                            <p>
+                              No tax charged at checkout. Import duties and taxes are payable to the
+                              carrier on delivery.
+                            </p>
+                          ) : taxCalculation.taxRate > 0 ? (
+                            <p>
+                              {taxCalculation.taxType} of {taxCalculation.taxRate}% is charged at
+                              checkout.
+                            </p>
+                          ) : null}
+                          {shippingZone.notes && <p className="italic">{shippingZone.notes}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Tax Compliance Notice - Google Merchant Compliant */}
                   <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                     <div className="flex items-start gap-2">
@@ -1446,6 +1499,7 @@ const CheckoutPage = () => {
                         <p className="font-medium mb-1">
                           {taxCalculation.taxType === 'VAT' ? 'VAT Information' : 
                            taxCalculation.taxType === 'GST' ? 'GST Information' : 
+                           taxCalculation.taxType === 'DDU' ? 'Import Duties & Taxes' :
                            'Sales Tax Information'}
                         </p>
                         <p>
@@ -1474,6 +1528,12 @@ const CheckoutPage = () => {
                               Australian GST is applied at {taxCalculation.taxRate}%.
                               Additional import duties may apply.
                             </>
+                          ) : taxCalculation.taxType === 'DDU' ? (
+                            <>
+                              No tax is charged at checkout. Import duties, taxes and customs
+                              clearance fees are payable by you to the carrier on delivery
+                              (Delivered Duty Unpaid terms).
+                            </>
                           ) : (
                             <>Tax is calculated based on your shipping destination.</>
                           )}
@@ -1482,11 +1542,11 @@ const CheckoutPage = () => {
                     </div>
                   </div>
 
-                  {/* Free Shipping Notice */}
-                  {subtotal < freeShippingThreshold && (
+                  {/* Free Shipping Notice - uses the buyer's own zone threshold */}
+                  {subtotal < zoneFreeShippingThreshold && (
                     <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
                       <p className="text-sm text-blue-800">
-                        Add {formatCurrency(freeShippingThreshold - subtotal)} more for free shipping!
+                        Add {formatCurrency(zoneFreeShippingThreshold - subtotal)} more for free shipping!
                       </p>
                     </div>
                   )}

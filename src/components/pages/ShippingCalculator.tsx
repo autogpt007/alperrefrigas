@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Alert, AlertDescription } from '../ui/alert';
 import { Truck, AlertTriangle, MapPin, Globe, Package, DollarSign, Clock } from 'lucide-react';
 import { useShippingZones, getShippingZoneForCountry, calculateShippingCost, type ShippingZone } from '@/hooks/useShippingZones';
+import { SUPPORTED_COUNTRIES } from '@/hooks/useInternationalTaxCalculator';
 import { Badge } from '../ui/badge';
 import SEOComponent from '../seo/SEOComponent';
 
@@ -70,18 +71,8 @@ const ShippingCalculator = () => {
     }
   }, [formData.country, formData.state, formData.productType, estimatedSubtotal, zones]);
 
-  const countryOptions = [
-    { code: 'US', name: 'United States' },
-    { code: 'CA', name: 'Canada' },
-    { code: 'GB', name: 'United Kingdom' },
-    { code: 'DE', name: 'Germany' },
-    { code: 'FR', name: 'France' },
-    { code: 'IT', name: 'Italy' },
-    { code: 'ES', name: 'Spain' },
-    { code: 'NL', name: 'Netherlands' },
-    { code: 'AU', name: 'Australia' },
-    { code: 'NZ', name: 'New Zealand' },
-  ];
+  // Same country list the checkout offers, so every shipping-zone country can be quoted
+  const countryOptions = SUPPORTED_COUNTRIES.map(country => ({ code: country.code, name: country.name }));
 
   return (
     <>

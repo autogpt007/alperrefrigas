@@ -27,11 +27,18 @@ interface InternationalTaxRate {
 }
 
 // Supported countries with their regions
+// Countries buyers can select at checkout. Mirrors the active shipping_zones rows
+// so every selectable country resolves to a real freight zone (Russia excluded).
+// Region values match international_tax_rates.region.
 export const SUPPORTED_COUNTRIES = [
-  // US
+  // North America
   { code: 'US', name: 'United States', region: 'US' },
+  { code: 'CA', name: 'Canada', region: 'CA' },
+  { code: 'MX', name: 'Mexico', region: 'LatAm' },
   // UK
   { code: 'GB', name: 'United Kingdom', region: 'UK' },
+  // US Territories
+  { code: 'PR', name: 'Puerto Rico', region: 'US Territory' },
   // EU Countries
   { code: 'AT', name: 'Austria', region: 'EU' },
   { code: 'BE', name: 'Belgium', region: 'EU' },
@@ -60,8 +67,42 @@ export const SUPPORTED_COUNTRIES = [
   { code: 'SI', name: 'Slovenia', region: 'EU' },
   { code: 'ES', name: 'Spain', region: 'EU' },
   { code: 'SE', name: 'Sweden', region: 'EU' },
-  // Australia
+  // Non-EU Europe
+  { code: 'CH', name: 'Switzerland', region: 'Non-EU Europe' },
+  { code: 'NO', name: 'Norway', region: 'Non-EU Europe' },
+  { code: 'UA', name: 'Ukraine', region: 'Non-EU Europe' },
+  { code: 'GE', name: 'Georgia', region: 'Non-EU Europe' },
+  // Latin America & Caribbean
+  { code: 'BR', name: 'Brazil', region: 'LatAm' },
+  { code: 'AR', name: 'Argentina', region: 'LatAm' },
+  { code: 'CL', name: 'Chile', region: 'LatAm' },
+  { code: 'CO', name: 'Colombia', region: 'LatAm' },
+  { code: 'PE', name: 'Peru', region: 'LatAm' },
+  { code: 'EC', name: 'Ecuador', region: 'LatAm' },
+  { code: 'UY', name: 'Uruguay', region: 'LatAm' },
+  { code: 'PY', name: 'Paraguay', region: 'LatAm' },
+  { code: 'CR', name: 'Costa Rica', region: 'LatAm' },
+  { code: 'PA', name: 'Panama', region: 'LatAm' },
+  { code: 'SV', name: 'El Salvador', region: 'LatAm' },
+  { code: 'NI', name: 'Nicaragua', region: 'LatAm' },
+  { code: 'DO', name: 'Dominican Republic', region: 'LatAm' },
+  // Middle East
+  { code: 'AE', name: 'United Arab Emirates', region: 'Middle East' },
+  { code: 'SA', name: 'Saudi Arabia', region: 'Middle East' },
+  { code: 'KW', name: 'Kuwait', region: 'Middle East' },
+  { code: 'BH', name: 'Bahrain', region: 'Middle East' },
+  { code: 'OM', name: 'Oman', region: 'Middle East' },
+  { code: 'IL', name: 'Israel', region: 'Middle East' },
+  // Asia-Pacific
+  { code: 'HK', name: 'Hong Kong', region: 'Asia-Pacific' },
+  { code: 'MY', name: 'Malaysia', region: 'Asia-Pacific' },
+  { code: 'TH', name: 'Thailand', region: 'Asia-Pacific' },
+  { code: 'PH', name: 'Philippines', region: 'Asia-Pacific' },
+  // Oceania
   { code: 'AU', name: 'Australia', region: 'AU' },
+  { code: 'NZ', name: 'New Zealand', region: 'Oceania' },
+  // Africa
+  { code: 'ZA', name: 'South Africa', region: 'Africa' },
 ];
 
 export const getCountryByCode = (code: string) => {
