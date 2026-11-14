@@ -15,6 +15,13 @@
       "when": 1794529953527,
       "tag": "0001_grant_rls_helper_functions_to_anon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794616409563,
+      "tag": "0002_harden_email_functions_and_mining_stats",
+      "breakpoints": true
     }
   ]
 }
